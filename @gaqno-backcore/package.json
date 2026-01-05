@@ -1,0 +1,164 @@
+{
+  "name": "@gaqno-dev/backcore",
+  "version": "1.1.6",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "services/*": [
+        "./dist/services/*"
+      ],
+      "modules/*": [
+        "./dist/modules/*"
+      ],
+      "schemas/*": [
+        "./dist/schemas/*"
+      ],
+      "types/shared": [
+        "./dist/types/shared/index"
+      ],
+      "types/shared/*": [
+        "./dist/types/shared/*"
+      ],
+      "config/*": [
+        "./dist/config/*"
+      ]
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./services": {
+      "require": "./dist/services/index.js",
+      "import": "./dist/services/index.js",
+      "types": "./dist/services/index.d.ts"
+    },
+    "./services/base-crud.service": {
+      "require": "./dist/services/base-crud.service.js",
+      "import": "./dist/services/base-crud.service.js",
+      "types": "./dist/services/base-crud.service.d.ts"
+    },
+    "./services/base-crud.controller": {
+      "require": "./dist/services/base-crud.controller.js",
+      "import": "./dist/services/base-crud.controller.js",
+      "types": "./dist/services/base-crud.controller.d.ts"
+    },
+    "./services/sso.service": {
+      "require": "./dist/services/sso.service.js",
+      "import": "./dist/services/sso.service.js",
+      "types": "./dist/services/sso.service.d.ts"
+    },
+    "./modules": {
+      "require": "./dist/modules/index.js",
+      "import": "./dist/modules/index.js",
+      "types": "./dist/modules/index.d.ts"
+    },
+    "./modules/*": {
+      "require": "./dist/modules/*.js",
+      "import": "./dist/modules/*.js",
+      "types": "./dist/modules/*.d.ts"
+    },
+    "./schemas": {
+      "require": "./dist/schemas/index.js",
+      "import": "./dist/schemas/index.js",
+      "types": "./dist/schemas/index.d.ts"
+    },
+    "./schemas/*": {
+      "require": "./dist/schemas/*.js",
+      "import": "./dist/schemas/*.js",
+      "types": "./dist/schemas/*.d.ts"
+    },
+    "./types/shared": {
+      "require": "./dist/types/shared/index.js",
+      "import": "./dist/types/shared/index.js",
+      "types": "./dist/types/shared/index.d.ts"
+    },
+    "./types/shared/auth": {
+      "require": "./dist/types/shared/auth.js",
+      "import": "./dist/types/shared/auth.js",
+      "types": "./dist/types/shared/auth.d.ts"
+    },
+    "./types/shared/customer": {
+      "require": "./dist/types/shared/customer.js",
+      "import": "./dist/types/shared/customer.js",
+      "types": "./dist/types/shared/customer.d.ts"
+    },
+    "./types/shared/product": {
+      "require": "./dist/types/shared/product.js",
+      "import": "./dist/types/shared/product.js",
+      "types": "./dist/types/shared/product.d.ts"
+    },
+    "./types/shared/sale": {
+      "require": "./dist/types/shared/sale.js",
+      "import": "./dist/types/shared/sale.js",
+      "types": "./dist/types/shared/sale.d.ts"
+    },
+    "./types/shared/user": {
+      "require": "./dist/types/shared/user.js",
+      "import": "./dist/types/shared/user.js",
+      "types": "./dist/types/shared/user.d.ts"
+    },
+    "./types/shared/org": {
+      "require": "./dist/types/shared/org.js",
+      "import": "./dist/types/shared/org.js",
+      "types": "./dist/types/shared/org.d.ts"
+    },
+    "./types/shared/audit": {
+      "require": "./dist/types/shared/audit.js",
+      "import": "./dist/types/shared/audit.js",
+      "types": "./dist/types/shared/audit.d.ts"
+    },
+    "./config": {
+      "require": "./dist/config/index.js",
+      "import": "./dist/config/index.js",
+      "types": "./dist/config/index.d.ts"
+    },
+    "./config/env.validation": {
+      "require": "./dist/config/env.validation.js",
+      "import": "./dist/config/env.validation.js",
+      "types": "./dist/config/env.validation.d.ts"
+    },
+    "./config/*": {
+      "require": "./dist/config/*.js",
+      "import": "./dist/config/*.js",
+      "types": "./dist/config/*.d.ts"
+    }
+  },
+  "peerDependencies": {
+    "@nestjs/axios": "^3.0.0",
+    "@nestjs/common": "^10.0.0",
+    "@nestjs/config": "^3.2.2",
+    "@nestjs/core": "^10.0.0",
+    "@nestjs/throttler": "^6.3.0",
+    "axios": "^1.6.8",
+    "class-validator": "^0.14.1",
+    "express": "^4.18.2",
+    "typescript": "^5.0.0",
+    "zod": "^3.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.6.8",
+    "zod": "^3.0.0"
+  },
+  "devDependencies": {
+    "@nestjs/axios": "^3.1.3",
+    "@nestjs/common": "^10.4.20",
+    "@nestjs/config": "^3.3.0",
+    "@nestjs/core": "^10.4.20",
+    "@nestjs/throttler": "^6.5.0",
+    "@types/express": "^4.17.21",
+    "class-validator": "^0.14.3",
+    "typescript": "^5.0.0"
+  }
+}

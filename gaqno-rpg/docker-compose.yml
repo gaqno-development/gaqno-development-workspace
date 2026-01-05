@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  rpg:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3007:3007"
+    environment:
+      - NODE_ENV=development
+      - PORT=3007
+      - VITE_SSO_SERVICE_URL=http://localhost:4001
+      - VITE_RPG_SERVICE_URL=http://localhost:4007
+    volumes:
+      - .:/app
+      - /app/node_modules
+

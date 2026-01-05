@@ -1,0 +1,81 @@
+# Dependencies
+**/node_modules
+**/.next
+**/dist
+**/build
+**/build-logs
+**/.turbo
+**/.swc
+
+# Development files
+**/.git
+**/.gitignore
+**/.gitattributes
+**/.env.local
+**/.env.development
+**/.env.test
+**/.vscode
+**/.idea
+**/*.log
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/pnpm-debug.log*
+
+# Testing
+**/coverage
+**/.nyc_output
+**/test-results
+**/playwright-report
+**/tests
+**/__tests__
+**/*.test.*
+**/*.spec.*
+
+# Misc
+**/.DS_Store
+**/Thumbs.db
+**/*.swp
+**/*.swo
+**/*~
+**/.cache
+**/.parcel-cache
+**/.eslintcache
+
+# Docker files
+**/Dockerfile*
+**/docker-compose*.yml
+**/.dockerignore
+
+# Documentation
+**/README.md
+**/*.md
+**/docs
+
+# CI/CD
+**/.github
+**/.gitlab-ci.yml
+**/.circleci
+**/.travis.yml
+**/.jenkins
+
+# Other service directories (when using root context)
+gaqno-sso-service
+gaqno-pdv-service
+gaqno-shell
+gaqno-ai
+gaqno-crm
+gaqno-erp
+gaqno-finance
+gaqno-pdv
+postgresql-mcp-server
+
+# Package manager files
+**/package-lock.json
+**/yarn.lock
+**/pnpm-lock.yaml
+**/.npm
+**/.yarn
+**/.pnp.*
+
+

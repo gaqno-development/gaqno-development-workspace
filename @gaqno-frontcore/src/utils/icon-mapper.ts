@@ -1,0 +1,57 @@
+import {
+  Home,
+  Users,
+  Settings,
+  ShoppingCart,
+  ShoppingBag,
+  Package,
+  Warehouse,
+  UserCircle,
+  Briefcase,
+  TrendingUp,
+  ClipboardList,
+  DollarSign,
+  ArrowLeftRight,
+  Wallet,
+  FileText,
+  BookOpen,
+  Book,
+  Lightbulb,
+  User,
+  Video,
+  Building,
+  GitBranch,
+  LayoutDashboard,
+  type LucideIcon,
+} from 'lucide-react';
+
+const ICON_MAP: Record<string, LucideIcon> = {
+  Home,
+  Users,
+  Settings,
+  ShoppingCart,
+  ShoppingBag,
+  Package,
+  Warehouse,
+  UserCircle,
+  Briefcase,
+  TrendingUp,
+  ClipboardList,
+  DollarSign,
+  ArrowLeftRight,
+  Wallet,
+  FileText,
+  BookOpen,
+  Book,
+  Lightbulb,
+  User,
+  Video,
+  Building,
+  GitBranch,
+  LayoutDashboard,
+};
+
+export function getIconComponent(iconName: string): LucideIcon {
+  return ICON_MAP[iconName] || Package;
+}
+
