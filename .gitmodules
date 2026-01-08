@@ -1,0 +1,30 @@
+[submodule "gaqno-ai"]
+	path = gaqno-ai
+	url = git@github.com-personal:gaqno-development/gaqno-ai.git
+[submodule "gaqno-ai-service"]
+	path = gaqno-ai-service
+	url = git@github.com-personal:gaqno-development/gaqno-ai-service.git
+[submodule "gaqno-crm"]
+	path = gaqno-crm
+	url = git@github.com-personal:gaqno-development/gaqno-crm.git
+[submodule "gaqno-erp"]
+	path = gaqno-erp
+	url = git@github.com-personal:gaqno-development/gaqno-erp.git
+[submodule "gaqno-pdv"]
+	path = gaqno-pdv
+	url = git@github.com-personal:gaqno-development/gaqno-pdv.git
+[submodule "gaqno-pdv-service"]
+	path = gaqno-pdv-service
+	url = git@github.com-personal:gaqno-development/gaqno-pdv-service.git
+[submodule "gaqno-shell"]
+	path = gaqno-shell
+	url = git@github.com-personal:gaqno-development/gaqno-shell.git
+[submodule "gaqno-sso-service"]
+	path = gaqno-sso-service
+	url = git@github.com-personal:gaqno-development/gaqno-sso-service.git
+[submodule "gaqno-finance"]
+	path = gaqno-finance
+	url = git@github.com-personal:gaqno-development/gaqno-finance.git
+[submodule "postgresql-mcp-server"]
+	path = postgresql-mcp-server
+	url = git@github.com-personal:gaqno-development/postgresql-mcp-server.git
