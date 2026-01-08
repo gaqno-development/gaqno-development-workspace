@@ -25,6 +25,6 @@ RUN --mount=type=cache,target=/root/.npm \
     npm config set fetch-retries 10 && \
     npm install --omit=dev --legacy-peer-deps
 
-EXPOSE 3008
+EXPOSE 4005
 CMD ["node", "dist/main.js"]
 

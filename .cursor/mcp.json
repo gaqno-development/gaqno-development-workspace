@@ -1,21 +1,23 @@
 {
   "mcpServers": {
-    "supabase": {
-      "url": "https://mcp.supabase.com/mcp?project_ref=zzmenicgmsneqxcixqbb"
-    },
     "playwright": {
       "command": "npx",
-      "args": ["@playwright/mcp@latest"]
+      "args": [
+        "@playwright/mcp@latest"
+      ]
     },
     "coolify": {
       "command": "npx",
-      "args": ["-y", "@masonator/coolify-mcp"],
+      "args": [
+        "-y",
+        "@masonator/coolify-mcp"
+      ],
       "env": {
         "COOLIFY_ACCESS_TOKEN": "02|k3WtyHGHFxkDf204wQtSB4yid7G9pi1hsZjtvkun99fd291f",
         "COOLIFY_BASE_URL": "https://coolify.gaqno.com.br"
       }
     },
-     "postgres": {
+    "postgres": {
       "command": "docker",
       "args": [
         "run",
