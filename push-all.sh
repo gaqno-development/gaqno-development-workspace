@@ -6,14 +6,18 @@ COMMIT_MESSAGE="${1:-Update changes}"
 
 REPOS=(
   "gaqno-ai"
+  "gaqno-ai-service"
   "gaqno-crm"
   "gaqno-erp"
   "gaqno-finance"
+  "gaqno-finance-service"
   "gaqno-pdv"
   "gaqno-pdv-service"
+  "gaqno-rpg"
+  "gaqno-rpg-service"
   "gaqno-shell"
+  "gaqno-sso"
   "gaqno-sso-service"
-  "postgresql-mcp-server"
 )
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -21,7 +25,12 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 for repo in "${REPOS[@]}"; do
   REPO_PATH="$BASE_DIR/$repo"
   
-  if [ ! -d "$REPO_PATH/.git" ]; then
+  if [ ! -d "$REPO_PATH" ]; then
+    echo "⚠️  Skipping $repo (directory does not exist)"
+    continue
+  fi
+  
+  if [ ! -f "$REPO_PATH/.git" ] && [ ! -d "$REPO_PATH/.git" ]; then
     echo "⚠️  Skipping $repo (not a git repository)"
     continue
   fi

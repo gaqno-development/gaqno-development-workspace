@@ -25,6 +25,15 @@
 [submodule "gaqno-finance"]
 	path = gaqno-finance
 	url = git@github.com-personal:gaqno-development/gaqno-finance.git
-[submodule "postgresql-mcp-server"]
-	path = postgresql-mcp-server
-	url = git@github.com-personal:gaqno-development/postgresql-mcp-server.git
+[submodule "gaqno-finance-service"]
+	path = gaqno-finance-service
+	url = git@github.com-personal:gaqno-development/gaqno-finance-service.git
+[submodule "gaqno-rpg"]
+	path = gaqno-rpg
+	url = git@github.com-personal:gaqno-development/gaqno-rpg.git
+[submodule "gaqno-rpg-service"]
+	path = gaqno-rpg-service
+	url = git@github.com-personal:gaqno-development/gaqno-rpg-service.git
+[submodule "gaqno-sso"]
+	path = gaqno-sso
+	url = git@github.com-personal:gaqno-development/gaqno-sso.git
