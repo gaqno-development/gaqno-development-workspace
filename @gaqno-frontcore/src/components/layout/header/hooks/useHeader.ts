@@ -1,8 +1,8 @@
 import { useNavigate, useLocation } from 'react-router-dom'
-import { useAuth } from '@gaqno-dev/frontcore/hooks/useAuth'
-import { useWhiteLabel } from '@gaqno-dev/frontcore/hooks/useWhiteLabel'
-import { useBranding } from '@gaqno-dev/frontcore/hooks/admin/useBranding'
-import { ROUTES } from '@gaqno-dev/frontcore/lib/constants'
+import { useAuth } from '@gaqno-development/frontcore/hooks/useAuth'
+import { useWhiteLabel } from '@gaqno-development/frontcore/hooks/useWhiteLabel'
+import { useBranding } from '@gaqno-development/frontcore/hooks/admin/useBranding'
+import { ROUTES } from '@gaqno-development/frontcore/lib/constants'
 import { useMemo } from 'react'
 
 export const useHeader = () => {

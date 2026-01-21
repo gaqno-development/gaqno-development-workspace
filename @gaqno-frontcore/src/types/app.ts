@@ -1,5 +1,5 @@
 // INotification moved to store/uiStore.ts to avoid duplicate exports
-// Import from '@gaqno-dev/frontcore/store' instead
+// Import from '@gaqno-development/frontcore/store' instead
 
 export interface IAppState {
   sidebarOpen: boolean

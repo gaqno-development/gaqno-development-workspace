@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useId } from 'react'
 import { Controller, FormProvider, useFormContext, FieldPath, FieldValues } from 'react-hook-form'
 import { Label } from '../label'
-import { cn } from '@gaqno-dev/frontcore/lib/utils'
+import { cn } from '../../../lib/utils'
 import { IFormFieldContextValue, IFormItemContextValue, IFormFieldProps } from './types'
 
 const FormFieldContext = createContext<IFormFieldContextValue>({} as IFormFieldContextValue)

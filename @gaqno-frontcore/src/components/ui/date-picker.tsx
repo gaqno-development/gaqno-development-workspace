@@ -2,7 +2,7 @@
 
 import { Input } from './input'
 import { Label } from './label'
-import { cn } from '@gaqno-dev/frontcore/lib/utils'
+import { cn } from '../../lib/utils'
 
 interface IDatePickerProps {
   value?: string

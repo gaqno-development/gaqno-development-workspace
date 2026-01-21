@@ -4,8 +4,8 @@ export {
   createServiceClient, 
   ssoClient, 
   financeClient, 
-  coreAxiosClient 
+  coreAxiosClient,
+  getAuthToken
 } from './api-client';
 
 export { ssoAxiosClient } from './sso-client';
-

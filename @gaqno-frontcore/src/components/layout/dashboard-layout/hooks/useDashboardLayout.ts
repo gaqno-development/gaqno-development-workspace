@@ -1,4 +1,4 @@
-import { useUIStore } from '@gaqno-dev/frontcore/store/uiStore'
+import { useUIStore } from '@gaqno-development/frontcore/store/uiStore'
 
 export const useDashboardLayout = () => {
   const { sidebarOpen, setSidebarOpen } = useUIStore()

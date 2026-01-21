@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useUIStore } from '@gaqno-dev/frontcore/store';
+import { useUIStore } from '@gaqno-development/frontcore/store';
 
 const THEME_STORAGE_KEY = 'theme'
 

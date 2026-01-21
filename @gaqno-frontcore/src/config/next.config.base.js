@@ -24,7 +24,7 @@ const createBaseNextConfig = (options = {}) => {
   return {
     reactStrictMode: true,
     output: 'standalone',
-    transpilePackages: ["@gaqno-dev/frontcore", "@gaqno-dev/core"],
+    transpilePackages: ["@gaqno-development/frontcore", "@gaqno-development/core"],
     ...(assetPrefix && { assetPrefix }),
     experimental: {
       missingSuspenseWithCSRBailout: false,

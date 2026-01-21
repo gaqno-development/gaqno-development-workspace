@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../../../ui/dropdown-menu'
-import { useUIStore } from '@gaqno-dev/frontcore/store/uiStore'
+import { useUIStore } from '@gaqno-development/frontcore/store/uiStore'
 
 export const ThemeToggle: React.FC = () => {
   const theme = useUIStore((state) => state.theme)

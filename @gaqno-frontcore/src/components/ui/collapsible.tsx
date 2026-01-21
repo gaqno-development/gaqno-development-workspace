@@ -1,7 +1,7 @@
 
 
 import * as CollapsiblePrimitive from "@radix-ui/react-collapsible"
-import { cn } from "@gaqno-dev/frontcore/lib/utils"
+import { cn } from "../../lib/utils"
 
 const Collapsible = CollapsiblePrimitive.Root
 

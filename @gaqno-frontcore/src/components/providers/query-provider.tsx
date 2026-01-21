@@ -9,6 +9,7 @@ export const QueryProvider = ({ children }: { children: ReactNode }) => {
       queries: {
         staleTime: 60 * 1000,
         refetchOnWindowFocus: false,
+        refetchOnMount: false,
       },
     },
   }))

@@ -8,12 +8,11 @@ import { IDashboardLayoutProps } from './types'
 const SidebarInsetWithMargin: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => {
   const { state } = useSidebar()
   const isCollapsed = state === 'collapsed'
-  
+
   return (
-    <SidebarInset 
-      className={`flex-1 flex flex-col min-w-0 overflow-hidden md:transition-[margin-left] md:duration-200 md:ease-linear ${
-        isCollapsed ? 'md:ml-[3rem]' : 'md:ml-[16rem]'
-      } ${className || ''}`}
+    <SidebarInset
+      className={`flex-1 flex flex-col min-w-0 overflow-hidden md:transition-[margin-left] md:duration-200 md:ease-linear ${isCollapsed ? 'md:ml-[3rem]' : 'md:ml-[16rem]'
+        } ${className || ''}`}
     >
       {children}
     </SidebarInset>
@@ -29,10 +28,8 @@ export const DashboardLayout: React.FC<IDashboardLayoutProps> = ({ children, men
         <AppSidebar customMenuItems={menuItems} />
         <SidebarInsetWithMargin>
           <Header userProfile={null} />
-          <main className="flex-1 p-4 sm:p-6 overflow-auto min-h-0">
-            <div className="mx-auto w-full">
-              {children}
-            </div>
+          <main>
+            {children}
           </main>
         </SidebarInsetWithMargin>
       </div>

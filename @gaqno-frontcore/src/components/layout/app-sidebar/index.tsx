@@ -24,9 +24,9 @@ import {
     DropdownMenuTrigger,
 } from '../../ui/dropdown-menu'
 import { useLocation } from 'react-router-dom'
-import { useFilteredMenu } from '@gaqno-dev/frontcore/hooks/useFilteredMenu'
+import { useFilteredMenu } from '../../../hooks/useFilteredMenu'
+import { useWhiteLabel } from '../../../hooks/useWhiteLabel'
 import { ISidebarItem } from './types'
-import { useWhiteLabel } from '@gaqno-dev/frontcore'
 
 interface AppSidebarProps {
     customMenuItems?: ISidebarItem[]
@@ -351,6 +351,11 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ customMenuItems }) => {
                     </SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
+                            {menuItems.length === 0 && (
+                                <div className="p-4 text-sm text-muted-foreground">
+                                    Nenhum item de menu disponível
+                                </div>
+                            )}
                             {menuItems.map((item, index) => (
                                 <React.Fragment key={item.label || item.href || `menu-item-${index}`}>
                                     {renderMenuItem(item)}

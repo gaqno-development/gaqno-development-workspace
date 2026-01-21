@@ -1,5 +1,6 @@
 
 import { createContext, useContext, useMemo, useCallback } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { SessionContext, SessionUser } from '../types/shared/auth'
 import { IUserProfile } from '../types/user'
 import { useMe, useSignOut } from '../hooks/auth/useSsoAuth'
@@ -19,6 +20,7 @@ const AuthContext = createContext<IAuthContext | undefined>(undefined)
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { data: sessionContext, isLoading, refetch } = useMe({ enabled: true })
     const signOutMutation = useSignOut()
+    const queryClient = useQueryClient()
 
     const user = sessionContext?.user ?? null
     const session = sessionContext ?? null
@@ -37,8 +39,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             // Clear all storage regardless of API call success
             clearAllStorage()
             clearAuth()
+            // Invalidate and remove menu query to force refetch on next login
+            queryClient.invalidateQueries({ queryKey: ['menu-items'] })
+            queryClient.removeQueries({ queryKey: ['menu-items'] })
         }
-    }, [signOutMutation, clearAuth])
+    }, [signOutMutation, clearAuth, queryClient])
 
     const value = useMemo(
         () => ({

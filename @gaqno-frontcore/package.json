@@ -1,6 +1,6 @@
 {
-  "name": "@gaqno-dev/frontcore",
-  "version": "1.0.7",
+  "name": "@gaqno-development/frontcore",
+  "version": "1.0.18",
   "private": false,
   "publishConfig": {
     "access": "public"

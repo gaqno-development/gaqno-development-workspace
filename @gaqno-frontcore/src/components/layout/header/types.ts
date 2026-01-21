@@ -1,4 +1,4 @@
-import { IUserProfile } from '@gaqno-dev/frontcore/types/user'
+import { IUserProfile } from '@gaqno-development/frontcore/types/user'
 
 export interface IHeaderProps {
   userProfile: IUserProfile | null

@@ -10,11 +10,11 @@ import {
   Wrench,
   BookOpen,
 } from 'lucide-react'
-import { FeatureModule, FeaturePermissionLevel } from '@gaqno-dev/frontcore/types/user'
+import { FeatureModule, FeaturePermissionLevel } from '@gaqno-development/frontcore/types/user'
 import { ISidebarItem } from '../types'
-import { usePermissions } from '@gaqno-dev/frontcore/hooks/usePermissions'
-import { useTenant } from '@gaqno-dev/frontcore/contexts'
-import { useUserPermissions } from '@gaqno-dev/frontcore/hooks/useUserPermissions'
+import { usePermissions } from '@gaqno-development/frontcore/hooks/usePermissions'
+import { useTenant } from '@gaqno-development/frontcore/contexts'
+import { useUserPermissions } from '@gaqno-development/frontcore/hooks/useUserPermissions'
 
 export const useAppSidebar = () => {
   const location = useLocation()

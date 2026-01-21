@@ -8,6 +8,19 @@ export * from './card';
 export * from './chart';
 export * from './checkbox';
 export * from './collapsible';
+export * from './command';
+export {
+  Command,
+  CommandDialog,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandSeparator,
+  CommandShortcut,
+} from './command';
+export type { CommandDialogProps } from './command';
 export * from './context-menu';
 export * from './data-table-column-header';
 export * from './data-table-pagination';
@@ -20,6 +33,8 @@ export * from './dropdown-menu';
 export * from './empty-state';
 export * from './form';
 export * from './input';
+export { InputWithAI } from './input/InputWithAI';
+export type { InputWithAIProps } from './input/InputWithAI';
 export * from './label';
 export * from './loading-skeleton';
 export * from './popover';

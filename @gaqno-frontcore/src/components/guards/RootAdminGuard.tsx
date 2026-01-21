@@ -1,7 +1,8 @@
+import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
-import { useIsRootAdmin } from '@gaqno-dev/frontcore/hooks/usePermissions'
-import { useAuth } from '@gaqno-dev/frontcore/hooks/useAuth'
+import { useIsRootAdmin } from '../../hooks/usePermissions'
+import { useAuth } from '../../hooks/useAuth'
 
 interface IRootAdminGuardProps {
   children: React.ReactNode

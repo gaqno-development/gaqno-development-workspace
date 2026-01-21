@@ -1,9 +1,10 @@
+import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
-import { FeatureModule, FeaturePermissionLevel } from '@gaqno-dev/frontcore/types/user'
-import { useHasFeatureRole } from '@gaqno-dev/frontcore/hooks/usePermissions'
-import { useAuth } from '@gaqno-dev/frontcore/hooks/useAuth'
-import { formatFeatureLabel } from '@gaqno-dev/frontcore/lib/permissions'
+import { FeatureModule, FeaturePermissionLevel } from '../../types/user'
+import { useHasFeatureRole } from '../../hooks/usePermissions'
+import { useAuth } from '../../hooks/useAuth'
+import { formatFeatureLabel } from '../../lib/permissions'
 
 interface IFeatureGuardProps {
   feature: FeatureModule

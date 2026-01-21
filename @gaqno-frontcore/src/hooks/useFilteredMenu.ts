@@ -1,8 +1,9 @@
 import { useMemo, useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getIconComponent } from '../utils/icon-mapper';
 import { ssoClient } from '../utils/api';
 import { ISidebarItem } from '../components/layout/app-sidebar/types';
+import { useAuth } from './useAuth';
 
 interface MenuItemFromBackend {
   id: string;
@@ -73,6 +74,8 @@ function mapToSidebarItems(menuData: MenuItemFromBackend[]): ISidebarItem[] {
 }
 
 export function useFilteredMenu(): ISidebarItem[] {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [cachedMenu] = useState<MenuItemFromBackend[] | null>(() => getStoredMenu());
   const [mappedCachedMenu] = useState<ISidebarItem[]>(() => {
     if (cachedMenu && cachedMenu.length > 0) {
@@ -82,7 +85,7 @@ export function useFilteredMenu(): ISidebarItem[] {
   });
 
   const { data, error } = useQuery({
-    queryKey: ['menu-items'],
+    queryKey: ['menu-items', user?.id],
     queryFn: async () => {
       const { data: response } = await ssoClient.get<MenuResponse>('/menu');
       return response.items as MenuItemFromBackend[];
@@ -94,8 +97,15 @@ export function useFilteredMenu(): ISidebarItem[] {
     refetchOnWindowFocus: false,
     retry: 1,
     retryDelay: 1000,
-    enabled: true,
+    enabled: !!user,
   });
+
+  useEffect(() => {
+    if (!user) {
+      queryClient.removeQueries({ queryKey: ['menu-items'] });
+      localStorage.removeItem(MENU_STORAGE_KEY);
+    }
+  }, [user, queryClient]);
 
   useEffect(() => {
     if (data && data.length > 0) {
@@ -104,11 +114,18 @@ export function useFilteredMenu(): ISidebarItem[] {
   }, [data]);
 
   const mappedItems = useMemo(() => {
+    if (!user) {
+      return [];
+    }
     if (data && data.length > 0) {
       return mapToSidebarItems(data);
     }
     return mappedCachedMenu;
-  }, [data, mappedCachedMenu]);
+  }, [data, mappedCachedMenu, user]);
+
+  if (!user) {
+    return [];
+  }
 
   if (error && mappedCachedMenu.length === 0) {
     return [];

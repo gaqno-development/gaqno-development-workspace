@@ -2,8 +2,8 @@
 
 import React, { useEffect } from 'react'
 import { X, CheckCircle2, AlertCircle, Info, AlertTriangle } from 'lucide-react'
-import { cn } from '@gaqno-dev/frontcore/lib/utils'
-import { useUIStore, INotification } from '@gaqno-dev/frontcore/store/uiStore'
+import { cn } from '../../../lib/utils'
+import { useUIStore, INotification } from '../../../store/uiStore'
 
 const ToastItem: React.FC<{ notification: INotification }> = ({ notification }) => {
   const { removeNotification } = useUIStore()

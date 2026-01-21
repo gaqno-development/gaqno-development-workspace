@@ -67,7 +67,7 @@ const handleRefreshError = () => {
   window.location.href = '/login';
 };
 
-const getAuthToken = (): string | null => {
+export const getAuthToken = (): string | null => {
   if (typeof window === 'undefined') return null;
   
   const cookies = document.cookie.split(';');
@@ -247,8 +247,11 @@ const getServiceBaseUrl = (serviceName: string): string => {
 
 const createServiceClientWithPrefix = (serviceName: string): AxiosInstance => {
   const baseURL = getServiceBaseUrl(serviceName);
+  const aiIntensiveServices = ['rpg', 'ai'];
+  const timeoutConfig = aiIntensiveServices.includes(serviceName) ? { timeout: 180000 } : {};
   return createAxiosClient({
     baseURL: `${baseURL}/v1/${serviceName}`,
+    ...timeoutConfig,
   });
 };
 
