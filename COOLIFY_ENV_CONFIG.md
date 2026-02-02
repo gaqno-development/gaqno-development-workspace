@@ -321,6 +321,8 @@ JWT_SECRET=your-256-bit-secret
 CORS_ORIGIN=https://portal.gaqno.com.br,https://api.gaqno.com.br
 ```
 
+**Important:** The Coolify app **Port** (in General/Ports) must match `PORT`. If Coolify auto-assigned 4010, set `PORT=4010` in env vars so the app listens on the port the proxy expects. Otherwise you get 502 on `/omnichannel/*`.
+
 **Seed on deploy (optional):** Set `SEED_TENANT_ID` to the UUID of `gaqno-development` tenant to seed agent channels (tom, gabs) on each deploy. Get it from SSO: `SELECT id FROM sso_tenants WHERE name = 'gaqno-development'`. If unset, only schema (push-db) runs; seed is skipped. Seeds are idempotent.
 
 ---
@@ -559,6 +561,12 @@ If sign-in from `https://portal.gaqno.com.br` to `https://api.gaqno.com.br/v1/ss
    - In Coolify → **gaqno-omnichannel-service** → env vars, set `CORS_ORIGIN=https://portal.gaqno.com.br,https://api.gaqno.com.br` (no spaces).
    - Redeploy the omnichannel service.
    - In DevTools → Network, check the **OPTIONS** preflight: it must return **200** or **204** with `Access-Control-Allow-Origin` and `Access-Control-Allow-Credentials: true`. If OPTIONS returns 404/405, the proxy may not be forwarding OPTIONS to the omnichannel backend — ensure the path `/omnichannel` routes to gaqno-omnichannel-service for all HTTP methods.
+
+5. **Omnichannel 502 Bad Gateway on OPTIONS/GET**  
+   If OPTIONS or GET to `/omnichannel/v1/omnichannel/*` returns **502**, the proxy cannot reach the backend. **Port mismatch** is the usual cause:
+   - In Coolify → **gaqno-omnichannel-service** → **General** (or **Ports**), set **Port** to **4008** (the container listens on 4008 by default).
+   - If Coolify auto-assigned a different port (e.g. 4010), either change it to 4008, or add `PORT=4010` to env vars so the app listens on the port the proxy expects.
+   - Ensure the container is **Running** and the **Health Check** (e.g. `/v1/omnichannel/health`) passes.
 
 ---
 
