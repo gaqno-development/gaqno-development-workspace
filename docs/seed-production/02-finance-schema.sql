@@ -1,5 +1,5 @@
 -- =============================================================================
--- Run in database gaqno_finance BEFORE 02-finance.sql (seed).
+-- Run in database gaqno_finance_db BEFORE 02-finance.sql (seed).
 -- Creates enums and finance_categories table if the finance service has not
 -- run push-db on this database yet.
 -- =============================================================================

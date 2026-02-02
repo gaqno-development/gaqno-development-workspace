@@ -155,6 +155,10 @@ VITE_SERVICE_PDV_URL=https://api.gaqno.com.br/pdv
 
 ### 8. gaqno-rpg (Port 3007)
 
+**Build Arguments (required for GitHub Packages):**
+
+- `NPM_TOKEN` – GitHub Personal Access Token with **read:packages** scope. Required to install `@gaqno-development/frontcore` during build. In Coolify: **Build Arguments** → add `NPM_TOKEN` with your token.
+
 **Runtime variables (VITE*SERVICE*\*):**
 
 ```
@@ -394,17 +398,22 @@ Se `https://portal.gaqno.com.br/erp/assets/remoteEntry.js` retorna **HTML** em v
 | Path no Coolify (por app) | Aplicação Coolify | Port (container) |
 | ------------------------- | ----------------- | ---------------- |
 | `/` (ou vazio)            | gaqno-shell       | 80               |
-| `/erp`                    | gaqno-erp         | 3004             |
-| `/ai`                     | gaqno-ai          | 3002             |
-| `/crm`                    | gaqno-crm         | 3003             |
-| `/finance`                | gaqno-finance     | 3005             |
-| `/pdv`                    | gaqno-pdv         | 3006             |
-| `/rpg`                    | gaqno-rpg         | 3007             |
-| `/auth`                   | gaqno-sso         | 3001             |
-| `/omnichannel`            | gaqno-omnichannel | 3010             |
+| `/ai/assets`              | gaqno-ai          | 3002             |
+| `/crm/assets`             | gaqno-crm         | 3003             |
+| `/erp/assets`             | gaqno-erp         | 3004             |
+| `/finance/assets`         | gaqno-finance     | 3005             |
+| `/pdv/assets`             | gaqno-pdv         | 3006             |
+| `/rpg/assets`             | gaqno-rpg         | 3007             |
+| `/auth/assets`            | gaqno-sso         | 3001             |
+| `/omnichannel/assets`     | gaqno-omnichannel | 3010             |
 
-- Em cada aplicação no Coolify: **Domínio** = `portal.gaqno.com.br`, **Path** = o valor da tabela (ex.: `/erp` para gaqno-erp). O Coolify/Traefik encaminha o tráfego sozinho para o container correto.
-- **Remover prefixo do path:** no Coolify, ao configurar o Path do MFE, ative a opção para **remover o prefixo** ao encaminhar (ex.: request `portal.gaqno.com.br/erp/assets/remoteEntry.js` → o container recebe `/assets/remoteEntry.js`). Assim o nginx de cada MFE fica simples (root + try_files), sem blocos manuais por path.
+**All routes through shell:** gaqno-shell (Path `/`) catches all app routes. Each MFE (Path `/<mfe>/assets`) only serves static assets. Do **not** strip the path prefix—each MFE nginx expects the full path (e.g. `/ai/assets/remoteEntry.js`). **All MFEs** redirect any document request (wrong proxy config or direct access) to `/dashboard` so the user passes through the shell.
+
+### All routes through shell – hard refresh and direct visits
+
+If any MFE route (e.g. `/omnichannel/overview`, `/rpg`, `/ai/books`) loads **without** the shell layout on hard refresh, the proxy is routing document requests to the MFE container instead of the shell.
+
+**Fix:** Use the path table above. Each MFE must have Path = `/<mfe>/assets` (e.g. `/ai/assets`, `/rpg/assets`, `/omnichannel/assets`). The shell (Path `/`) catches all other routes. Redeploy all apps after changing paths.
 
 ### "Failed to fetch dynamically imported module: http://localhost:3XXX/assets/remoteEntry.js"
 
@@ -455,17 +464,26 @@ MFE_OMNICHANNEL_URL=https://portal.gaqno.com.br/omnichannel
 
 Then **rebuild** the shell (Redeploy with "Build without cache").
 
-### 502 Bad Gateway or "Failed to fetch" on MFE remoteEntry.js (e.g. /crm/assets/remoteEntry.js)
+### 502 Bad Gateway or "Failed to fetch" on MFE remoteEntry.js (e.g. /rpg/assets/remoteEntry.js)
 
-If `https://portal.gaqno.com.br/omnichannel/assets/remoteEntry.js` returns **200 OK** but `https://portal.gaqno.com.br/crm/assets/remoteEntry.js` returns **502**, **404**, or "Failed to fetch", the proxy cannot reach the MFE container.
+If `https://portal.gaqno.com.br/omnichannel/assets/remoteEntry.js` returns **200 OK** but `https://portal.gaqno.com.br/rpg/assets/remoteEntry.js` returns **502**, **404**, or "Failed to fetch", the proxy cannot reach the MFE container.
 
 **Checklist:**
 
-1. **Is the MFE deployed?** In Coolify, ensure the app (gaqno-crm, gaqno-erp, etc.) exists and is **Running**.
+1. **Is the MFE deployed?** In Coolify, ensure the app (gaqno-crm, gaqno-erp, gaqno-rpg, etc.) exists and is **Running**.
 2. **Port:** Each MFE has a specific port. In Coolify → App → Settings → **Port**, set the value from the table above (e.g. gaqno-crm = `3003`, gaqno-rpg = `3007`, gaqno-erp = `3004`). Wrong port → 502.
-3. **Path:** Set **Path** = the MFE path (e.g. `/crm`, `/rpg`) with **Strip prefix** enabled so the container receives `/assets/remoteEntry.js`.
+3. **Path:** Set **Path** = `/<mfe>/assets` (e.g. `/crm/assets`, `/rpg/assets`) with **Strip prefix** enabled so the container receives `/assets/remoteEntry.js`.
 4. **Container logs:** If the container restarts or crashes, check **Logs** for errors (e.g. build failure, missing NPM_TOKEN).
 5. **Same domain:** All MFEs must be on `portal.gaqno.com.br` with different Paths.
+
+### 502 Bad Gateway on /rpg/assets/remoteEntry.js specifically
+
+If `https://portal.gaqno.com.br/rpg/assets/remoteEntry.js` returns **502** after login (RPG is the first available route):
+
+1. **gaqno-rpg must be deployed:** In Coolify, ensure the **gaqno-rpg** application exists, is built, and is **Running**. If it is not deployed, the proxy has nowhere to forward `/rpg` requests.
+2. **Port must be 3007:** In Coolify → **gaqno-rpg** → **General** (or **Ports**), set **Port** to **3007**. The container listens on 3007; a mismatch causes 502.
+3. **Path must be /rpg:** In Coolify → **gaqno-rpg** → Domains, set **Path** = `/rpg` for `portal.gaqno.com.br`.
+4. **NPM_TOKEN for build:** gaqno-rpg may need `NPM_TOKEN` in Build Arguments if it uses `@gaqno-development/frontcore`. Check **Build logs** for install failures.
 
 ### 500 – relation "omni_conversations" does not exist
 
@@ -500,7 +518,7 @@ Se o deploy falhar com **Bind for 0.0.0.0:3XXX failed: port is already allocated
 | gaqno-finance     | 3005                        |
 | gaqno-pdv         | 3006                        |
 | gaqno-rpg         | 3007                        |
-| gaqno-omnichannel | 3008                        |
+| gaqno-omnichannel | 3010                        |
 
 Confira se nenhum outro app está com a mesma porta; se precisar, pare o container antigo ou use outra porta no Coolify (ex.: 3004 para ERP).
 

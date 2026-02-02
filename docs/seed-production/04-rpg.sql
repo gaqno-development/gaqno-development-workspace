@@ -1,4 +1,4 @@
--- Run in database gaqno_rpg. No tenant ID needed.
+-- Run in database gaqno_rpg_db. No tenant ID needed.
 -- If you get "relation rpg_campaigns does not exist", run 04-rpg-schema.sql first.
 
 INSERT INTO rpg_campaigns (user_id, name, description, concept, world, initial_narrative, npcs, hooks, is_public, status)

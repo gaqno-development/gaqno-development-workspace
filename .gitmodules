@@ -37,3 +37,15 @@
 [submodule "gaqno-sso"]
 	path = gaqno-sso
 	url = git@github.com-personal:gaqno-development/gaqno-sso.git
+[submodule "gaqno-landing"]
+	path = gaqno-landing
+	url = git@github.com:gaqno-development/gaqno-landing.git
+[submodule "gaqno-lenin"]
+	path = gaqno-lenin
+	url = git@github.com:gaqno-development/gaqno-lenin.git
+[submodule "gaqno-omnichannel"]
+	path = gaqno-omnichannel
+	url = git@github.com-personal:gaqno-development/gaqno-omnichannel.git
+[submodule "gaqno-omnichannel-service"]
+	path = gaqno-omnichannel-service
+	url = git@github.com-personal:gaqno-development/gaqno-omnichannel-service.git

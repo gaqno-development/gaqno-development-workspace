@@ -1,6 +1,6 @@
 -- =============================================================================
 -- Run AFTER 00-enum-only.sql and after COMMITTING that transaction.
--- Connect to database gaqno_sso. Run 00-enum-only.sql → Commit → then run this.
+-- Connect to database gaqno_sso_db. Run 00-enum-only.sql → Commit → then run this.
 -- =============================================================================
 
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
@@ -125,5 +125,5 @@ FROM sso_tenants t
 WHERE t.name = 'gaqno-development'
 AND NOT EXISTS (SELECT 1 FROM sso_whitelabel_configs w WHERE w.tenant_id = t.id);
 
--- Copy the returned UUID; use it to replace __TENANT_ID__ in 02-finance.sql and 03-omnichannel.sql
+-- Copy the returned UUID; use it to replace bc987094-6cf0-4f9d-9d1a-9d8932e92b8f in 02-finance.sql and 03-omnichannel.sql
 SELECT id FROM sso_tenants WHERE name = 'gaqno-development' LIMIT 1;

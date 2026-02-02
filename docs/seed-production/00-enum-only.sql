@@ -1,7 +1,8 @@
 -- =============================================================================
--- RUN THIS FIRST on database gaqno_sso.
--- Then COMMIT the transaction (pgAdmin: Commit button, or end transaction).
--- Then run 01-sso-seed.sql in the same or a new query window.
+-- Only needed if you used push-db/migrations (not 00-sso-schema.sql).
+-- If you ran 00-sso-schema.sql first, SKIP this file — the module enum already has AI, OMNICHANNEL, RPG.
+--
+-- When needed: run this, then COMMIT, then run 01-sso-seed.sql.
 -- (PostgreSQL does not allow using new enum values until they are committed.)
 -- =============================================================================
 
@@ -16,6 +17,6 @@ BEGIN
     ALTER TYPE sso_module ADD VALUE IF NOT EXISTS 'OMNICHANNEL';
     ALTER TYPE sso_module ADD VALUE IF NOT EXISTS 'RPG';
   ELSE
-    RAISE EXCEPTION 'Enum "module" or "sso_module" not found. Run DB migrations first.';
+    RAISE EXCEPTION 'Enum "module" or "sso_module" not found. Run 00-sso-schema.sql first.';
   END IF;
 END $$;

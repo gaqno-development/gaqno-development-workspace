@@ -4,12 +4,12 @@ Research based on schema and code in `gaqno-rpg-service`, `gaqno-omnichannel-ser
 
 ---
 
-## 1. RPG Campaigns (gaqno_rpg database)
+## 1. RPG Campaigns (gaqno_rpg_db database)
 
 **Service:** `gaqno-rpg-service`  
 **Schema:** `gaqno-rpg-service/src/database/schema.ts`  
 **Main table:** `rpg_campaigns`  
-**Production seed:** See [docs/seed-all-production.sh](docs/seed-all-production.sh) and `gaqno-rpg-service/seed-default-campaign.js`.
+**Production seed:** See [docs/seed-production/README.md](docs/seed-production/README.md) (SQL via pgAdmin).
 
 ### Core campaign/session tables
 
@@ -52,12 +52,12 @@ Research based on schema and code in `gaqno-rpg-service`, `gaqno-omnichannel-ser
 
 ---
 
-## 2. Omnichannel agents (gaqno_omnichannel database)
+## 2. Omnichannel agents (gaqno_omnichannel_db database)
 
 **Service:** `gaqno-omnichannel-service`  
 **Schema:** `gaqno-omnichannel-service/src/database/schema.ts`  
 **Agent-related:** channels with `type = 'agent'`, `omni_agent_presence`, `agent_slug` on assignments and team members.  
-**Production seed:** See [docs/seed-all-production.sh](docs/seed-all-production.sh) and `gaqno-omnichannel-service/scripts/seed-agent-channels.js`.
+**Production seed:** See [docs/seed-production/README.md](docs/seed-production/README.md) (SQL via pgAdmin).
 
 ### Agent concept
 
@@ -104,12 +104,12 @@ Research based on schema and code in `gaqno-rpg-service`, `gaqno-omnichannel-ser
 
 ---
 
-## 3. Finance tables (gaqno_finance database)
+## 3. Finance tables (gaqno_finance_db database)
 
 **Service:** `gaqno-finance-service`  
 **Schema:** `gaqno-finance-service/src/database/schema.ts`  
 **Tables:** All prefixed with `finance_`.  
-**Production seed:** See [docs/seed-all-production.sh](docs/seed-all-production.sh) and `gaqno-finance-service/seed-categories.js`.
+**Production seed:** See [docs/seed-production/README.md](docs/seed-production/README.md) (SQL via pgAdmin).
 
 ### Core tables
 
@@ -136,8 +136,8 @@ Research based on schema and code in `gaqno-rpg-service`, `gaqno-omnichannel-ser
 
 ## Summary by database
 
-| Database              | Main entities                                                                                                                       | Agent/campaign specific                                                                         |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| **gaqno_rpg**         | rpg*campaigns, rpg_sessions, rpg_characters, rpg_actions, rpg_memory, rpg_locations, rpg_custom_classes, rpg_bible*\_, dnd\_\_      | Campaigns = rpg_campaigns + rpg_sessions; no separate “agents” table.                           |
-| **gaqno_omnichannel** | omni_channels, omni_conversations, omni_messages, omni_agent_presence, omni_conversation_assignments, omni_teams, omni_team_members | Agents = channels with type `agent` and config.agentSlug; omni_agent_presence = human presence. |
-| **gaqno_finance**     | finance_categories, finance_subcategories, finance_credit_cards, finance_transactions                                               | No agents; pure finance data.                                                                   |
+| Database                 | Main entities                                                                                                                       | Agent/campaign specific                                                                         |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **gaqno_rpg_db**         | rpg*campaigns, rpg_sessions, rpg_characters, rpg_actions, rpg_memory, rpg_locations, rpg_custom_classes, rpg_bible*\_, dnd\_\_      | Campaigns = rpg_campaigns + rpg_sessions; no separate “agents” table.                           |
+| **gaqno_omnichannel_db** | omni_channels, omni_conversations, omni_messages, omni_agent_presence, omni_conversation_assignments, omni_teams, omni_team_members | Agents = channels with type `agent` and config.agentSlug; omni_agent_presence = human presence. |
+| **gaqno_finance_db**     | finance_categories, finance_subcategories, finance_credit_cards, finance_transactions                                               | No agents; pure finance data.                                                                   |

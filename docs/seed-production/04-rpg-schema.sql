@@ -1,5 +1,5 @@
 -- =============================================================================
--- Run in database gaqno_rpg BEFORE 04-rpg.sql (seed).
+-- Run in database gaqno_rpg_db BEFORE 04-rpg.sql (seed).
 -- Creates enums and rpg_campaigns / rpg_sessions tables if the RPG service
 -- has not run push-db on this database yet.
 -- =============================================================================

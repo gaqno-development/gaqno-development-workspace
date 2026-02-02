@@ -1,6 +1,6 @@
--- Run in database gaqno_finance.
+-- Run in database gaqno_finance_db.
 -- If you get "relation finance_categories does not exist", run 02-finance-schema.sql first.
--- Edit the UUID below (from gaqno_sso: SELECT id FROM sso_tenants WHERE name = 'gaqno-development' LIMIT 1), then run this script.
+-- Edit the UUID below (from gaqno_sso_db: SELECT id FROM sso_tenants WHERE name = 'gaqno-development' LIMIT 1), then run this script.
 
 SET app.tenant_id = 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f';
 

@@ -9,7 +9,7 @@ pgAdmin can load server definitions from a JSON file so you don’t add them man
 3. **Import** tab → **Filename**: choose `docs/pgadmin/servers.json` from this repo.
 4. Optionally check **Remove all the existing servers?** if you want this file to replace current servers.
 5. **Next** → select the server(s) to import → **Finish**.
-6. First time you connect to **gaqno_sso (Production)**, pgAdmin will ask for the **password** (from your Postgres `DATABASE_URL` in Coolify). You can check “Save password” so you don’t re-enter it.
+6. First time you connect to **gaqno_sso_db (Production)**, pgAdmin will ask for the **password** (from your Postgres `DATABASE_URL` in Coolify). You can check “Save password” so you don’t re-enter it.
 
 Passwords are not stored in the JSON for security.
 
@@ -17,15 +17,11 @@ Passwords are not stored in the JSON for security.
 
 ## Creating app databases (one-time)
 
-Each server in `servers.json` uses a dedicated database (gaqno_sso, gaqno_ai, gaqno_finance, etc.). If you see **FATAL: database "gaqno_xxx" does not exist** when connecting:
+Each server in `servers.json` uses a dedicated database (gaqno_sso_db, gaqno_ai_db, gaqno_finance_db, etc.). If you see **FATAL: database "gaqno_xxx_db" does not exist** when connecting:
 
-**Option A – pgAdmin:** `CREATE DATABASE` cannot run inside a transaction block. Connect to database **postgres**, open Query Tool, and run **each line** of `create-databases.sql` separately (do not run the whole script with F5).
+Connect to database **postgres**, open Query Tool, and run **each line** of `create-databases.sql` separately (pgAdmin cannot run multiple `CREATE DATABASE` in one block). Then retry connecting.
 
-**Option B – shell:** From the repo root, run:
-`DATABASE_URL='postgres://user:pass@host:5432/postgres' ./docs/pgadmin/create-databases.sh`
-(requires `psql`; each database is created in its own connection.)
-
-Then retry connecting to the other servers in pgAdmin.
+To drop and recreate all DBs (fresh start): run each line of `drop-and-recreate-databases.sql` separately, then `create-databases.sql`.
 
 ---
 

@@ -29,11 +29,11 @@
 - [ ] Set env (use Coolify Secrets where indicated):
   - `POSTGRES_USER=gaqno`
   - `POSTGRES_PASSWORD=<secret>`
-  - `POSTGRES_DB=gaqno_sso` (default DB; others created by init)
+  - `POSTGRES_DB=gaqno_sso_db` (default DB; others created by init)
 - [ ] Run init so all DBs exist. Either:
   - Mount an init script that creates DBs, or
   - Run once manually after first start:
-    - `gaqno_sso`, `gaqno_finance`, `gaqno_ai`, `gaqno_pdv`, `gaqno_rpg`, `gaqno_omnichannel`, `gaqno_crm`, `gaqno_erp`
+    - `gaqno_sso_db`, `gaqno_finance_db`, `gaqno_ai_db`, `gaqno_pdv_db`, `gaqno_rpg_db`, `gaqno_omnichannel_db`, `gaqno_crm_db`, `gaqno_erp_db`
 - [ ] Note internal hostname (e.g. `postgres`) for connection strings.
 
 **Connection pattern (DB_LOGIN):**  
@@ -63,18 +63,18 @@ One Coolify application per backend; build from repo Dockerfile; no public ports
 - [ ] Reverse proxy: **Domain** `api.gaqno.com`, **Path** `/sso` → `sso-service:4001`.
 - [ ] Environment:
 
-| Variable                 | Value                                                            |
-| ------------------------ | ---------------------------------------------------------------- |
-| `NODE_ENV`               | `production`                                                     |
-| `PORT`                   | `4001`                                                           |
-| `DATABASE_URL`           | `postgresql://gaqno:<POSTGRES_PASSWORD>@postgres:5432/gaqno_sso` |
-| `JWT_SECRET`             | `<secret>`                                                       |
-| `JWT_ACCESS_EXPIRATION`  | `15m`                                                            |
-| `JWT_REFRESH_EXPIRATION` | `7d`                                                             |
-| `COOKIE_DOMAIN`          | `.gaqno.com`                                                     |
-| `COOKIE_SECURE`          | `true`                                                           |
-| `COOKIE_SAME_SITE`       | `lax`                                                            |
-| `CORS_ORIGIN`            | `https://gaqno.com`                                              |
+| Variable                 | Value                                                               |
+| ------------------------ | ------------------------------------------------------------------- |
+| `NODE_ENV`               | `production`                                                        |
+| `PORT`                   | `4001`                                                              |
+| `DATABASE_URL`           | `postgresql://gaqno:<POSTGRES_PASSWORD>@postgres:5432/gaqno_sso_db` |
+| `JWT_SECRET`             | `<secret>`                                                          |
+| `JWT_ACCESS_EXPIRATION`  | `15m`                                                               |
+| `JWT_REFRESH_EXPIRATION` | `7d`                                                                |
+| `COOKIE_DOMAIN`          | `.gaqno.com`                                                        |
+| `COOKIE_SECURE`          | `true`                                                              |
+| `COOKIE_SAME_SITE`       | `lax`                                                               |
+| `CORS_ORIGIN`            | `https://gaqno.com`                                                 |
 
 - [ ] Ensure service is on the same Coolify Docker network as Postgres.
 
@@ -87,13 +87,13 @@ One Coolify application per backend; build from repo Dockerfile; no public ports
 - [ ] Reverse proxy: **Domain** `api.gaqno.com`, **Path** `/finance` → `finance-service:4005`.
 - [ ] Environment:
 
-| Variable       | Value                                                                |
-| -------------- | -------------------------------------------------------------------- |
-| `NODE_ENV`     | `production`                                                         |
-| `PORT`         | `4005`                                                               |
-| `DATABASE_URL` | `postgresql://gaqno:<POSTGRES_PASSWORD>@postgres:5432/gaqno_finance` |
-| `JWT_SECRET`   | `<same as sso-service>`                                              |
-| `CORS_ORIGIN`  | `https://gaqno.com`                                                  |
+| Variable       | Value                                                                   |
+| -------------- | ----------------------------------------------------------------------- |
+| `NODE_ENV`     | `production`                                                            |
+| `PORT`         | `4005`                                                                  |
+| `DATABASE_URL` | `postgresql://gaqno:<POSTGRES_PASSWORD>@postgres:5432/gaqno_finance_db` |
+| `JWT_SECRET`   | `<same as sso-service>`                                                 |
+| `CORS_ORIGIN`  | `https://gaqno.com`                                                     |
 
 - [ ] Same network as Postgres and sso-service.
 
@@ -105,7 +105,7 @@ When adding: ai-service, rpg-service, pdv-service, omnichannel-service, saas-ser
 
 - [ ] One Coolify app per service.
 - [ ] Build from respective `gaqno-*-service/Dockerfile`.
-- [ ] Internal port as per service (4002, 4003, 4006, 4007, 4010).
+- [ ] Internal port as per service (4002, 4003, 4006, 4007, 4008).
 - [ ] Proxy: `api.gaqno.com/<path>` → `<service>:<port>`.
 - [ ] `DATABASE_URL` to correct DB (see COOLIFY_MCP_REPORT.md); omnichannel also needs `REDIS_URL`.
 - [ ] Same `JWT_SECRET` and `CORS_ORIGIN=https://gaqno.com`.
@@ -208,124 +208,124 @@ Values below are the full set per service (from repo `.env` / `.env.local`). Use
 
 ### 5.2 sso-service (port 4001)
 
-| Variable                 | Production value                                                 |
-| ------------------------ | ---------------------------------------------------------------- |
-| `NODE_ENV`               | `production`                                                     |
-| `PORT`                   | `4001`                                                           |
-| `DATABASE_URL`           | `postgresql://gaqno:<POSTGRES_PASSWORD>@postgres:5432/gaqno_sso` |
-| `JWT_SECRET`             | `<JWT_SECRET>`                                                   |
-| `JWT_ACCESS_EXPIRATION`  | `15m`                                                            |
-| `JWT_REFRESH_EXPIRATION` | `7d`                                                             |
-| `COOKIE_DOMAIN`          | `.gaqno.com`                                                     |
-| `COOKIE_SECURE`          | `true`                                                           |
-| `COOKIE_SAME_SITE`       | `lax`                                                            |
-| `COOKIE_SECRET`          | `<optional_same_as_JWT_or_separate>`                             |
-| `CORS_ORIGIN`            | `https://gaqno.com`                                              |
-| `SESSION_COOKIE_NAME`    | `gaqno_session`                                                  |
-| `REFRESH_COOKIE_NAME`    | `gaqno_refresh`                                                  |
-| `SESSION_TTL_SECONDS`    | `3600`                                                           |
-| `REFRESH_TTL_SECONDS`    | `604800`                                                         |
+| Variable                 | Production value                                                    |
+| ------------------------ | ------------------------------------------------------------------- |
+| `NODE_ENV`               | `production`                                                        |
+| `PORT`                   | `4001`                                                              |
+| `DATABASE_URL`           | `postgresql://gaqno:<POSTGRES_PASSWORD>@postgres:5432/gaqno_sso_db` |
+| `JWT_SECRET`             | `<JWT_SECRET>`                                                      |
+| `JWT_ACCESS_EXPIRATION`  | `15m`                                                               |
+| `JWT_REFRESH_EXPIRATION` | `7d`                                                                |
+| `COOKIE_DOMAIN`          | `.gaqno.com`                                                        |
+| `COOKIE_SECURE`          | `true`                                                              |
+| `COOKIE_SAME_SITE`       | `lax`                                                               |
+| `COOKIE_SECRET`          | `<optional_same_as_JWT_or_separate>`                                |
+| `CORS_ORIGIN`            | `https://gaqno.com`                                                 |
+| `SESSION_COOKIE_NAME`    | `gaqno_session`                                                     |
+| `REFRESH_COOKIE_NAME`    | `gaqno_refresh`                                                     |
+| `SESSION_TTL_SECONDS`    | `3600`                                                              |
+| `REFRESH_TTL_SECONDS`    | `604800`                                                            |
 
 ---
 
 ### 5.3 finance-service (port 4005)
 
-| Variable              | Production value                                                     |
-| --------------------- | -------------------------------------------------------------------- |
-| `NODE_ENV`            | `production`                                                         |
-| `PORT`                | `4005`                                                               |
-| `DATABASE_URL`        | `postgresql://gaqno:<POSTGRES_PASSWORD>@postgres:5432/gaqno_finance` |
-| `JWT_SECRET`          | `<JWT_SECRET>`                                                       |
-| `CORS_ORIGIN`         | `https://gaqno.com`                                                  |
-| `COOKIE_SECRET`       | `<optional>`                                                         |
-| `SESSION_COOKIE_NAME` | `gaqno_session`                                                      |
-| `REFRESH_COOKIE_NAME` | `gaqno_refresh`                                                      |
-| `COOKIE_DOMAIN`       | `.gaqno.com`                                                         |
-| `COOKIE_SECURE`       | `true`                                                               |
-| `COOKIE_SAME_SITE`    | `lax`                                                                |
-| `SESSION_TTL_SECONDS` | `3600`                                                               |
-| `REFRESH_TTL_SECONDS` | `604800`                                                             |
+| Variable              | Production value                                                        |
+| --------------------- | ----------------------------------------------------------------------- |
+| `NODE_ENV`            | `production`                                                            |
+| `PORT`                | `4005`                                                                  |
+| `DATABASE_URL`        | `postgresql://gaqno:<POSTGRES_PASSWORD>@postgres:5432/gaqno_finance_db` |
+| `JWT_SECRET`          | `<JWT_SECRET>`                                                          |
+| `CORS_ORIGIN`         | `https://gaqno.com`                                                     |
+| `COOKIE_SECRET`       | `<optional>`                                                            |
+| `SESSION_COOKIE_NAME` | `gaqno_session`                                                         |
+| `REFRESH_COOKIE_NAME` | `gaqno_refresh`                                                         |
+| `COOKIE_DOMAIN`       | `.gaqno.com`                                                            |
+| `COOKIE_SECURE`       | `true`                                                                  |
+| `COOKIE_SAME_SITE`    | `lax`                                                                   |
+| `SESSION_TTL_SECONDS` | `3600`                                                                  |
+| `REFRESH_TTL_SECONDS` | `604800`                                                                |
 
 ---
 
 ### 5.4 pdv-service (port 4006)
 
-| Variable          | Production value                                                 |
-| ----------------- | ---------------------------------------------------------------- |
-| `NODE_ENV`        | `production`                                                     |
-| `PORT`            | `4006`                                                           |
-| `DATABASE_URL`    | `postgresql://gaqno:<POSTGRES_PASSWORD>@postgres:5432/gaqno_pdv` |
-| `JWT_SECRET`      | `<JWT_SECRET>`                                                   |
-| `SSO_SERVICE_URL` | `http://sso-service:4001`                                        |
-| `CORS_ORIGIN`     | `https://gaqno.com`                                              |
+| Variable          | Production value                                                    |
+| ----------------- | ------------------------------------------------------------------- |
+| `NODE_ENV`        | `production`                                                        |
+| `PORT`            | `4006`                                                              |
+| `DATABASE_URL`    | `postgresql://gaqno:<POSTGRES_PASSWORD>@postgres:5432/gaqno_pdv_db` |
+| `JWT_SECRET`      | `<JWT_SECRET>`                                                      |
+| `SSO_SERVICE_URL` | `http://sso-service:4001`                                           |
+| `CORS_ORIGIN`     | `https://gaqno.com`                                                 |
 
 ---
 
 ### 5.5 ai-service (port 4002)
 
-| Variable                          | Production value                                                |
-| --------------------------------- | --------------------------------------------------------------- |
-| `NODE_ENV`                        | `production`                                                    |
-| `PORT`                            | `4002`                                                          |
-| `DATABASE_URL`                    | `postgresql://gaqno:<POSTGRES_PASSWORD>@postgres:5432/gaqno_ai` |
-| `JWT_SECRET`                      | `<JWT_SECRET>`                                                  |
-| `CORS_ORIGIN`                     | `https://gaqno.com`                                             |
-| `OPENAI_BASE_URL`                 | `https://api.openai.com` or your proxy URL                      |
-| `OPENAI_API_KEY`                  | `<secret>`                                                      |
-| `GEMINI_API_KEY`                  | `<secret>`                                                      |
-| `AI_PROVIDER`                     | `openai` or `gemini`                                            |
-| `AI_MODEL`                        | e.g. `google/gemma-3-1b` or `qwen/qwen3-4b`                     |
-| `ELEVENLABS_API_KEY`              | `<optional>`                                                    |
-| `ELEVENLABS_VOICE_ID`             | `<optional>`                                                    |
-| `ELEVENLABS_BASE_URL`             | `https://api.elevenlabs.io`                                     |
-| `NEW_RELIC_AI_MONITORING_ENABLED` | `false` or `true`                                               |
-| `NEW_RELIC_APP_NAME`              | `gaqno-ai-service`                                              |
+| Variable                          | Production value                                                   |
+| --------------------------------- | ------------------------------------------------------------------ |
+| `NODE_ENV`                        | `production`                                                       |
+| `PORT`                            | `4002`                                                             |
+| `DATABASE_URL`                    | `postgresql://gaqno:<POSTGRES_PASSWORD>@postgres:5432/gaqno_ai_db` |
+| `JWT_SECRET`                      | `<JWT_SECRET>`                                                     |
+| `CORS_ORIGIN`                     | `https://gaqno.com`                                                |
+| `OPENAI_BASE_URL`                 | `https://api.openai.com` or your proxy URL                         |
+| `OPENAI_API_KEY`                  | `<secret>`                                                         |
+| `GEMINI_API_KEY`                  | `<secret>`                                                         |
+| `AI_PROVIDER`                     | `openai` or `gemini`                                               |
+| `AI_MODEL`                        | e.g. `google/gemma-3-1b` or `qwen/qwen3-4b`                        |
+| `ELEVENLABS_API_KEY`              | `<optional>`                                                       |
+| `ELEVENLABS_VOICE_ID`             | `<optional>`                                                       |
+| `ELEVENLABS_BASE_URL`             | `https://api.elevenlabs.io`                                        |
+| `NEW_RELIC_AI_MONITORING_ENABLED` | `false` or `true`                                                  |
+| `NEW_RELIC_APP_NAME`              | `gaqno-ai-service`                                                 |
 
 ---
 
 ### 5.6 rpg-service (port 4007)
 
-| Variable              | Production value                                                 |
-| --------------------- | ---------------------------------------------------------------- |
-| `NODE_ENV`            | `production`                                                     |
-| `PORT`                | `4007`                                                           |
-| `DATABASE_URL`        | `postgresql://gaqno:<POSTGRES_PASSWORD>@postgres:5432/gaqno_rpg` |
-| `JWT_SECRET`          | `<JWT_SECRET>`                                                   |
-| `CORS_ORIGIN`         | `https://gaqno.com`                                              |
-| `AI_SERVICE_URL`      | `http://ai-service:4002` (internal)                              |
-| `COOKIE_SECRET`       | `<optional>`                                                     |
-| `SESSION_COOKIE_NAME` | `gaqno_session`                                                  |
-| `REFRESH_COOKIE_NAME` | `gaqno_refresh`                                                  |
-| `COOKIE_DOMAIN`       | `.gaqno.com`                                                     |
-| `COOKIE_SECURE`       | `true`                                                           |
-| `COOKIE_SAME_SITE`    | `lax`                                                            |
-| `OPENAI_API_KEY`      | `<optional>`                                                     |
-| `ELEVENLABS_BASE_URL` | `https://api.elevenlabs.io`                                      |
-| `ELEVENLABS_TOKEN`    | `<optional>`                                                     |
-| `ELEVENLABS_VOICE_ID` | `<optional>`                                                     |
-| `GEMINI_API_KEY`      | `<optional>`                                                     |
-| `AI_MODEL`            | e.g. `google/gemma-3-1b`                                         |
+| Variable              | Production value                                                    |
+| --------------------- | ------------------------------------------------------------------- |
+| `NODE_ENV`            | `production`                                                        |
+| `PORT`                | `4007`                                                              |
+| `DATABASE_URL`        | `postgresql://gaqno:<POSTGRES_PASSWORD>@postgres:5432/gaqno_rpg_db` |
+| `JWT_SECRET`          | `<JWT_SECRET>`                                                      |
+| `CORS_ORIGIN`         | `https://gaqno.com`                                                 |
+| `AI_SERVICE_URL`      | `http://ai-service:4002` (internal)                                 |
+| `COOKIE_SECRET`       | `<optional>`                                                        |
+| `SESSION_COOKIE_NAME` | `gaqno_session`                                                     |
+| `REFRESH_COOKIE_NAME` | `gaqno_refresh`                                                     |
+| `COOKIE_DOMAIN`       | `.gaqno.com`                                                        |
+| `COOKIE_SECURE`       | `true`                                                              |
+| `COOKIE_SAME_SITE`    | `lax`                                                               |
+| `OPENAI_API_KEY`      | `<optional>`                                                        |
+| `ELEVENLABS_BASE_URL` | `https://api.elevenlabs.io`                                         |
+| `ELEVENLABS_TOKEN`    | `<optional>`                                                        |
+| `ELEVENLABS_VOICE_ID` | `<optional>`                                                        |
+| `GEMINI_API_KEY`      | `<optional>`                                                        |
+| `AI_MODEL`            | e.g. `google/gemma-3-1b`                                            |
 
 ---
 
-### 5.7 omnichannel-service (port 4010)
+### 5.7 omnichannel-service (port 4008)
 
-| Variable                   | Production value                                                         |
-| -------------------------- | ------------------------------------------------------------------------ |
-| `NODE_ENV`                 | `production`                                                             |
-| `PORT`                     | `4010`                                                                   |
-| `DATABASE_URL`             | `postgresql://gaqno:<POSTGRES_PASSWORD>@postgres:5432/gaqno_omnichannel` |
-| `REDIS_URL`                | `redis://redis:6379`                                                     |
-| `JWT_SECRET`               | `<JWT_SECRET>`                                                           |
-| `CORS_ORIGIN`              | `https://gaqno.com`                                                      |
-| `AI_SERVICE_URL`           | `http://ai-service:4002` (internal)                                      |
-| `WHATSAPP_TOKEN`           | `<secret>`                                                               |
-| `WHATSAPP_PHONE_NUMBER_ID` | `<id>`                                                                   |
-| `WHATSAPP_APP_SECRET`      | `<secret>`                                                               |
-| `WHATSAPP_VERIFY_TOKEN`    | `<token for webhook verification>`                                       |
-| `WHATSAPP_API_VERSION`     | `v21.0`                                                                  |
-| `TELEGRAM_BOT_TOKEN`       | `<optional>`                                                             |
-| `TELEGRAM_WEBHOOK_SECRET`  | `<optional>`                                                             |
+| Variable                   | Production value                                                            |
+| -------------------------- | --------------------------------------------------------------------------- |
+| `NODE_ENV`                 | `production`                                                                |
+| `PORT`                     | `4008`                                                                      |
+| `DATABASE_URL`             | `postgresql://gaqno:<POSTGRES_PASSWORD>@postgres:5432/gaqno_omnichannel_db` |
+| `REDIS_URL`                | `redis://redis:6379`                                                        |
+| `JWT_SECRET`               | `<JWT_SECRET>`                                                              |
+| `CORS_ORIGIN`              | `https://gaqno.com`                                                         |
+| `AI_SERVICE_URL`           | `http://ai-service:4002` (internal)                                         |
+| `WHATSAPP_TOKEN`           | `<secret>`                                                                  |
+| `WHATSAPP_PHONE_NUMBER_ID` | `<id>`                                                                      |
+| `WHATSAPP_APP_SECRET`      | `<secret>`                                                                  |
+| `WHATSAPP_VERIFY_TOKEN`    | `<token for webhook verification>`                                          |
+| `WHATSAPP_API_VERSION`     | `v21.0`                                                                     |
+| `TELEGRAM_BOT_TOKEN`       | `<optional>`                                                                |
+| `TELEGRAM_WEBHOOK_SECRET`  | `<optional>`                                                                |
 
 ---
 
@@ -414,12 +414,12 @@ Values below are the full set per service (from repo `.env` / `.env.local`). Use
 
 ---
 
-### 5.14 Frontend – gaqno-erp (port 13004)
+### 5.14 Frontend – gaqno-erp (port 3004)
 
 | Variable               | Production value            |
 | ---------------------- | --------------------------- |
 | `NODE_ENV`             | `production`                |
-| `PORT`                 | `13004`                     |
+| `PORT`                 | `3004`                      |
 | `VITE_SERVICE_SSO_URL` | `https://api.gaqno.com/sso` |
 
 ---
@@ -446,12 +446,12 @@ Values below are the full set per service (from repo `.env` / `.env.local`). Use
 
 ---
 
-### 5.17 Frontend – gaqno-omnichannel (port 3010)
+### 5.17 Frontend – gaqno-omnichannel (port 3008)
 
 | Variable                       | Production value                    |
 | ------------------------------ | ----------------------------------- |
 | `NODE_ENV`                     | `production`                        |
-| `PORT`                         | `3010`                              |
+| `PORT`                         | `3008`                              |
 | `VITE_SERVICE_SSO_URL`         | `https://api.gaqno.com/sso`         |
 | `VITE_SERVICE_OMNICHANNEL_URL` | `https://api.gaqno.com/omnichannel` |
 
@@ -505,5 +505,5 @@ After deployment, confirm:
 ## Reference
 
 - Full stack context: `docs/COOLIFY_MCP_REPORT.md`
-- **Execution log (Coolify MCP, 2026-01-30):** Redis created (redis-gaqno, uuid `js8840cw0kw0cco8484occgc`). sso-service and finance-service env set to internal Postgres (`gaqno_sso` / `gaqno_finance`), `CORS_ORIGIN=https://gaqno.com`, cookie/JWT vars. Frontends (shell, gaqno-finance, and other apps) set to `VITE_SERVICE_SSO_URL` / `VITE_SERVICE_FINANCE_URL` = `https://api.gaqno.com/sso` and `/finance`; shell also `SERVICE_URL_SHELL` / `SERVICE_FQDN_SHELL` = gaqno.com. FQDN/routing (gaqno.com, api.gaqno.com) must be set in Coolify UI (MCP does not allow fqdn update). Redeploy apps after env changes.
+- **Execution log (Coolify MCP, 2026-01-30):** Redis created (redis-gaqno, uuid `js8840cw0kw0cco8484occgc`). sso-service and finance-service env set to internal Postgres (`gaqno_sso_db` / `gaqno_finance_db`), `CORS_ORIGIN=https://gaqno.com`, cookie/JWT vars. Frontends (shell, gaqno-finance, and other apps) set to `VITE_SERVICE_SSO_URL` / `VITE_SERVICE_FINANCE_URL` = `https://api.gaqno.com/sso` and `/finance`; shell also `SERVICE_URL_SHELL` / `SERVICE_FQDN_SHELL` = gaqno.com. FQDN/routing (gaqno.com, api.gaqno.com) must be set in Coolify UI (MCP does not allow fqdn update). Redeploy apps after env changes.
 - Original MCP prompt: section “MCP Coolify – Production Setup Prompt” (this plan is derived from it).

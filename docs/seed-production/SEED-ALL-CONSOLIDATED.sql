@@ -2,12 +2,12 @@
 -- PRODUCTION SEED — CONSOLIDATED SQL
 -- =============================================================================
 -- Run each section in the correct database. Order matters.
--- Replace __TENANT_ID__ with the UUID from: SELECT id FROM sso_tenants WHERE name = 'gaqno-development' LIMIT 1;
+-- Replace bc987094-6cf0-4f9d-9d1a-9d8932e92b8f with the UUID from: SELECT id FROM sso_tenants WHERE name = 'gaqno-development' LIMIT 1;
 -- =============================================================================
 
 
 -- =============================================================================
--- DATABASE: gaqno_sso — STEP 0: Enums (run first, then COMMIT)
+-- DATABASE: gaqno_sso_db — STEP 0: Enums (run first, then COMMIT)
 -- =============================================================================
 
 DO $$
@@ -29,7 +29,7 @@ END $$;
 
 
 -- =============================================================================
--- DATABASE: gaqno_sso — STEP 1: SSO seed (after COMMIT above)
+-- DATABASE: gaqno_sso_db — STEP 1: SSO seed (after COMMIT above)
 -- =============================================================================
 
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
@@ -159,8 +159,8 @@ SELECT id FROM sso_tenants WHERE name = 'gaqno-development' LIMIT 1;
 
 
 -- =============================================================================
--- DATABASE: gaqno_finance — STEP 2: Schema + categories
--- Replace __TENANT_ID__ with the UUID from gaqno_sso above
+-- DATABASE: gaqno_finance_db — STEP 2: Schema + categories
+-- Replace bc987094-6cf0-4f9d-9d1a-9d8932e92b8f with the UUID from gaqno_sso_db above
 -- =============================================================================
 
 DO $$ BEGIN
@@ -189,52 +189,52 @@ CREATE TABLE IF NOT EXISTS finance_categories (
 CREATE INDEX IF NOT EXISTS finance_categories_tenant_idx ON finance_categories(tenant_id);
 
 INSERT INTO finance_categories (tenant_id, name, type, color, icon)
-SELECT '__TENANT_ID__'::uuid, 'Moradia', 'expense'::transaction_type, '#3b82f6', '🏠'
-WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = '__TENANT_ID__'::uuid AND name = 'Moradia');
+SELECT 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid, 'Moradia', 'expense'::transaction_type, '#3b82f6', '🏠'
+WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid AND name = 'Moradia');
 INSERT INTO finance_categories (tenant_id, name, type, color, icon)
-SELECT '__TENANT_ID__'::uuid, 'Empréstimos', 'expense'::transaction_type, '#ef4444', '💳'
-WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = '__TENANT_ID__'::uuid AND name = 'Empréstimos');
+SELECT 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid, 'Empréstimos', 'expense'::transaction_type, '#ef4444', '💳'
+WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid AND name = 'Empréstimos');
 INSERT INTO finance_categories (tenant_id, name, type, color, icon)
-SELECT '__TENANT_ID__'::uuid, 'Carro', 'expense'::transaction_type, '#f59e0b', '🚗'
-WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = '__TENANT_ID__'::uuid AND name = 'Carro');
+SELECT 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid, 'Carro', 'expense'::transaction_type, '#f59e0b', '🚗'
+WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid AND name = 'Carro');
 INSERT INTO finance_categories (tenant_id, name, type, color, icon)
-SELECT '__TENANT_ID__'::uuid, 'Alimentação', 'expense'::transaction_type, '#10b981', '🍽️'
-WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = '__TENANT_ID__'::uuid AND name = 'Alimentação');
+SELECT 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid, 'Alimentação', 'expense'::transaction_type, '#10b981', '🍽️'
+WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid AND name = 'Alimentação');
 INSERT INTO finance_categories (tenant_id, name, type, color, icon)
-SELECT '__TENANT_ID__'::uuid, 'Lazer', 'expense'::transaction_type, '#8b5cf6', '🎮'
-WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = '__TENANT_ID__'::uuid AND name = 'Lazer');
+SELECT 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid, 'Lazer', 'expense'::transaction_type, '#8b5cf6', '🎮'
+WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid AND name = 'Lazer');
 INSERT INTO finance_categories (tenant_id, name, type, color, icon)
-SELECT '__TENANT_ID__'::uuid, 'Educação', 'expense'::transaction_type, '#06b6d4', '📚'
-WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = '__TENANT_ID__'::uuid AND name = 'Educação');
+SELECT 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid, 'Educação', 'expense'::transaction_type, '#06b6d4', '📚'
+WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid AND name = 'Educação');
 INSERT INTO finance_categories (tenant_id, name, type, color, icon)
-SELECT '__TENANT_ID__'::uuid, 'Assinaturas', 'expense'::transaction_type, '#ec4899', '📱'
-WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = '__TENANT_ID__'::uuid AND name = 'Assinaturas');
+SELECT 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid, 'Assinaturas', 'expense'::transaction_type, '#ec4899', '📱'
+WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid AND name = 'Assinaturas');
 INSERT INTO finance_categories (tenant_id, name, type, color, icon)
-SELECT '__TENANT_ID__'::uuid, 'Saúde', 'expense'::transaction_type, '#f43f5e', '🏥'
-WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = '__TENANT_ID__'::uuid AND name = 'Saúde');
+SELECT 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid, 'Saúde', 'expense'::transaction_type, '#f43f5e', '🏥'
+WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid AND name = 'Saúde');
 INSERT INTO finance_categories (tenant_id, name, type, color, icon)
-SELECT '__TENANT_ID__'::uuid, 'Transporte', 'expense'::transaction_type, '#6366f1', '🚌'
-WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = '__TENANT_ID__'::uuid AND name = 'Transporte');
+SELECT 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid, 'Transporte', 'expense'::transaction_type, '#6366f1', '🚌'
+WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid AND name = 'Transporte');
 INSERT INTO finance_categories (tenant_id, name, type, color, icon)
-SELECT '__TENANT_ID__'::uuid, 'Roupas', 'expense'::transaction_type, '#a855f7', '👕'
-WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = '__TENANT_ID__'::uuid AND name = 'Roupas');
+SELECT 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid, 'Roupas', 'expense'::transaction_type, '#a855f7', '👕'
+WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid AND name = 'Roupas');
 INSERT INTO finance_categories (tenant_id, name, type, color, icon)
-SELECT '__TENANT_ID__'::uuid, 'Salário', 'income'::transaction_type, '#22c55e', '💰'
-WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = '__TENANT_ID__'::uuid AND name = 'Salário');
+SELECT 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid, 'Salário', 'income'::transaction_type, '#22c55e', '💰'
+WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid AND name = 'Salário');
 INSERT INTO finance_categories (tenant_id, name, type, color, icon)
-SELECT '__TENANT_ID__'::uuid, 'Freelance', 'income'::transaction_type, '#14b8a6', '💼'
-WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = '__TENANT_ID__'::uuid AND name = 'Freelance');
+SELECT 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid, 'Freelance', 'income'::transaction_type, '#14b8a6', '💼'
+WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid AND name = 'Freelance');
 INSERT INTO finance_categories (tenant_id, name, type, color, icon)
-SELECT '__TENANT_ID__'::uuid, 'Investimentos', 'income'::transaction_type, '#0ea5e9', '📈'
-WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = '__TENANT_ID__'::uuid AND name = 'Investimentos');
+SELECT 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid, 'Investimentos', 'income'::transaction_type, '#0ea5e9', '📈'
+WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid AND name = 'Investimentos');
 INSERT INTO finance_categories (tenant_id, name, type, color, icon)
-SELECT '__TENANT_ID__'::uuid, 'Outros', 'expense'::transaction_type, '#6b7280', '📦'
-WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = '__TENANT_ID__'::uuid AND name = 'Outros');
+SELECT 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid, 'Outros', 'expense'::transaction_type, '#6b7280', '📦'
+WHERE NOT EXISTS (SELECT 1 FROM finance_categories WHERE tenant_id = 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid AND name = 'Outros');
 
 
 -- =============================================================================
--- DATABASE: gaqno_omnichannel — STEP 3: Schema + agent channels
--- Replace __TENANT_ID__ with the UUID from gaqno_sso
+-- DATABASE: gaqno_omnichannel_db — STEP 3: Schema + agent channels
+-- Replace bc987094-6cf0-4f9d-9d1a-9d8932e92b8f with the UUID from gaqno_sso_db
 -- =============================================================================
 
 DO $$ BEGIN
@@ -256,16 +256,16 @@ CREATE INDEX IF NOT EXISTS omni_channels_tenant_idx ON omni_channels(tenant_id);
 CREATE INDEX IF NOT EXISTS omni_channels_type_idx ON omni_channels(type);
 
 INSERT INTO omni_channels (tenant_id, type, config, is_active)
-SELECT '__TENANT_ID__'::uuid, 'agent'::omni_channel_type, '{"agentSlug":"tom"}'::jsonb, true
-WHERE NOT EXISTS (SELECT 1 FROM omni_channels WHERE tenant_id = '__TENANT_ID__'::uuid AND type = 'agent' AND config->>'agentSlug' = 'tom');
+SELECT 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid, 'agent'::omni_channel_type, '{"agentSlug":"tom"}'::jsonb, true
+WHERE NOT EXISTS (SELECT 1 FROM omni_channels WHERE tenant_id = 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid AND type = 'agent' AND config->>'agentSlug' = 'tom');
 
 INSERT INTO omni_channels (tenant_id, type, config, is_active)
-SELECT '__TENANT_ID__'::uuid, 'agent'::omni_channel_type, '{"agentSlug":"gabs"}'::jsonb, true
-WHERE NOT EXISTS (SELECT 1 FROM omni_channels WHERE tenant_id = '__TENANT_ID__'::uuid AND type = 'agent' AND config->>'agentSlug' = 'gabs');
+SELECT 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid, 'agent'::omni_channel_type, '{"agentSlug":"gabs"}'::jsonb, true
+WHERE NOT EXISTS (SELECT 1 FROM omni_channels WHERE tenant_id = 'bc987094-6cf0-4f9d-9d1a-9d8932e92b8f'::uuid AND type = 'agent' AND config->>'agentSlug' = 'gabs');
 
 
 -- =============================================================================
--- DATABASE: gaqno_rpg — STEP 4: Schema + default campaign (no tenant replacement)
+-- DATABASE: gaqno_rpg_db — STEP 4: Schema + default campaign (no tenant replacement)
 -- =============================================================================
 
 DO $$ BEGIN
