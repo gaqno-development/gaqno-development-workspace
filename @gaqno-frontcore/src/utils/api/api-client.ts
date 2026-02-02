@@ -250,11 +250,12 @@ const getServiceBaseUrl = (serviceName: string): string => {
     const defaultUrls: Record<string, string> = {
       sso: "http://localhost:4001",
       ai: "http://localhost:4002",
+      crm: "http://localhost:4003",
+      erp: "http://localhost:4004",
       finance: "http://localhost:4005",
       pdv: "http://localhost:4006",
-      crm: "http://localhost:3004",
-      erp: "http://localhost:3005",
       rpg: "http://localhost:4007",
+      omnichannel: "http://localhost:4008",
     };
     return defaultUrls[serviceName] || "http://localhost:4001";
   }
@@ -270,13 +271,13 @@ const getServiceBaseUrl = (serviceName: string): string => {
     sso: getEnvVar("VITE_SERVICE_SSO_URL", "http://localhost:4001"),
     finance: getEnvVar("VITE_SERVICE_FINANCE_URL", "http://localhost:4005"),
     pdv: getEnvVar("VITE_SERVICE_PDV_URL", "http://localhost:4006"),
-    crm: getEnvVar("VITE_SERVICE_CRM_URL", "http://localhost:3004"),
-    erp: getEnvVar("VITE_SERVICE_ERP_URL", "http://localhost:3005"),
+    crm: getEnvVar("VITE_SERVICE_CRM_URL", "http://localhost:4003"),
+    erp: getEnvVar("VITE_SERVICE_ERP_URL", "http://localhost:4004"),
     ai: getEnvVar("VITE_SERVICE_AI_URL", "http://localhost:4002"),
     rpg: getEnvVar("VITE_SERVICE_RPG_URL", "http://localhost:4007"),
     omnichannel: getEnvVar(
       "VITE_SERVICE_OMNICHANNEL_URL",
-      "http://localhost:4010"
+      "http://localhost:4008"
     ),
   };
   return envUrls[serviceName] || "http://localhost:4001";
@@ -309,6 +310,7 @@ export const coreAxiosClient = {
   erp: createServiceClientWithPrefix("erp"),
   ai: createServiceClientWithPrefix("ai"),
   rpg: createServiceClientWithPrefix("rpg"),
+  omnichannel: createServiceClientWithPrefix("omnichannel"),
 };
 
 export const ssoClient = coreAxiosClient.sso;

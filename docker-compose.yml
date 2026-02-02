@@ -71,7 +71,7 @@ services:
         - VITE_SERVICE_FINANCE_URL=http://finance-service:4005
         - VITE_SERVICE_PDV_URL=http://pdv:3006
         - VITE_SERVICE_RPG_URL=http://rpg-service:4007
-        - VITE_SERVICE_OMNICHANNEL_URL=${VITE_SERVICE_OMNICHANNEL_URL:-http://localhost:4010}
+        - VITE_SERVICE_OMNICHANNEL_URL=${VITE_SERVICE_OMNICHANNEL_URL:-http://localhost:4008}
     container_name: gaqno-shell
     ports:
       - "3000:3000"
@@ -86,7 +86,7 @@ services:
       - VITE_SERVICE_FINANCE_URL=http://finance-service:4005
       - VITE_SERVICE_PDV_URL=http://pdv:3006
       - VITE_SERVICE_RPG_URL=http://rpg-service:4007
-      - VITE_SERVICE_OMNICHANNEL_URL=${VITE_SERVICE_OMNICHANNEL_URL:-http://localhost:4010}
+      - VITE_SERVICE_OMNICHANNEL_URL=${VITE_SERVICE_OMNICHANNEL_URL:-http://localhost:4008}
     env_file:
       - .env
     restart: unless-stopped

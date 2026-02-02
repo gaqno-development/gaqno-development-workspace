@@ -307,13 +307,13 @@ DND_MCP_DIR=/path/to/dnd-mcp
 
 ---
 
-### 6. gaqno-omnichannel-service (Port 4010)
+### 6. gaqno-omnichannel-service (Port 4008)
 
 **Required:**
 
 ```
 NODE_ENV=production
-PORT=4010
+PORT=4008
 DATABASE_URL=postgresql://user:password@host:5432/gaqno_omnichannel
 JWT_SECRET=your-256-bit-secret
 CORS_ORIGIN=https://portal.gaqno.com.br,https://api.gaqno.com.br
@@ -361,21 +361,23 @@ On each container startup, services run **push-db** (schema) and optionally **se
 
 ## Quick Reference Table
 
-| Application           | Type     | Port | Key Env Vars                                                   |
-| --------------------- | -------- | ---- | -------------------------------------------------------------- |
-| gaqno-shell           | Frontend | 3000 | MFE*\* (build), VITE_SERVICE*\* (build); Coolify container: 80 |
-| gaqno-sso             | Frontend | 3001 | VITE_SERVICE_SSO_URL                                           |
-| gaqno-ai              | Frontend | 3002 | VITE_SERVICE_SSO_URL, VITE_SERVICE_AI_URL                      |
-| gaqno-crm             | Frontend | 3003 | VITE_SERVICE_SSO_URL                                           |
-| gaqno-erp             | Frontend | 13004 | VITE_SERVICE_SSO_URL                                          |
-| gaqno-finance         | Frontend | 3005 | VITE_SERVICE_SSO_URL, VITE_SERVICE_FINANCE_URL                 |
-| gaqno-pdv             | Frontend | 3006 | VITE_SERVICE_SSO_URL                                           |
-| gaqno-rpg             | Frontend | 3007 | VITE_SERVICE_SSO_URL, VITE_SERVICE_RPG_URL                     |
-| gaqno-sso-service     | Backend  | 4001 | DATABASE_URL, JWT_SECRET, CORS_ORIGIN (portas 4xxx)            |
-| gaqno-ai-service      | Backend  | 4002 | DATABASE_URL, JWT_SECRET, CORS_ORIGIN                          |
-| gaqno-finance-service | Backend  | 4005 | DATABASE_URL, JWT_SECRET, CORS_ORIGIN, SSO_SERVICE_URL         |
-| gaqno-pdv-service     | Backend  | 4006 | DATABASE_URL, JWT_SECRET, CORS_ORIGIN, SSO_SERVICE_URL         |
-| gaqno-rpg-service     | Backend  | 4007 | DATABASE_URL, JWT_SECRET, CORS_ORIGIN, AI_SERVICE_URL          |
+| Application               | Type     | Port  | Key Env Vars                                                   |
+| ------------------------- | -------- | ----- | -------------------------------------------------------------- |
+| gaqno-shell               | Frontend | 3000  | MFE*\* (build), VITE_SERVICE*\* (build); Coolify container: 80 |
+| gaqno-sso                 | Frontend | 3001  | VITE_SERVICE_SSO_URL                                           |
+| gaqno-ai                  | Frontend | 3002  | VITE_SERVICE_SSO_URL, VITE_SERVICE_AI_URL                      |
+| gaqno-crm                 | Frontend | 3003  | VITE_SERVICE_SSO_URL                                           |
+| gaqno-erp                 | Frontend | 13004 | VITE_SERVICE_SSO_URL                                           |
+| gaqno-finance             | Frontend | 3005  | VITE_SERVICE_SSO_URL, VITE_SERVICE_FINANCE_URL                 |
+| gaqno-pdv                 | Frontend | 3006  | VITE_SERVICE_SSO_URL                                           |
+| gaqno-rpg                 | Frontend | 3007  | VITE_SERVICE_SSO_URL, VITE_SERVICE_RPG_URL                     |
+| gaqno-omnichannel         | Frontend | 3008  | VITE_SERVICE_SSO_URL, VITE_SERVICE_OMNICHANNEL_URL             |
+| gaqno-sso-service         | Backend  | 4001  | DATABASE_URL, JWT_SECRET, CORS_ORIGIN (portas 4xxx)            |
+| gaqno-ai-service          | Backend  | 4002  | DATABASE_URL, JWT_SECRET, CORS_ORIGIN                          |
+| gaqno-finance-service     | Backend  | 4005  | DATABASE_URL, JWT_SECRET, CORS_ORIGIN, SSO_SERVICE_URL         |
+| gaqno-pdv-service         | Backend  | 4006  | DATABASE_URL, JWT_SECRET, CORS_ORIGIN, SSO_SERVICE_URL         |
+| gaqno-rpg-service         | Backend  | 4007  | DATABASE_URL, JWT_SECRET, CORS_ORIGIN, AI_SERVICE_URL          |
+| gaqno-omnichannel-service | Backend  | 4008  | DATABASE_URL, JWT_SECRET, CORS_ORIGIN                          |
 
 ---
 
