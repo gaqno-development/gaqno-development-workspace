@@ -113,13 +113,13 @@ VITE_SERVICE_SSO_URL=https://api.gaqno.com.br/sso
 
 ---
 
-### 5. gaqno-erp (Port 3004)
+### 5. gaqno-erp (Port 13004)
 
 **Runtime variables (VITE*SERVICE*\*):**
 
 ```
 NODE_ENV=production
-PORT=3004
+PORT=13004
 VITE_SERVICE_SSO_URL=https://api.gaqno.com.br/sso
 ```
 
@@ -367,7 +367,7 @@ On each container startup, services run **push-db** (schema) and optionally **se
 | gaqno-sso             | Frontend | 3001 | VITE_SERVICE_SSO_URL                                           |
 | gaqno-ai              | Frontend | 3002 | VITE_SERVICE_SSO_URL, VITE_SERVICE_AI_URL                      |
 | gaqno-crm             | Frontend | 3003 | VITE_SERVICE_SSO_URL                                           |
-| gaqno-erp             | Frontend | 3004 | VITE_SERVICE_SSO_URL                                           |
+| gaqno-erp             | Frontend | 13004 | VITE_SERVICE_SSO_URL                                          |
 | gaqno-finance         | Frontend | 3005 | VITE_SERVICE_SSO_URL, VITE_SERVICE_FINANCE_URL                 |
 | gaqno-pdv             | Frontend | 3006 | VITE_SERVICE_SSO_URL                                           |
 | gaqno-rpg             | Frontend | 3007 | VITE_SERVICE_SSO_URL, VITE_SERVICE_RPG_URL                     |
@@ -481,7 +481,7 @@ Se o deploy falhar com **Bind for 0.0.0.0:3XXX failed: port is already allocated
 | gaqno-sso         | 3001                        |
 | gaqno-ai          | 3002                        |
 | gaqno-crm         | 3003                        |
-| gaqno-erp         | 3004                        |
+| gaqno-erp         | 13004                       |
 | gaqno-finance     | 3005                        |
 | gaqno-pdv         | 3006                        |
 | gaqno-rpg         | 3007                        |

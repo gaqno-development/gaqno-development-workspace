@@ -414,12 +414,12 @@ Values below are the full set per service (from repo `.env` / `.env.local`). Use
 
 ---
 
-### 5.14 Frontend – gaqno-erp (port 3004)
+### 5.14 Frontend – gaqno-erp (port 13004)
 
 | Variable               | Production value            |
 | ---------------------- | --------------------------- |
 | `NODE_ENV`             | `production`                |
-| `PORT`                 | `3004`                      |
+| `PORT`                 | `13004`                     |
 | `VITE_SERVICE_SSO_URL` | `https://api.gaqno.com/sso` |
 
 ---
