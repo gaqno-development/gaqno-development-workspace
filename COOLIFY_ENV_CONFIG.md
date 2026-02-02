@@ -2,6 +2,8 @@
 
 Complete environment variable configuration for all projects in Coolify.
 
+**Single source of truth:** See [docs/CONFIG_REFERENCE.md](docs/CONFIG_REFERENCE.md) for ports, database names, and paths.
+
 ---
 
 ## Shared Environment Variables
@@ -113,13 +115,13 @@ VITE_SERVICE_SSO_URL=https://api.gaqno.com.br/sso
 
 ---
 
-### 5. gaqno-erp (Port 13004)
+### 5. gaqno-erp (Port 3004)
 
 **Runtime variables (VITE*SERVICE*\*):**
 
 ```
 NODE_ENV=production
-PORT=13004
+PORT=3004
 VITE_SERVICE_SSO_URL=https://api.gaqno.com.br/sso
 ```
 
@@ -170,14 +172,14 @@ Todos os backends usam portas na faixa **4000** (4xxx): 4001, 4002, 4005, 4006, 
 
 **Important:** Each service must use its **own database**. Never use the default `postgres` database for application tables. See `docs/DATABASE_PER_SERVICE.md`.
 
-| Service                   | Database            |
-| ------------------------- | ------------------- |
-| gaqno-sso-service         | `gaqno_sso`         |
-| gaqno-ai-service          | `gaqno_ai`          |
-| gaqno-finance-service     | `gaqno_finance`     |
-| gaqno-pdv-service         | `gaqno_pdv`         |
-| gaqno-rpg-service         | `gaqno_rpg`         |
-| gaqno-omnichannel-service | `gaqno_omnichannel` |
+| Service                   | Database               |
+| ------------------------- | ---------------------- |
+| gaqno-sso-service         | `gaqno_sso_db`         |
+| gaqno-ai-service          | `gaqno_ai_db`          |
+| gaqno-finance-service     | `gaqno_finance_db`     |
+| gaqno-pdv-service         | `gaqno_pdv_db`         |
+| gaqno-rpg-service         | `gaqno_rpg_db`         |
+| gaqno-omnichannel-service | `gaqno_omnichannel_db` |
 
 ### 1. gaqno-sso-service (Port 4001)
 
@@ -188,7 +190,7 @@ Todos os backends usam portas na faixa **4000** (4xxx): 4001, 4002, 4005, 4006, 
 ```
 NODE_ENV=production
 PORT=4001
-DATABASE_URL=postgresql://user:password@host:5432/gaqno_sso
+DATABASE_URL=postgresql://user:password@host:5432/gaqno_sso_db
 JWT_SECRET=your-256-bit-secret
 ```
 
@@ -217,7 +219,7 @@ REFRESH_TTL_SECONDS=604800
 ```
 NODE_ENV=production
 PORT=4002
-DATABASE_URL=postgresql://user:password@host:5432/gaqno_ai
+DATABASE_URL=postgresql://user:password@host:5432/gaqno_ai_db
 JWT_SECRET=your-256-bit-secret
 CORS_ORIGIN=https://portal.gaqno.com.br,https://api.gaqno.com.br
 ```
@@ -258,7 +260,7 @@ NEW_RELIC_APP_NAME=llm_backend
 ```
 NODE_ENV=production
 PORT=4005
-DATABASE_URL=postgresql://user:password@host:5432/gaqno_finance
+DATABASE_URL=postgresql://user:password@host:5432/gaqno_finance_db
 JWT_SECRET=your-256-bit-secret
 CORS_ORIGIN=https://portal.gaqno.com.br,https://api.gaqno.com.br
 SSO_SERVICE_URL=https://api.gaqno.com.br/sso
@@ -277,7 +279,7 @@ SSO_SERVICE_URL=https://api.gaqno.com.br/sso
 ```
 NODE_ENV=production
 PORT=4006
-DATABASE_URL=postgresql://user:password@host:5432/gaqno_pdv
+DATABASE_URL=postgresql://user:password@host:5432/gaqno_pdv_db
 JWT_SECRET=your-256-bit-secret
 SSO_SERVICE_URL=https://api.gaqno.com.br/sso
 CORS_ORIGIN=https://portal.gaqno.com.br,https://api.gaqno.com.br
@@ -292,7 +294,7 @@ CORS_ORIGIN=https://portal.gaqno.com.br,https://api.gaqno.com.br
 ```
 NODE_ENV=production
 PORT=4007
-DATABASE_URL=postgresql://user:password@host:5432/gaqno_rpg
+DATABASE_URL=postgresql://user:password@host:5432/gaqno_rpg_db
 JWT_SECRET=your-256-bit-secret
 AI_SERVICE_URL=https://api.gaqno.com.br/ai
 CORS_ORIGIN=https://portal.gaqno.com.br,https://api.gaqno.com.br
@@ -314,7 +316,7 @@ DND_MCP_DIR=/path/to/dnd-mcp
 ```
 NODE_ENV=production
 PORT=4008
-DATABASE_URL=postgresql://user:password@host:5432/gaqno_omnichannel
+DATABASE_URL=postgresql://user:password@host:5432/gaqno_omnichannel_db
 JWT_SECRET=your-256-bit-secret
 CORS_ORIGIN=https://portal.gaqno.com.br,https://api.gaqno.com.br
 ```
@@ -361,23 +363,23 @@ On each container startup, services run **push-db** (schema) and optionally **se
 
 ## Quick Reference Table
 
-| Application               | Type     | Port  | Key Env Vars                                                   |
-| ------------------------- | -------- | ----- | -------------------------------------------------------------- |
-| gaqno-shell               | Frontend | 3000  | MFE*\* (build), VITE_SERVICE*\* (build); Coolify container: 80 |
-| gaqno-sso                 | Frontend | 3001  | VITE_SERVICE_SSO_URL                                           |
-| gaqno-ai                  | Frontend | 3002  | VITE_SERVICE_SSO_URL, VITE_SERVICE_AI_URL                      |
-| gaqno-crm                 | Frontend | 3003  | VITE_SERVICE_SSO_URL                                           |
-| gaqno-erp                 | Frontend | 13004 | VITE_SERVICE_SSO_URL                                           |
-| gaqno-finance             | Frontend | 3005  | VITE_SERVICE_SSO_URL, VITE_SERVICE_FINANCE_URL                 |
-| gaqno-pdv                 | Frontend | 3006  | VITE_SERVICE_SSO_URL                                           |
-| gaqno-rpg                 | Frontend | 3007  | VITE_SERVICE_SSO_URL, VITE_SERVICE_RPG_URL                     |
-| gaqno-omnichannel         | Frontend | 3008  | VITE_SERVICE_SSO_URL, VITE_SERVICE_OMNICHANNEL_URL             |
-| gaqno-sso-service         | Backend  | 4001  | DATABASE_URL, JWT_SECRET, CORS_ORIGIN (portas 4xxx)            |
-| gaqno-ai-service          | Backend  | 4002  | DATABASE_URL, JWT_SECRET, CORS_ORIGIN                          |
-| gaqno-finance-service     | Backend  | 4005  | DATABASE_URL, JWT_SECRET, CORS_ORIGIN, SSO_SERVICE_URL         |
-| gaqno-pdv-service         | Backend  | 4006  | DATABASE_URL, JWT_SECRET, CORS_ORIGIN, SSO_SERVICE_URL         |
-| gaqno-rpg-service         | Backend  | 4007  | DATABASE_URL, JWT_SECRET, CORS_ORIGIN, AI_SERVICE_URL          |
-| gaqno-omnichannel-service | Backend  | 4008  | DATABASE_URL, JWT_SECRET, CORS_ORIGIN                          |
+| Application               | Type     | Port | Key Env Vars                                                   |
+| ------------------------- | -------- | ---- | -------------------------------------------------------------- |
+| gaqno-shell               | Frontend | 3000 | MFE*\* (build), VITE_SERVICE*\* (build); Coolify container: 80 |
+| gaqno-sso                 | Frontend | 3001 | VITE_SERVICE_SSO_URL                                           |
+| gaqno-ai                  | Frontend | 3002 | VITE_SERVICE_SSO_URL, VITE_SERVICE_AI_URL                      |
+| gaqno-crm                 | Frontend | 3003 | VITE_SERVICE_SSO_URL                                           |
+| gaqno-erp                 | Frontend | 3004 | VITE_SERVICE_SSO_URL                                           |
+| gaqno-finance             | Frontend | 3005 | VITE_SERVICE_SSO_URL, VITE_SERVICE_FINANCE_URL                 |
+| gaqno-pdv                 | Frontend | 3006 | VITE_SERVICE_SSO_URL                                           |
+| gaqno-rpg                 | Frontend | 3007 | VITE_SERVICE_SSO_URL, VITE_SERVICE_RPG_URL                     |
+| gaqno-omnichannel         | Frontend | 3010 | VITE_SERVICE_SSO_URL, VITE_SERVICE_OMNICHANNEL_URL             |
+| gaqno-sso-service         | Backend  | 4001 | DATABASE_URL, JWT_SECRET, CORS_ORIGIN (portas 4xxx)            |
+| gaqno-ai-service          | Backend  | 4002 | DATABASE_URL, JWT_SECRET, CORS_ORIGIN                          |
+| gaqno-finance-service     | Backend  | 4005 | DATABASE_URL, JWT_SECRET, CORS_ORIGIN, SSO_SERVICE_URL         |
+| gaqno-pdv-service         | Backend  | 4006 | DATABASE_URL, JWT_SECRET, CORS_ORIGIN, SSO_SERVICE_URL         |
+| gaqno-rpg-service         | Backend  | 4007 | DATABASE_URL, JWT_SECRET, CORS_ORIGIN, AI_SERVICE_URL          |
+| gaqno-omnichannel-service | Backend  | 4008 | DATABASE_URL, JWT_SECRET, CORS_ORIGIN                          |
 
 ---
 
@@ -387,17 +389,17 @@ On each container startup, services run **push-db** (schema) and optionally **se
 
 Se `https://portal.gaqno.com.br/erp/assets/remoteEntry.js` retorna **HTML** em vez de **JavaScript**, o request está indo para o **shell**. O Coolify faz o roteamento por path sozinho: basta definir o **Path** de cada aplicação no domínio **portal.gaqno.com.br**.
 
-| Path no Coolify (por app) | Aplicação Coolify |
-| ------------------------- | ----------------- |
-| `/` (ou vazio)            | gaqno-shell       |
-| `/erp`                    | gaqno-erp         |
-| `/ai`                     | gaqno-ai          |
-| `/crm`                    | gaqno-crm         |
-| `/finance`                | gaqno-finance     |
-| `/pdv`                    | gaqno-pdv         |
-| `/rpg`                    | gaqno-rpg         |
-| `/auth`                   | gaqno-sso         |
-| `/omnichannel`            | gaqno-omnichannel |
+| Path no Coolify (por app) | Aplicação Coolify | Port (container) |
+| ------------------------- | ----------------- | ---------------- |
+| `/` (ou vazio)            | gaqno-shell       | 80               |
+| `/erp`                    | gaqno-erp         | 3004             |
+| `/ai`                     | gaqno-ai          | 3002             |
+| `/crm`                    | gaqno-crm         | 3003             |
+| `/finance`                | gaqno-finance     | 3005             |
+| `/pdv`                    | gaqno-pdv         | 3006             |
+| `/rpg`                    | gaqno-rpg         | 3007             |
+| `/auth`                   | gaqno-sso         | 3001             |
+| `/omnichannel`            | gaqno-omnichannel | 3010             |
 
 - Em cada aplicação no Coolify: **Domínio** = `portal.gaqno.com.br`, **Path** = o valor da tabela (ex.: `/erp` para gaqno-erp). O Coolify/Traefik encaminha o tráfego sozinho para o container correto.
 - **Remover prefixo do path:** no Coolify, ao configurar o Path do MFE, ative a opção para **remover o prefixo** ao encaminhar (ex.: request `portal.gaqno.com.br/erp/assets/remoteEntry.js` → o container recebe `/assets/remoteEntry.js`). Assim o nginx de cada MFE fica simples (root + try_files), sem blocos manuais por path.
@@ -451,17 +453,17 @@ MFE_OMNICHANNEL_URL=https://portal.gaqno.com.br/omnichannel
 
 Then **rebuild** the shell (Redeploy with "Build without cache").
 
-### 502 Bad Gateway on MFE remoteEntry.js (e.g. /rpg/assets/remoteEntry.js)
+### 502 Bad Gateway or "Failed to fetch" on MFE remoteEntry.js (e.g. /crm/assets/remoteEntry.js)
 
-If `https://portal.gaqno.com.br/omnichannel/assets/remoteEntry.js` returns **200 OK** but `https://portal.gaqno.com.br/rpg/assets/remoteEntry.js` returns **502 Bad Gateway**, the proxy cannot reach the gaqno-rpg container.
+If `https://portal.gaqno.com.br/omnichannel/assets/remoteEntry.js` returns **200 OK** but `https://portal.gaqno.com.br/crm/assets/remoteEntry.js` returns **502**, **404**, or "Failed to fetch", the proxy cannot reach the MFE container.
 
 **Checklist:**
 
-1. **Is gaqno-rpg deployed?** In Coolify, ensure the gaqno-rpg application exists and is **Running**.
-2. **Port:** gaqno-rpg listens on **3007** (not 80). In Coolify → gaqno-rpg → Settings, set **Port** = `3007`.
-3. **Path:** In Coolify, set **Path** = `/rpg` so traffic to `portal.gaqno.com.br/rpg` is routed to this app.
-4. **Container logs:** If the container restarts or crashes, check **Logs** in Coolify for errors (e.g. build failure, missing NPM_TOKEN).
-5. **Same domain:** All MFEs (rpg, omnichannel, ai, etc.) must be on the same domain `portal.gaqno.com.br` with different Paths.
+1. **Is the MFE deployed?** In Coolify, ensure the app (gaqno-crm, gaqno-erp, etc.) exists and is **Running**.
+2. **Port:** Each MFE has a specific port. In Coolify → App → Settings → **Port**, set the value from the table above (e.g. gaqno-crm = `3003`, gaqno-rpg = `3007`, gaqno-erp = `3004`). Wrong port → 502.
+3. **Path:** Set **Path** = the MFE path (e.g. `/crm`, `/rpg`) with **Strip prefix** enabled so the container receives `/assets/remoteEntry.js`.
+4. **Container logs:** If the container restarts or crashes, check **Logs** for errors (e.g. build failure, missing NPM_TOKEN).
+5. **Same domain:** All MFEs must be on `portal.gaqno.com.br` with different Paths.
 
 ### 500 – relation "omni_conversations" does not exist
 
@@ -469,9 +471,18 @@ If the omnichannel service returns 500 with `relation "omni_conversations" does 
 
 **Fix:**
 
-1. **Database exists:** Ensure the `gaqno_omnichannel` database exists in Postgres. Run `CREATE DATABASE gaqno_omnichannel;` if needed (see `docs/pgadmin/create-databases.sql`).
-2. **DATABASE_URL:** In Coolify → gaqno-omnichannel-service → env vars, set `DATABASE_URL=postgresql://user:password@host:5432/gaqno_omnichannel` (must point to `gaqno_omnichannel`, not `gaqno_sso`).
+1. **Database exists:** Ensure the `gaqno_omnichannel_db` database exists in Postgres. Run `CREATE DATABASE gaqno_omnichannel_db;` if needed (see `docs/pgadmin/create-databases.sql`).
+2. **DATABASE_URL:** In Coolify → gaqno-omnichannel-service → env vars, set `DATABASE_URL=postgresql://user:password@host:5432/gaqno_omnichannel_db` (must point to `gaqno_omnichannel_db`, not `gaqno_sso_db`).
 3. **Redeploy:** The Dockerfile runs `push-db.js` before the app. After fixing the database, redeploy gaqno-omnichannel-service. Check **Build/Deploy logs** for any `push-db` errors.
+
+### 500 – database "gaqno_omnichannel" does not exist (but env has gaqno_omnichannel_db)
+
+If the error shows `gaqno_omnichannel` (without `_db`) but your `DATABASE_URL` env var correctly ends with `gaqno_omnichannel_db`:
+
+1. **Linked Database override:** In Coolify → gaqno-omnichannel-service → Configuration, check if there is a **Linked Database** or **Database** section. If the app is linked to postgresql-gaqno, that link may inject a different `DATABASE_URL` (e.g. with `postgres` or `gaqno_omnichannel`). **Unlink** the database and rely only on your manual `DATABASE_URL` env var.
+2. **Duplicate env vars:** Ensure there is only **one** `DATABASE_URL` entry. Duplicates can cause the wrong value to override.
+3. **Startup log:** After redeploy, check **Logs** for `[DatabaseService] Connecting to database: <name>`. This confirms which database name the container actually receives.
+4. **Force redeploy:** Redeploy with **Clear build cache** / **No cache** to ensure fresh env injection.
 
 ### "Port is already allocated"
 
@@ -483,13 +494,13 @@ Se o deploy falhar com **Bind for 0.0.0.0:3XXX failed: port is already allocated
 | gaqno-sso         | 3001                        |
 | gaqno-ai          | 3002                        |
 | gaqno-crm         | 3003                        |
-| gaqno-erp         | 13004                       |
+| gaqno-erp         | 3004                        |
 | gaqno-finance     | 3005                        |
 | gaqno-pdv         | 3006                        |
 | gaqno-rpg         | 3007                        |
-| gaqno-omnichannel | 3010                        |
+| gaqno-omnichannel | 3008                        |
 
-Confira se nenhum outro app está com a mesma porta; se precisar, pare o container antigo ou use outra porta no Coolify (ex.: 13004 para ERP).
+Confira se nenhum outro app está com a mesma porta; se precisar, pare o container antigo ou use outra porta no Coolify (ex.: 3004 para ERP).
 
 ### Service URLs
 
@@ -542,6 +553,12 @@ If sign-in from `https://portal.gaqno.com.br` to `https://api.gaqno.com.br/v1/ss
 
 3. **Do not add CORS at the proxy**  
    If the proxy adds its own `Access-Control-*` headers, it can conflict with the backend. Prefer a single place (the Nest app) to set CORS.
+
+4. **Omnichannel (teams, conversations, my) CORS errors**  
+   If `https://api.gaqno.com.br/omnichannel/v1/omnichannel/teams` (or `/conversations`, `/teams/my`) returns CORS from `https://portal.gaqno.com.br`:
+   - In Coolify → **gaqno-omnichannel-service** → env vars, set `CORS_ORIGIN=https://portal.gaqno.com.br,https://api.gaqno.com.br` (no spaces).
+   - Redeploy the omnichannel service.
+   - In DevTools → Network, check the **OPTIONS** preflight: it must return **200** or **204** with `Access-Control-Allow-Origin` and `Access-Control-Allow-Credentials: true`. If OPTIONS returns 404/405, the proxy may not be forwarding OPTIONS to the omnichannel backend — ensure the path `/omnichannel` routes to gaqno-omnichannel-service for all HTTP methods.
 
 ---
 
