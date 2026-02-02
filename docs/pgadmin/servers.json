@@ -1,0 +1,108 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "postgres (Production)",
+      "Group": "Gaqno - postgresql-gaqno",
+      "Host": "kwokwsos8o8w44kk0os0g0s0",
+      "Port": 5432,
+      "MaintenanceDB": "postgres",
+      "Username": "postgres",
+      "Comment": "Maintenance DB. Run create-databases.sql here. Password = gaqno-sso-service DATABASE_URL in Coolify (env_vars).",
+      "ConnectionParameters": {
+        "sslmode": "prefer",
+        "connect_timeout": 10
+      }
+    },
+    "2": {
+      "Name": "gaqno_sso (Production)",
+      "Group": "Gaqno - postgresql-gaqno",
+      "Host": "kwokwsos8o8w44kk0os0g0s0",
+      "Port": 5432,
+      "MaintenanceDB": "gaqno_sso",
+      "Username": "postgres",
+      "Comment": "SSO. Password = gaqno-sso-service DATABASE_URL in Coolify (env_vars).",
+      "ConnectionParameters": {
+        "sslmode": "prefer",
+        "connect_timeout": 10
+      }
+    },
+    "3": {
+      "Name": "gaqno_finance (Production)",
+      "Group": "Gaqno - postgresql-gaqno",
+      "Host": "kwokwsos8o8w44kk0os0g0s0",
+      "Port": 5432,
+      "MaintenanceDB": "gaqno_finance",
+      "Username": "postgres",
+      "Comment": "Finance. Password = same as gaqno-sso-service DATABASE_URL (Coolify).",
+      "ConnectionParameters": {
+        "sslmode": "prefer",
+        "connect_timeout": 10
+      }
+    },
+    "4": {
+      "Name": "gaqno_pdv (Production)",
+      "Group": "Gaqno - postgresql-gaqno",
+      "Host": "kwokwsos8o8w44kk0os0g0s0",
+      "Port": 5432,
+      "MaintenanceDB": "gaqno_pdv",
+      "Username": "postgres",
+      "Comment": "PDV. Password = same as gaqno-sso-service DATABASE_URL (Coolify).",
+      "ConnectionParameters": {
+        "sslmode": "prefer",
+        "connect_timeout": 10
+      }
+    },
+    "5": {
+      "Name": "gaqno_rpg (Production)",
+      "Group": "Gaqno - postgresql-gaqno",
+      "Host": "kwokwsos8o8w44kk0os0g0s0",
+      "Port": 5432,
+      "MaintenanceDB": "gaqno_rpg",
+      "Username": "postgres",
+      "Comment": "RPG. Password = same as gaqno-sso-service DATABASE_URL (Coolify).",
+      "ConnectionParameters": {
+        "sslmode": "prefer",
+        "connect_timeout": 10
+      }
+    },
+    "6": {
+      "Name": "gaqno_ai (Production)",
+      "Group": "Gaqno - postgresql-gaqno",
+      "Host": "kwokwsos8o8w44kk0os0g0s0",
+      "Port": 5432,
+      "MaintenanceDB": "gaqno_ai",
+      "Username": "postgres",
+      "Comment": "AI. Password = same as gaqno-sso-service DATABASE_URL (Coolify).",
+      "ConnectionParameters": {
+        "sslmode": "prefer",
+        "connect_timeout": 10
+      }
+    },
+    "7": {
+      "Name": "gaqno_omnichannel (Production)",
+      "Group": "Gaqno - postgresql-gaqno",
+      "Host": "kwokwsos8o8w44kk0os0g0s0",
+      "Port": 5432,
+      "MaintenanceDB": "gaqno_omnichannel",
+      "Username": "postgres",
+      "Comment": "Omnichannel. Password = same as gaqno-sso-service DATABASE_URL (Coolify).",
+      "ConnectionParameters": {
+        "sslmode": "prefer",
+        "connect_timeout": 10
+      }
+    },
+    "8": {
+      "Name": "Local (Development)",
+      "Group": "Gaqno - Local",
+      "Host": "localhost",
+      "Port": 5432,
+      "MaintenanceDB": "gaqno_sso",
+      "Username": "gaqno",
+      "Comment": "Local Postgres (e.g. gaqno-sso-service docker-compose). Password from .env.",
+      "ConnectionParameters": {
+        "sslmode": "prefer",
+        "connect_timeout": 10
+      }
+    }
+  }
+}

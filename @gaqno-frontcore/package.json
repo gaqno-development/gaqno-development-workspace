@@ -1,6 +1,6 @@
 {
   "name": "@gaqno-development/frontcore",
-  "version": "1.0.22",
+  "version": "1.0.24",
   "private": false,
   "publishConfig": {
     "access": "public"
@@ -13,6 +13,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./hooks/*": "./src/hooks/*.ts",
+    "./hooks/admin/*": "./src/hooks/admin/*.ts",
     "./hooks": "./src/hooks/index.ts",
     "./contexts/*": "./src/contexts/*",
     "./contexts": "./src/contexts/index.ts",

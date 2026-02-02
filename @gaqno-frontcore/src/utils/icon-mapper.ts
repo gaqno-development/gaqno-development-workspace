@@ -20,6 +20,7 @@ import {
   User,
   Video,
   Building,
+  Building2,
   GitBranch,
   LayoutDashboard,
   Dices,
@@ -55,6 +56,14 @@ import {
   Menu,
   MoreHorizontal,
   MoreVertical,
+  Target,
+  Volume2,
+  Mic,
+  Music,
+  Image,
+  Paintbrush,
+  PieChart,
+  Cloud,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -115,12 +124,20 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Menu,
   MoreHorizontal,
   MoreVertical,
+  Target,
+  Volume2,
+  Mic,
+  Music,
+  Image,
+  Paintbrush,
+  PieChart,
+  Cloud,
+  Building2,
 };
 
 export function getIconComponent(iconName: string): LucideIcon {
   const icon = ICON_MAP[iconName];
   if (!icon) {
-    console.warn(`[icon-mapper] Icon "${iconName}" not found, using Package as fallback`);
     return Package;
   }
   return icon;

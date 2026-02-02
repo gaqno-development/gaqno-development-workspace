@@ -1,8 +1,8 @@
-import { useQueryClient } from '@tanstack/react-query';
-import { SessionContext } from '../../types/shared/auth';
-import { ssoAxiosClient } from '../../utils/api/sso-client';
-import { useApiQuery } from '../useApiQuery';
-import { useApiMutation } from '../useApiMutation';
+import { useQueryClient } from "@tanstack/react-query";
+import { SessionContext } from "../../types/shared/auth";
+import { ssoAxiosClient } from "../../utils/api/sso-client";
+import { useApiQuery } from "../useApiQuery";
+import { useApiMutation } from "../useApiMutation";
 
 type SignInInput = {
   email: string;
@@ -21,12 +21,15 @@ export const useSignIn = () => {
   return useApiMutation<SessionContext, SignInInput>(
     ssoAxiosClient,
     async (input) => {
-      const { data } = await ssoAxiosClient.post<SessionContext>('/sign-in', input);
+      const { data } = await ssoAxiosClient.post<SessionContext>(
+        "/sign-in",
+        input
+      );
       return data;
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['auth', 'me'] });
+        queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
       },
     }
   );
@@ -38,12 +41,15 @@ export const useSignUp = () => {
   return useApiMutation<SessionContext, SignUpInput>(
     ssoAxiosClient,
     async (input) => {
-      const { data } = await ssoAxiosClient.post<SessionContext>('/sign-up', input);
+      const { data } = await ssoAxiosClient.post<SessionContext>(
+        "/sign-up",
+        input
+      );
       return data;
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['auth', 'me'] });
+        queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
       },
     }
   );
@@ -55,7 +61,9 @@ export const useSignOut = () => {
   return useApiMutation<{ success: boolean }, void>(
     ssoAxiosClient,
     async () => {
-      const { data } = await ssoAxiosClient.post<{ success: boolean }>('/sign-out');
+      const { data } = await ssoAxiosClient.post<{ success: boolean }>(
+        "/sign-out"
+      );
       return data;
     },
     {
@@ -72,31 +80,46 @@ export const useRefresh = () => {
   return useApiMutation<SessionContext, void>(
     ssoAxiosClient,
     async () => {
-      const { data } = await ssoAxiosClient.post<SessionContext>('/refresh');
+      const { data } = await ssoAxiosClient.post<SessionContext>("/refresh");
       return data;
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['auth', 'me'] });
+        queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
       },
     }
   );
 };
 
+const PUBLIC_PATHS = ["/login", "/register", "/auth"];
+
+function isPublicPath(pathname: string): boolean {
+  if (!pathname) return true;
+  if (pathname === "/") return false;
+  return PUBLIC_PATHS.some(
+    (p) => pathname === p || pathname.startsWith(p + "/")
+  );
+}
+
 export const useMe = (options?: { enabled?: boolean }) => {
+  const pathname =
+    typeof window !== "undefined" ? window.location.pathname : "";
+  const skipOnPublic = isPublicPath(pathname);
+  const enabled = options?.enabled !== false && !skipOnPublic;
+
   return useApiQuery<SessionContext>(
     ssoAxiosClient,
-    ['auth', 'me'],
+    ["auth", "me"],
     async () => {
-      const { data } = await ssoAxiosClient.get<SessionContext>('/me');
+      const { data } = await ssoAxiosClient.get<SessionContext>("/me");
       return data;
     },
     {
-      retry: 1,
+      retry: false,
       staleTime: 60 * 1000,
       refetchOnWindowFocus: false,
       ...options,
+      enabled,
     }
   );
 };
-

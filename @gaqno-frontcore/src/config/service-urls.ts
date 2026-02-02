@@ -8,27 +8,27 @@ const getViteEnv = (key: string, defaultValue: string): string => {
 };
 
 export const SERVICE_URLS = {
-  AUTH: isClient 
-    ? getViteEnv('VITE_SSO_SERVICE_URL', 'http://localhost:3001')
-    : (process.env.AUTH_SERVICE_URL || 'http://localhost:3001'),
+  AUTH: isClient
+    ? getViteEnv('VITE_SERVICE_SSO_URL', 'http://localhost:3001')
+    : (process.env.SERVICE_SSO_URL || 'http://localhost:3001'),
   AI: isClient
-    ? getViteEnv('VITE_AI_SERVICE_URL', 'http://localhost:3002')
-    : (process.env.AI_SERVICE_URL || 'http://localhost:3002'),
+    ? getViteEnv('VITE_SERVICE_AI_URL', 'http://localhost:3002')
+    : (process.env.SERVICE_AI_URL || 'http://localhost:3002'),
   CRM: isClient
-    ? getViteEnv('VITE_CRM_SERVICE_URL', 'http://localhost:3003')
-    : (process.env.CRM_SERVICE_URL || 'http://localhost:3003'),
+    ? getViteEnv('VITE_SERVICE_CRM_URL', 'http://localhost:3003')
+    : (process.env.SERVICE_CRM_URL || 'http://localhost:3003'),
   ERP: isClient
-    ? getViteEnv('VITE_ERP_SERVICE_URL', 'http://localhost:3004')
-    : (process.env.ERP_SERVICE_URL || 'http://localhost:3004'),
+    ? getViteEnv('VITE_SERVICE_ERP_URL', 'http://localhost:3004')
+    : (process.env.SERVICE_ERP_URL || 'http://localhost:3004'),
   FINANCE: isClient
-    ? getViteEnv('VITE_FINANCE_SERVICE_URL', 'http://localhost:3005')
-    : (process.env.FINANCE_SERVICE_URL || 'http://localhost:3005'),
+    ? getViteEnv('VITE_SERVICE_FINANCE_URL', 'http://localhost:3005')
+    : (process.env.SERVICE_FINANCE_URL || 'http://localhost:3005'),
   PDV: isClient
-    ? getViteEnv('VITE_PDV_SERVICE_URL', 'http://localhost:3006')
-    : (process.env.PDV_SERVICE_URL || 'http://localhost:3006'),
+    ? getViteEnv('VITE_SERVICE_PDV_URL', 'http://localhost:3006')
+    : (process.env.SERVICE_PDV_URL || 'http://localhost:3006'),
   RPG: isClient
-    ? getViteEnv('VITE_RPG_SERVICE_URL', 'http://localhost:4007')
-    : (process.env.RPG_SERVICE_URL || 'http://localhost:4007'),
+    ? getViteEnv('VITE_SERVICE_RPG_URL', 'http://localhost:4007')
+    : (process.env.SERVICE_RPG_URL || 'http://localhost:4007'),
 } as const;
 
 export const SERVICE_ROUTE_MAP: Record<string, string> = {

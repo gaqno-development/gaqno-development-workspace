@@ -54,6 +54,24 @@ services:
     build:
       context: ./gaqno-shell
       dockerfile: Dockerfile
+      args:
+        - MFE_AI_URL=http://ai:3002
+        - MFE_CRM_URL=http://crm:3003
+        - MFE_ERP_URL=http://erp:3004
+        - MFE_FINANCE_URL=http://finance:3005
+        - MFE_PDV_URL=http://pdv:3006
+        - MFE_RPG_URL=http://rpg:3007
+        - MFE_SSO_URL=http://sso:3001
+        - MFE_SAAS_URL=${MFE_SAAS_URL:-http://localhost:3008}
+        - MFE_OMNICHANNEL_URL=${MFE_OMNICHANNEL_URL:-http://localhost:3010}
+        - VITE_SERVICE_SSO_URL=http://sso-service:4001
+        - VITE_SERVICE_AI_URL=http://ai-service:4002
+        - VITE_SERVICE_CRM_URL=http://crm:3003
+        - VITE_SERVICE_ERP_URL=http://erp:3004
+        - VITE_SERVICE_FINANCE_URL=http://finance-service:4005
+        - VITE_SERVICE_PDV_URL=http://pdv:3006
+        - VITE_SERVICE_RPG_URL=http://rpg-service:4007
+        - VITE_SERVICE_OMNICHANNEL_URL=${VITE_SERVICE_OMNICHANNEL_URL:-http://localhost:4010}
     container_name: gaqno-shell
     ports:
       - "3000:3000"
@@ -61,13 +79,14 @@ services:
       - NODE_ENV=production
       - PORT=3000
       - JWT_SECRET=${JWT_SECRET}
-      - VITE_SSO_SERVICE_URL=http://sso-service:4001
-      - AI_SERVICE_URL=http://ai:3002
-      - CRM_SERVICE_URL=http://crm:3003
-      - ERP_SERVICE_URL=http://erp:3004
-      - FINANCE_SERVICE_URL=http://finance:3005
-      - PDV_SERVICE_URL=http://pdv:3006
-      - SSO_SERVICE_URL=http://sso:3001
+      - VITE_SERVICE_SSO_URL=http://sso-service:4001
+      - VITE_SERVICE_AI_URL=http://ai-service:4002
+      - VITE_SERVICE_CRM_URL=http://crm:3003
+      - VITE_SERVICE_ERP_URL=http://erp:3004
+      - VITE_SERVICE_FINANCE_URL=http://finance-service:4005
+      - VITE_SERVICE_PDV_URL=http://pdv:3006
+      - VITE_SERVICE_RPG_URL=http://rpg-service:4007
+      - VITE_SERVICE_OMNICHANNEL_URL=${VITE_SERVICE_OMNICHANNEL_URL:-http://localhost:4010}
     env_file:
       - .env
     restart: unless-stopped
@@ -103,7 +122,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3001
-      - VITE_SSO_SERVICE_URL=http://sso-service:4001
+      - VITE_SERVICE_SSO_URL=http://sso-service:4001
     env_file:
       - .env
     restart: unless-stopped
@@ -145,8 +164,8 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3002
-      - VITE_SSO_SERVICE_URL=http://sso-service:4001
-      - VITE_AI_SERVICE_URL=http://ai-service:4002
+      - VITE_SERVICE_SSO_URL=http://sso-service:4001
+      - VITE_SERVICE_AI_URL=http://ai-service:4002
     env_file:
       - .env
     restart: unless-stopped
@@ -168,7 +187,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3003
-      - VITE_SSO_SERVICE_URL=http://sso-service:4001
+      - VITE_SERVICE_SSO_URL=http://sso-service:4001
     env_file:
       - .env
     restart: unless-stopped
@@ -185,7 +204,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3004
-      - VITE_SSO_SERVICE_URL=http://sso-service:4001
+      - VITE_SERVICE_SSO_URL=http://sso-service:4001
     env_file:
       - .env
     restart: unless-stopped
@@ -224,8 +243,8 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3005
-      - VITE_SSO_SERVICE_URL=http://sso-service:4001
-      - VITE_FINANCE_SERVICE_URL=http://finance-service:4005
+      - VITE_SERVICE_SSO_URL=http://sso-service:4001
+      - VITE_SERVICE_FINANCE_URL=http://finance-service:4005
     env_file:
       - .env
     restart: unless-stopped
@@ -247,7 +266,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3006
-      - VITE_SSO_SERVICE_URL=http://sso-service:4001
+      - VITE_SERVICE_SSO_URL=http://sso-service:4001
     env_file:
       - .env
     restart: unless-stopped
@@ -287,8 +306,8 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3007
-      - VITE_SSO_SERVICE_URL=http://sso-service:4001
-      - VITE_RPG_SERVICE_URL=http://rpg-service:4007
+      - VITE_SERVICE_SSO_URL=http://sso-service:4001
+      - VITE_SERVICE_RPG_URL=http://rpg-service:4007
     env_file:
       - .env
     restart: unless-stopped

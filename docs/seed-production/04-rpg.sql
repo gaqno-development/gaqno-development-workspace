@@ -1,0 +1,26 @@
+-- Run in database gaqno_rpg. No tenant ID needed.
+-- If you get "relation rpg_campaigns does not exist", run 04-rpg-schema.sql first.
+
+INSERT INTO rpg_campaigns (user_id, name, description, concept, world, initial_narrative, npcs, hooks, is_public, status)
+SELECT
+  '00000000-0000-0000-0000-000000000000'::uuid,
+  'A Ascensão do Lich Rei',
+  'Uma campanha épica de fantasia onde os heróis devem impedir um Lich Rei de ressuscitar um antigo império de mortos-vivos. Aventure-se pelas terras de Eldoria e descubra os segredos sombrios que ameaçam toda a vida.',
+  '{"theme":"Luta contra a morte e a corrupção","tone":"Sombrio, heroico, com momentos de esperança","setting":"Reino de Eldoria, um mundo de fantasia medieval com ruínas antigas e florestas místicas. O Lich Rei Malachar, outrora um poderoso mago real, busca ressuscitar seu império caído através de necromancia proibida."}'::jsonb,
+  '{"name":"Eldoria","geography":"Eldoria é um reino vasto com três regiões principais: as Planícies Centrais onde fica a capital Pedraverde, as Florestas Sombrias ao norte habitadas por criaturas místicas, e as Montanhas Gélidas ao leste onde repousam as ruínas do antigo Império de Malachar. Rios sinuosos conectam as cidades, e estradas antigas levam a masmorras esquecidas.","magic":"Magia arcana e divina é comum, mas a necromancia é proibida e temida. Apenas magos licenciados podem praticar magia nas cidades. Artefatos mágicos são raros e valiosos, muitos deles escondidos nas ruínas do antigo império. O Lich Rei busca artefatos específicos para completar seu ritual de ressurreição em massa.","history":"Há mil anos, o Império de Malachar dominava Eldoria. Malachar, então um mago real ambicioso, mergulhou na necromancia proibida para conquistar a imortalidade. Seu império caiu em uma guerra cataclísmica, mas Malachar sobreviveu como Lich. Agora, após séculos de planejamento, ele busca ressuscitar seu exército de mortos-vivos e reconquistar Eldoria."}'::jsonb,
+  '{"opening":"A paz reina em Eldoria há séculos, mas sussurros de escuridão começam a surgir das Criptas Esquecidas. Na cidade de Pedraverde, os heróis se encontram na Taverna do Urso Dourado quando um mensageiro coberto de poeira e terror entra correndo. Ele traz notícias terríveis: aldeias fronteiriças foram atacadas por hordas de mortos-vivos, e um artefato antigo - o Coração de Malachar - foi roubado do Templo Sagrado. O mensageiro cai morto antes de terminar, mas suas últimas palavras ecoam: Ele está voltando... o Lich Rei desperta.","inciting_incident":"Investigando os ataques, os heróis descobrem que os mortos-vivos estão sendo reanimados por uma magia poderosa e antiga. O Coração de Malachar, um artefato que contém a essência do Lich Rei, foi roubado por cultistas que servem ao antigo imperador. Testemunhas relatam ver uma figura encapuzada liderando os ataques - possivelmente o próprio Lich ou seu tenente mais leal, o Necromante Vorak. Se o ritual de ressurreição for completado, todo Eldoria cairá sob o domínio dos mortos-vivos.","first_quest":"Os heróis devem rastrear os cultistas até as Criptas Esquecidas, recuperar o Coração de Malachar antes que o ritual seja completado, e descobrir a localização da Fortaleza do Lich. A jornada os levará através de florestas assombradas, ruínas antigas e masmorras traiçoeiras. Eles precisarão da ajuda de aliados como o Mago Thaddeus, que conhece os segredos da necromancia, e da Capitã Elara, que pode fornecer recursos e informações sobre os ataques."}'::jsonb,
+  '[{"name":"Gareth, o Mestre da Taverna","role":"Informante e Mentor","description":"Um ex-aventureiro aposentado que gerencia a Taverna do Urso Dourado.","motivation":"Proteger Eldoria e vingar seus companheiros."},{"name":"Capitã Elara","role":"Líder Militar e Aliada","description":"Capitã da guarda real de Pedraverde.","motivation":"Proteger os cidadãos de Eldoria."},{"name":"Mago Thaddeus","role":"Conselheiro Mágico","description":"Um mago erudito que estuda a história de Malachar.","motivation":"Prevenir que a necromancia destrua Eldoria."},{"name":"Necromante Vorak","role":"Tenente do Lich Rei","description":"Principal servidor vivo do Lich Rei.","motivation":"Completar o ritual de ressurreição."},{"name":"Lich Rei Malachar","role":"Vilão Principal","description":"O antigo imperador que se transformou em Lich.","motivation":"Ressuscitar seu império caído."},{"name":"Padre Marcus","role":"Guia Espiritual e Curandeiro","description":"Clerigo do Templo Sagrado de Pedraverde.","motivation":"Recuperar o artefato sagrado."}]'::jsonb,
+  '["O Coração de Malachar foi levado para as Criptas Esquecidas.","O Mago Thaddeus descobriu que Malachar precisa de três artefatos.","Padre Marcus revela que existe uma arma sagrada no Templo."]'::jsonb,
+  true,
+  'active'::campaign_status
+WHERE NOT EXISTS (SELECT 1 FROM rpg_campaigns WHERE name = 'A Ascensão do Lich Rei' AND is_public = true);
+
+INSERT INTO rpg_sessions (user_id, campaign_id, name, description, status, room_code)
+SELECT
+  '00000000-0000-0000-0000-000000000000'::uuid,
+  (SELECT id FROM rpg_campaigns WHERE name = 'A Ascensão do Lich Rei' AND is_public = true LIMIT 1),
+  'Sessão Inicial',
+  'Sessão de desenvolvimento ligada à campanha padrão.',
+  'draft'::session_status,
+  'DEVSESSION'
+WHERE NOT EXISTS (SELECT 1 FROM rpg_sessions WHERE room_code = 'DEVSESSION');
