@@ -1,6 +1,6 @@
 {
   "name": "@gaqno-development/frontcore",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "private": false,
   "publishConfig": {
     "access": "public"
@@ -31,6 +31,7 @@
     "./components/ui/*": "./src/components/ui/*.tsx",
     "./components/ui/skeleton": "./src/components/ui/skeleton.tsx",
     "./components/providers": "./src/components/providers/index.ts",
+    "./components/icons": "./src/components/icons/index.tsx",
     "./components/guards": "./src/components/guards/index.ts",
     "./components/layout": "./src/components/layout/index.ts",
     "./components/admin": "./src/components/admin/index.ts",
