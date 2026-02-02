@@ -1,6 +1,6 @@
 {
   "name": "@gaqno-development/frontcore",
-  "version": "1.0.24",
+  "version": "1.0.25",
   "private": false,
   "publishConfig": {
     "access": "public"
@@ -37,6 +37,7 @@
     "./components/layout": "./src/components/layout/index.ts",
     "./components/admin": "./src/components/admin/index.ts",
     "./components/admin/*": "./src/components/admin/*",
+    "./components/SectionWithSubNav": "./src/components/SectionWithSubNav.tsx",
     "./styles": "./src/styles/index.ts",
     "./styles/globals.css": "./src/styles/globals.css",
     "./config/service-urls": {
