@@ -4,23 +4,9 @@ set -e
 
 COMMIT_MESSAGE="${1:-Update changes}"
 
-REPOS=(
-  "gaqno-ai"
-  "gaqno-ai-service"
-  "gaqno-crm"
-  "gaqno-erp"
-  "gaqno-finance"
-  "gaqno-finance-service"
-  "gaqno-pdv"
-  "gaqno-pdv-service"
-  "gaqno-rpg"
-  "gaqno-rpg-service"
-  "gaqno-shell"
-  "gaqno-sso"
-  "gaqno-sso-service"
-)
-
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+REPOS=($(git -C "$BASE_DIR" config --file .gitmodules --get-regexp path | awk '{ print $2 }'))
 
 for repo in "${REPOS[@]}"; do
   REPO_PATH="$BASE_DIR/$repo"
@@ -60,5 +46,20 @@ for repo in "${REPOS[@]}"; do
   echo ""
 done
 
+echo "📦 Updating parent repo with submodule references..."
+cd "$BASE_DIR"
+if [ -n "$(git status --porcelain)" ]; then
+  echo "   ➕ Staging submodule updates..."
+  git add .
+  echo "   💾 Committing with message: '$COMMIT_MESSAGE'"
+  git commit -m "$COMMIT_MESSAGE" || true
+  echo "   🚀 Pushing parent to remote..."
+  git push || echo "   ⚠️  Parent push failed"
+  echo "   ✅ Parent repo updated"
+else
+  echo "   ✓ No submodule reference changes"
+fi
+
+echo ""
 echo "🎉 All repositories processed!"
 
