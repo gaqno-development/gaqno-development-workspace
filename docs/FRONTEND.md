@@ -55,12 +55,14 @@ Apps using `@gaqno-development/frontcore` need `NPM_TOKEN` in Build Arguments.
 
 ## MFE Nginx Pattern
 
-All MFEs serve assets only; document requests redirect to shell:
+All MFEs serve assets only; document requests redirect to shell. Use `absolute_redirect off` to avoid backend port leaking into redirect URLs:
 
 ```nginx
-location /<path>/assets/ { alias /usr/share/nginx/html/assets/; add_header Cache-Control "public, immutable"; add_header Access-Control-Allow-Origin "*"; }
-location /assets/ { alias /usr/share/nginx/html/assets/; add_header Cache-Control "public, immutable"; add_header Access-Control-Allow-Origin "*"; }
-location / { return 302 /; }
+server { ... absolute_redirect off;
+  location /<path>/assets/ { alias /usr/share/nginx/html/assets/; add_header Cache-Control "public, immutable"; add_header Access-Control-Allow-Origin "*"; }
+  location /assets/ { alias /usr/share/nginx/html/assets/; add_header Cache-Control "public, immutable"; add_header Access-Control-Allow-Origin "*"; }
+  location / { return 302 /; }
+}
 ```
 
 Replace `<path>` with: ai, crm, erp, finance, pdv, rpg, auth (sso), omnichannel.
@@ -70,9 +72,19 @@ Replace `<path>` with: ai, crm, erp, finance, pdv, rpg, auth (sso), omnichannel.
 - Shell (Path `/`) catches all app routes (e.g. `/rpg`, `/rpg/wiki`, `/rpg/campaigns`).
 - Each MFE (Path `/<mfe>/assets`) serves static assets only (e.g. `/rpg/assets/remoteEntry.js`).
 
-### Coolify Domain Configuration (gaqno-rpg)
+### Coolify Domain Configuration (MFEs)
 
-**Critical:** gaqno-rpg domain must be `https://portal.gaqno.com.br/rpg/assets` (not `/rpg`).
+**Critical:** MFE domains must use `/<mfe>/assets` so only asset requests are routed to the MFE container. App routes stay with the shell.
 
-- With `/rpg`: Traefik routes ALL `/rpg/*` to the RPG container. The RPG nginx only serves assets and redirects `/rpg/wiki` etc. to `/`—breaking the SPA.
-- With `/rpg/assets`: Only `/rpg/assets/*` (e.g. `remoteEntry.js`) goes to RPG. Routes like `/rpg/wiki` go to the shell, which serves the SPA.
+| MFE               | Wrong (causes redirect)                   | Correct                                          |
+| ----------------- | ----------------------------------------- | ------------------------------------------------ |
+| gaqno-sso         | `https://portal.gaqno.com.br/auth`        | `https://portal.gaqno.com.br/auth/assets`        |
+| gaqno-ai          | `https://portal.gaqno.com.br/ai`          | `https://portal.gaqno.com.br/ai/assets`          |
+| gaqno-crm         | `https://portal.gaqno.com.br/crm`         | `https://portal.gaqno.com.br/crm/assets`         |
+| gaqno-erp         | `https://portal.gaqno.com.br/erp`         | `https://portal.gaqno.com.br/erp/assets`         |
+| gaqno-finance     | `https://portal.gaqno.com.br/finance`     | `https://portal.gaqno.com.br/finance/assets`     |
+| gaqno-pdv         | `https://portal.gaqno.com.br/pdv`         | `https://portal.gaqno.com.br/pdv/assets`         |
+| gaqno-rpg         | `https://portal.gaqno.com.br/rpg`         | `https://portal.gaqno.com.br/rpg/assets`         |
+| gaqno-omnichannel | `https://portal.gaqno.com.br/omnichannel` | `https://portal.gaqno.com.br/omnichannel/assets` |
+
+**Why:** With `/omnichannel`, Traefik routes ALL `/omnichannel/*` to the MFE container. The MFE nginx only serves assets; non-asset paths hit `location /` which returns `302 /`. With nginx's default `absolute_redirect on`, that becomes `http://portal.gaqno.com.br:3010/` (backend port leaks into the redirect). With `/omnichannel/assets`, only asset requests hit the MFE; routes like `/omnichannel/overview` go to the shell.
