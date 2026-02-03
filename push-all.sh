@@ -50,7 +50,30 @@ $diff"
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-REPOS=($(git -C "$BASE_DIR" config --file .gitmodules --get-regexp path | awk '{ print $2 }'))
+REPOS_FROM_GIT=($(git -C "$BASE_DIR" config --file .gitmodules --get-regexp path 2>/dev/null | awk '{ print $2 }' || true))
+if [ ${#REPOS_FROM_GIT[@]} -gt 0 ]; then
+  REPOS=("${REPOS_FROM_GIT[@]}")
+else
+  REPOS=(
+    gaqno-ai
+    gaqno-ai-service
+    gaqno-crm
+    gaqno-erp
+    gaqno-pdv
+    gaqno-pdv-service
+    gaqno-shell
+    gaqno-sso-service
+    gaqno-finance
+    gaqno-finance-service
+    gaqno-rpg
+    gaqno-rpg-service
+    gaqno-sso
+    gaqno-landing
+    gaqno-lenin
+    gaqno-omnichannel
+    gaqno-omnichannel-service
+  )
+fi
 
 for repo in "${REPOS[@]}"; do
   REPO_PATH="$BASE_DIR/$repo"

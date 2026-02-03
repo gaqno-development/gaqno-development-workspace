@@ -472,17 +472,19 @@ If `https://portal.gaqno.com.br/omnichannel/assets/remoteEntry.js` returns **200
 
 1. **Is the MFE deployed?** In Coolify, ensure the app (gaqno-crm, gaqno-erp, gaqno-rpg, etc.) exists and is **Running**.
 2. **Port:** Each MFE has a specific port. In Coolify → App → Settings → **Port**, set the value from the table above (e.g. gaqno-crm = `3003`, gaqno-rpg = `3007`, gaqno-erp = `3004`). Wrong port → 502.
-3. **Path:** Set **Path** = `/<mfe>/assets` (e.g. `/crm/assets`, `/rpg/assets`) with **Strip prefix** enabled so the container receives `/assets/remoteEntry.js`.
+3. **Path:** Set **Path** = `/<mfe>/assets` (e.g. `/crm/assets`, `/rpg/assets`). Do **not** strip the path prefix—each MFE nginx expects the full path (e.g. `/rpg/assets/remoteEntry.js`).
 4. **Container logs:** If the container restarts or crashes, check **Logs** for errors (e.g. build failure, missing NPM_TOKEN).
 5. **Same domain:** All MFEs must be on `portal.gaqno.com.br` with different Paths.
 
 ### /rpg/assets/remoteEntry.js returns HTML instead of JavaScript
 
-If `https://portal.gaqno.com.br/rpg/assets/remoteEntry.js` returns **HTML** (shell's index.html) instead of JavaScript:
+If `https://portal.gaqno.com.br/rpg/assets/remoteEntry.js` returns **200** with **content-type: text/html** (shell's index.html) instead of JavaScript:
 
-1. **Add domain:** In Coolify → **gaqno-rpg** → **Domains**, add domain `portal.gaqno.com.br` with **Path** = `/rpg`. Without this, requests fall through to the shell.
-2. **Port must be 3007:** In Coolify → **gaqno-rpg** → **General** (or **Ports**), set **Port** to **3007**. The container listens on 3007; a wrong port (e.g. 3000) causes 502.
-3. **Redeploy** after adding the domain so Traefik picks up the new route.
+1. **Add domain:** In Coolify → **gaqno-rpg** → **Domains**, add `https://portal.gaqno.com.br/rpg` (or domain `portal.gaqno.com.br` with **Path** = `/rpg/assets`). Without this, requests fall through to the shell.
+2. **Path priority:** Use **Path** = `/rpg/assets` so the proxy routes `/rpg/assets/*` to gaqno-rpg _before_ the shell (Path `/`) catches it. If Path `/rpg` does not work, try `/rpg/assets`.
+3. **Do NOT strip path prefix:** The gaqno-rpg nginx expects the full path `/rpg/assets/remoteEntry.js`.
+4. **Port must be 3007:** In Coolify → **gaqno-rpg** → **General** (or **Ports**), set **Port** to **3007**.
+5. **Redeploy** gaqno-rpg after adding the domain so Traefik picks up the new route.
 
 ### 502 Bad Gateway on /rpg/assets/remoteEntry.js specifically
 
