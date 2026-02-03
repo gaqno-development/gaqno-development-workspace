@@ -67,6 +67,12 @@ Replace `<path>` with: ai, crm, erp, finance, pdv, rpg, auth (sso), omnichannel.
 
 ## Routing
 
-- Shell (Path `/`) catches all app routes.
-- Each MFE (Path `/<mfe>/assets`) serves static assets only.
-- Do **not** strip path prefix—MFE nginx expects full path (e.g. `/rpg/assets/remoteEntry.js`).
+- Shell (Path `/`) catches all app routes (e.g. `/rpg`, `/rpg/wiki`, `/rpg/campaigns`).
+- Each MFE (Path `/<mfe>/assets`) serves static assets only (e.g. `/rpg/assets/remoteEntry.js`).
+
+### Coolify Domain Configuration (gaqno-rpg)
+
+**Critical:** gaqno-rpg domain must be `https://portal.gaqno.com.br/rpg/assets` (not `/rpg`).
+
+- With `/rpg`: Traefik routes ALL `/rpg/*` to the RPG container. The RPG nginx only serves assets and redirects `/rpg/wiki` etc. to `/`—breaking the SPA.
+- With `/rpg/assets`: Only `/rpg/assets/*` (e.g. `remoteEntry.js`) goes to RPG. Routes like `/rpg/wiki` go to the shell, which serves the SPA.
