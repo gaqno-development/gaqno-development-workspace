@@ -407,7 +407,7 @@ Se `https://portal.gaqno.com.br/erp/assets/remoteEntry.js` retorna **HTML** em v
 | `/auth/assets`            | gaqno-sso         | 3001             |
 | `/omnichannel/assets`     | gaqno-omnichannel | 3010             |
 
-**All routes through shell:** gaqno-shell (Path `/`) catches all app routes. Each MFE (Path `/<mfe>/assets`) only serves static assets. Do **not** strip the path prefix—each MFE nginx expects the full path (e.g. `/ai/assets/remoteEntry.js`). **All MFEs** redirect any document request (wrong proxy config or direct access) to `/dashboard` so the user passes through the shell.
+**All routes through shell:** gaqno-shell (Path `/`) catches all app routes. Each MFE (Path `/<mfe>/assets`) only serves static assets. Do **not** strip the path prefix—each MFE nginx expects the full path (e.g. `/ai/assets/remoteEntry.js`). **All MFEs** redirect any document request (wrong proxy config or direct access) to `/` so the shell handles routing.
 
 ### All routes through shell – hard refresh and direct visits
 

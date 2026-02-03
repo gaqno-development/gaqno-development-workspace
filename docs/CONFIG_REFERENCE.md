@@ -49,7 +49,7 @@ All MFEs serve assets only and redirect document requests to the shell dashboard
 ```nginx
 location /<path>/assets/ { alias /usr/share/nginx/html/assets/; add_header Cache-Control "public, immutable"; add_header Access-Control-Allow-Origin "*"; }
 location /assets/ { alias /usr/share/nginx/html/assets/; add_header Cache-Control "public, immutable"; add_header Access-Control-Allow-Origin "*"; }
-location / { return 302 /dashboard; }
+location / { return 302 /; }
 ```
 
 Replace `<path>` with: ai, crm, erp, finance, pdv, rpg, auth (sso), omnichannel.
