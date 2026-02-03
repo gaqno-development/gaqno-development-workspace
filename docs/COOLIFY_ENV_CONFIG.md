@@ -476,9 +476,17 @@ If `https://portal.gaqno.com.br/omnichannel/assets/remoteEntry.js` returns **200
 4. **Container logs:** If the container restarts or crashes, check **Logs** for errors (e.g. build failure, missing NPM_TOKEN).
 5. **Same domain:** All MFEs must be on `portal.gaqno.com.br` with different Paths.
 
+### /rpg/assets/remoteEntry.js returns HTML instead of JavaScript
+
+If `https://portal.gaqno.com.br/rpg/assets/remoteEntry.js` returns **HTML** (shell's index.html) instead of JavaScript:
+
+1. **Add domain:** In Coolify → **gaqno-rpg** → **Domains**, add domain `portal.gaqno.com.br` with **Path** = `/rpg`. Without this, requests fall through to the shell.
+2. **Port must be 3007:** In Coolify → **gaqno-rpg** → **General** (or **Ports**), set **Port** to **3007**. The container listens on 3007; a wrong port (e.g. 3000) causes 502.
+3. **Redeploy** after adding the domain so Traefik picks up the new route.
+
 ### 502 Bad Gateway on /rpg/assets/remoteEntry.js specifically
 
-If `https://portal.gaqno.com.br/rpg/assets/remoteEntry.js` returns **502** after login (RPG is the first available route):
+If `https://portal.gaqno.com.br/rpg/assets/remoteEntry.js` returns **502** (after domain is configured):
 
 1. **gaqno-rpg must be deployed:** In Coolify, ensure the **gaqno-rpg** application exists, is built, and is **Running**. If it is not deployed, the proxy has nowhere to forward `/rpg` requests.
 2. **Port must be 3007:** In Coolify → **gaqno-rpg** → **General** (or **Ports**), set **Port** to **3007**. The container listens on 3007; a mismatch causes 502.

@@ -67,7 +67,8 @@ const handleRefreshError = () => {
   const isPublicRoute =
     currentPath.startsWith("/rpg") ||
     currentPath === "/" ||
-    currentPath.startsWith("/register");
+    currentPath.startsWith("/register") ||
+    currentPath.startsWith("/dashboard");
 
   if (isAuthPage || isPublicRoute) {
     console.log("Already on auth/public page, skipping redirect");
