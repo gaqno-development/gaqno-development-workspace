@@ -485,6 +485,13 @@ If `https://portal.gaqno.com.br/rpg/assets/remoteEntry.js` returns **502** after
 3. **Path must be /rpg:** In Coolify → **gaqno-rpg** → Domains, set **Path** = `/rpg` for `portal.gaqno.com.br`.
 4. **NPM_TOKEN for build:** gaqno-rpg may need `NPM_TOKEN` in Build Arguments if it uses `@gaqno-development/frontcore`. Check **Build logs** for install failures.
 
+### 502 Bad Gateway on /ai/assets/remoteEntry.js
+
+If `https://portal.gaqno.com.br/ai/assets/remoteEntry.js` returns **502**:
+
+1. **Port must be 3002:** In Coolify → **gaqno-ai** → Domains/General, set **Port** to **3002**. The container listens on 3002; a mismatch (e.g. 3003) causes 502.
+2. **Path:** Ensure Path = `/ai` for `portal.gaqno.com.br`.
+
 ### 500 – relation "omni_conversations" does not exist
 
 If the omnichannel service returns 500 with `relation "omni_conversations" does not exist`, the database migrations did not run or the database is wrong.
