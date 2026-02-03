@@ -2,7 +2,7 @@
 
 Complete environment variable configuration for all projects in Coolify.
 
-**Single source of truth:** See [docs/CONFIG_REFERENCE.md](docs/CONFIG_REFERENCE.md) for ports, database names, and paths.
+**Single source of truth:** See [CONFIG_REFERENCE.md](CONFIG_REFERENCE.md) for ports, database names, and paths.
 
 ---
 
