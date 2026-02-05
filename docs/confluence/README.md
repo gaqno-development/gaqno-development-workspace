@@ -2,21 +2,21 @@
 
 **Purpose:** Authoritative architectural documentation derived from the gaqno-development-workspace codebase.
 
-**Status:** ✅ Published to Confluence (GD space) via Atlassian MCP — 2025-02-05
+**Status:** ✅ Published to Confluence DDS space — 2025-02-05
 
 ---
 
-## Document Index
+## Document Index (DDS Space)
 
-| #   | Document                         | Confluence                                                        | Local                                                                          |
-| --- | -------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| 0   | Architecture (index)             | [View](https://gaqno.atlassian.net/wiki/spaces/GD/pages/15728641) | —                                                                              |
-| 1   | System Architecture Overview     | [View](https://gaqno.atlassian.net/wiki/spaces/GD/pages/15761409) | [01-System-Architecture-Overview.md](./01-System-Architecture-Overview.md)     |
-| 2   | Frontend Architecture Guide      | [View](https://gaqno.atlassian.net/wiki/spaces/GD/pages/15794177) | [02-Frontend-Architecture-Guide.md](./02-Frontend-Architecture-Guide.md)       |
-| 3   | Backend Architecture Guide       | [View](https://gaqno.atlassian.net/wiki/spaces/GD/pages/15826945) | [03-Backend-Architecture-Guide.md](./03-Backend-Architecture-Guide.md)         |
-| 4   | Contracts & Types Guide          | [View](https://gaqno.atlassian.net/wiki/spaces/GD/pages/15630354) | [04-Contracts-Types-Guide.md](./04-Contracts-Types-Guide.md)                   |
-| 5   | Architectural Rules & Guardrails | [View](https://gaqno.atlassian.net/wiki/spaces/GD/pages/15859713) | [05-Architectural-Rules-Guardrails.md](./05-Architectural-Rules-Guardrails.md) |
-| 6   | Health Dashboard                 | *(publish when ready)*                                              | [06-Health-Dashboard.md](./06-Health-Dashboard.md)                             |
+| #   | Document                         | Confluence (DDS)                                                                                            | Local                                                                          |
+| --- | -------------------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| 0   | DDS Overview                     | [View](https://gaqno-development.atlassian.net/wiki/spaces/DDS/overview)                                    | —                                                                              |
+| 1   | System Architecture Overview     | [View](https://gaqno-development.atlassian.net/wiki/spaces/DDS/pages/589825/System+Architecture+Overview)   | [01-System-Architecture-Overview.md](./01-System-Architecture-Overview.md)     |
+| 2   | Frontend Architecture Guide      | [View](https://gaqno-development.atlassian.net/wiki/spaces/DDS/pages/688129/Frontend+Architecture+Guide)    | [02-Frontend-Architecture-Guide.md](./02-Frontend-Architecture-Guide.md)       |
+| 3   | Backend Architecture Guide       | [View](https://gaqno-development.atlassian.net/wiki/spaces/DDS/pages/720897/Backend+Architecture+Guide)     | [03-Backend-Architecture-Guide.md](./03-Backend-Architecture-Guide.md)         |
+| 4   | Contracts & Types Guide          | [View](https://gaqno-development.atlassian.net/wiki/spaces/DDS/pages/819201/Contracts+Types+Guide)          | [04-Contracts-Types-Guide.md](./04-Contracts-Types-Guide.md)                   |
+| 5   | Architectural Rules & Guardrails | [View](https://gaqno-development.atlassian.net/wiki/spaces/DDS/pages/884737/Architectural+Rules+Guardrails) | [05-Architectural-Rules-Guardrails.md](./05-Architectural-Rules-Guardrails.md) |
+| 6   | Health Dashboard                 | [View](https://gaqno-development.atlassian.net/wiki/spaces/DDS/pages/917505/Health+Dashboard)               | [06-Health-Dashboard.md](./06-Health-Dashboard.md)                             |
 
 ---
 
@@ -37,19 +37,25 @@
 
 ---
 
-## Confluence structure (GD space)
+## Confluence structure (DDS space)
 
 ```
-gaqno development (home) — https://gaqno.atlassian.net/wiki/spaces/GD/pages/393386
-├── Architecture — https://gaqno.atlassian.net/wiki/spaces/GD/pages/15728641
-│   ├── System Architecture Overview
-│   ├── Frontend Architecture Guide
-│   ├── Backend Architecture Guide
-│   ├── Contracts & Types Guide
-│   ├── Architectural Rules & Guardrails
-│   └── Health Dashboard
-└── Template - Artigo sobre solução de problemas
+DDS Overview — https://gaqno-development.atlassian.net/wiki/spaces/DDS/overview
+├── System Architecture Overview
+├── Frontend Architecture Guide
+├── Backend Architecture Guide
+├── Contracts & Types Guide
+├── Architectural Rules & Guardrails
+└── Health Dashboard
 ```
+
+## Republish to DDS
+
+```bash
+CONFLUENCE_SPACE=DDS node scripts/publish-confluence-dds.mjs
+```
+
+Uses credentials from `.cursor/mcp.json` (atlassian env) or `CONFLUENCE_USERNAME` / `CONFLUENCE_API_TOKEN`.
 
 **Labels:** architecture, technical, documentation, frontend, backend, contracts, guardrails
 
