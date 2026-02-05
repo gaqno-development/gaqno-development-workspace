@@ -1,5 +1,23 @@
 # Scripts
 
+## copy-workflows-to-repos.sh
+
+Copia os workflows de CI (`ci.yml`, `branch-pr-validation.yml`) para cada repositório individual.
+
+### Uso
+
+```bash
+./scripts/copy-workflows-to-repos.sh
+```
+
+Executar a partir do workspace root. Os workflows são copiados de `scripts/workflows/` para `{repo}/.github/workflows/`:
+
+- `ci.yml` — lint, test, build
+- `branch-pr-validation.yml` — validação de branch/PR
+- `pr-agent.yml` — code review por IA ([PR-Agent](https://github.com/qodo-ai/pr-agent)); requer `OPENAI_KEY` em GitHub Secrets
+
+---
+
 ## create-project.js
 
 Cria um novo projeto Gaqno com UI (MFE) e Service (NestJS).
