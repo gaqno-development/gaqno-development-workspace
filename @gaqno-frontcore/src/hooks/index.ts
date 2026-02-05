@@ -14,5 +14,6 @@ export * from "./useFilteredMenu";
 export * from "./useModuleView";
 export * from "./admin";
 export * from "./ai";
+export * from "./health";
 // UI-related hooks
 export * from "./ui";
