@@ -18,13 +18,13 @@ jobs:
           node-version: 20
 
       - name: Install deps
-        run: pnpm install
+        run: npm ci
 
       - name: Lint
-        run: pnpm lint
+        run: npx turbo run lint
 
       - name: Tests
-        run: pnpm test
+        run: npx turbo run test
 
       - name: Build
-        run: pnpm build
+        run: npx turbo run build
