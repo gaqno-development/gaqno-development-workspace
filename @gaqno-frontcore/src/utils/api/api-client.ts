@@ -249,6 +249,7 @@ export const createServiceClient = (baseURL: string): AxiosInstance => {
 const getServiceBaseUrl = (serviceName: string): string => {
   if (typeof window === "undefined") {
     const defaultUrls: Record<string, string> = {
+      admin: "http://localhost:4010",
       sso: "http://localhost:4001",
       ai: "http://localhost:4002",
       crm: "http://localhost:4003",
@@ -269,6 +270,7 @@ const getServiceBaseUrl = (serviceName: string): string => {
   };
 
   const envUrls: Record<string, string> = {
+    admin: getEnvVar("VITE_SERVICE_ADMIN_URL", "http://localhost:4010"),
     sso: getEnvVar("VITE_SERVICE_SSO_URL", "http://localhost:4001"),
     finance: getEnvVar("VITE_SERVICE_FINANCE_URL", "http://localhost:4005"),
     pdv: getEnvVar("VITE_SERVICE_PDV_URL", "http://localhost:4006"),
@@ -290,7 +292,12 @@ const createServiceClientWithPrefix = (serviceName: string): AxiosInstance => {
   const timeoutConfig = aiIntensiveServices.includes(serviceName)
     ? { timeout: 180000 }
     : {};
-  const pathPrefix = serviceName === "sso" ? "/v1" : `/v1/${serviceName}`;
+  const pathPrefix =
+    serviceName === "sso"
+      ? "/v1"
+      : serviceName === "admin"
+        ? ""
+        : `/v1/${serviceName}`;
   const baseURL =
     serviceName === "sso"
       ? serviceUrl.includes("/sso")
@@ -304,6 +311,7 @@ const createServiceClientWithPrefix = (serviceName: string): AxiosInstance => {
 };
 
 export const coreAxiosClient = {
+  admin: createServiceClientWithPrefix("admin"),
   sso: createServiceClientWithPrefix("sso"),
   finance: createServiceClientWithPrefix("finance"),
   pdv: createServiceClientWithPrefix("pdv"),

@@ -2,19 +2,26 @@
   "mcpServers": {
     "playwright": {
       "command": "npx",
-      "args": [
-        "@playwright/mcp@latest"
-      ]
+      "args": ["@playwright/mcp@latest"]
     },
     "coolify": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@masonator/coolify-mcp"
-      ],
+      "args": ["-y", "@masonator/coolify-mcp"],
       "env": {
         "COOLIFY_ACCESS_TOKEN": "02|k3WtyHGHFxkDf204wQtSB4yid7G9pi1hsZjtvkun99fd291f",
         "COOLIFY_BASE_URL": "https://coolify.gaqno.com.br"
+      }
+    },
+    "atlassian": {
+      "command": "uvx",
+      "args": ["mcp-atlassian"],
+      "env": {
+        "JIRA_URL": "https://gaqno.atlassian.net",
+        "JIRA_USERNAME": "gabriel.aquino@outlook.com",
+        "JIRA_API_TOKEN": "ATATT3xFfGF0ib9I-uY__sYNiDSwXZjFgvJPRC3H73QxaBD1vfQ9qGS0D3XOyXQ8sU7RkF4wLUv6nZKL8-8XMwMDQvLoAGc4vw0nYR7wg2N6mDUBW0OM-nX4L43guMjNJw1L6CADobsKdoi7nCLq0wD2RnoFIBxBmdFYumVU01xmda_m3N9ITSo=205F3DD5",
+        "CONFLUENCE_URL": "https://gaqno-development.atlassian.net/wiki",
+        "CONFLUENCE_USERNAME": "gabriel.aquino@outlook.com",
+        "CONFLUENCE_API_TOKEN": "ATATT3xFfGF0ib9I-uY__sYNiDSwXZjFgvJPRC3H73QxaBD1vfQ9qGS0D3XOyXQ8sU7RkF4wLUv6nZKL8-8XMwMDQvLoAGc4vw0nYR7wg2N6mDUBW0OM-nX4L43guMjNJw1L6CADobsKdoi7nCLq0wD2RnoFIBxBmdFYumVU01xmda_m3N9ITSo=205F3DD5"
       }
     },
     "postgres": {

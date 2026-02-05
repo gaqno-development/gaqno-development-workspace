@@ -1,0 +1,47 @@
+# Scripts
+
+## create-project.js
+
+Cria um novo projeto Gaqno com UI (MFE) e Service (NestJS).
+
+### Uso
+
+```bash
+npm run create-project -- <nome> [opções]
+```
+
+### Exemplos
+
+```bash
+# Projeto "inventory" com portas padrão (UI: 3011, Service: 4011)
+npm run create-project -- inventory
+
+# Com portas customizadas
+npm run create-project -- inventory --ui-port=3012 --service-port=4012
+
+# Com instalação automática de dependências
+npm run create-project -- inventory --install
+```
+
+### Estrutura criada
+
+**gaqno-{nome}-ui** (padrão frontend):
+
+- Vite + React + Module Federation
+- Tailwind CSS
+- @gaqno-development/frontcore
+- Estrutura: `src/{components,hooks,lib,pages,types,utils,config}`
+
+**gaqno-{nome}-service** (padrão backend):
+
+- NestJS 11
+- ConfigModule global
+- Estrutura: `src/{app.module,main}`
+
+### Próximos passos após criar
+
+1. `npm install` (na raiz ou em cada pacote)
+2. Adicionar `MFE_{NOME}_URL` no `gaqno-shell-ui/vite.config.ts`
+3. Adicionar rotas `/{nome}/*` no `gaqno-shell-ui/src/App.tsx`
+4. Adicionar `VITE_SERVICE_{NOME}_URL` nas variáveis de ambiente do frontend
+5. Adicionar scripts `dev:{nome}` e `dev:{nome}-service` no `package.json` raiz

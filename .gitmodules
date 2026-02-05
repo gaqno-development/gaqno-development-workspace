@@ -1,51 +1,18 @@
-[submodule "gaqno-ai"]
-	path = gaqno-ai
-	url = git@github.com-personal:gaqno-development/gaqno-ai.git
 [submodule "gaqno-ai-service"]
 	path = gaqno-ai-service
 	url = git@github.com-personal:gaqno-development/gaqno-ai-service.git
-[submodule "gaqno-crm"]
-	path = gaqno-crm
-	url = git@github.com-personal:gaqno-development/gaqno-crm.git
-[submodule "gaqno-erp"]
-	path = gaqno-erp
-	url = git@github.com-personal:gaqno-development/gaqno-erp.git
-[submodule "gaqno-pdv"]
-	path = gaqno-pdv
-	url = git@github.com-personal:gaqno-development/gaqno-pdv.git
 [submodule "gaqno-pdv-service"]
 	path = gaqno-pdv-service
 	url = git@github.com-personal:gaqno-development/gaqno-pdv-service.git
-[submodule "gaqno-shell"]
-	path = gaqno-shell
-	url = git@github.com-personal:gaqno-development/gaqno-shell.git
 [submodule "gaqno-sso-service"]
 	path = gaqno-sso-service
 	url = git@github.com-personal:gaqno-development/gaqno-sso-service.git
-[submodule "gaqno-finance"]
-	path = gaqno-finance
-	url = git@github.com-personal:gaqno-development/gaqno-finance.git
 [submodule "gaqno-finance-service"]
 	path = gaqno-finance-service
 	url = git@github.com-personal:gaqno-development/gaqno-finance-service.git
-[submodule "gaqno-rpg"]
-	path = gaqno-rpg
-	url = git@github.com-personal:gaqno-development/gaqno-rpg.git
 [submodule "gaqno-rpg-service"]
 	path = gaqno-rpg-service
 	url = git@github.com-personal:gaqno-development/gaqno-rpg-service.git
-[submodule "gaqno-sso"]
-	path = gaqno-sso
-	url = git@github.com-personal:gaqno-development/gaqno-sso.git
-[submodule "gaqno-landing"]
-	path = gaqno-landing
-	url = git@github.com:gaqno-development/gaqno-landing.git
-[submodule "gaqno-lenin"]
-	path = gaqno-lenin
-	url = git@github.com:gaqno-development/gaqno-lenin.git
-[submodule "gaqno-omnichannel"]
-	path = gaqno-omnichannel
-	url = git@github.com-personal:gaqno-development/gaqno-omnichannel.git
 [submodule "gaqno-omnichannel-service"]
 	path = gaqno-omnichannel-service
 	url = git@github.com-personal:gaqno-development/gaqno-omnichannel-service.git

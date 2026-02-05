@@ -3,7 +3,8 @@
   "version": "1.0.27",
   "private": false,
   "publishConfig": {
-    "access": "public"
+    "registry": "https://npm.pkg.github.com/gaqno-development",
+    "access": "restricted"
   },
   "files": [
     "src/**/*"

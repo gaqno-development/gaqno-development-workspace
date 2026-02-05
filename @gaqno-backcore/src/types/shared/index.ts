@@ -8,3 +8,4 @@ export * from './sale';
 export * from './permission';
 export * from './tenant';
 export * from './branch';
+export * from './health';
