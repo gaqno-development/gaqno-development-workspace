@@ -25,14 +25,9 @@
     "clean": "rm -rf node_modules */node_modules @**/node_modules",
     "build:packages": "npm run build -w @gaqno-backcore",
     "build:all": "npm run build -w gaqno-shell && npm run build -w gaqno-sso && npm run build -w gaqno-ai && npm run build -w gaqno-crm && npm run build -w gaqno-erp && npm run build -w gaqno-finance && npm run build -w gaqno-pdv && npm run build -w gaqno-rpg && npm run build -w gaqno-sso-service && npm run build -w gaqno-ai-service && npm run build -w gaqno-finance-service && npm run build -w gaqno-pdv-service && npm run build -w gaqno-rpg-service",
-    "dev": "pm2 start ecosystem.config.js",
-    "dev:stop": "pm2 stop ecosystem.config.js",
-    "dev:restart": "pm2 restart ecosystem.config.js",
-    "dev:delete": "pm2 delete ecosystem.config.js",
-    "dev:logs": "pm2 logs",
-    "dev:status": "pm2 status",
-    "dev:backends": "pm2 start gaqno-sso-service gaqno-ai-service gaqno-finance-service gaqno-pdv-service gaqno-rpg-service",
-    "dev:frontends": "pm2 start gaqno-shell gaqno-sso gaqno-ai gaqno-crm gaqno-erp gaqno-finance gaqno-pdv gaqno-rpg",
+    "dev": "turbo run dev --concurrency=13",
+    "dev:backends": "turbo run dev --concurrency=13 --filter=./gaqno-sso-service --filter=./gaqno-ai-service --filter=./gaqno-finance-service --filter=./gaqno-pdv-service --filter=./gaqno-rpg-service",
+    "dev:frontends": "turbo run dev --concurrency=13 --filter=./gaqno-shell --filter=./gaqno-sso --filter=./gaqno-ai --filter=./gaqno-crm --filter=./gaqno-erp --filter=./gaqno-finance --filter=./gaqno-pdv --filter=./gaqno-rpg",
     "dev:shell": "npm run dev -w gaqno-shell",
     "dev:ai": "npm run dev -w gaqno-ai",
     "dev:crm": "npm run dev -w gaqno-crm",
@@ -42,11 +37,13 @@
     "dev:rpg": "npm run dev -w gaqno-rpg",
     "dev:sso": "npm run dev -w gaqno-sso",
     "dev:sso-service": "npm run start:dev -w gaqno-sso-service",
+    "dev:ai-service": "npm run start:dev -w gaqno-ai-service",
+    "dev:finance-service": "npm run start:dev -w gaqno-finance-service",
     "dev:pdv-service": "npm run start:dev -w gaqno-pdv-service",
     "dev:rpg-service": "npm run start:dev -w gaqno-rpg-service",
     "release:packages": "./publish-packages.sh"
   },
   "devDependencies": {
-    "pm2": "^5.3.0"
+    "turbo": "^2.3.0"
   }
 }

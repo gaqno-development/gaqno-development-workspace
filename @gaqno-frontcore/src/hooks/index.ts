@@ -13,5 +13,6 @@ export * from "./auth/useSsoAuth";
 export * from "./useFilteredMenu";
 export * from "./useModuleView";
 export * from "./admin";
+export * from "./ai";
 // UI-related hooks
 export * from "./ui";
