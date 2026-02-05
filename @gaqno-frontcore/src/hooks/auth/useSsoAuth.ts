@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { SessionContext } from "../../types/shared/auth";
+import { SessionContext } from "../../types/shared";
 import { ssoAxiosClient } from "../../utils/api/sso-client";
 import { useApiQuery } from "../useApiQuery";
 import { useApiMutation } from "../useApiMutation";
