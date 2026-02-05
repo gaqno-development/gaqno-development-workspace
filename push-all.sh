@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Push all submodules from the workspace.
-# IMPORTANTE: Push apenas pelo workspace para que GitHub Actions disparem.
+# Cada repo tem seus próprios workflows em .github/workflows/ — CI dispara no repo individual.
 # Ver docs/WORKSPACE-WORKFLOW.md
 #
 set -e
@@ -156,5 +156,5 @@ fi
 
 echo ""
 echo "🎉 All repositories processed!"
-echo "   (Push via workspace garante que GitHub Actions disparem — docs/WORKSPACE-WORKFLOW.md)"
+echo "   (Workflows em cada repo — CI/PR validation disparam no repositório individual)"
 
