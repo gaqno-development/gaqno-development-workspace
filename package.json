@@ -52,7 +52,7 @@
     "dev:pdv-service": "npm run start:dev -w gaqno-pdv-service",
     "dev:rpg-service": "npm run start:dev -w gaqno-rpg-service",
     "release:packages": "./publish-packages.sh",
-    "publish:confluence": "CONFLUENCE_SPACE=DDS node scripts/publish-confluence-dds.mjs"
+    "publish:confluence": "echo 'Docs no Confluence DDS. Edite em https://gaqno-development.atlassian.net/wiki/spaces/DDS'"
   },
   "devDependencies": {
     "turbo": "^2.3.0"

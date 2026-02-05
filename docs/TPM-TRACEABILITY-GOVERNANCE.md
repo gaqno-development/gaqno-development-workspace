@@ -15,22 +15,16 @@ Code (Repository)
     └── gaqno-*-service
             │
             ▼
-Confluence Documentation (docs/confluence/)
+Confluence (DDS space)
     │
-    ├── 01-System-Architecture-Overview
-    ├── 02-Frontend-Architecture-Guide
-    ├── 03-Backend-Architecture-Guide
-    ├── 04-Contracts-Types-Guide
-    └── 05-Architectural-Rules-Guardrails
+    ├── System Architecture Overview, Frontend/Backend Guides
+    ├── Contracts & Types, Architectural Rules, Health Dashboard
+    └── https://gaqno-development.atlassian.net/wiki/spaces/DDS
             │
             ▼
-Jira Planning (docs/jira/JIRA-PLANNING-ARTIFACTS.md)
+Jira (KAN project)
     │
-    ├── EPIC-1: Architectural Alignment
-    ├── EPIC-2: Contract Consolidation
-    ├── EPIC-3: Frontend Cleanup
-    ├── EPIC-4: Backend Modularization
-    └── EPIC-5: Test Coverage Improvements
+    └── https://gaqno.atlassian.net/browse/KAN
             │
             ▼
 Stories → Tasks → Code Changes
@@ -97,7 +91,7 @@ Stories → Tasks → Code Changes
 
 ## References
 
-- [docs/confluence/](./confluence/)
-- [docs/jira/JIRA-PLANNING-ARTIFACTS.md](./jira/JIRA-PLANNING-ARTIFACTS.md)
+- [Confluence DDS](https://gaqno-development.atlassian.net/wiki/spaces/DDS)
+- [Jira KAN](https://gaqno.atlassian.net/browse/KAN)
 - [docs/SYSTEM-ARCHITECTURE-AUDIT.md](./SYSTEM-ARCHITECTURE-AUDIT.md)
 - [docs/REFACTORING-ROADMAP.md](./REFACTORING-ROADMAP.md)

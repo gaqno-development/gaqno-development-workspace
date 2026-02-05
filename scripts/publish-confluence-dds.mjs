@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * Publishes docs/confluence/*.md to Confluence DDS space.
- * Requires: CONFLUENCE_URL, CONFLUENCE_USERNAME, CONFLUENCE_API_TOKEN, CONFLUENCE_SPACE
- * Example: CONFLUENCE_SPACE=DDS node scripts/publish-confluence-dds.mjs
+ * @deprecated Docs publicados no Confluence DDS. Fonte local removida.
+ * Edite em: https://gaqno-development.atlassian.net/wiki/spaces/DDS
+ * Este script não tem mais arquivos para publicar.
  */
 
 import { readFileSync, readdirSync } from "fs";

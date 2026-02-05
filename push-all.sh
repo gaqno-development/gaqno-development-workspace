@@ -1,5 +1,9 @@
 #!/bin/bash
-
+#
+# Push all submodules from the workspace.
+# IMPORTANTE: Push apenas pelo workspace para que GitHub Actions disparem.
+# Ver docs/WORKSPACE-WORKFLOW.md
+#
 set -e
 
 LM_STUDIO_HOST="${LM_STUDIO_HOST:-http://localhost:1234/v1}"
@@ -53,25 +57,33 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPOS_FROM_GIT=($(git -C "$BASE_DIR" config --file .gitmodules --get-regexp path 2>/dev/null | awk '{ print $2 }' || true))
 if [ ${#REPOS_FROM_GIT[@]} -gt 0 ]; then
   REPOS=("${REPOS_FROM_GIT[@]}")
+elif [ -d "$BASE_DIR/.git/modules" ]; then
+  REPOS=($(ls -1 "$BASE_DIR/.git/modules" 2>/dev/null | grep -v '^\.$' || true))
 else
   REPOS=(
-    gaqno-ai
+    gaqno-admin-service
+    gaqno-admin-ui
     gaqno-ai-service
-    gaqno-crm
-    gaqno-erp
-    gaqno-pdv
-    gaqno-pdv-service
-    gaqno-shell
-    gaqno-sso-service
-    gaqno-finance
+    gaqno-ai-ui
+    gaqno-crm-ui
+    gaqno-erp-ui
     gaqno-finance-service
-    gaqno-rpg
-    gaqno-rpg-service
-    gaqno-sso
-    gaqno-landing
-    gaqno-lenin
-    gaqno-omnichannel
+    gaqno-finance-ui
+    gaqno-landing-ui
+    gaqno-lenin-ui
     gaqno-omnichannel-service
+    gaqno-omnichannel-ui
+    gaqno-pdv-service
+    gaqno-pdv-ui
+    gaqno-rpg-service
+    gaqno-rpg-ui
+    gaqno-saas-service
+    gaqno-saas-ui
+    gaqno-shell-ui
+    gaqno-sso-service
+    gaqno-sso-ui
+    gaqno-warehouse-service
+    gaqno-warehouse-ui
   )
 fi
 
@@ -144,4 +156,5 @@ fi
 
 echo ""
 echo "🎉 All repositories processed!"
+echo "   (Push via workspace garante que GitHub Actions disparem — docs/WORKSPACE-WORKFLOW.md)"
 

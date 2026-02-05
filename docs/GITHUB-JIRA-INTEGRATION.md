@@ -4,6 +4,13 @@
 
 ---
 
+## 0. Push via workspace (obrigatório)
+
+**GitHub Actions só disparam quando o push é feito a partir do `gaqno-development-workspace`.**  
+Ver [WORKSPACE-WORKFLOW.md](./WORKSPACE-WORKFLOW.md).
+
+---
+
 ## 1. Confirm integration
 
 1. In Jira: **Apps** → **Manage your apps** → **GitHub for Atlassian**

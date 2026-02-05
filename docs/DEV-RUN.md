@@ -1,5 +1,9 @@
 # Running the Development Environment
 
+**Importante:** Push apenas pelo workspace para que GitHub Actions disparem. Ver [WORKSPACE-WORKFLOW.md](./WORKSPACE-WORKFLOW.md).
+
+---
+
 ## Turbo (default: `npm run dev`)
 
 The workspace uses [Turbo](https://turbo.build/) to run all frontends and backends in parallel. Run:
