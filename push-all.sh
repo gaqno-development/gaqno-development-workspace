@@ -82,8 +82,6 @@ else
     gaqno-shell-ui
     gaqno-sso-service
     gaqno-sso-ui
-    gaqno-warehouse-service
-    gaqno-warehouse-ui
   )
 fi
 

@@ -14,7 +14,6 @@ REPOS=(
   gaqno-landing-ui gaqno-lenin-ui gaqno-omnichannel-service gaqno-omnichannel-ui
   gaqno-pdv-service gaqno-pdv-ui gaqno-rpg-service gaqno-rpg-ui
   gaqno-saas-service gaqno-saas-ui gaqno-shell-ui gaqno-sso-service gaqno-sso-ui
-  gaqno-warehouse-service gaqno-warehouse-ui
 )
 
 for repo in "${REPOS[@]}"; do

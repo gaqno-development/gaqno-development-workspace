@@ -107,8 +107,6 @@ O workspace possui múltiplos serviços NestJS independentes:
 | gaqno-pdv-ui/App.tsx                   | Lógica em componente  | PDVPage com conteúdo inline em vez de página separada | LOW        |
 | gaqno-saas-ui/App.tsx                  | Lógica em componente  | SaasCostingContent com lógica de estado no App        | MEDIUM     |
 | gaqno-admin-ui                         | Sem hooks por domínio | Páginas sem hooks dedicados em pages/\*/hooks         | MEDIUM     |
-| gaqno-warehouse-ui, gaqno-inventory-ui | Estrutura mínima      | Criados pelo script; sem hooks, sem testes            | LOW        |
-
 ## ⚠️ Warnings
 
 - Shell possui muitas páginas admin locais (DomainsPage, TenantsPage, etc.) — poderia ser MFE

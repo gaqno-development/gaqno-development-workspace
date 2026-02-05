@@ -1,7 +1,0 @@
-{
-  "watch": [
-    "src"
-  ],
-  "ext": "js,ts,jsx,tsx,json",
-  "exec": "vite build && vite preview --port 3012 --strictPort --host 0.0.0.0"
-}
