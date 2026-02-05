@@ -101,3 +101,18 @@ CORS_ORIGIN=https://portal.gaqno.com.br,https://api.gaqno.com.br
 ```
 
 No spaces, no quotes. Redeploy after changing.
+
+## Architecture: admin-service and saas-service evolution
+
+**Decision (2025-02-05):** Both services are **stubs**. Core platform logic remains in **gaqno-sso-service**.
+
+| Service              | Role                    | Evolution plan                          |
+| -------------------- | ----------------------- | --------------------------------------- |
+| gaqno-admin-service  | Stub; proxies to sso    | May evolve to host admin-specific logic |
+| gaqno-saas-service   | Stub; costs aggregation | May absorb costing logic from sso       |
+
+- **gaqno-sso-service** owns: Users, Tenants, Branches, Domains, Menu, Permissions, Usage.
+- **gaqno-admin-service** (port 4010): Proxies users/roles/costs/usage to sso or saas.
+- **gaqno-saas-service** (port 4009): Costs endpoints; may be extended for SaaS-specific features.
+
+No migration planned. New admin/SaaS features can be added to these stubs or to sso-service as appropriate.
