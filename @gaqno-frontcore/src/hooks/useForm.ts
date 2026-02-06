@@ -1,16 +1,17 @@
-// @ts-nocheck
 import { useForm, UseFormProps, DefaultValues, Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 
+type Inferred<T extends z.ZodSchema> = z.infer<T>
+
 export const useFormWithValidation = <T extends z.ZodSchema>(
   schema: T,
-  defaultValues?: DefaultValues<z.infer<T>>,
-  options?: Omit<UseFormProps<z.infer<T>>, 'resolver' | 'defaultValues'>
+  defaultValues?: DefaultValues<Inferred<T>>,
+  options?: Omit<UseFormProps<Inferred<T>>, 'resolver' | 'defaultValues'>
 ) => {
-  return useForm<z.infer<T>>({
-    resolver: zodResolver(schema) as Resolver<z.infer<T>>,
-    defaultValues: defaultValues as DefaultValues<T>,
+  return useForm<Inferred<T>>({
+    resolver: zodResolver(schema) as Resolver<Inferred<T>>,
+    defaultValues,
     ...options,
   })
 }

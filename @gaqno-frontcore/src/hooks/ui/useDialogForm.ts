@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useForm, UseFormReturn, FieldValues, Path, DefaultValues } from 'react-hook-form'
+import { useForm, FieldValues, DefaultValues, Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { handleMutationError, handleFormError } from '../../utils/error-handler'
@@ -32,7 +32,7 @@ export function useDialogForm<T extends FieldValues, TEntity = object>({
   enabled = true,
 }: IUseDialogFormOptions<T, TEntity>) {
   const form = useForm<T>({
-    resolver: zodResolver(schema as any) as any,
+    resolver: zodResolver(schema) as Resolver<T>,
     defaultValues: defaultValues as DefaultValues<T>,
   })
 
