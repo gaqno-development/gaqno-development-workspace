@@ -1,11 +1,11 @@
 # PR-Agent: AI-powered code review
 # https://github.com/qodo-ai/pr-agent
-# describe/review/improve run on opened, reopened, ready_for_review (not on synchronize - action skips it). After push, comment /describe or /review on the PR.
+# Auto describe/review/improve on opened, reopened, ready_for_review, synchronize (pr_actions includes synchronize).
 name: PR Agent
 
 on:
   pull_request:
-    types: [opened, reopened, ready_for_review]
+    types: [opened, synchronize, reopened, ready_for_review]
   issue_comment:
 jobs:
   pr_agent_job:
@@ -27,3 +27,7 @@ jobs:
         env:
           OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github_action_config.auto_review: "true"
+          github_action_config.auto_describe: "true"
+          github_action_config.auto_improve: "true"
+          github_action_config.pr_actions: '["opened","reopened","ready_for_review","synchronize"]'
