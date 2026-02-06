@@ -14,6 +14,42 @@ type AxiosClientConfig = {
   onRefreshError?: () => void;
 };
 
+export type ServiceConfig = {
+  on401Reject?: (url: string, path: string) => boolean;
+};
+
+const serviceConfigs: Record<string, ServiceConfig> = {};
+
+export const registerServiceConfig = (
+  serviceName: string,
+  config: ServiceConfig
+): void => {
+  serviceConfigs[serviceName] = config;
+};
+
+const getServiceNameFromUrl = (requestUrl: string): string | null => {
+  try {
+    const path = requestUrl.startsWith("http")
+      ? new URL(requestUrl).pathname
+      : requestUrl;
+    const match = path.match(/\/v1\/([^/]+)/);
+    return match ? match[1] : null;
+  } catch {
+    return null;
+  }
+};
+
+const shouldReject401WithoutRedirect = (requestUrl: string): boolean => {
+  const serviceName = getServiceNameFromUrl(requestUrl);
+  if (!serviceName) return false;
+  const config = serviceConfigs[serviceName];
+  if (!config?.on401Reject) return false;
+  const path = requestUrl.startsWith("http")
+    ? new URL(requestUrl).pathname
+    : requestUrl;
+  return config.on401Reject(requestUrl, path);
+};
+
 let isRefreshing = false;
 let failedQueue: Array<{
   resolve: (value?: unknown) => void;
@@ -148,16 +184,12 @@ const onResponseError = async (
       requestUrl.includes("/sign-up") ||
       requestUrl.includes("/signin") ||
       requestUrl.includes("/signup");
-    const isRpgEndpoint = requestUrl.includes("/v1/rpg/");
-    const currentPath =
-      typeof window !== "undefined" ? window.location.pathname : "";
-    const isRpgRoute = currentPath.startsWith("/rpg");
 
     if (isAuthEndpoint) {
       return Promise.reject(error);
     }
 
-    if (isRpgEndpoint && isRpgRoute) {
+    if (shouldReject401WithoutRedirect(requestUrl)) {
       return Promise.reject(error);
     }
 
