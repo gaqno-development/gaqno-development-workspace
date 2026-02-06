@@ -1,11 +1,13 @@
-export { 
+export {
   createAxiosClient,
-  apiClient, 
-  createServiceClient, 
-  ssoClient, 
-  financeClient, 
+  apiClient,
+  createServiceClient,
+  ssoClient,
+  financeClient,
   coreAxiosClient,
-  getAuthToken
-} from './api-client';
+  getAuthToken,
+  registerServiceConfig,
+  type ServiceConfig,
+} from "./api-client";
 
-export { ssoAxiosClient } from './sso-client';
+export { ssoAxiosClient } from "./sso-client";

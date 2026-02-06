@@ -1,6 +1,5 @@
 # PR-Agent: AI-powered code review
 # https://github.com/qodo-ai/pr-agent
-# Requer: OPENAI_KEY em GitHub Secrets (Settings > Secrets and variables > Actions)
 name: PR Agent
 
 on:
