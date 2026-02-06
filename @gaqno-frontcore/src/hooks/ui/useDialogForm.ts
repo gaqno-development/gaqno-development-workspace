@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { handleMutationError, handleFormError } from '../../utils/error-handler'
 
-interface IUseDialogFormOptions<T extends FieldValues, TEntity = any> {
+interface IUseDialogFormOptions<T extends FieldValues, TEntity = object> {
   schema: z.ZodType<T>
   defaultValues: T
   entity?: TEntity | null
@@ -18,7 +18,7 @@ interface IUseDialogFormOptions<T extends FieldValues, TEntity = any> {
   enabled?: boolean
 }
 
-export function useDialogForm<T extends FieldValues, TEntity = any>({
+export function useDialogForm<T extends FieldValues, TEntity = object>({
   schema,
   defaultValues,
   entity,
