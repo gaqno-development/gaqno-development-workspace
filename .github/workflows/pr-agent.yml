@@ -16,6 +16,10 @@ jobs:
       contents: write
     name: Run pr agent on every pull request, respond to user comments
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: PR Agent action step
         id: pragent
         uses: qodo-ai/pr-agent@main
