@@ -1,5 +1,6 @@
 # PR-Agent: AI-powered code review
 # https://github.com/qodo-ai/pr-agent
+# Se 403: criar PAT (repo) e definir secret PR_AGENT_GITHUB_TOKEN
 name: PR Agent
 
 on:
@@ -10,11 +11,13 @@ jobs:
   pr_agent:
     runs-on: ubuntu-latest
     permissions:
-      pull-requests: write
       contents: read
+      pull-requests: write
+      issues: write
+      statuses: write
     steps:
       - name: PR Agent review
         uses: Codium-ai/pr-agent@main
         env:
           OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PR_AGENT_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
