@@ -1,0 +1,75 @@
+name: Jira create from PR suggestions
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  jira_create:
+    if: >-
+      github.event.issue.pull_request != null &&
+      contains(github.event.comment.body, '/jira-create suggestions')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Get PR context
+        id: pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUM="${{ github.event.issue.number }}"
+          PR_URL="${{ github.server_url }}/${{ github.repository }}/pull/${PR_NUM}"
+          echo "pr_url=${PR_URL}" >> $GITHUB_OUTPUT
+          echo "pr_num=${PR_NUM}" >> $GITHUB_OUTPUT
+          TITLE="${{ github.event.issue.title }}"
+          HEAD=$(gh pr view "$PR_NUM" --repo "${{ github.repository }}" --json headRefName -q .headRefName 2>/dev/null || true)
+          TEXT="${TITLE} ${HEAD}"
+          KEY=$(echo "$TEXT" | grep -oE 'GAQNO-[0-9]+' | head -1 || true)
+          echo "parent_key=${KEY}" >> $GITHUB_OUTPUT
+
+      - name: Find PR Agent suggestions comment
+        id: suggestions
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BODY=$(gh api "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" --jq '[.[] | select(.body | test("PR Code Suggestions"))] | last | .body // empty')
+          if [ -z "$BODY" ]; then
+            gh pr comment "${{ steps.pr.outputs.pr_num }}" --repo "${{ github.repository }}" --body "No PR Code Suggestions comment found. Run PR Agent Improve first."
+            exit 1
+          fi
+          echo "$BODY" > pr_agent_comment_body.txt
+
+      - name: Create Jira tasks from suggestions
+        id: create
+        env:
+          PR_AGENT_COMMENT_FILE: pr_agent_comment_body.txt
+          PR_URL: ${{ steps.pr.outputs.pr_url }}
+          PARENT_ISSUE_KEY: ${{ steps.pr.outputs.parent_key }}
+          JIRA_URL: ${{ secrets.JIRA_URL }}
+          JIRA_USERNAME: ${{ secrets.JIRA_USERNAME }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+        run: |
+          KEYS=$(node scripts/jira-create-from-pr-suggestions.mjs)
+          delimiter=$(openssl rand -hex 8)
+          echo "keys<<${delimiter}" >> $GITHUB_OUTPUT
+          echo "$KEYS" >> $GITHUB_OUTPUT
+          echo "${delimiter}" >> $GITHUB_OUTPUT
+
+      - name: Reply with created Jira keys
+        if: success() && steps.create.outputs.keys != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          KEYS="${{ steps.create.outputs.keys }}"
+          LIST=$(echo "$KEYS" | sed 's/^/- /')
+          gh pr comment "${{ steps.pr.outputs.pr_num }}" --repo "${{ github.repository }}" --body "Created Jira tasks for PR suggestions (added to backlog):${LIST:+$'\n'$'\n'$LIST}"
