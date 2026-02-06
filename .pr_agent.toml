@@ -1,0 +1,13 @@
+[github_app]
+pr_commands = ["/describe", "/review", "/improve"]
+
+[pr_description]
+publish_description_as_comment = false
+publish_labels = true
+generate_ai_title = true
+enable_pr_diagram = true
+
+[pr_reviewer]
+require_score_review = true
+require_ticket_analysis_review = true
+require_security_review = true

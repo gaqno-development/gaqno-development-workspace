@@ -14,6 +14,9 @@ You have access to:
 - Atlassian MCP (Jira) for linking branches/PRs and transitioning issues
 - Scripts: `push-all.sh` (commit + push in all changed repos), `docs/WORKSPACE-WORKFLOW.md`, `docs/GITHUB-JIRA-INTEGRATION.md`
 - Jira scripts: `scripts/jira-transition-by-name.mjs` (transition by name, e.g. `--to="Em andamento"`, `--to=fazendo`, `--to="Em revisao"`, `--to=done`), `scripts/jira-rest-utils.mjs` (loadJiraEnv, transitionIssueByName, addComment), `scripts/jira-comment.mjs` (comment on issue). Other scripts in `scripts/` for boards, filters, dashboards, components, etc.; see `scripts/README.md` and `docs/jira/` (e.g. REESTRUTURACAO-NAVEGACAO.md § 5) for full list and execution order.
+- **PR suggestions → Jira:** Comment `/jira-create suggestions` on a PR that has PR Agent "PR Code Suggestions"; workflow `.github/workflows/jira-create-from-suggestions.yml` creates one GAQNO Task per suggestion (backlog) and optionally links to the PR’s parent issue. Repo secrets required: `JIRA_URL`, `JIRA_USERNAME`, `JIRA_API_TOKEN`.
+
+**GAQNO-1152 subtasks (branch GAQNO-1152, 6 itens):** 1153 Permissões explícitas no pr-agent (contents, pull-requests, issues); 1154 Verificar Settings > Actions > General Workflow permissions Read and write (manual); 1155 Se 403: PAT em secret PR_AGENT_GITHUB_TOKEN como GITHUB_TOKEN (manual/secret); 1156 Describe na descrição da PR, /review e /improve, trigger synchronize; 1157 Run only for non-bot e OWNER/MEMBER/COLLABORATOR em PR ou issue_comment; 1158 Implementar /jira-create suggestions (workflow + script).
 
 ────────────────────────────────────────────
 RULE: WHERE TO OPEN THE PR
