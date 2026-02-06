@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
-import { useForm, FieldValues, DefaultValues, Resolver } from 'react-hook-form'
+import type { BaseSyntheticEvent } from 'react'
+import { useForm, FieldValues, DefaultValues, Resolver, FieldErrors } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { handleMutationError, handleFormError } from '../../utils/error-handler'
@@ -77,14 +78,13 @@ export function useDialogForm<T extends FieldValues, TEntity = object>({
     }
   }
 
-  const onError = (errors: Record<string, any>) => {
-    handleFormError(errors)
+  const onError = (errors: FieldErrors<T>) => {
+    handleFormError(errors as FieldErrors<FieldValues>)
   }
 
   return {
     form,
-    // @ts-ignore - Type conflict between different instances of react-hook-form when using local packages
-    onSubmit: form.handleSubmit(onSubmit, onError),
+    onSubmit: form.handleSubmit(onSubmit, onError) as (e?: BaseSyntheticEvent) => Promise<void>,
     isSubmitting: form.formState.isSubmitting,
     isEdit,
   }
