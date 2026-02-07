@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gaqno.dev/ai-content/product-data-contract/v1",
+  "title": "ProductDataContract",
+  "description": "MVP product data contract for AI content generation (v1)",
+  "type": "object",
+  "required": ["id", "name", "price", "tenantId"],
+  "additionalProperties": true,
+  "properties": {
+    "id": { "type": "string", "format": "uuid" },
+    "tenantId": { "type": "string", "format": "uuid" },
+    "name": { "type": "string", "minLength": 1, "maxLength": 255 },
+    "price": { "type": "number", "minimum": 0 },
+    "description": { "type": "string", "maxLength": 65535 },
+    "sku": { "type": "string", "maxLength": 255 },
+    "stock": { "type": "integer", "minimum": 0 }
+  }
+}
