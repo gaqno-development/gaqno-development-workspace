@@ -318,18 +318,40 @@ const getServiceBaseUrl = (serviceName: string): string => {
   return envUrls[serviceName] || "http://localhost:4001";
 };
 
+const gatewayServiceNames = [
+  "finance",
+  "pdv",
+  "rpg",
+  "ai",
+  "crm",
+  "erp",
+  "omnichannel",
+];
+
+const ensureServicePathInUrl = (url: string, serviceName: string): string => {
+  if (serviceName === "sso" || serviceName === "admin") return url;
+  try {
+    const u = new URL(url);
+    if (u.hostname === "localhost" || u.hostname === "127.0.0.1") return url;
+    const path = u.pathname.replace(/\/$/, "") || "";
+    const segment = `/${serviceName}`;
+    if (path === segment || path.startsWith(`${segment}/`)) return url;
+    return `${url.replace(/\/$/, "")}${segment}`;
+  } catch {
+    return url;
+  }
+};
+
 const createServiceClientWithPrefix = (serviceName: string): AxiosInstance => {
-  const serviceUrl = getServiceBaseUrl(serviceName);
+  let serviceUrl = getServiceBaseUrl(serviceName);
+  if (gatewayServiceNames.includes(serviceName)) {
+    serviceUrl = ensureServicePathInUrl(serviceUrl, serviceName);
+  }
   const aiIntensiveServices = ["rpg", "ai"];
   const timeoutConfig = aiIntensiveServices.includes(serviceName)
     ? { timeout: 180000 }
     : {};
-  const pathPrefix =
-    serviceName === "sso"
-      ? "/v1"
-      : serviceName === "admin"
-        ? ""
-        : `/v1/${serviceName}`;
+  const pathPrefix = "/v1";
   const baseURL =
     serviceName === "sso"
       ? serviceUrl.includes("/sso")
