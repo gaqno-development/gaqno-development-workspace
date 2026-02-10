@@ -53,6 +53,15 @@ When the work is under a **Story** (História) that has **Subtasks** in Jira:
 Example: Story GAQNO-1307 with subtasks 1308 (ai-ui), 1309 (sso-service), 1310 (shell-ui). Branch in each repo is `GAQNO-1307`. Commits: `GAQNO-1308 Wire retail content…` in gaqno-ai-ui; `feat(menu): … (GAQNO-1309)` in gaqno-sso-service; `GAQNO-1310 Add Retail menu…` in gaqno-shell-ui. PR title can use the Story key (e.g. "GAQNO-1307 Retail Content Engine integration").
 
 ────────────────────────────────────────────
+RULE: PR FOR A STORY — ONLY THAT STORY’S TICKETS (MANDATORY)
+────────────────────────────────────────────
+
+When opening a PR for a **Story** (e.g. GAQNO-1307), the branch **must contain only commits that are Jira tickets for that Story** (its subtasks or the Story itself if no subtasks). Do **not** mix commits from other tickets (e.g. GAQNO-1262, KAN-47, unrelated fixes) in the same PR.
+
+- Before pushing or opening the PR: ensure the branch has no commits that reference other Jira keys. If the branch was created from an older base and has extra commits, rebase onto `main` and keep only the commit(s) for the Story’s subtasks (e.g. cherry-pick only GAQNO-1308 / 1309 / 1310), then force-push.
+- One PR per Story; each commit in that PR = one Jira ticket (subtask or task) for that Story. This keeps the Development panel and review scope correct.
+
+────────────────────────────────────────────
 STEP 1 — IDENTIFY CHANGES AND REPOS
 ────────────────────────────────────────────
 
