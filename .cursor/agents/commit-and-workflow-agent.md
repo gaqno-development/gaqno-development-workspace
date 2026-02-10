@@ -41,6 +41,18 @@ RULE: BRANCH NAMES FOR BUGS
 **For bugs, create the branch directly with the ticket number** (e.g. `GAQNO-1152`), not `feature/GAQNO-1152-description`. For features/histories keep the usual pattern (e.g. `feature/GAQNO-47-...`).
 
 ────────────────────────────────────────────
+RULE: STORY BRANCH → SUBTASK KEY IN COMMITS (MANDATORY)
+────────────────────────────────────────────
+
+When the work is under a **Story** (História) that has **Subtasks** in Jira:
+
+- **Branch name** = **Story** key only (e.g. `GAQNO-1307`). Never use the subtask key as the branch name.
+- **Commit message** = **Subtask** key for that repo’s work, never the Story key. One commit per subtask; each commit must reference the Jira **subtask** that corresponds to that repo (e.g. GAQNO-1308 for gaqno-ai-ui, GAQNO-1309 for gaqno-sso-service, GAQNO-1310 for gaqno-shell-ui).
+- **Do not** put the Story key (e.g. GAQNO-1307) in commit messages when the Story has subtasks; use the **subtask** key so the Development panel and commit history track the correct Jira issue per commit.
+
+Example: Story GAQNO-1307 with subtasks 1308 (ai-ui), 1309 (sso-service), 1310 (shell-ui). Branch in each repo is `GAQNO-1307`. Commits: `GAQNO-1308 Wire retail content…` in gaqno-ai-ui; `feat(menu): … (GAQNO-1309)` in gaqno-sso-service; `GAQNO-1310 Add Retail menu…` in gaqno-shell-ui. PR title can use the Story key (e.g. "GAQNO-1307 Retail Content Engine integration").
+
+────────────────────────────────────────────
 STEP 1 — IDENTIFY CHANGES AND REPOS
 ────────────────────────────────────────────
 
@@ -53,8 +65,9 @@ STEP 2 — COMMIT
 ────────────────────────────────────────────
 
 1. **Per-repo**: Run `git add` and `git commit` in each repo that has changes.
-2. **Commit message**: Include the Jira key. Examples:
-   - `GAQNO-47 Add workflows per repo`
+2. **Commit message**: Include the Jira key. If the work is on a **Story branch with subtasks**, use the **subtask** key in the message (see rule "STORY BRANCH → SUBTASK KEY IN COMMITS"); never use the Story key in the commit body. Otherwise use the ticket key (Story, Task, or Bug). Examples:
+   - `GAQNO-1308 Wire retail content engine into AI MFE` (subtask; branch is GAQNO-1307)
+   - `GAQNO-47 Add workflows per repo` (single ticket)
    - `fix: GAQNO-32 align finance-ui API client`
 3. Either:
    - Run `./push-all.sh "GAQNO-XX descrição"` from workspace root to commit and push all changed repos with one message, or
