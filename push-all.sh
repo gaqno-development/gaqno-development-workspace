@@ -124,7 +124,7 @@ for repo in "${REPOS[@]}"; do
   }
   
   echo "   🚀 Pushing to remote..."
-  git push || {
+  git push -u origin HEAD || {
     echo "   ⚠️  Push failed (check if remote is configured)"
   }
   
