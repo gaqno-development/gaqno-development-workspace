@@ -318,50 +318,24 @@ const getServiceBaseUrl = (serviceName: string): string => {
   return envUrls[serviceName] || "http://localhost:4001";
 };
 
-const gatewayServiceNames = [
-  "finance",
-  "pdv",
-  "rpg",
-  "ai",
-  "crm",
-  "erp",
-  "omnichannel",
-];
-
-const ensureServicePathInUrl = (url: string, serviceName: string): string => {
-  if (serviceName === "sso" || serviceName === "admin") return url;
+const toServiceBaseUrl = (url: string, serviceName: string): string => {
   try {
     const u = new URL(url);
-    if (u.hostname === "localhost" || u.hostname === "127.0.0.1") return url;
-    const path = u.pathname.replace(/\/$/, "") || "";
-    const segment = `/${serviceName}`;
-    if (path === segment || path.startsWith(`${segment}/`)) return url;
-    return `${url.replace(/\/$/, "")}${segment}`;
+    if (u.hostname === "localhost" || u.hostname === "127.0.0.1")
+      return `${url.replace(/\/$/, "")}/v1`;
+    const origin = u.origin;
+    return `${origin}/${serviceName}/v1`;
   } catch {
-    return url;
+    return `${url.replace(/\/$/, "")}/v1`;
   }
 };
 
 const createServiceClientWithPrefix = (serviceName: string): AxiosInstance => {
-  let serviceUrl = getServiceBaseUrl(serviceName);
-  if (gatewayServiceNames.includes(serviceName)) {
-    serviceUrl = ensureServicePathInUrl(serviceUrl, serviceName);
-  }
-  const aiIntensiveServices = ["rpg", "ai"];
-  const timeoutConfig = aiIntensiveServices.includes(serviceName)
+  const baseURL = toServiceBaseUrl(getServiceBaseUrl(serviceName), serviceName);
+  const timeoutConfig = ["rpg", "ai"].includes(serviceName)
     ? { timeout: 180000 }
     : {};
-  const pathPrefix = "/v1";
-  const baseURL =
-    serviceName === "sso"
-      ? serviceUrl.includes("/sso")
-        ? serviceUrl
-        : `${serviceUrl}/sso`
-      : serviceUrl;
-  return createAxiosClient({
-    baseURL: `${baseURL}${pathPrefix}`,
-    ...timeoutConfig,
-  });
+  return createAxiosClient({ baseURL, ...timeoutConfig });
 };
 
 export const coreAxiosClient = {

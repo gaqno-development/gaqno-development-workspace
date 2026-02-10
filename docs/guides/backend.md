@@ -2,9 +2,9 @@
 
 Rules, patterns, and env vars for NestJS services.
 
-**API path:** Every backend uses global prefix `v1` only. The service name appears once in the proxy path (e.g. `https://api.gaqno.com.br/finance/v1/...`, `https://api.gaqno.com.br/rpg/v1/...`, `https://api.gaqno.com.br/omnichannel/v1/...`). SSO is `https://api.gaqno.com.br/sso/v1/...`. Run `node scripts/verify-api-prefix.mjs` to ensure all backends have `setGlobalPrefix("v1")`.
+**API path:** Every backend uses global prefix `v1` only. Production URL is always `https://api.gaqno.com.br/{serviceName}/v1` (e.g. `.../finance/v1/...`, `.../sso/v1/...`, `.../omnichannel/v1/...`). Run `node scripts/verify-api-prefix.mjs` to ensure all backends have `setGlobalPrefix("v1")`.
 
-**Coolify (UI envs):** Each UI that uses `@gaqno-development/frontcore` must set `VITE_SERVICE_<SVC>_URL` to the gateway path for that service, e.g. `https://api.gaqno.com.br/sso`, `https://api.gaqno.com.br/finance`, `https://api.gaqno.com.br/pdv`, `https://api.gaqno.com.br/rpg`, `https://api.gaqno.com.br/ai`, `https://api.gaqno.com.br/crm`, `https://api.gaqno.com.br/erp`, `https://api.gaqno.com.br/omnichannel`, `https://api.gaqno.com.br/admin`. No trailing slash. The client appends `/v1` and the service path; the proxy routes by the first path segment.
+**Coolify (UI envs):** Each UI that uses `@gaqno-development/frontcore` must set `VITE_SERVICE_<SVC>_URL` to the gateway origin, e.g. `https://api.gaqno.com.br`. No trailing slash. The client builds `{origin}/{serviceName}/v1` for every service; localhost uses the env URL as-is and appends `/v1`.
 
 ## Shared Env Vars (All Services)
 
