@@ -71,11 +71,11 @@ await api.transactions.create(data);
 
 ---
 
-## Shared types (@gaqno-backcore)
+## Shared types (@gaqno-development/types)
 
-Os tipos em `@gaqno-backcore/types/shared` devem refletir o **contrato da API** (snake_case) quando forem usados para DTOs e requests/responses.
+Todos os tipos compartilhados (auth, user, org, product, customer, sale, audit, transaction, branch, health, permission, tenant) ficam em **`@gaqno-development/types`**. Backend e frontend importam desse pacote; no frontend pode-se usar também `@gaqno-development/frontcore` (ex.: `./types/shared`), que re-exporta o pacote.
 
-Exemplo: `CreateTransactionInput` usa `transaction_date`, `category_id` — alinhado ao backend.
+Os tipos devem refletir o **contrato da API** (snake_case) quando forem usados para DTOs e requests/responses. Exemplo: `CreateTransactionInput` usa `transaction_date`, `category_id` — alinhado ao backend.
 
 ---
 
