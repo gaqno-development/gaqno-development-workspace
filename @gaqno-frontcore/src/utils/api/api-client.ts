@@ -325,7 +325,7 @@ const createServiceClientWithPrefix = (serviceName: string): AxiosInstance => {
     ? { timeout: 180000 }
     : {};
   const pathPrefix =
-    serviceName === "sso"
+    serviceName === "sso" || serviceName === "omnichannel"
       ? "/v1"
       : serviceName === "admin"
         ? ""
