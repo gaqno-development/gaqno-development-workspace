@@ -1,0 +1,26 @@
+---
+description: Use the Commit and Workflow Agent when committing, pushing, or opening PRs in the workspace. Follows JIRA flow with front-dev (UI) and back-dev (services).
+globs: "**/.git/config,**/push-all.sh,docs/governance/workspace-workflow.md,docs/integrations/github-jira.md"
+alwaysApply: false
+---
+
+# Commit and Workflow Agent
+
+When the user wants to:
+
+- **Commit** changes (single repo or multiple)
+- **Push** branches to remote
+- **Open a PR** after pushing
+- **Run the full flow** (commit → push → PR) in the workspace
+
+**Use the agent:** `commit-and-workflow-agent`
+
+Select or invoke the agent **commit-and-workflow-agent** (`.cursor/agents/commit-and-workflow-agent.md`). That agent:
+
+1. Identifies which repos have changes and classifies by **front-dev** (gaqno-_-ui, @gaqno-frontcore) or **back-dev** (gaqno-_-service, @gaqno-backcore)
+2. For **Epic-driven work** (e.g. Epic GAQNO-1159): **branch name = Story** (GAQNO-1160 … GAQNO-1169); **one commit per subtask** — each Story has N subtasks and the branch must have N commits, each with the **subtask** key in the message (e.g. branch GAQNO-1160 has commits GAQNO-1170, GAQNO-1171, GAQNO-1172, GAQNO-1173). Do not squash subtasks into a single commit. For bugs/other: branch name = ticket only (e.g. GAQNO-1118). PR title and commit messages always include the **Story or task** key (GAQNO-XX), **never the Epic key** — children of an Epic must not mention the Epic in branch/commit/PR so Epic commit and PR tracking stays clean.
+3. Commits and pushes (or guides use of `./push-all.sh`)
+4. Opens the **PR in the component repo**: front-dev → gaqno-_-ui / frontcore; back-dev → gaqno-_-service / backcore; never in gaqno-development-workspace unless only root changed
+5. Optionally links branch/PR in Jira via MCP (same JIRA flow for front-dev and back-dev)
+
+Do not open PRs in the workspace repo when the change was only inside a submodule; always open the PR in the repo that was changed (see `docs/governance/workspace-workflow.md` and `docs/integrations/github-jira.md`).

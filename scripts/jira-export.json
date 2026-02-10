@@ -1,0 +1,1458 @@
+{
+  "total": -1,
+  "start_at": 0,
+  "max_results": 100,
+  "issues": [
+    {
+      "id": "10000",
+      "key": "KAN-1",
+      "summary": "gaqno-shell-ui — Module Federation host",
+      "description": "Shell MFE: Module Federation host, layout, auth guard, menu. Port 3000. ✅ Concluído.\nConfluence: \nhttps://gaqno.atlassian.net/wiki/spaces/GD/pages/15794177",
+      "status": {
+        "name": "Feito",
+        "category": "Itens concluídos",
+        "color": "green"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T13:28:51.480-0300"
+    },
+    {
+      "id": "10001",
+      "key": "KAN-2",
+      "summary": "gaqno-ai-ui — AI features",
+      "description": "AI MFE. Base path /ai. Port 3002. ✅ Concluído.",
+      "status": {
+        "name": "Feito",
+        "category": "Itens concluídos",
+        "color": "green"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T13:28:55.569-0300"
+    },
+    {
+      "id": "10002",
+      "key": "KAN-3",
+      "summary": "gaqno-finance-ui — Finance",
+      "description": "Finance MFE. Base path /finance. Port 3005. ✅ Concluído.",
+      "status": {
+        "name": "Feito",
+        "category": "Itens concluídos",
+        "color": "green"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T13:29:00.163-0300"
+    },
+    {
+      "id": "10003",
+      "key": "KAN-4",
+      "summary": "gaqno-rpg-ui — RPG campaigns",
+      "description": "RPG MFE. Base path /rpg. Port 3007. ✅ Concluído.",
+      "status": {
+        "name": "Feito",
+        "category": "Itens concluídos",
+        "color": "green"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T13:29:03.828-0300"
+    },
+    {
+      "id": "10004",
+      "key": "KAN-5",
+      "summary": "gaqno-sso-service — Auth, users, tenants",
+      "description": "SSO service. Port 4001. gaqno_sso_db. Auth, users, tenants, branches, menu, permissions. ✅ Concluído.",
+      "status": {
+        "name": "Feito",
+        "category": "Itens concluídos",
+        "color": "green"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T13:29:07.656-0300"
+    },
+    {
+      "id": "10005",
+      "key": "KAN-6",
+      "summary": "gaqno-rpg-service — Sessions, campaigns, narrator",
+      "description": "RPG service. Port 4007. gaqno_rpg_db. Sessions, characters, campaigns, narrator, WebSocket. ✅ Concluído.",
+      "status": {
+        "name": "Feito",
+        "category": "Itens concluídos",
+        "color": "green"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T13:29:10.916-0300"
+    },
+    {
+      "id": "10006",
+      "key": "KAN-7",
+      "summary": "gaqno-finance-service — Transactions, categories",
+      "description": "Finance service. Port 4005. gaqno_finance_db. Transactions, categories, credit cards. ✅ Concluído.",
+      "status": {
+        "name": "Feito",
+        "category": "Itens concluídos",
+        "color": "green"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T13:29:14.772-0300"
+    },
+    {
+      "id": "10007",
+      "key": "KAN-8",
+      "summary": "gaqno-sso-ui — Auth, login, register",
+      "description": "SSO MFE: Auth UI, login, register. Base path /auth. Port 3001. ✅ Concluído.",
+      "status": {
+        "name": "Feito",
+        "category": "Itens concluídos",
+        "color": "green"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T13:29:17.422-0300"
+    },
+    {
+      "id": "10008",
+      "key": "KAN-9",
+      "summary": "gaqno-pdv-ui — Point of sale",
+      "description": "PDV MFE. Base path /pdv. Port 3006. ✅ Concluído.",
+      "status": {
+        "name": "Feito",
+        "category": "Itens concluídos",
+        "color": "green"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T13:29:24.541-0300"
+    },
+    {
+      "id": "10009",
+      "key": "KAN-10",
+      "summary": "gaqno-admin-ui — Tenant admin",
+      "description": "Admin MFE. Base path /organization. Port 3009. ✅ Concluído.",
+      "status": {
+        "name": "Feito",
+        "category": "Itens concluídos",
+        "color": "green"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T13:29:28.319-0300"
+    },
+    {
+      "id": "10010",
+      "key": "KAN-11",
+      "summary": "gaqno-saas-ui — SaaS costing",
+      "description": "SaaS MFE. Base path /sass. Port 3008. ✅ Concluído.",
+      "status": {
+        "name": "Feito",
+        "category": "Itens concluídos",
+        "color": "green"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T13:29:32.155-0300"
+    },
+    {
+      "id": "10011",
+      "key": "KAN-12",
+      "summary": "gaqno-omnichannel-ui — Omnichannel",
+      "description": "Omnichannel MFE. Base path /omnichannel. Port 3010. ✅ Concluído.",
+      "status": {
+        "name": "Feito",
+        "category": "Itens concluídos",
+        "color": "green"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T13:29:35.961-0300"
+    },
+    {
+      "id": "10012",
+      "key": "KAN-13",
+      "summary": "gaqno-ai-service — AI, videos",
+      "description": "AI service. Port 4002. gaqno_ai_db. ✅ Concluído.",
+      "status": {
+        "name": "Feito",
+        "category": "Itens concluídos",
+        "color": "green"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T13:29:39.018-0300"
+    },
+    {
+      "id": "10013",
+      "key": "KAN-14",
+      "summary": "gaqno-pdv-service — Sales, products, PDV",
+      "description": "PDV service. Port 4006. gaqno_pdv_db. Sales, products, customers, PDV. ✅ Concluído.",
+      "status": {
+        "name": "Feito",
+        "category": "Itens concluídos",
+        "color": "green"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T13:29:42.768-0300"
+    },
+    {
+      "id": "10014",
+      "key": "KAN-15",
+      "summary": "gaqno-omnichannel-service — Channels, messaging",
+      "description": "Omnichannel service. Port 4008. gaqno_omnichannel_db. Channels, conversations, messages. ✅ Concluído.",
+      "status": {
+        "name": "Feito",
+        "category": "Itens concluídos",
+        "color": "green"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T13:29:45.580-0300"
+    },
+    {
+      "id": "10016",
+      "key": "KAN-16",
+      "summary": "Husky + Commitlint + Lint-staged — Git hooks setup",
+      "description": "Implementação de Git hooks com Husky. Escopo: Husky, Commitlint, Lint-staged, hooks pre-commit, commit-msg, pre-push. Confluence: \nhttps://gaqno.atlassian.net/wiki/spaces/GD/pages/15859713",
+      "status": {
+        "name": "Feito",
+        "category": "Itens concluídos",
+        "color": "green"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T13:34:08.611-0300"
+    },
+    {
+      "id": "10021",
+      "key": "KAN-21",
+      "summary": "commit-msg — Validação de mensagens de commit",
+      "description": "Hook commit-msg: valida formato conventional commits via commitlint. Tipos: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert. Header max 100 chars. AC: .husky/commit-msg existe; npx commitlint --edit $1; commitlint.config.js",
+      "status": {
+        "name": "Feito",
+        "category": "Itens concluídos",
+        "color": "green"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "parent": {
+        "id": "10016",
+        "key": "KAN-16",
+        "self": "https://gaqno.atlassian.net/rest/api/3/issue/10016",
+        "fields": {
+          "summary": "Husky + Commitlint + Lint-staged — Git hooks setup",
+          "status": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/status/10003",
+            "description": "",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/statuses/generic.png",
+            "name": "Feito",
+            "id": "10003",
+            "statusCategory": {
+              "self": "https://gaqno.atlassian.net/rest/api/3/statuscategory/3",
+              "id": 3,
+              "key": "done",
+              "colorName": "green",
+              "name": "Itens concluídos"
+            }
+          },
+          "priority": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/priority/3",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/priorities/medium_new.svg",
+            "name": "Medium",
+            "id": "3"
+          },
+          "issuetype": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/issuetype/10001",
+            "id": "10001",
+            "description": "Uma coleção de bugs, histórias e tarefas.",
+            "iconUrl": "https://gaqno.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium",
+            "name": "Epic",
+            "subtask": false,
+            "avatarId": 10307,
+            "entityId": "1cb74459-69fd-4175-b005-99aa65852947",
+            "hierarchyLevel": 1
+          }
+        }
+      },
+      "created": "2026-02-05T13:34:50.579-0300"
+    },
+    {
+      "id": "10022",
+      "key": "KAN-22",
+      "summary": "pre-commit — Lint-staged e lint em pacotes afetados",
+      "description": "Hook pre-commit: lint-staged (eslint --fix em *.ts, *.tsx, *.js, *.jsx) + turbo run lint. AC: .husky/pre-commit existe; npx lint-staged; lint-staged config em package.json",
+      "status": {
+        "name": "Feito",
+        "category": "Itens concluídos",
+        "color": "green"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "parent": {
+        "id": "10016",
+        "key": "KAN-16",
+        "self": "https://gaqno.atlassian.net/rest/api/3/issue/10016",
+        "fields": {
+          "summary": "Husky + Commitlint + Lint-staged — Git hooks setup",
+          "status": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/status/10003",
+            "description": "",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/statuses/generic.png",
+            "name": "Feito",
+            "id": "10003",
+            "statusCategory": {
+              "self": "https://gaqno.atlassian.net/rest/api/3/statuscategory/3",
+              "id": 3,
+              "key": "done",
+              "colorName": "green",
+              "name": "Itens concluídos"
+            }
+          },
+          "priority": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/priority/3",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/priorities/medium_new.svg",
+            "name": "Medium",
+            "id": "3"
+          },
+          "issuetype": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/issuetype/10001",
+            "id": "10001",
+            "description": "Uma coleção de bugs, histórias e tarefas.",
+            "iconUrl": "https://gaqno.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium",
+            "name": "Epic",
+            "subtask": false,
+            "avatarId": 10307,
+            "entityId": "1cb74459-69fd-4175-b005-99aa65852947",
+            "hierarchyLevel": 1
+          }
+        }
+      },
+      "created": "2026-02-05T13:34:52.289-0300"
+    },
+    {
+      "id": "10023",
+      "key": "KAN-23",
+      "summary": "pre-push — Testes completos antes do push",
+      "description": "Hook pre-push: turbo run test para garantir que testes passam antes de enviar ao remoto. AC: .husky/pre-push existe; turbo run test",
+      "status": {
+        "name": "Feito",
+        "category": "Itens concluídos",
+        "color": "green"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "parent": {
+        "id": "10016",
+        "key": "KAN-16",
+        "self": "https://gaqno.atlassian.net/rest/api/3/issue/10016",
+        "fields": {
+          "summary": "Husky + Commitlint + Lint-staged — Git hooks setup",
+          "status": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/status/10003",
+            "description": "",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/statuses/generic.png",
+            "name": "Feito",
+            "id": "10003",
+            "statusCategory": {
+              "self": "https://gaqno.atlassian.net/rest/api/3/statuscategory/3",
+              "id": 3,
+              "key": "done",
+              "colorName": "green",
+              "name": "Itens concluídos"
+            }
+          },
+          "priority": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/priority/3",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/priorities/medium_new.svg",
+            "name": "Medium",
+            "id": "3"
+          },
+          "issuetype": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/issuetype/10001",
+            "id": "10001",
+            "description": "Uma coleção de bugs, histórias e tarefas.",
+            "iconUrl": "https://gaqno.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium",
+            "name": "Epic",
+            "subtask": false,
+            "avatarId": 10307,
+            "entityId": "1cb74459-69fd-4175-b005-99aa65852947",
+            "hierarchyLevel": 1
+          }
+        }
+      },
+      "created": "2026-02-05T13:34:53.863-0300"
+    },
+    {
+      "id": "10024",
+      "key": "KAN-24",
+      "summary": "Setup Husky em novos pacotes (create-project)",
+      "description": "Script setup-husky-per-repo.sh e add-husky-to-package.js. Incluir gaqno-warehouse-service e gaqno-warehouse-ui na lista REPOS. AC: scripts existem; create-project chama setup",
+      "status": {
+        "name": "Feito",
+        "category": "Itens concluídos",
+        "color": "green"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "parent": {
+        "id": "10016",
+        "key": "KAN-16",
+        "self": "https://gaqno.atlassian.net/rest/api/3/issue/10016",
+        "fields": {
+          "summary": "Husky + Commitlint + Lint-staged — Git hooks setup",
+          "status": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/status/10003",
+            "description": "",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/statuses/generic.png",
+            "name": "Feito",
+            "id": "10003",
+            "statusCategory": {
+              "self": "https://gaqno.atlassian.net/rest/api/3/statuscategory/3",
+              "id": 3,
+              "key": "done",
+              "colorName": "green",
+              "name": "Itens concluídos"
+            }
+          },
+          "priority": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/priority/3",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/priorities/medium_new.svg",
+            "name": "Medium",
+            "id": "3"
+          },
+          "issuetype": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/issuetype/10001",
+            "id": "10001",
+            "description": "Uma coleção de bugs, histórias e tarefas.",
+            "iconUrl": "https://gaqno.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium",
+            "name": "Epic",
+            "subtask": false,
+            "avatarId": 10307,
+            "entityId": "1cb74459-69fd-4175-b005-99aa65852947",
+            "hierarchyLevel": 1
+          }
+        }
+      },
+      "created": "2026-02-05T13:34:55.491-0300"
+    },
+    {
+      "id": "10025",
+      "key": "KAN-25",
+      "summary": "Reduce shell responsibility and align admin platform",
+      "description": "Goal:\n Shell becomes host-only; admin pages live in dedicated MFE\nBusiness Impact:\n Faster admin evolution; smaller shell bundle; clearer boundaries\nTechnical Impact:\n Decoupled deploy; SRP compliance\nDefinition of Done:\n Shell has no pages in \npages/admin/\n; all admin routes served by gaqno-admin-ui\nConfluence:\n \nhttps://gaqno.atlassian.net/wiki/spaces/GD/pages/15761409\n | \nhttps://gaqno.atlassian.net/wiki/spaces/GD/pages/15794177\nSource:\n System Architecture Auditor, Frontend Architecture Enforcer",
+      "status": {
+        "name": "A fazer",
+        "category": "Itens Pendentes",
+        "color": "blue-gray"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T13:38:21.820-0300"
+    },
+    {
+      "id": "10026",
+      "key": "KAN-26",
+      "summary": "Standardize API client usage and extract logic to hooks",
+      "description": "Goal:\n All MFEs use frontcore API client; no logic in components\nBusiness Impact:\n Consistent error handling; easier maintenance\nTechnical Impact:\n DRY; hooks pattern enforced\nDefinition of Done:\n finance-ui uses frontcore; no local api-client; all pages with logic have hooks\nConfluence:\n \nhttps://gaqno.atlassian.net/wiki/spaces/GD/pages/15794177\n | \nhttps://gaqno.atlassian.net/wiki/spaces/GD/pages/15859713\nSource:\n Frontend Architecture Enforcer, System Architecture Auditor",
+      "status": {
+        "name": "A fazer",
+        "category": "Itens Pendentes",
+        "color": "blue-gray"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T13:38:26.555-0300"
+    },
+    {
+      "id": "10027",
+      "key": "KAN-27",
+      "summary": "Clarify admin/saas service evolution and DTO alignment",
+      "description": "Goal:\n Documented service boundaries; DTOs implement shared interfaces\nBusiness Impact:\n Clear ownership; scalable service growth\nTechnical Impact:\n Contract-first; no orphan DTOs\nDefinition of Done:\n admin/saas evolution documented; finance DTOs implement shared\nConfluence:\n \nhttps://gaqno.atlassian.net/wiki/spaces/GD/pages/15826945\n | \nhttps://gaqno.atlassian.net/wiki/spaces/GD/pages/15630354\nSource:\n Backend Documentation Engineer, Contracts & Types Guardian",
+      "status": {
+        "name": "A fazer",
+        "category": "Itens Pendentes",
+        "color": "blue-gray"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T13:38:30.385-0300"
+    },
+    {
+      "id": "10028",
+      "key": "KAN-28",
+      "summary": "Achieve minimum test coverage across MFEs and services",
+      "description": "Goal:\n Hooks with logic have specs; critical paths covered\nBusiness Impact:\n Fewer regressions; confident refactors\nTechnical Impact:\n TDD culture; regression safety\nDefinition of Done:\n admin-ui, saas-ui hooks have specs; finance-ui, pdv-ui extended\nConfluence:\n \nhttps://gaqno.atlassian.net/wiki/spaces/GD/pages/15794177\nSource:\n Frontend Architecture Enforcer, Backend Documentation Engineer",
+      "status": {
+        "name": "A fazer",
+        "category": "Itens Pendentes",
+        "color": "blue-gray"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T13:38:34.120-0300"
+    },
+    {
+      "id": "10029",
+      "key": "KAN-29",
+      "summary": "Unify types and align DTOs with shared contracts",
+      "description": "Goal:\n Single source of truth for domain types; DTOs implement shared interfaces\nBusiness Impact:\n Fewer integration bugs; faster feature development\nTechnical Impact:\n No type drift; contract-first development\nDefinition of Done:\n backcore is type source; frontcore re-exports; finance DTOs implement CreateTransactionInput\nConfluence:\n \nhttps://gaqno.atlassian.net/wiki/spaces/GD/pages/15630354\nSource:\n Contracts & Types Guardian, System Architecture Auditor",
+      "status": {
+        "name": "A fazer",
+        "category": "Itens Pendentes",
+        "color": "blue-gray"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T13:38:37.496-0300"
+    },
+    {
+      "id": "10030",
+      "key": "KAN-30",
+      "summary": "Unify types (backcore as source)",
+      "description": "Scope:\n @gaqno-backcore types/shared; @gaqno-frontcore re-exports\nAcceptance Criteria:\nfrontcore re-exports from backcore\nNo duplicate types in frontcore/types/shared\nMFEs import from frontcore\nConfluence:\n \nhttps://gaqno.atlassian.net/wiki/spaces/GD/pages/15630354",
+      "status": {
+        "name": "A fazer",
+        "category": "Itens Pendentes",
+        "color": "blue-gray"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "parent": {
+        "id": "10029",
+        "key": "KAN-29",
+        "self": "https://gaqno.atlassian.net/rest/api/3/issue/10029",
+        "fields": {
+          "summary": "Unify types and align DTOs with shared contracts",
+          "status": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/status/10000",
+            "description": "",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/statuses/generic.png",
+            "name": "A fazer",
+            "id": "10000",
+            "statusCategory": {
+              "self": "https://gaqno.atlassian.net/rest/api/3/statuscategory/2",
+              "id": 2,
+              "key": "new",
+              "colorName": "blue-gray",
+              "name": "Itens Pendentes"
+            }
+          },
+          "priority": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/priority/3",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/priorities/medium_new.svg",
+            "name": "Medium",
+            "id": "3"
+          },
+          "issuetype": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/issuetype/10001",
+            "id": "10001",
+            "description": "Uma coleção de bugs, histórias e tarefas.",
+            "iconUrl": "https://gaqno.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium",
+            "name": "Epic",
+            "subtask": false,
+            "avatarId": 10307,
+            "entityId": "1cb74459-69fd-4175-b005-99aa65852947",
+            "hierarchyLevel": 1
+          }
+        }
+      },
+      "created": "2026-02-05T13:38:45.169-0300"
+    },
+    {
+      "id": "10031",
+      "key": "KAN-31",
+      "summary": "DTOs implement shared interfaces",
+      "description": "Scope:\n gaqno-finance-service DTOs; CreateTransactionDto\nAcceptance Criteria:\nCreateTransactionDto implements CreateTransactionInput\nWorkspace package resolution for backcore\nRepeat for Category, CreditCard DTOs\nConfluence:\n \nhttps://gaqno.atlassian.net/wiki/spaces/GD/pages/15630354",
+      "status": {
+        "name": "A fazer",
+        "category": "Itens Pendentes",
+        "color": "blue-gray"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "parent": {
+        "id": "10029",
+        "key": "KAN-29",
+        "self": "https://gaqno.atlassian.net/rest/api/3/issue/10029",
+        "fields": {
+          "summary": "Unify types and align DTOs with shared contracts",
+          "status": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/status/10000",
+            "description": "",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/statuses/generic.png",
+            "name": "A fazer",
+            "id": "10000",
+            "statusCategory": {
+              "self": "https://gaqno.atlassian.net/rest/api/3/statuscategory/2",
+              "id": 2,
+              "key": "new",
+              "colorName": "blue-gray",
+              "name": "Itens Pendentes"
+            }
+          },
+          "priority": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/priority/3",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/priorities/medium_new.svg",
+            "name": "Medium",
+            "id": "3"
+          },
+          "issuetype": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/issuetype/10001",
+            "id": "10001",
+            "description": "Uma coleção de bugs, histórias e tarefas.",
+            "iconUrl": "https://gaqno.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium",
+            "name": "Epic",
+            "subtask": false,
+            "avatarId": 10307,
+            "entityId": "1cb74459-69fd-4175-b005-99aa65852947",
+            "hierarchyLevel": 1
+          }
+        }
+      },
+      "created": "2026-02-05T13:38:47.702-0300"
+    },
+    {
+      "id": "10032",
+      "key": "KAN-32",
+      "summary": "Migrate finance-ui to frontcore API client",
+      "description": "Scope:\n gaqno-finance-ui; remove lib/api-client.ts\nAcceptance Criteria:\nfinance-ui uses createAxiosClient from frontcore\nlib/api-client.ts removed\nConfluence (DDS):\n \nhttps://gaqno-development.atlassian.net/wiki/spaces/DDS/pages/688129/Frontend+Architecture+Guide",
+      "status": {
+        "name": "Fazendo",
+        "category": "Em andamento",
+        "color": "yellow"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "parent": {
+        "id": "10026",
+        "key": "KAN-26",
+        "self": "https://gaqno.atlassian.net/rest/api/3/issue/10026",
+        "fields": {
+          "summary": "Standardize API client usage and extract logic to hooks",
+          "status": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/status/10000",
+            "description": "",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/statuses/generic.png",
+            "name": "A fazer",
+            "id": "10000",
+            "statusCategory": {
+              "self": "https://gaqno.atlassian.net/rest/api/3/statuscategory/2",
+              "id": 2,
+              "key": "new",
+              "colorName": "blue-gray",
+              "name": "Itens Pendentes"
+            }
+          },
+          "priority": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/priority/3",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/priorities/medium_new.svg",
+            "name": "Medium",
+            "id": "3"
+          },
+          "issuetype": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/issuetype/10001",
+            "id": "10001",
+            "description": "Uma coleção de bugs, histórias e tarefas.",
+            "iconUrl": "https://gaqno.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium",
+            "name": "Epic",
+            "subtask": false,
+            "avatarId": 10307,
+            "entityId": "1cb74459-69fd-4175-b005-99aa65852947",
+            "hierarchyLevel": 1
+          }
+        }
+      },
+      "created": "2026-02-05T13:38:50.162-0300"
+    },
+    {
+      "id": "10033",
+      "key": "KAN-33",
+      "summary": "Break useMasterDashboard into smaller hooks",
+      "description": "Scope:\n gaqno-rpg-ui useMasterDashboard (~576 lines)\nAcceptance Criteria:\nuseMasterSessionData extracted\nuseMasterBattle extracted\nuseMasterDiceRoll extracted\nNo hook > 200 lines\nConfluence:\n \nhttps://gaqno.atlassian.net/wiki/spaces/GD/pages/15859713",
+      "status": {
+        "name": "A fazer",
+        "category": "Itens Pendentes",
+        "color": "blue-gray"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "parent": {
+        "id": "10026",
+        "key": "KAN-26",
+        "self": "https://gaqno.atlassian.net/rest/api/3/issue/10026",
+        "fields": {
+          "summary": "Standardize API client usage and extract logic to hooks",
+          "status": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/status/10000",
+            "description": "",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/statuses/generic.png",
+            "name": "A fazer",
+            "id": "10000",
+            "statusCategory": {
+              "self": "https://gaqno.atlassian.net/rest/api/3/statuscategory/2",
+              "id": 2,
+              "key": "new",
+              "colorName": "blue-gray",
+              "name": "Itens Pendentes"
+            }
+          },
+          "priority": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/priority/3",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/priorities/medium_new.svg",
+            "name": "Medium",
+            "id": "3"
+          },
+          "issuetype": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/issuetype/10001",
+            "id": "10001",
+            "description": "Uma coleção de bugs, histórias e tarefas.",
+            "iconUrl": "https://gaqno.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium",
+            "name": "Epic",
+            "subtask": false,
+            "avatarId": 10307,
+            "entityId": "1cb74459-69fd-4175-b005-99aa65852947",
+            "hierarchyLevel": 1
+          }
+        }
+      },
+      "created": "2026-02-05T13:38:52.226-0300"
+    },
+    {
+      "id": "10034",
+      "key": "KAN-34",
+      "summary": "Document admin/saas service evolution",
+      "description": "Scope:\n BACKEND.md; README in admin-service, saas-service\nAcceptance Criteria:\nDecision documented: stubs vs evolution\nREADME in each stub service\nConfluence:\n \nhttps://gaqno.atlassian.net/wiki/spaces/GD/pages/15826945",
+      "status": {
+        "name": "A fazer",
+        "category": "Itens Pendentes",
+        "color": "blue-gray"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "parent": {
+        "id": "10027",
+        "key": "KAN-27",
+        "self": "https://gaqno.atlassian.net/rest/api/3/issue/10027",
+        "fields": {
+          "summary": "Clarify admin/saas service evolution and DTO alignment",
+          "status": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/status/10000",
+            "description": "",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/statuses/generic.png",
+            "name": "A fazer",
+            "id": "10000",
+            "statusCategory": {
+              "self": "https://gaqno.atlassian.net/rest/api/3/statuscategory/2",
+              "id": 2,
+              "key": "new",
+              "colorName": "blue-gray",
+              "name": "Itens Pendentes"
+            }
+          },
+          "priority": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/priority/3",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/priorities/medium_new.svg",
+            "name": "Medium",
+            "id": "3"
+          },
+          "issuetype": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/issuetype/10001",
+            "id": "10001",
+            "description": "Uma coleção de bugs, histórias e tarefas.",
+            "iconUrl": "https://gaqno.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium",
+            "name": "Epic",
+            "subtask": false,
+            "avatarId": 10307,
+            "entityId": "1cb74459-69fd-4175-b005-99aa65852947",
+            "hierarchyLevel": 1
+          }
+        }
+      },
+      "created": "2026-02-05T13:38:53.672-0300"
+    },
+    {
+      "id": "10035",
+      "key": "KAN-35",
+      "summary": "Add specs for admin-ui hooks",
+      "description": "Scope:\n gaqno-admin-ui hooks\nAcceptance Criteria:\nuseUsersPage has spec\nuseTenants (if used) has spec\nuseDomains (if used) has spec\nConfluence:\n \nhttps://gaqno.atlassian.net/wiki/spaces/GD/pages/15794177",
+      "status": {
+        "name": "A fazer",
+        "category": "Itens Pendentes",
+        "color": "blue-gray"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "parent": {
+        "id": "10028",
+        "key": "KAN-28",
+        "self": "https://gaqno.atlassian.net/rest/api/3/issue/10028",
+        "fields": {
+          "summary": "Achieve minimum test coverage across MFEs and services",
+          "status": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/status/10000",
+            "description": "",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/statuses/generic.png",
+            "name": "A fazer",
+            "id": "10000",
+            "statusCategory": {
+              "self": "https://gaqno.atlassian.net/rest/api/3/statuscategory/2",
+              "id": 2,
+              "key": "new",
+              "colorName": "blue-gray",
+              "name": "Itens Pendentes"
+            }
+          },
+          "priority": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/priority/3",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/priorities/medium_new.svg",
+            "name": "Medium",
+            "id": "3"
+          },
+          "issuetype": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/issuetype/10001",
+            "id": "10001",
+            "description": "Uma coleção de bugs, histórias e tarefas.",
+            "iconUrl": "https://gaqno.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium",
+            "name": "Epic",
+            "subtask": false,
+            "avatarId": 10307,
+            "entityId": "1cb74459-69fd-4175-b005-99aa65852947",
+            "hierarchyLevel": 1
+          }
+        }
+      },
+      "created": "2026-02-05T13:38:55.132-0300"
+    },
+    {
+      "id": "10036",
+      "key": "KAN-36",
+      "summary": "Add specs for saas-ui hooks",
+      "description": "Scope:\n gaqno-saas-ui useCostingData\nAcceptance Criteria:\nuseCostingData.spec.ts exists\nCritical paths covered\nConfluence:\n \nhttps://gaqno.atlassian.net/wiki/spaces/GD/pages/15794177",
+      "status": {
+        "name": "A fazer",
+        "category": "Itens Pendentes",
+        "color": "blue-gray"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "parent": {
+        "id": "10028",
+        "key": "KAN-28",
+        "self": "https://gaqno.atlassian.net/rest/api/3/issue/10028",
+        "fields": {
+          "summary": "Achieve minimum test coverage across MFEs and services",
+          "status": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/status/10000",
+            "description": "",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/statuses/generic.png",
+            "name": "A fazer",
+            "id": "10000",
+            "statusCategory": {
+              "self": "https://gaqno.atlassian.net/rest/api/3/statuscategory/2",
+              "id": 2,
+              "key": "new",
+              "colorName": "blue-gray",
+              "name": "Itens Pendentes"
+            }
+          },
+          "priority": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/priority/3",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/priorities/medium_new.svg",
+            "name": "Medium",
+            "id": "3"
+          },
+          "issuetype": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/issuetype/10001",
+            "id": "10001",
+            "description": "Uma coleção de bugs, histórias e tarefas.",
+            "iconUrl": "https://gaqno.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium",
+            "name": "Epic",
+            "subtask": false,
+            "avatarId": 10307,
+            "entityId": "1cb74459-69fd-4175-b005-99aa65852947",
+            "hierarchyLevel": 1
+          }
+        }
+      },
+      "created": "2026-02-05T13:38:56.909-0300"
+    },
+    {
+      "id": "10037",
+      "key": "KAN-37",
+      "summary": "Migrate admin pages from shell to gaqno-admin-ui",
+      "description": "Scope:\n Shell pages/admin/* → gaqno-admin-ui routes\nAcceptance Criteria:\nRotas /admin/_ e /sass/_ servidas por admin MFE\nShell sem pages/admin/\nMenu aponta para admin MFE\nConfluence:\n \nhttps://gaqno.atlassian.net/wiki/spaces/GD/pages/15794177",
+      "status": {
+        "name": "A fazer",
+        "category": "Itens Pendentes",
+        "color": "blue-gray"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "parent": {
+        "id": "10025",
+        "key": "KAN-25",
+        "self": "https://gaqno.atlassian.net/rest/api/3/issue/10025",
+        "fields": {
+          "summary": "Reduce shell responsibility and align admin platform",
+          "status": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/status/10000",
+            "description": "",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/statuses/generic.png",
+            "name": "A fazer",
+            "id": "10000",
+            "statusCategory": {
+              "self": "https://gaqno.atlassian.net/rest/api/3/statuscategory/2",
+              "id": 2,
+              "key": "new",
+              "colorName": "blue-gray",
+              "name": "Itens Pendentes"
+            }
+          },
+          "priority": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/priority/3",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/priorities/medium_new.svg",
+            "name": "Medium",
+            "id": "3"
+          },
+          "issuetype": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/issuetype/10001",
+            "id": "10001",
+            "description": "Uma coleção de bugs, histórias e tarefas.",
+            "iconUrl": "https://gaqno.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium",
+            "name": "Epic",
+            "subtask": false,
+            "avatarId": 10307,
+            "entityId": "1cb74459-69fd-4175-b005-99aa65852947",
+            "hierarchyLevel": 1
+          }
+        }
+      },
+      "created": "2026-02-05T13:38:58.334-0300"
+    },
+    {
+      "id": "10038",
+      "key": "KAN-38",
+      "summary": "Health Dashboard",
+      "description": "Overview:\n Real-time platform health view: CI/CD status, self-healing activity, agent performance, release timelines.\nConfluence (DDS):\n \nhttps://gaqno-development.atlassian.net/wiki/spaces/DDS/pages/917505/Health+Dashboard\nScope:\nBackend: gaqno-admin-service (NestJS)\nFrontend: gaqno-admin-ui (MFE)\nURL: /organization/health",
+      "status": {
+        "name": "A fazer",
+        "category": "Itens Pendentes",
+        "color": "blue-gray"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T14:16:54.479-0300"
+    },
+    {
+      "id": "10039",
+      "key": "KAN-39",
+      "summary": "Refactor monorepo: remove submodules, add CI workflows and documentation",
+      "description": "Scope:\n Inline MFEs/services from submodules into workspace; add .github workflows (CI, PR gatekeeper, self-healing); add docs (confluence, agents, architecture audit); update package.json workspaces.\nAcceptance Criteria:\nAll packages in workspace (no submodules for MFEs/services)\nCI, PR gatekeeper, self-healing workflows in .github/\nDocumentation in docs/ (confluence, jira, architecture)",
+      "status": {
+        "name": "Em Homologação",
+        "category": "Em andamento",
+        "color": "yellow"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "parent": {
+        "id": "10025",
+        "key": "KAN-25",
+        "self": "https://gaqno.atlassian.net/rest/api/3/issue/10025",
+        "fields": {
+          "summary": "Reduce shell responsibility and align admin platform",
+          "status": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/status/10000",
+            "description": "",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/statuses/generic.png",
+            "name": "A fazer",
+            "id": "10000",
+            "statusCategory": {
+              "self": "https://gaqno.atlassian.net/rest/api/3/statuscategory/2",
+              "id": 2,
+              "key": "new",
+              "colorName": "blue-gray",
+              "name": "Itens Pendentes"
+            }
+          },
+          "priority": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/priority/3",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/priorities/medium_new.svg",
+            "name": "Medium",
+            "id": "3"
+          },
+          "issuetype": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/issuetype/10001",
+            "id": "10001",
+            "description": "Uma coleção de bugs, histórias e tarefas.",
+            "iconUrl": "https://gaqno.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium",
+            "name": "Epic",
+            "subtask": false,
+            "avatarId": 10307,
+            "entityId": "1cb74459-69fd-4175-b005-99aa65852947",
+            "hierarchyLevel": 1
+          }
+        }
+      },
+      "created": "2026-02-05T14:20:48.940-0300"
+    },
+    {
+      "id": "10040",
+      "key": "KAN-40",
+      "summary": "gaqno-rpg-ui – Align hooks to component folder structure",
+      "description": "gaqno-rpg-ui currently has 40+ hooks in src/hooks/. Per architecture rules, hooks must live inside the component or page that owns them. Shared hooks go in components/shared/hooks/.\nGoal: No root-level src/hooks/; all hooks under components/\n/hooks/ or pages/\n/hooks/\nAcceptance Criteria:\nsrc/hooks/ removed or empty\nShared hooks in components/shared/hooks/\nComponent hooks in components/[Component]/hooks/\nPage hooks in pages/[feature]/hooks/\nAll imports updated\nTests pass\nConfluence: \nhttps://gaqno-development.atlassian.net/wiki/spaces/DDS/pages/688129/Frontend+Architecture+Guide",
+      "status": {
+        "name": "A fazer",
+        "category": "Itens Pendentes",
+        "color": "blue-gray"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T14:37:36.360-0300"
+    },
+    {
+      "id": "10041",
+      "key": "KAN-41",
+      "summary": "Create shared hooks folder and migrate domain hooks",
+      "status": {
+        "name": "A fazer",
+        "category": "Itens Pendentes",
+        "color": "blue-gray"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "parent": {
+        "id": "10040",
+        "key": "KAN-40",
+        "self": "https://gaqno.atlassian.net/rest/api/3/issue/10040",
+        "fields": {
+          "summary": "gaqno-rpg-ui – Align hooks to component folder structure",
+          "status": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/status/10000",
+            "description": "",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/statuses/generic.png",
+            "name": "A fazer",
+            "id": "10000",
+            "statusCategory": {
+              "self": "https://gaqno.atlassian.net/rest/api/3/statuscategory/2",
+              "id": 2,
+              "key": "new",
+              "colorName": "blue-gray",
+              "name": "Itens Pendentes"
+            }
+          },
+          "priority": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/priority/3",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/priorities/medium_new.svg",
+            "name": "Medium",
+            "id": "3"
+          },
+          "issuetype": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/issuetype/10001",
+            "id": "10001",
+            "description": "Uma coleção de bugs, histórias e tarefas.",
+            "iconUrl": "https://gaqno.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium",
+            "name": "Epic",
+            "subtask": false,
+            "avatarId": 10307,
+            "entityId": "1cb74459-69fd-4175-b005-99aa65852947",
+            "hierarchyLevel": 1
+          }
+        }
+      },
+      "created": "2026-02-05T14:38:00.532-0300"
+    },
+    {
+      "id": "10042",
+      "key": "KAN-42",
+      "summary": "Migrate Master and Game Dashboard hooks to component folders",
+      "status": {
+        "name": "A fazer",
+        "category": "Itens Pendentes",
+        "color": "blue-gray"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "parent": {
+        "id": "10040",
+        "key": "KAN-40",
+        "self": "https://gaqno.atlassian.net/rest/api/3/issue/10040",
+        "fields": {
+          "summary": "gaqno-rpg-ui – Align hooks to component folder structure",
+          "status": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/status/10000",
+            "description": "",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/statuses/generic.png",
+            "name": "A fazer",
+            "id": "10000",
+            "statusCategory": {
+              "self": "https://gaqno.atlassian.net/rest/api/3/statuscategory/2",
+              "id": 2,
+              "key": "new",
+              "colorName": "blue-gray",
+              "name": "Itens Pendentes"
+            }
+          },
+          "priority": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/priority/3",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/priorities/medium_new.svg",
+            "name": "Medium",
+            "id": "3"
+          },
+          "issuetype": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/issuetype/10001",
+            "id": "10001",
+            "description": "Uma coleção de bugs, histórias e tarefas.",
+            "iconUrl": "https://gaqno.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium",
+            "name": "Epic",
+            "subtask": false,
+            "avatarId": 10307,
+            "entityId": "1cb74459-69fd-4175-b005-99aa65852947",
+            "hierarchyLevel": 1
+          }
+        }
+      },
+      "created": "2026-02-05T14:38:06.902-0300"
+    },
+    {
+      "id": "10043",
+      "key": "KAN-43",
+      "summary": "Migrate Campaign hooks to CampaignWizardView",
+      "status": {
+        "name": "A fazer",
+        "category": "Itens Pendentes",
+        "color": "blue-gray"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "parent": {
+        "id": "10040",
+        "key": "KAN-40",
+        "self": "https://gaqno.atlassian.net/rest/api/3/issue/10040",
+        "fields": {
+          "summary": "gaqno-rpg-ui – Align hooks to component folder structure",
+          "status": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/status/10000",
+            "description": "",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/statuses/generic.png",
+            "name": "A fazer",
+            "id": "10000",
+            "statusCategory": {
+              "self": "https://gaqno.atlassian.net/rest/api/3/statuscategory/2",
+              "id": 2,
+              "key": "new",
+              "colorName": "blue-gray",
+              "name": "Itens Pendentes"
+            }
+          },
+          "priority": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/priority/3",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/priorities/medium_new.svg",
+            "name": "Medium",
+            "id": "3"
+          },
+          "issuetype": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/issuetype/10001",
+            "id": "10001",
+            "description": "Uma coleção de bugs, histórias e tarefas.",
+            "iconUrl": "https://gaqno.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium",
+            "name": "Epic",
+            "subtask": false,
+            "avatarId": 10307,
+            "entityId": "1cb74459-69fd-4175-b005-99aa65852947",
+            "hierarchyLevel": 1
+          }
+        }
+      },
+      "created": "2026-02-05T14:38:09.632-0300"
+    },
+    {
+      "id": "10044",
+      "key": "KAN-44",
+      "summary": "Migrate remaining utility hooks to shared",
+      "status": {
+        "name": "A fazer",
+        "category": "Itens Pendentes",
+        "color": "blue-gray"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "parent": {
+        "id": "10040",
+        "key": "KAN-40",
+        "self": "https://gaqno.atlassian.net/rest/api/3/issue/10040",
+        "fields": {
+          "summary": "gaqno-rpg-ui – Align hooks to component folder structure",
+          "status": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/status/10000",
+            "description": "",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/statuses/generic.png",
+            "name": "A fazer",
+            "id": "10000",
+            "statusCategory": {
+              "self": "https://gaqno.atlassian.net/rest/api/3/statuscategory/2",
+              "id": 2,
+              "key": "new",
+              "colorName": "blue-gray",
+              "name": "Itens Pendentes"
+            }
+          },
+          "priority": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/priority/3",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/priorities/medium_new.svg",
+            "name": "Medium",
+            "id": "3"
+          },
+          "issuetype": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/issuetype/10001",
+            "id": "10001",
+            "description": "Uma coleção de bugs, histórias e tarefas.",
+            "iconUrl": "https://gaqno.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium",
+            "name": "Epic",
+            "subtask": false,
+            "avatarId": 10307,
+            "entityId": "1cb74459-69fd-4175-b005-99aa65852947",
+            "hierarchyLevel": 1
+          }
+        }
+      },
+      "created": "2026-02-05T14:38:12.252-0300"
+    },
+    {
+      "id": "10045",
+      "key": "KAN-45",
+      "summary": "Update Frontend Architecture Guide and add barrel exports",
+      "status": {
+        "name": "A fazer",
+        "category": "Itens Pendentes",
+        "color": "blue-gray"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "parent": {
+        "id": "10040",
+        "key": "KAN-40",
+        "self": "https://gaqno.atlassian.net/rest/api/3/issue/10040",
+        "fields": {
+          "summary": "gaqno-rpg-ui – Align hooks to component folder structure",
+          "status": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/status/10000",
+            "description": "",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/statuses/generic.png",
+            "name": "A fazer",
+            "id": "10000",
+            "statusCategory": {
+              "self": "https://gaqno.atlassian.net/rest/api/3/statuscategory/2",
+              "id": 2,
+              "key": "new",
+              "colorName": "blue-gray",
+              "name": "Itens Pendentes"
+            }
+          },
+          "priority": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/priority/3",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/priorities/medium_new.svg",
+            "name": "Medium",
+            "id": "3"
+          },
+          "issuetype": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/issuetype/10001",
+            "id": "10001",
+            "description": "Uma coleção de bugs, histórias e tarefas.",
+            "iconUrl": "https://gaqno.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium",
+            "name": "Epic",
+            "subtask": false,
+            "avatarId": 10307,
+            "entityId": "1cb74459-69fd-4175-b005-99aa65852947",
+            "hierarchyLevel": 1
+          }
+        }
+      },
+      "created": "2026-02-05T14:38:14.418-0300"
+    },
+    {
+      "id": "10046",
+      "key": "KAN-46",
+      "summary": "Migrate Session and Page hooks to page folders",
+      "status": {
+        "name": "Feito",
+        "category": "Itens concluídos",
+        "color": "green"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "parent": {
+        "id": "10040",
+        "key": "KAN-40",
+        "self": "https://gaqno.atlassian.net/rest/api/3/issue/10040",
+        "fields": {
+          "summary": "gaqno-rpg-ui – Align hooks to component folder structure",
+          "status": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/status/10000",
+            "description": "",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/statuses/generic.png",
+            "name": "A fazer",
+            "id": "10000",
+            "statusCategory": {
+              "self": "https://gaqno.atlassian.net/rest/api/3/statuscategory/2",
+              "id": 2,
+              "key": "new",
+              "colorName": "blue-gray",
+              "name": "Itens Pendentes"
+            }
+          },
+          "priority": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/priority/3",
+            "iconUrl": "https://gaqno.atlassian.net/images/icons/priorities/medium_new.svg",
+            "name": "Medium",
+            "id": "3"
+          },
+          "issuetype": {
+            "self": "https://gaqno.atlassian.net/rest/api/3/issuetype/10001",
+            "id": "10001",
+            "description": "Uma coleção de bugs, histórias e tarefas.",
+            "iconUrl": "https://gaqno.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium",
+            "name": "Epic",
+            "subtask": false,
+            "avatarId": 10307,
+            "entityId": "1cb74459-69fd-4175-b005-99aa65852947",
+            "hierarchyLevel": 1
+          }
+        }
+      },
+      "created": "2026-02-05T14:38:16.694-0300"
+    },
+    {
+      "id": "10047",
+      "key": "KAN-47",
+      "summary": "CI workflows per repo and PR-Agent integration",
+      "description": "Migrar workflows de CI do workspace para cada repositório individual. Inclui: ci.yml, branch-pr-validation, PR-Agent para code review por IA. PRs abertos por repo individual (Jira abre no repo correto).",
+      "status": {
+        "name": "Fazendo",
+        "category": "Em andamento",
+        "color": "yellow"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T14:58:37.349-0300"
+    },
+    {
+      "id": "10048",
+      "key": "KAN-48",
+      "summary": "Move CI workflows to individual repos",
+      "status": {
+        "name": "Fazendo",
+        "category": "Em andamento",
+        "color": "yellow"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T14:58:54.308-0300"
+    },
+    {
+      "id": "10049",
+      "key": "KAN-49",
+      "summary": "Add PR-Agent for AI code review",
+      "status": {
+        "name": "Fazendo",
+        "category": "Em andamento",
+        "color": "yellow"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T14:58:54.725-0300"
+    },
+    {
+      "id": "10050",
+      "key": "KAN-50",
+      "summary": "Fix CI: npm install instead of npm ci",
+      "status": {
+        "name": "Fazendo",
+        "category": "Em andamento",
+        "color": "yellow"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T14:58:55.085-0300"
+    },
+    {
+      "id": "10051",
+      "key": "KAN-51",
+      "summary": "Update push-all.sh and WORKSPACE-WORKFLOW docs",
+      "status": {
+        "name": "Fazendo",
+        "category": "Em andamento",
+        "color": "yellow"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T14:58:55.431-0300"
+    },
+    {
+      "id": "10052",
+      "key": "KAN-52",
+      "summary": "Remove node_modules from git tracking",
+      "description": "Remove node_modules that were accidentally committed to repositories. Repos affected: gaqno-rpg-ui, gaqno-finance-service, gaqno-rpg-service, gaqno-sso-ui.",
+      "status": {
+        "name": "Fazendo",
+        "category": "Em andamento",
+        "color": "yellow"
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "created": "2026-02-05T15:11:51.185-0300"
+    }
+  ]
+}

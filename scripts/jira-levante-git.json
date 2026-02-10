@@ -1,0 +1,4179 @@
+{
+  "generatedAt": "2026-02-05T23:04:07.205Z",
+  "repos": [
+    {
+      "path": "gaqno-ai-service",
+      "productKey": "ai",
+      "layer": "Backend",
+      "commits": [
+        {
+          "hash": "fdeca7900d5d6c58fdf43bfb1640cfc3d4929c2a",
+          "subject": "ci(KAN-47): add workflows per repo",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "8abd175870556711219918a44bf53094ab35f1a2",
+          "subject": "chore(KAN-39): sync with workspace",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "3f2a9f3603bf7b954d117300df6594e60b2992a6",
+          "subject": "Update changes",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "750b095c5718e5fe5720cf68560dcb94588ebf2c",
+          "subject": "feat: Add support for new model types.",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "589c28077d6adbd2152eed0dd1508635105c2a49",
+          "subject": "feat: Add new features and improvements",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "a7312d6c2bbb601c967bfd60eed7edb385e90a26",
+          "subject": "Update changes",
+          "date": "2026-02-03",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "52275acc8b63c2e6e9490a4b2dfb3328ff38675d",
+          "subject": "chore: remove .md docs - consolidate in root docs/",
+          "date": "2026-02-03",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "a195576f3f622e0bff09e98fb29cfb6b7683abe8",
+          "subject": "Update changes",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "55887ee21325c6c81f3bf82b23dd189b73b1ec80",
+          "subject": "Update changes",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "5b0b3ecc422eb94e7302d76f2ae1dd22de99a1dc",
+          "subject": "chore: update changes",
+          "date": "2026-01-30",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "5f34997546f932aa8bfc1729a928c6dde3de3711",
+          "subject": "chore: update changes",
+          "date": "2026-01-30",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "11b23c909119f600f29280d57540b8d21ae0fe60",
+          "subject": "chore: update changes",
+          "date": "2026-01-28",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "f02ddab98e9ba3a44c05633fbdeafce2e44f40b4",
+          "subject": "chore: update changes",
+          "date": "2026-01-28",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "e98fc7ae86a3a73bf0b1b0a2a65440cd485d987a",
+          "subject": "chore: update changes",
+          "date": "2026-01-27",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "116948da9cfb691ca844a476b3fd267dd0e7f6c5",
+          "subject": "chore: update changes",
+          "date": "2026-01-27",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "d94a235de1e0cea66a1225698c0b5b7465b60909",
+          "subject": "chore: update changes",
+          "date": "2026-01-27",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "de82234bcb7e76e522693483cb5fd7844277c21e",
+          "subject": "chore: update changes",
+          "date": "2026-01-21",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "0a3759c98751f17db505dfaf583992c8f3c24489",
+          "subject": "chore: update changes",
+          "date": "2026-01-16",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "2591da8138924dc76d3a10bdb40fce77b7ba3bd0",
+          "subject": "chore: update changes",
+          "date": "2026-01-15",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "d0f03efac8b76d0396333caa2dfcfb46e0b23729",
+          "subject": "chore: update changes",
+          "date": "2026-01-14",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "bb38d389bb76aeafadc3b8132456eddd56394ae4",
+          "subject": "chore: update changes",
+          "date": "2026-01-13",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "b42841f3c80ba67716e51f623a066babc55e9f48",
+          "subject": "chore: update changes",
+          "date": "2026-01-13",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "1005c2da93785f7fda90012372bda31e205fa651",
+          "subject": "chore: update changes",
+          "date": "2026-01-10",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "5ac84954eb45a7e94433ed143d23b3b613ad2df6",
+          "subject": "Update changes",
+          "date": "2026-01-08",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "2af34b1c93cc44855187124545d7885a35bd0301",
+          "subject": "Fix port inconsistencies",
+          "date": "2026-01-08",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "b0ef83b3c6a4670c7c6722a25684a5d91790e8b8",
+          "subject": "Update .gitignore to exclude specific cursor files and modify AIController to remove global route prefix",
+          "date": "2025-12-04",
+          "author": "gaqno"
+        },
+        {
+          "hash": "8c1ea4d02c3b40c427e46a268e963fb79693686c",
+          "subject": "Update CORS configuration in main.ts to support multiple origins by splitting and trimming the CORS_ORIGIN environment variable.",
+          "date": "2025-12-04",
+          "author": "gaqno"
+        },
+        {
+          "hash": "6c97b5b1332141cbd15f55815667c8e71e39996d",
+          "subject": "Remove global prefix 'llm' from the application in main.ts to simplify routing configuration.",
+          "date": "2025-12-04",
+          "author": "gaqno"
+        },
+        {
+          "hash": "fc0d8c9b28457939274af201027ead8d4bf3da18",
+          "subject": "Set global prefix for the application to 'llm' in main.ts for improved routing.",
+          "date": "2025-12-04",
+          "author": "gaqno"
+        },
+        {
+          "hash": "aa6909aea026a505138738306ae2a288441a5197",
+          "subject": "Update .gitignore, newrelic.js, and package.json for New Relic configuration",
+          "date": "2025-12-02",
+          "author": "gaqno"
+        },
+        {
+          "hash": "51e81c553ebc101ba9937181c255b38ddfd65474",
+          "subject": "Add New Relic integration and configuration files",
+          "date": "2025-12-02",
+          "author": "gaqno"
+        },
+        {
+          "hash": "ee3d50d31619bebfd72365c96298c08320d5ad9c",
+          "subject": "Update Dockerfile for New Relic integration and build process",
+          "date": "2025-12-02",
+          "author": "gaqno"
+        },
+        {
+          "hash": "2c62f894578030512ba3dfe02abebd90b2205323",
+          "subject": "Enhance New Relic configuration with custom insights and span event storage limits",
+          "date": "2025-12-02",
+          "author": "gaqno"
+        },
+        {
+          "hash": "eb0bca2d0189d13017b6685d35494c4d6c8373ca",
+          "subject": "Add New Relic monitoring configuration and update package dependencies",
+          "date": "2025-12-02",
+          "author": "gaqno"
+        },
+        {
+          "hash": "4e83812e805c50f167b7eecd478a29dbd4b43430",
+          "subject": "Rename project from 'llm_gaqno' to 'llm_backend' in package-lock.json to reflect updated project structure.",
+          "date": "2025-11-27",
+          "author": "gaqno"
+        },
+        {
+          "hash": "2698dbac3a15c49c1a3a6f60d47e5de67e15260c",
+          "subject": "Initialize NestJS backend with AI services, Docker configuration, and environment setup. Added modules for AI, ElevenLabs, and metrics, along with necessary DTOs, services, and controllers. Included ESLint and Prettier configurations for code quality. Created implementation and migration checklists for project setup.",
+          "date": "2025-11-27",
+          "author": "gaqno"
+        }
+      ]
+    },
+    {
+      "path": "gaqno-pdv-service",
+      "productKey": "pdv",
+      "layer": "Backend",
+      "commits": [
+        {
+          "hash": "2cbe25afca51486c9ac8c3d1fbd7029de59eef11",
+          "subject": "ci(KAN-47): add workflows per repo",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "621063d1362c9066d23ea893b5ae593f00cc3b71",
+          "subject": "chore(KAN-39): sync with workspace",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "b352727dbe0856243d4825ce578e276b9c518f95",
+          "subject": "Update changes",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "ce4b7a0761c47d40062839a52016ee4b9e04724e",
+          "subject": "feat: Add new features",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "58f05ada83360a92945bfded3d7d5700ce904f46",
+          "subject": "feat: Dockerfile",
+          "date": "2026-02-03",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "44724f10cf9fc8bca7ee60086f83f4a9d51e3b74",
+          "subject": "Update changes",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "86b75e73a352027389b695950fe035e6e9090540",
+          "subject": "fix: SSO introspection URL 4010→4001",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "10036b1434ba8b2fecb9ccf753a8d20344d72d09",
+          "subject": "Update changes",
+          "date": "2026-01-31",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "7a6800e85dd0dfc39efe47cd484ab43c95366eed",
+          "subject": "chore: update changes",
+          "date": "2026-01-30",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "6be8a53f2188d36860371a7492035da303d4d3ae",
+          "subject": "chore: update changes",
+          "date": "2026-01-30",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "683871c9bc1a2326c4a3912ee0a5e9a00da2431a",
+          "subject": "chore: update changes",
+          "date": "2026-01-28",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "3fcff99078eb871012fb92baac462aceb8eb793b",
+          "subject": "chore: update changes",
+          "date": "2026-01-27",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "36cb5c93d1e2d10ba6ad665ae9198430932d6cce",
+          "subject": "chore: update changes",
+          "date": "2026-01-13",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "e60d85ba73880c55903b6a83d78ac9d94264e513",
+          "subject": "Update changes",
+          "date": "2026-01-08",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "af2528ebabcd4efdfd7713520528d45687878436",
+          "subject": "Fix port inconsistencies",
+          "date": "2026-01-08",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "e32bf3ba6294ae4cd4fddcc9c23839cbc3447879",
+          "subject": "Update changes",
+          "date": "2026-01-07",
+          "author": "gaqno"
+        },
+        {
+          "hash": "d1b18078fc3f7ab990575328c85df3ff0f19a88c",
+          "subject": "Update changes",
+          "date": "2026-01-05",
+          "author": "gaqno"
+        },
+        {
+          "hash": "d08d510babab01bfda0ae96f9c7458ece11bd712",
+          "subject": "Update changes",
+          "date": "2025-12-24",
+          "author": "gaqno"
+        },
+        {
+          "hash": "31ec9fc1bb06c3148d95bdb9858f804c4ab76727",
+          "subject": "refact: migration vite mdf",
+          "date": "2025-12-23",
+          "author": "gaqno"
+        },
+        {
+          "hash": "23c89a999ef3a5c306f092d60e1f98c4cb996044",
+          "subject": "Update dependencies and enhance .gitignore for improved project structure. Upgrade @gaqno-dev/backcore to version 1.0.3, add reflect-metadata and rxjs, and remove unused env validation files. Adjust imports in auth module to reflect new service path.",
+          "date": "2025-12-12",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "cf4621f6ff399ee04ffc46f26d1a079fad53ad50",
+          "subject": "Initialize NestJS project with core modules, controllers, and services. Add environment configuration, Dockerfile, and basic testing setup. Implement customer, product, and sales management features with respective DTOs and services.",
+          "date": "2025-12-12",
+          "author": "Gabriel Aquino"
+        }
+      ]
+    },
+    {
+      "path": "gaqno-sso-service",
+      "productKey": "sso",
+      "layer": "Backend",
+      "commits": [
+        {
+          "hash": "24fe4ce5897f2f8d22d801dc0eac5a27c752aed6",
+          "subject": "ci(KAN-47): add workflows per repo",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "f2c608f4283c038b3f33b77f73d649caa31f3327",
+          "subject": "chore(KAN-39): sync with workspace",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "6018fe58269225bdc2b11ee636096cfdaeffec49",
+          "subject": "Update changes",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "377e47a7cb6522fc052a235ad9cd65fa80ebbfee",
+          "subject": "feat: Add support for TypeScript build options.",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "5b3a9686ac53f02a741b4b763b2a5213fe6f52a1",
+          "subject": "feat: Add menu item",
+          "date": "2026-02-03",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "a53f5c5e88528e802277eb2a3cda291324a16be3",
+          "subject": "Update changes",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "7cb981de27f3573be377d2bd20fb13398aa0ad49",
+          "subject": "Update changes",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "8f87d8fa983aad08c1a2d6374e297b3f0389a1bd",
+          "subject": "Update changes",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "be85d3262283d62c52d3ce73af79b819382cd8d3",
+          "subject": "Update changes",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "ce1791828e22e084832d40e203e21176c7a55e86",
+          "subject": "Update changes",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "68e008ac3bdc7975f2b3ccbe7950af6860b630f8",
+          "subject": "Update changes",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "070af127870c8beaee167c535d348865a7f8403b",
+          "subject": "Update changes",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "f162cfb1a2109a78c17e7e2643b9ac22b0b52b36",
+          "subject": "Update changes",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "34d922e5b64b7bd790dbb769c144adefaf0339b8",
+          "subject": "Update changes",
+          "date": "2026-02-01",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "2b612efc4d0af324f206743559797118ad19fb40",
+          "subject": "Update changes",
+          "date": "2026-02-01",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "63267ecab01bfbed70d447f13af40bcef78d39f0",
+          "subject": "Update changes",
+          "date": "2026-02-01",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "073dcc790c4e9014278ee7ee6e7c14ff0a95da40",
+          "subject": "Update changes",
+          "date": "2026-02-01",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "40fb662401047a4c3c03288c09ce82b679c0a7cd",
+          "subject": "Update changes",
+          "date": "2026-01-31",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "2fc01a518a11540c43342628a9241e5142c645da",
+          "subject": "Update changes",
+          "date": "2026-01-31",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "5e3565d775bb930ef4c6c27540d0ddf7ffb9e43c",
+          "subject": "fix(build): local HttpExceptionFilter and SessionUser metadata for types",
+          "date": "2026-01-31",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "e2814a21fb4783f5cc10422ba2cea8eae770c7e5",
+          "subject": "fix(docker): install devDependencies in builder when NODE_ENV=production (Coolify)",
+          "date": "2026-01-31",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "43104d41ed711f1d3ccd7747e8e19cd30c6347e1",
+          "subject": "fix(docker): run Nest CLI via node to avoid npx executable resolution",
+          "date": "2026-01-31",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "aedd7d7e6f951c432ac671a08ead6adb810b20f1",
+          "subject": "fix(docker): use npx nest build so nest CLI is found in builder",
+          "date": "2026-01-31",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "b7e43689e7136599fe73e11257ac45240702db70",
+          "subject": "Update changes",
+          "date": "2026-01-31",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "3fee979dc531bd5e39fb56e109a2c894ced4ac0c",
+          "subject": "Update changes",
+          "date": "2026-01-31",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "7bcbde5b0bf7cf2e54769272a605a109cc50fafc",
+          "subject": "fix(api): global prefix v1 (remove duplicate /sso in path)",
+          "date": "2026-01-30",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "bd02bcb8703901441f8261a80d312f047db99224",
+          "subject": "chore: update changes",
+          "date": "2026-01-30",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "5ecf2c15d64aae61eaf81ea8c41bf9063d76039d",
+          "subject": "chore: update changes",
+          "date": "2026-01-30",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "bc9511eea157b64ecac75ff8d23fd861cd19daad",
+          "subject": "chore: update changes",
+          "date": "2026-01-30",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "5df4007793d86ea156c32495f352aeada045c548",
+          "subject": "chore: update changes",
+          "date": "2026-01-28",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "b6129613767683783b5c4e5029cf69db09d9cbfb",
+          "subject": "chore: update changes",
+          "date": "2026-01-27",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "5ec2b71488cc5e94688eee1a73c07bcd32d27fdc",
+          "subject": "chore: update changes",
+          "date": "2026-01-27",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "511c4185e79239e761c550186d2ad107803c767f",
+          "subject": "chore: update changes",
+          "date": "2026-01-21",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "a18bb9a1a9f661aa59f5a9ba7a4da39284322b13",
+          "subject": "chore: update changes",
+          "date": "2026-01-13",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "552b63a04cd260897d842b35cb6d8d86504ddf7f",
+          "subject": "chore: update changes",
+          "date": "2026-01-10",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "4abd84f7f8e3c49c2d3b354e294d6a638f9a6370",
+          "subject": "Update changes",
+          "date": "2026-01-08",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "68cba711017eb07716e5cc08f86fb1f6c582aac1",
+          "subject": "Fix port inconsistencies",
+          "date": "2026-01-08",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "8b81ec10e1d9a77fd4fdd89a34e17e7b7e683b25",
+          "subject": "Update changes",
+          "date": "2026-01-07",
+          "author": "gaqno"
+        },
+        {
+          "hash": "e3eb936d651abba9df596019ca4af981558f94af",
+          "subject": "Update changes",
+          "date": "2026-01-05",
+          "author": "gaqno"
+        },
+        {
+          "hash": "52ef561480e8efc4da659fbd8ba0b138accfb0b2",
+          "subject": "Update changes",
+          "date": "2025-12-24",
+          "author": "gaqno"
+        },
+        {
+          "hash": "5195739ad681be6989a54f4273409620a71bcf03",
+          "subject": "Update TypeScript build info file to reflect current dependencies",
+          "date": "2025-12-23",
+          "author": "gaqno"
+        },
+        {
+          "hash": "8e6fcaba078055ff63ad9f5812ac814809bfa5e5",
+          "subject": "Enhance database schema push process and improve error handling",
+          "date": "2025-12-23",
+          "author": "gaqno"
+        },
+        {
+          "hash": "a92c97cddc2dbc6e0ead63378c66b53267827031",
+          "subject": "refact: migration vite mdf",
+          "date": "2025-12-23",
+          "author": "gaqno"
+        },
+        {
+          "hash": "20d4ade2c245b7396fed4e1c9b22da513a133772",
+          "subject": "Implement migration and database setup for Gaqno SSO service",
+          "date": "2025-12-23",
+          "author": "gaqno"
+        },
+        {
+          "hash": "a23ce62bdf6a31cb369524445316ef9765577d32",
+          "subject": "Add environment configuration and update dependencies",
+          "date": "2025-12-12",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "ae1eb256750d480187f97923fc3fd83e261c14cf",
+          "subject": "Initialize Gaqno SSO service with NestJS, TypeScript, and essential configurations. Added Dockerfile, ESLint configuration, and environment validation. Implemented authentication, user, organization, and whitelabel modules with corresponding controllers and services. Included DTOs for user and organization management, and set up session management with guards. Created sample environment file and updated package dependencies.",
+          "date": "2025-12-12",
+          "author": "Gabriel Aquino"
+        }
+      ]
+    },
+    {
+      "path": "gaqno-finance-service",
+      "productKey": "finance",
+      "layer": "Backend",
+      "commits": [
+        {
+          "hash": "196a78863d4f0e25dbbcd4d154f81f083e088a63",
+          "subject": "chore: remove node_modules from git tracking",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "e18a3e471d4ba2c9c5ec310cd6620270afdabab7",
+          "subject": "ci(KAN-47): add workflows per repo",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "0199beb0dc3ffd01fa8a1b58ecc716e99b1be0a2",
+          "subject": "chore(KAN-39): sync with workspace",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "3e2a2fefaae9f74c093e668c3c9ccc1a5cd300de",
+          "subject": "Update changes",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "6f92bff8c044cacca7b738430b7dafb6a7479f71",
+          "subject": "feat: Add new feature",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "2a75256d3af0543ed6da588aef73dae633302a3f",
+          "subject": "Update changes",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "e07487ffc5c03a98122af3c18f8212c908af2914",
+          "subject": "Update changes",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "a5180dc4fe0f404badee638fd76bc6cdab5b0e3c",
+          "subject": "Update changes",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "cf5b5bc9ec27c2e5f952a5e414ed0bff455374b6",
+          "subject": "Update changes",
+          "date": "2026-01-31",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "0c52816ce495a1ca5580609c524e98f3489c9fc6",
+          "subject": "chore: update changes",
+          "date": "2026-01-30",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "66af93fc52716265be43c28592575c28b4055e50",
+          "subject": "chore: update changes",
+          "date": "2026-01-30",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "0855513936eaf7e077b444798c94f86df818da26",
+          "subject": "chore: update changes",
+          "date": "2026-01-28",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "3dd50efe05bf8286aeb404eb2b043c93978efe55",
+          "subject": "chore: update changes",
+          "date": "2026-01-27",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "aa77b1948807856d1fdf30255917a02a2f94184c",
+          "subject": "chore: update changes",
+          "date": "2026-01-21",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "8f037eb6778ee97662f81853db6f9d8def4e73bb",
+          "subject": "chore: update changes",
+          "date": "2026-01-13",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "10130f697d49301397d97e96b7c8ab5b221b53f6",
+          "subject": "Update changes",
+          "date": "2026-01-08",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "2d428f355fa40cc73a4f5441e55a4fd14b4da91e",
+          "subject": "Update changes",
+          "date": "2026-01-07",
+          "author": "gaqno"
+        },
+        {
+          "hash": "9cc013cdc1db5cf238c3d317e146a94d5b82e201",
+          "subject": "Initial commit",
+          "date": "2026-01-05",
+          "author": "gaqno"
+        }
+      ]
+    },
+    {
+      "path": "gaqno-rpg-service",
+      "productKey": "rpg",
+      "layer": "Backend",
+      "commits": [
+        {
+          "hash": "836c99428c86f1f41153b98d8606b4e57a079125",
+          "subject": "chore: remove node_modules from git tracking",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "dcbde64eb6fc8ff367f01f0d1c943b50566d7844",
+          "subject": "ci(KAN-47): add workflows per repo",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "f25d8a64c6d088f949b4c7c1a2eebb51de28f26c",
+          "subject": "chore(KAN-39): sync with workspace",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "2679a9b064133cf5a4b597fa1459f0c28adeda87",
+          "subject": "Update changes",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "47a6b8205e0cc2090bdbab5c18a9448b3a8d5cd9",
+          "subject": "feat: Add type checking for TypeScript",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "253e0a619376fb433ccf450fecac1cff5b88feb8",
+          "subject": "Update changes",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "fd20945fc6dce36dbdbefc6cdd0e25acdb9a664b",
+          "subject": "Update changes",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "a6ca0ce44cc3377d5c9b112ac3a7ac7f62d5b01e",
+          "subject": "fix: use local HttpExceptionFilter, update omnichannel e2e port 4008",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "80beb2860fcf43a358564f4e7a0189f7bda44bab",
+          "subject": "Update changes",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "27928db1108e096e131539b99fec0afc8a94fc61",
+          "subject": "Update changes",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "e0d9adf6c226a23863a601c3932e55b8002e9e44",
+          "subject": "Update changes",
+          "date": "2026-01-31",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "32fa1ea47c5b2bada98b3e319962cd482cf269ee",
+          "subject": "chore: update changes",
+          "date": "2026-01-30",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "82ec7bf87ba37b13ce99b4e0a3bbcab8c9726203",
+          "subject": "chore: update changes",
+          "date": "2026-01-30",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "878a285c5be510a887de8323658b6d4ca69b9032",
+          "subject": "chore: update changes",
+          "date": "2026-01-28",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "021b9ae8d82b24349a9293b555d6d71f4a439913",
+          "subject": "chore: update changes",
+          "date": "2026-01-27",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "7ed372102d4954225d39708cb65d8f0f9aac86d5",
+          "subject": "chore: update changes",
+          "date": "2026-01-21",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "7dc266bf77a295571aa7548f5efbccaa7b74d2b7",
+          "subject": "chore: update changes",
+          "date": "2026-01-19",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "5d470cd224f217be444feeb24a132eb525c9be55",
+          "subject": "chore: update changes",
+          "date": "2026-01-16",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "9b74ce7ae762e98ab9df3837d1007537a169298f",
+          "subject": "chore: update changes",
+          "date": "2026-01-15",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "85c2792abfbde7969e37efdb4641b7243f797f00",
+          "subject": "chore: update changes",
+          "date": "2026-01-14",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "29ea883bcf48fb923af567c2aeb4a9f2f93120cb",
+          "subject": "chore: update changes",
+          "date": "2026-01-13",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "4e14489d032a6624b16f3f4091e548cd932eb9a8",
+          "subject": "chore: update changes",
+          "date": "2026-01-10",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "b68380273f5d0922e71681a830be07b8b398d3a0",
+          "subject": "Update changes",
+          "date": "2026-01-08",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "425bdf00c0bbef62ddb3e3b6299209972f6b6aea",
+          "subject": "Update changes",
+          "date": "2026-01-07",
+          "author": "gaqno"
+        },
+        {
+          "hash": "aea1fdc6ac7250df2125d4de6a5ed08886bf14dc",
+          "subject": "Update changes",
+          "date": "2026-01-07",
+          "author": "gaqno"
+        },
+        {
+          "hash": "a27127df180993f21ededf74f8e550e4d9e5e433",
+          "subject": "Initial commit",
+          "date": "2026-01-05",
+          "author": "gaqno"
+        }
+      ]
+    },
+    {
+      "path": "gaqno-omnichannel-service",
+      "productKey": "omnichannel",
+      "layer": "Backend",
+      "commits": [
+        {
+          "hash": "7979683cf24562adecfe826f444e8468c593b418",
+          "subject": "ci(KAN-47): add workflows per repo",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "4ca500bae681332db94b66fc28d9c4811926fe20",
+          "subject": "chore(KAN-39): sync with workspace",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "18d847ea0d5c7a7f92c651341b29bf471aeade20",
+          "subject": "Update changes",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "47ec7fb900cc2b247c42cb7589ceadcce926a5ff",
+          "subject": "chore: remove docs - consolidate in root docs/",
+          "date": "2026-02-03",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "6ad1af13cbaab8bc9c5ebea01cfc90ce35c454d1",
+          "subject": "fix(cors): use SSO-style CORS config for consistency",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "483825171ef081f99217f0dd5ba98017ff08da14",
+          "subject": "fix(cors): enable CORS at platform level, add HttpExceptionFilter",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "e541c17a9d15cfcc66a4e6e8cc8e6f067f8a4067",
+          "subject": "fix(cors): align CORS config with SSO, support CORS_ORIGIN env",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "5a3c18ef828855e4a57d02b1dfbe8ca6cf78cf83",
+          "subject": "chore: update docs, push-db, main, add seed-agent-channels script",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "30775869a40801bd0a98cdd0e8b17278563ad031",
+          "subject": "fix: add wget for healthcheck, simplify HEALTHCHECK, add db name startup log",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "7658afa5b04ea8bee58b54ae1edcdb892c7ac574",
+          "subject": "fix: add throttler runtime dependency",
+          "date": "2026-01-30",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "1ae680411222f63e6083e77b566a0c725bb85f24",
+          "subject": "chore: update changes",
+          "date": "2026-01-30",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "0f3e91c20e46874bd9ff644531c85a54ad583e35",
+          "subject": "chore: update changes",
+          "date": "2026-01-30",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "4427b70c23ef45bff0ffc9d83ca77a092b3b923e",
+          "subject": "chore: update changes",
+          "date": "2026-01-30",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "5e5a16f01b6a5e10c6be5e72b7ecc5e59a2752b3",
+          "subject": "chore: update changes",
+          "date": "2026-01-30",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "8091f94b7a23ef959846c4c579777664402ba7a5",
+          "subject": "chore: update changes",
+          "date": "2026-01-30",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "12ed5bb28d687bce5c982e804eb04e8373e62cb0",
+          "subject": "chore: update changes",
+          "date": "2026-01-30",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "005f7948c6061cdf0125d7ca2fe4ebcf25a8966b",
+          "subject": "chore: update changes",
+          "date": "2026-01-30",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "09d4349e51eac39fd2ecfb5a0e1bd85016d20036",
+          "subject": "Initial: omnichannel backend (WhatsApp/Telegram)",
+          "date": "2026-01-30",
+          "author": "Gabriel Aquino"
+        }
+      ]
+    },
+    {
+      "path": "@gaqno-backcore",
+      "productKey": "shell",
+      "layer": "Frontend",
+      "commits": [
+        {
+          "hash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+          "subject": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "3435448c71628e67df8a72758811e1eaa0e60a85",
+          "subject": "feat(health): add Health Dashboard - real-time CI/CD, self-healing, agents",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "18adccbb2ad4d027a398f5debfe0ad7942dd13d3",
+          "subject": "chore: bump frontcore to 1.0.24, SSO path fix, DB config, seed docs",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "01f5cd94ba4c25a76e663679afe042ccaae153c1",
+          "subject": "Initial commit",
+          "date": "2026-01-05",
+          "author": "gaqno"
+        }
+      ]
+    },
+    {
+      "path": "@gaqno-frontcore",
+      "productKey": "shell",
+      "layer": "Frontend",
+      "commits": [
+        {
+          "hash": "4f1585222253c3c975ae06f5fe04c77311ce7730",
+          "subject": "feat(KAN-26): add registerServiceConfig to frontcore for MFE 401 handling; update finance-ui and rpg-ui refs",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "77b1f1ee414d5c1b6456d75ca4cde821bb4889e6",
+          "subject": "KAN-30 Unify types (backcore as source)",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+          "subject": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "3435448c71628e67df8a72758811e1eaa0e60a85",
+          "subject": "feat(health): add Health Dashboard - real-time CI/CD, self-healing, agents",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "02b1f3b073298aec9198719fa385b93a7c727e52",
+          "subject": "chore: update submodule references",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "a4ff4b8822f655aba8beb91f1d01f88ab992765e",
+          "subject": "chore: update submodule references",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "cd030a9db1711f79c93aed3c4db352ddb194c9ac",
+          "subject": "Update changes",
+          "date": "2026-02-03",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "da3fca93a54cc27e670457a2b55312ede78a56ff",
+          "subject": "Update changes",
+          "date": "2026-02-03",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "0212fcd5fc86d799acc4166797d14bcec259f9bf",
+          "subject": "chore: align frontend/backend ports (300X→400X), publish frontcore 1.0.26",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "2a810b55395918ae655c03aa193cbd94589ab6f9",
+          "subject": "chore: frontcore 1.0.25 - add SectionWithSubNav, bump consumers",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "18adccbb2ad4d027a398f5debfe0ad7942dd13d3",
+          "subject": "chore: bump frontcore to 1.0.24, SSO path fix, DB config, seed docs",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "f44656e0def7cde105e6a229ee23907913d5ee61",
+          "subject": "chore: bump @gaqno-development/frontcore to 1.0.22, add components/icons (published)",
+          "date": "2026-02-01",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "afb107091fbecf2140591248a827ccdca632f827",
+          "subject": "chore: bump @gaqno-development/frontcore to 1.0.21 (published)",
+          "date": "2026-02-01",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "cf5783a231fc10230739a5e346e7b1104a163974",
+          "subject": "chore(@gaqno-frontcore): publish v1.0.18",
+          "date": "2026-01-21",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "01f5cd94ba4c25a76e663679afe042ccaae153c1",
+          "subject": "Initial commit",
+          "date": "2026-01-05",
+          "author": "gaqno"
+        }
+      ]
+    },
+    {
+      "path": "gaqno-admin-service",
+      "productKey": "admin",
+      "layer": "Backend",
+      "commits": [
+        {
+          "hash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+          "subject": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "53db60cef0bd333d567724aaedea142eab7a9113",
+          "subject": "chore(KAN-39): update submodule pointers",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "3435448c71628e67df8a72758811e1eaa0e60a85",
+          "subject": "feat(health): add Health Dashboard - real-time CI/CD, self-healing, agents",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        }
+      ]
+    },
+    {
+      "path": "gaqno-admin-ui",
+      "productKey": "admin",
+      "layer": "Frontend",
+      "commits": [
+        {
+          "hash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+          "subject": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "53db60cef0bd333d567724aaedea142eab7a9113",
+          "subject": "chore(KAN-39): update submodule pointers",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "3435448c71628e67df8a72758811e1eaa0e60a85",
+          "subject": "feat(health): add Health Dashboard - real-time CI/CD, self-healing, agents",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        }
+      ]
+    },
+    {
+      "path": "gaqno-ai-ui",
+      "productKey": "ai",
+      "layer": "Frontend",
+      "commits": [
+        {
+          "hash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+          "subject": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "53db60cef0bd333d567724aaedea142eab7a9113",
+          "subject": "chore(KAN-39): update submodule pointers",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+          "subject": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        }
+      ]
+    },
+    {
+      "path": "gaqno-crm-ui",
+      "productKey": "crm",
+      "layer": "Frontend",
+      "commits": [
+        {
+          "hash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+          "subject": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "53db60cef0bd333d567724aaedea142eab7a9113",
+          "subject": "chore(KAN-39): update submodule pointers",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+          "subject": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        }
+      ]
+    },
+    {
+      "path": "gaqno-erp-ui",
+      "productKey": "erp",
+      "layer": "Frontend",
+      "commits": [
+        {
+          "hash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+          "subject": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "53db60cef0bd333d567724aaedea142eab7a9113",
+          "subject": "chore(KAN-39): update submodule pointers",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+          "subject": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        }
+      ]
+    },
+    {
+      "path": "gaqno-finance-ui",
+      "productKey": "finance",
+      "layer": "Frontend",
+      "commits": [
+        {
+          "hash": "4f1585222253c3c975ae06f5fe04c77311ce7730",
+          "subject": "feat(KAN-26): add registerServiceConfig to frontcore for MFE 401 handling; update finance-ui and rpg-ui refs",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+          "subject": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "53db60cef0bd333d567724aaedea142eab7a9113",
+          "subject": "chore(KAN-39): update submodule pointers",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+          "subject": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        }
+      ]
+    },
+    {
+      "path": "gaqno-landing-ui",
+      "productKey": "landing",
+      "layer": "Frontend",
+      "commits": [
+        {
+          "hash": "6b4809b310048619f7faa7e9bd04f05bac5abd51",
+          "subject": "chore(KAN-52): update submodule refs after node_modules removal",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+          "subject": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "53db60cef0bd333d567724aaedea142eab7a9113",
+          "subject": "chore(KAN-39): update submodule pointers",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+          "subject": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        }
+      ]
+    },
+    {
+      "path": "gaqno-lenin-ui",
+      "productKey": "lenin",
+      "layer": "Frontend",
+      "commits": [
+        {
+          "hash": "6b4809b310048619f7faa7e9bd04f05bac5abd51",
+          "subject": "chore(KAN-52): update submodule refs after node_modules removal",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+          "subject": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "53db60cef0bd333d567724aaedea142eab7a9113",
+          "subject": "chore(KAN-39): update submodule pointers",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+          "subject": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        }
+      ]
+    },
+    {
+      "path": "gaqno-omnichannel-ui",
+      "productKey": "omnichannel",
+      "layer": "Frontend",
+      "commits": [
+        {
+          "hash": "6b4809b310048619f7faa7e9bd04f05bac5abd51",
+          "subject": "chore(KAN-52): update submodule refs after node_modules removal",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+          "subject": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "53db60cef0bd333d567724aaedea142eab7a9113",
+          "subject": "chore(KAN-39): update submodule pointers",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+          "subject": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        }
+      ]
+    },
+    {
+      "path": "gaqno-pdv-ui",
+      "productKey": "pdv",
+      "layer": "Frontend",
+      "commits": [
+        {
+          "hash": "6b4809b310048619f7faa7e9bd04f05bac5abd51",
+          "subject": "chore(KAN-52): update submodule refs after node_modules removal",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+          "subject": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "53db60cef0bd333d567724aaedea142eab7a9113",
+          "subject": "chore(KAN-39): update submodule pointers",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+          "subject": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        }
+      ]
+    },
+    {
+      "path": "gaqno-rpg-ui",
+      "productKey": "rpg",
+      "layer": "Frontend",
+      "commits": [
+        {
+          "hash": "4f1585222253c3c975ae06f5fe04c77311ce7730",
+          "subject": "feat(KAN-26): add registerServiceConfig to frontcore for MFE 401 handling; update finance-ui and rpg-ui refs",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "6b4809b310048619f7faa7e9bd04f05bac5abd51",
+          "subject": "chore(KAN-52): update submodule refs after node_modules removal",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+          "subject": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "28cde7a136867de05e054228187e68f85179fe30",
+          "subject": "KAN-46 chore: update gaqno-rpg-ui submodule (Session hooks migration)",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "53db60cef0bd333d567724aaedea142eab7a9113",
+          "subject": "chore(KAN-39): update submodule pointers",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+          "subject": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        }
+      ]
+    },
+    {
+      "path": "gaqno-saas-service",
+      "productKey": "saas",
+      "layer": "Backend",
+      "commits": [
+        {
+          "hash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+          "subject": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "53db60cef0bd333d567724aaedea142eab7a9113",
+          "subject": "chore(KAN-39): update submodule pointers",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+          "subject": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        }
+      ]
+    },
+    {
+      "path": "gaqno-saas-ui",
+      "productKey": "saas",
+      "layer": "Frontend",
+      "commits": [
+        {
+          "hash": "6b4809b310048619f7faa7e9bd04f05bac5abd51",
+          "subject": "chore(KAN-52): update submodule refs after node_modules removal",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+          "subject": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "53db60cef0bd333d567724aaedea142eab7a9113",
+          "subject": "chore(KAN-39): update submodule pointers",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+          "subject": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        }
+      ]
+    },
+    {
+      "path": "gaqno-shell-ui",
+      "productKey": "shell",
+      "layer": "Frontend",
+      "commits": [
+        {
+          "hash": "6b4809b310048619f7faa7e9bd04f05bac5abd51",
+          "subject": "chore(KAN-52): update submodule refs after node_modules removal",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+          "subject": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "53db60cef0bd333d567724aaedea142eab7a9113",
+          "subject": "chore(KAN-39): update submodule pointers",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+          "subject": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        }
+      ]
+    },
+    {
+      "path": "gaqno-sso-ui",
+      "productKey": "sso",
+      "layer": "Frontend",
+      "commits": [
+        {
+          "hash": "6b4809b310048619f7faa7e9bd04f05bac5abd51",
+          "subject": "chore(KAN-52): update submodule refs after node_modules removal",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+          "subject": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "53db60cef0bd333d567724aaedea142eab7a9113",
+          "subject": "chore(KAN-39): update submodule pointers",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+          "subject": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        }
+      ]
+    },
+    {
+      "path": "docs",
+      "productKey": "shell",
+      "layer": "DevOps",
+      "commits": [
+        {
+          "hash": "07c87f00b9527b26f9cd90497adab4552a6b2df1",
+          "subject": "chore: remove gaqno-warehouse-service and gaqno-warehouse-ui (test only)",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+          "subject": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "f496684651ca70e1b7f1a9a5e80622e1b83d0a20",
+          "subject": "chore: update submodule references",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "ec21cac929906a7a86d024ce512c31097b3e8d00",
+          "subject": "Merge pull request #2 from gaqno-development/refactor/KAN-39-remove-submodules-add-ci-docs",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+          "subject": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "3435448c71628e67df8a72758811e1eaa0e60a85",
+          "subject": "feat(health): add Health Dashboard - real-time CI/CD, self-healing, agents",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "b09de1797e12348b66f31f08c1fc5d1016540c2e",
+          "subject": "docs(KAN-34): document admin/saas service evolution as stubs",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "a4ff4b8822f655aba8beb91f1d01f88ab992765e",
+          "subject": "chore: update submodule references",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "ea5bddb3de92f67b22bbd874eb66997de3d7480e",
+          "subject": "chore: update submodule references",
+          "date": "2026-02-03",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "7ff1bcad8b1944854679fb4b20c6f3f693a83acb",
+          "subject": "chore: update submodule references",
+          "date": "2026-02-03",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "1af2d3745ed87f96a16e30403b662640c20bd22d",
+          "subject": "chore: update submodule references",
+          "date": "2026-02-03",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "8b878f1d5f2d839a2337dcd6039f347705b46c2a",
+          "subject": "chore: update submodule references",
+          "date": "2026-02-03",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "cd030a9db1711f79c93aed3c4db352ddb194c9ac",
+          "subject": "Update changes",
+          "date": "2026-02-03",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "da3fca93a54cc27e670457a2b55312ede78a56ff",
+          "subject": "Update changes",
+          "date": "2026-02-03",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "23dfc5ca57df478c41f088f9b95af13a1e0429c4",
+          "subject": "chore: consolidate docs - move root .md to docs/, remove project .md (keep README)",
+          "date": "2026-02-03",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "1c721299b3bff9c2a4d8dcce666675725b99717a",
+          "subject": "chore: MFE routing fixes, docs, seeds, add gaqno-landing/lenin/omnichannel submodules",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "4e63fca40055e71cd4fc487732481781e9b46cf2",
+          "subject": "fix: ERP port 3004→13004 to resolve port conflict, update docs",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "18adccbb2ad4d027a398f5debfe0ad7942dd13d3",
+          "subject": "chore: bump frontcore to 1.0.24, SSO path fix, DB config, seed docs",
+          "date": "2026-02-02",
+          "author": "Gabriel Aquino"
+        }
+      ]
+    },
+    {
+      "path": "scripts",
+      "productKey": "shell",
+      "layer": "DevOps",
+      "commits": [
+        {
+          "hash": "6b4809b310048619f7faa7e9bd04f05bac5abd51",
+          "subject": "chore(KAN-52): update submodule refs after node_modules removal",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "07c87f00b9527b26f9cd90497adab4552a6b2df1",
+          "subject": "chore: remove gaqno-warehouse-service and gaqno-warehouse-ui (test only)",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+          "subject": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "f496684651ca70e1b7f1a9a5e80622e1b83d0a20",
+          "subject": "chore: update submodule references",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+          "subject": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        }
+      ]
+    },
+    {
+      "path": ".github",
+      "productKey": "shell",
+      "layer": "DevOps",
+      "commits": [
+        {
+          "hash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+          "subject": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "18fe640cfce237b764e7fe22bf2daf792880c83d",
+          "subject": "fix(KAN-39): use npm instead of pnpm in CI, add test task to turbo",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        },
+        {
+          "hash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+          "subject": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+          "date": "2026-02-05",
+          "author": "Gabriel Aquino"
+        }
+      ]
+    }
+  ],
+  "items": [
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "ci(KAN-47): add workflows per repo",
+      "description": "fdeca7900d5d6c58fdf43bfb1640cfc3d4929c2a\n\nci(KAN-47): add workflows per repo\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "fdeca7900d5d6c58fdf43bfb1640cfc3d4929c2a",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "chore(KAN-39): sync with workspace",
+      "description": "8abd175870556711219918a44bf53094ab35f1a2\n\nchore(KAN-39): sync with workspace\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "8abd175870556711219918a44bf53094ab35f1a2",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "3f2a9f3603bf7b954d117300df6594e60b2992a6\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "3f2a9f3603bf7b954d117300df6594e60b2992a6",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "feat: Add support for new model types.",
+      "description": "750b095c5718e5fe5720cf68560dcb94588ebf2c\n\nfeat: Add support for new model types.\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "750b095c5718e5fe5720cf68560dcb94588ebf2c",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "feat: Add new features and improvements",
+      "description": "589c28077d6adbd2152eed0dd1508635105c2a49\n\nfeat: Add new features and improvements\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "589c28077d6adbd2152eed0dd1508635105c2a49",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "a7312d6c2bbb601c967bfd60eed7edb385e90a26\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-03",
+      "commitHash": "a7312d6c2bbb601c967bfd60eed7edb385e90a26",
+      "date": "2026-02-03",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "chore: remove .md docs - consolidate in root docs/",
+      "description": "52275acc8b63c2e6e9490a4b2dfb3328ff38675d\n\nchore: remove .md docs - consolidate in root docs/\n\nAuthor: Gabriel Aquino Date: 2026-02-03",
+      "commitHash": "52275acc8b63c2e6e9490a4b2dfb3328ff38675d",
+      "date": "2026-02-03",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "a195576f3f622e0bff09e98fb29cfb6b7683abe8\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "a195576f3f622e0bff09e98fb29cfb6b7683abe8",
+      "date": "2026-02-02",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "55887ee21325c6c81f3bf82b23dd189b73b1ec80\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "55887ee21325c6c81f3bf82b23dd189b73b1ec80",
+      "date": "2026-02-02",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "5b0b3ecc422eb94e7302d76f2ae1dd22de99a1dc\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-30",
+      "commitHash": "5b0b3ecc422eb94e7302d76f2ae1dd22de99a1dc",
+      "date": "2026-01-30",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "5f34997546f932aa8bfc1729a928c6dde3de3711\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-30",
+      "commitHash": "5f34997546f932aa8bfc1729a928c6dde3de3711",
+      "date": "2026-01-30",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "11b23c909119f600f29280d57540b8d21ae0fe60\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-28",
+      "commitHash": "11b23c909119f600f29280d57540b8d21ae0fe60",
+      "date": "2026-01-28",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "f02ddab98e9ba3a44c05633fbdeafce2e44f40b4\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-28",
+      "commitHash": "f02ddab98e9ba3a44c05633fbdeafce2e44f40b4",
+      "date": "2026-01-28",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "e98fc7ae86a3a73bf0b1b0a2a65440cd485d987a\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-27",
+      "commitHash": "e98fc7ae86a3a73bf0b1b0a2a65440cd485d987a",
+      "date": "2026-01-27",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "116948da9cfb691ca844a476b3fd267dd0e7f6c5\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-27",
+      "commitHash": "116948da9cfb691ca844a476b3fd267dd0e7f6c5",
+      "date": "2026-01-27",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "d94a235de1e0cea66a1225698c0b5b7465b60909\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-27",
+      "commitHash": "d94a235de1e0cea66a1225698c0b5b7465b60909",
+      "date": "2026-01-27",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "de82234bcb7e76e522693483cb5fd7844277c21e\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-21",
+      "commitHash": "de82234bcb7e76e522693483cb5fd7844277c21e",
+      "date": "2026-01-21",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "0a3759c98751f17db505dfaf583992c8f3c24489\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-16",
+      "commitHash": "0a3759c98751f17db505dfaf583992c8f3c24489",
+      "date": "2026-01-16",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "2591da8138924dc76d3a10bdb40fce77b7ba3bd0\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-15",
+      "commitHash": "2591da8138924dc76d3a10bdb40fce77b7ba3bd0",
+      "date": "2026-01-15",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "d0f03efac8b76d0396333caa2dfcfb46e0b23729\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-14",
+      "commitHash": "d0f03efac8b76d0396333caa2dfcfb46e0b23729",
+      "date": "2026-01-14",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "bb38d389bb76aeafadc3b8132456eddd56394ae4\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-13",
+      "commitHash": "bb38d389bb76aeafadc3b8132456eddd56394ae4",
+      "date": "2026-01-13",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "b42841f3c80ba67716e51f623a066babc55e9f48\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-13",
+      "commitHash": "b42841f3c80ba67716e51f623a066babc55e9f48",
+      "date": "2026-01-13",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "1005c2da93785f7fda90012372bda31e205fa651\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-10",
+      "commitHash": "1005c2da93785f7fda90012372bda31e205fa651",
+      "date": "2026-01-10",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "5ac84954eb45a7e94433ed143d23b3b613ad2df6\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-01-08",
+      "commitHash": "5ac84954eb45a7e94433ed143d23b3b613ad2df6",
+      "date": "2026-01-08",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "Fix port inconsistencies",
+      "description": "2af34b1c93cc44855187124545d7885a35bd0301\n\nFix port inconsistencies\n\nAuthor: Gabriel Aquino Date: 2026-01-08",
+      "commitHash": "2af34b1c93cc44855187124545d7885a35bd0301",
+      "date": "2026-01-08",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "Update .gitignore to exclude specific cursor files and modify AIController to remove global route prefix",
+      "description": "b0ef83b3c6a4670c7c6722a25684a5d91790e8b8\n\nUpdate .gitignore to exclude specific cursor files and modify AIController to remove global route prefix\n\nAuthor: gaqno Date: 2025-12-04",
+      "commitHash": "b0ef83b3c6a4670c7c6722a25684a5d91790e8b8",
+      "date": "2025-12-04",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "Update CORS configuration in main.ts to support multiple origins by splitting and trimming the CORS_ORIGIN environment variable.",
+      "description": "8c1ea4d02c3b40c427e46a268e963fb79693686c\n\nUpdate CORS configuration in main.ts to support multiple origins by splitting and trimming the CORS_ORIGIN environment variable.\n\nAuthor: gaqno Date: 2025-12-04",
+      "commitHash": "8c1ea4d02c3b40c427e46a268e963fb79693686c",
+      "date": "2025-12-04",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "Remove global prefix 'llm' from the application in main.ts to simplify routing configuration.",
+      "description": "6c97b5b1332141cbd15f55815667c8e71e39996d\n\nRemove global prefix 'llm' from the application in main.ts to simplify routing configuration.\n\nAuthor: gaqno Date: 2025-12-04",
+      "commitHash": "6c97b5b1332141cbd15f55815667c8e71e39996d",
+      "date": "2025-12-04",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "Set global prefix for the application to 'llm' in main.ts for improved routing.",
+      "description": "fc0d8c9b28457939274af201027ead8d4bf3da18\n\nSet global prefix for the application to 'llm' in main.ts for improved routing.\n\nAuthor: gaqno Date: 2025-12-04",
+      "commitHash": "fc0d8c9b28457939274af201027ead8d4bf3da18",
+      "date": "2025-12-04",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "Update .gitignore, newrelic.js, and package.json for New Relic configuration",
+      "description": "aa6909aea026a505138738306ae2a288441a5197\n\nUpdate .gitignore, newrelic.js, and package.json for New Relic configuration\n\nAuthor: gaqno Date: 2025-12-02",
+      "commitHash": "aa6909aea026a505138738306ae2a288441a5197",
+      "date": "2025-12-02",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "Add New Relic integration and configuration files",
+      "description": "51e81c553ebc101ba9937181c255b38ddfd65474\n\nAdd New Relic integration and configuration files\n\nAuthor: gaqno Date: 2025-12-02",
+      "commitHash": "51e81c553ebc101ba9937181c255b38ddfd65474",
+      "date": "2025-12-02",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "Update Dockerfile for New Relic integration and build process",
+      "description": "ee3d50d31619bebfd72365c96298c08320d5ad9c\n\nUpdate Dockerfile for New Relic integration and build process\n\nAuthor: gaqno Date: 2025-12-02",
+      "commitHash": "ee3d50d31619bebfd72365c96298c08320d5ad9c",
+      "date": "2025-12-02",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "Enhance New Relic configuration with custom insights and span event storage limits",
+      "description": "2c62f894578030512ba3dfe02abebd90b2205323\n\nEnhance New Relic configuration with custom insights and span event storage limits\n\nAuthor: gaqno Date: 2025-12-02",
+      "commitHash": "2c62f894578030512ba3dfe02abebd90b2205323",
+      "date": "2025-12-02",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "Add New Relic monitoring configuration and update package dependencies",
+      "description": "eb0bca2d0189d13017b6685d35494c4d6c8373ca\n\nAdd New Relic monitoring configuration and update package dependencies\n\nAuthor: gaqno Date: 2025-12-02",
+      "commitHash": "eb0bca2d0189d13017b6685d35494c4d6c8373ca",
+      "date": "2025-12-02",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "Rename project from 'llm_gaqno' to 'llm_backend' in package-lock.json to reflect updated project structure.",
+      "description": "4e83812e805c50f167b7eecd478a29dbd4b43430\n\nRename project from 'llm_gaqno' to 'llm_backend' in package-lock.json to reflect updated project structure.\n\nAuthor: gaqno Date: 2025-11-27",
+      "commitHash": "4e83812e805c50f167b7eecd478a29dbd4b43430",
+      "date": "2025-11-27",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Backend",
+      "summary": "Initialize NestJS backend with AI services, Docker configuration, and environment setup. Added modules for AI, ElevenLabs, and metrics, along with necessary DTOs, services, and controllers. Included ESLint and Prettier configurations for code quality. Cre",
+      "description": "2698dbac3a15c49c1a3a6f60d47e5de67e15260c\n\nInitialize NestJS backend with AI services, Docker configuration, and environment setup. Added modules for AI, ElevenLabs, and metrics, along with necessary DTOs, services, and controllers. Included ESLint and Prettier configurations for code quality. Created implementation and migration checklists for project setup.\n\nAuthor: gaqno Date: 2025-11-27",
+      "commitHash": "2698dbac3a15c49c1a3a6f60d47e5de67e15260c",
+      "date": "2025-11-27",
+      "repoPath": "gaqno-ai-service"
+    },
+    {
+      "productKey": "pdv",
+      "layer": "Backend",
+      "summary": "ci(KAN-47): add workflows per repo",
+      "description": "2cbe25afca51486c9ac8c3d1fbd7029de59eef11\n\nci(KAN-47): add workflows per repo\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "2cbe25afca51486c9ac8c3d1fbd7029de59eef11",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-pdv-service"
+    },
+    {
+      "productKey": "pdv",
+      "layer": "Backend",
+      "summary": "chore(KAN-39): sync with workspace",
+      "description": "621063d1362c9066d23ea893b5ae593f00cc3b71\n\nchore(KAN-39): sync with workspace\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "621063d1362c9066d23ea893b5ae593f00cc3b71",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-pdv-service"
+    },
+    {
+      "productKey": "pdv",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "b352727dbe0856243d4825ce578e276b9c518f95\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "b352727dbe0856243d4825ce578e276b9c518f95",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-pdv-service"
+    },
+    {
+      "productKey": "pdv",
+      "layer": "Backend",
+      "summary": "feat: Add new features",
+      "description": "ce4b7a0761c47d40062839a52016ee4b9e04724e\n\nfeat: Add new features\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "ce4b7a0761c47d40062839a52016ee4b9e04724e",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-pdv-service"
+    },
+    {
+      "productKey": "pdv",
+      "layer": "Backend",
+      "summary": "feat: Dockerfile",
+      "description": "58f05ada83360a92945bfded3d7d5700ce904f46\n\nfeat: Dockerfile\n\nAuthor: Gabriel Aquino Date: 2026-02-03",
+      "commitHash": "58f05ada83360a92945bfded3d7d5700ce904f46",
+      "date": "2026-02-03",
+      "repoPath": "gaqno-pdv-service"
+    },
+    {
+      "productKey": "pdv",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "44724f10cf9fc8bca7ee60086f83f4a9d51e3b74\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "44724f10cf9fc8bca7ee60086f83f4a9d51e3b74",
+      "date": "2026-02-02",
+      "repoPath": "gaqno-pdv-service"
+    },
+    {
+      "productKey": "pdv",
+      "layer": "Backend",
+      "summary": "fix: SSO introspection URL 4010→4001",
+      "description": "86b75e73a352027389b695950fe035e6e9090540\n\nfix: SSO introspection URL 4010→4001\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "86b75e73a352027389b695950fe035e6e9090540",
+      "date": "2026-02-02",
+      "repoPath": "gaqno-pdv-service"
+    },
+    {
+      "productKey": "pdv",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "10036b1434ba8b2fecb9ccf753a8d20344d72d09\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-01-31",
+      "commitHash": "10036b1434ba8b2fecb9ccf753a8d20344d72d09",
+      "date": "2026-01-31",
+      "repoPath": "gaqno-pdv-service"
+    },
+    {
+      "productKey": "pdv",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "7a6800e85dd0dfc39efe47cd484ab43c95366eed\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-30",
+      "commitHash": "7a6800e85dd0dfc39efe47cd484ab43c95366eed",
+      "date": "2026-01-30",
+      "repoPath": "gaqno-pdv-service"
+    },
+    {
+      "productKey": "pdv",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "6be8a53f2188d36860371a7492035da303d4d3ae\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-30",
+      "commitHash": "6be8a53f2188d36860371a7492035da303d4d3ae",
+      "date": "2026-01-30",
+      "repoPath": "gaqno-pdv-service"
+    },
+    {
+      "productKey": "pdv",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "683871c9bc1a2326c4a3912ee0a5e9a00da2431a\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-28",
+      "commitHash": "683871c9bc1a2326c4a3912ee0a5e9a00da2431a",
+      "date": "2026-01-28",
+      "repoPath": "gaqno-pdv-service"
+    },
+    {
+      "productKey": "pdv",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "3fcff99078eb871012fb92baac462aceb8eb793b\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-27",
+      "commitHash": "3fcff99078eb871012fb92baac462aceb8eb793b",
+      "date": "2026-01-27",
+      "repoPath": "gaqno-pdv-service"
+    },
+    {
+      "productKey": "pdv",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "36cb5c93d1e2d10ba6ad665ae9198430932d6cce\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-13",
+      "commitHash": "36cb5c93d1e2d10ba6ad665ae9198430932d6cce",
+      "date": "2026-01-13",
+      "repoPath": "gaqno-pdv-service"
+    },
+    {
+      "productKey": "pdv",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "e60d85ba73880c55903b6a83d78ac9d94264e513\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-01-08",
+      "commitHash": "e60d85ba73880c55903b6a83d78ac9d94264e513",
+      "date": "2026-01-08",
+      "repoPath": "gaqno-pdv-service"
+    },
+    {
+      "productKey": "pdv",
+      "layer": "Backend",
+      "summary": "Fix port inconsistencies",
+      "description": "af2528ebabcd4efdfd7713520528d45687878436\n\nFix port inconsistencies\n\nAuthor: Gabriel Aquino Date: 2026-01-08",
+      "commitHash": "af2528ebabcd4efdfd7713520528d45687878436",
+      "date": "2026-01-08",
+      "repoPath": "gaqno-pdv-service"
+    },
+    {
+      "productKey": "pdv",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "e32bf3ba6294ae4cd4fddcc9c23839cbc3447879\n\nUpdate changes\n\nAuthor: gaqno Date: 2026-01-07",
+      "commitHash": "e32bf3ba6294ae4cd4fddcc9c23839cbc3447879",
+      "date": "2026-01-07",
+      "repoPath": "gaqno-pdv-service"
+    },
+    {
+      "productKey": "pdv",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "d1b18078fc3f7ab990575328c85df3ff0f19a88c\n\nUpdate changes\n\nAuthor: gaqno Date: 2026-01-05",
+      "commitHash": "d1b18078fc3f7ab990575328c85df3ff0f19a88c",
+      "date": "2026-01-05",
+      "repoPath": "gaqno-pdv-service"
+    },
+    {
+      "productKey": "pdv",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "d08d510babab01bfda0ae96f9c7458ece11bd712\n\nUpdate changes\n\nAuthor: gaqno Date: 2025-12-24",
+      "commitHash": "d08d510babab01bfda0ae96f9c7458ece11bd712",
+      "date": "2025-12-24",
+      "repoPath": "gaqno-pdv-service"
+    },
+    {
+      "productKey": "pdv",
+      "layer": "Backend",
+      "summary": "refact: migration vite mdf",
+      "description": "31ec9fc1bb06c3148d95bdb9858f804c4ab76727\n\nrefact: migration vite mdf\n\nAuthor: gaqno Date: 2025-12-23",
+      "commitHash": "31ec9fc1bb06c3148d95bdb9858f804c4ab76727",
+      "date": "2025-12-23",
+      "repoPath": "gaqno-pdv-service"
+    },
+    {
+      "productKey": "pdv",
+      "layer": "Backend",
+      "summary": "Update dependencies and enhance .gitignore for improved project structure. Upgrade @gaqno-dev/backcore to version 1.0.3, add reflect-metadata and rxjs, and remove unused env validation files. Adjust imports in auth module to reflect new service path.",
+      "description": "23c89a999ef3a5c306f092d60e1f98c4cb996044\n\nUpdate dependencies and enhance .gitignore for improved project structure. Upgrade @gaqno-dev/backcore to version 1.0.3, add reflect-metadata and rxjs, and remove unused env validation files. Adjust imports in auth module to reflect new service path.\n\nAuthor: Gabriel Aquino Date: 2025-12-12",
+      "commitHash": "23c89a999ef3a5c306f092d60e1f98c4cb996044",
+      "date": "2025-12-12",
+      "repoPath": "gaqno-pdv-service"
+    },
+    {
+      "productKey": "pdv",
+      "layer": "Backend",
+      "summary": "Initialize NestJS project with core modules, controllers, and services. Add environment configuration, Dockerfile, and basic testing setup. Implement customer, product, and sales management features with respective DTOs and services.",
+      "description": "cf4621f6ff399ee04ffc46f26d1a079fad53ad50\n\nInitialize NestJS project with core modules, controllers, and services. Add environment configuration, Dockerfile, and basic testing setup. Implement customer, product, and sales management features with respective DTOs and services.\n\nAuthor: Gabriel Aquino Date: 2025-12-12",
+      "commitHash": "cf4621f6ff399ee04ffc46f26d1a079fad53ad50",
+      "date": "2025-12-12",
+      "repoPath": "gaqno-pdv-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "ci(KAN-47): add workflows per repo",
+      "description": "24fe4ce5897f2f8d22d801dc0eac5a27c752aed6\n\nci(KAN-47): add workflows per repo\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "24fe4ce5897f2f8d22d801dc0eac5a27c752aed6",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "chore(KAN-39): sync with workspace",
+      "description": "f2c608f4283c038b3f33b77f73d649caa31f3327\n\nchore(KAN-39): sync with workspace\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "f2c608f4283c038b3f33b77f73d649caa31f3327",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "6018fe58269225bdc2b11ee636096cfdaeffec49\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "6018fe58269225bdc2b11ee636096cfdaeffec49",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "feat: Add support for TypeScript build options.",
+      "description": "377e47a7cb6522fc052a235ad9cd65fa80ebbfee\n\nfeat: Add support for TypeScript build options.\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "377e47a7cb6522fc052a235ad9cd65fa80ebbfee",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "feat: Add menu item",
+      "description": "5b3a9686ac53f02a741b4b763b2a5213fe6f52a1\n\nfeat: Add menu item\n\nAuthor: Gabriel Aquino Date: 2026-02-03",
+      "commitHash": "5b3a9686ac53f02a741b4b763b2a5213fe6f52a1",
+      "date": "2026-02-03",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "a53f5c5e88528e802277eb2a3cda291324a16be3\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "a53f5c5e88528e802277eb2a3cda291324a16be3",
+      "date": "2026-02-02",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "7cb981de27f3573be377d2bd20fb13398aa0ad49\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "7cb981de27f3573be377d2bd20fb13398aa0ad49",
+      "date": "2026-02-02",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "8f87d8fa983aad08c1a2d6374e297b3f0389a1bd\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "8f87d8fa983aad08c1a2d6374e297b3f0389a1bd",
+      "date": "2026-02-02",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "be85d3262283d62c52d3ce73af79b819382cd8d3\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "be85d3262283d62c52d3ce73af79b819382cd8d3",
+      "date": "2026-02-02",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "ce1791828e22e084832d40e203e21176c7a55e86\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "ce1791828e22e084832d40e203e21176c7a55e86",
+      "date": "2026-02-02",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "68e008ac3bdc7975f2b3ccbe7950af6860b630f8\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "68e008ac3bdc7975f2b3ccbe7950af6860b630f8",
+      "date": "2026-02-02",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "070af127870c8beaee167c535d348865a7f8403b\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "070af127870c8beaee167c535d348865a7f8403b",
+      "date": "2026-02-02",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "f162cfb1a2109a78c17e7e2643b9ac22b0b52b36\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "f162cfb1a2109a78c17e7e2643b9ac22b0b52b36",
+      "date": "2026-02-02",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "34d922e5b64b7bd790dbb769c144adefaf0339b8\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-01",
+      "commitHash": "34d922e5b64b7bd790dbb769c144adefaf0339b8",
+      "date": "2026-02-01",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "2b612efc4d0af324f206743559797118ad19fb40\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-01",
+      "commitHash": "2b612efc4d0af324f206743559797118ad19fb40",
+      "date": "2026-02-01",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "63267ecab01bfbed70d447f13af40bcef78d39f0\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-01",
+      "commitHash": "63267ecab01bfbed70d447f13af40bcef78d39f0",
+      "date": "2026-02-01",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "073dcc790c4e9014278ee7ee6e7c14ff0a95da40\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-01",
+      "commitHash": "073dcc790c4e9014278ee7ee6e7c14ff0a95da40",
+      "date": "2026-02-01",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "40fb662401047a4c3c03288c09ce82b679c0a7cd\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-01-31",
+      "commitHash": "40fb662401047a4c3c03288c09ce82b679c0a7cd",
+      "date": "2026-01-31",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "2fc01a518a11540c43342628a9241e5142c645da\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-01-31",
+      "commitHash": "2fc01a518a11540c43342628a9241e5142c645da",
+      "date": "2026-01-31",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "fix(build): local HttpExceptionFilter and SessionUser metadata for types",
+      "description": "5e3565d775bb930ef4c6c27540d0ddf7ffb9e43c\n\nfix(build): local HttpExceptionFilter and SessionUser metadata for types\n\nAuthor: Gabriel Aquino Date: 2026-01-31",
+      "commitHash": "5e3565d775bb930ef4c6c27540d0ddf7ffb9e43c",
+      "date": "2026-01-31",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "fix(docker): install devDependencies in builder when NODE_ENV=production (Coolify)",
+      "description": "e2814a21fb4783f5cc10422ba2cea8eae770c7e5\n\nfix(docker): install devDependencies in builder when NODE_ENV=production (Coolify)\n\nAuthor: Gabriel Aquino Date: 2026-01-31",
+      "commitHash": "e2814a21fb4783f5cc10422ba2cea8eae770c7e5",
+      "date": "2026-01-31",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "fix(docker): run Nest CLI via node to avoid npx executable resolution",
+      "description": "43104d41ed711f1d3ccd7747e8e19cd30c6347e1\n\nfix(docker): run Nest CLI via node to avoid npx executable resolution\n\nAuthor: Gabriel Aquino Date: 2026-01-31",
+      "commitHash": "43104d41ed711f1d3ccd7747e8e19cd30c6347e1",
+      "date": "2026-01-31",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "fix(docker): use npx nest build so nest CLI is found in builder",
+      "description": "aedd7d7e6f951c432ac671a08ead6adb810b20f1\n\nfix(docker): use npx nest build so nest CLI is found in builder\n\nAuthor: Gabriel Aquino Date: 2026-01-31",
+      "commitHash": "aedd7d7e6f951c432ac671a08ead6adb810b20f1",
+      "date": "2026-01-31",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "b7e43689e7136599fe73e11257ac45240702db70\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-01-31",
+      "commitHash": "b7e43689e7136599fe73e11257ac45240702db70",
+      "date": "2026-01-31",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "3fee979dc531bd5e39fb56e109a2c894ced4ac0c\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-01-31",
+      "commitHash": "3fee979dc531bd5e39fb56e109a2c894ced4ac0c",
+      "date": "2026-01-31",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "fix(api): global prefix v1 (remove duplicate /sso in path)",
+      "description": "7bcbde5b0bf7cf2e54769272a605a109cc50fafc\n\nfix(api): global prefix v1 (remove duplicate /sso in path)\n\nAuthor: Gabriel Aquino Date: 2026-01-30",
+      "commitHash": "7bcbde5b0bf7cf2e54769272a605a109cc50fafc",
+      "date": "2026-01-30",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "bd02bcb8703901441f8261a80d312f047db99224\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-30",
+      "commitHash": "bd02bcb8703901441f8261a80d312f047db99224",
+      "date": "2026-01-30",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "5ecf2c15d64aae61eaf81ea8c41bf9063d76039d\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-30",
+      "commitHash": "5ecf2c15d64aae61eaf81ea8c41bf9063d76039d",
+      "date": "2026-01-30",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "bc9511eea157b64ecac75ff8d23fd861cd19daad\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-30",
+      "commitHash": "bc9511eea157b64ecac75ff8d23fd861cd19daad",
+      "date": "2026-01-30",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "5df4007793d86ea156c32495f352aeada045c548\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-28",
+      "commitHash": "5df4007793d86ea156c32495f352aeada045c548",
+      "date": "2026-01-28",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "b6129613767683783b5c4e5029cf69db09d9cbfb\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-27",
+      "commitHash": "b6129613767683783b5c4e5029cf69db09d9cbfb",
+      "date": "2026-01-27",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "5ec2b71488cc5e94688eee1a73c07bcd32d27fdc\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-27",
+      "commitHash": "5ec2b71488cc5e94688eee1a73c07bcd32d27fdc",
+      "date": "2026-01-27",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "511c4185e79239e761c550186d2ad107803c767f\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-21",
+      "commitHash": "511c4185e79239e761c550186d2ad107803c767f",
+      "date": "2026-01-21",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "a18bb9a1a9f661aa59f5a9ba7a4da39284322b13\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-13",
+      "commitHash": "a18bb9a1a9f661aa59f5a9ba7a4da39284322b13",
+      "date": "2026-01-13",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "552b63a04cd260897d842b35cb6d8d86504ddf7f\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-10",
+      "commitHash": "552b63a04cd260897d842b35cb6d8d86504ddf7f",
+      "date": "2026-01-10",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "4abd84f7f8e3c49c2d3b354e294d6a638f9a6370\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-01-08",
+      "commitHash": "4abd84f7f8e3c49c2d3b354e294d6a638f9a6370",
+      "date": "2026-01-08",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Fix port inconsistencies",
+      "description": "68cba711017eb07716e5cc08f86fb1f6c582aac1\n\nFix port inconsistencies\n\nAuthor: Gabriel Aquino Date: 2026-01-08",
+      "commitHash": "68cba711017eb07716e5cc08f86fb1f6c582aac1",
+      "date": "2026-01-08",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "8b81ec10e1d9a77fd4fdd89a34e17e7b7e683b25\n\nUpdate changes\n\nAuthor: gaqno Date: 2026-01-07",
+      "commitHash": "8b81ec10e1d9a77fd4fdd89a34e17e7b7e683b25",
+      "date": "2026-01-07",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "e3eb936d651abba9df596019ca4af981558f94af\n\nUpdate changes\n\nAuthor: gaqno Date: 2026-01-05",
+      "commitHash": "e3eb936d651abba9df596019ca4af981558f94af",
+      "date": "2026-01-05",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "52ef561480e8efc4da659fbd8ba0b138accfb0b2\n\nUpdate changes\n\nAuthor: gaqno Date: 2025-12-24",
+      "commitHash": "52ef561480e8efc4da659fbd8ba0b138accfb0b2",
+      "date": "2025-12-24",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Update TypeScript build info file to reflect current dependencies",
+      "description": "5195739ad681be6989a54f4273409620a71bcf03\n\nUpdate TypeScript build info file to reflect current dependencies\n\nAuthor: gaqno Date: 2025-12-23",
+      "commitHash": "5195739ad681be6989a54f4273409620a71bcf03",
+      "date": "2025-12-23",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Enhance database schema push process and improve error handling",
+      "description": "8e6fcaba078055ff63ad9f5812ac814809bfa5e5\n\nEnhance database schema push process and improve error handling\n\nAuthor: gaqno Date: 2025-12-23",
+      "commitHash": "8e6fcaba078055ff63ad9f5812ac814809bfa5e5",
+      "date": "2025-12-23",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "refact: migration vite mdf",
+      "description": "a92c97cddc2dbc6e0ead63378c66b53267827031\n\nrefact: migration vite mdf\n\nAuthor: gaqno Date: 2025-12-23",
+      "commitHash": "a92c97cddc2dbc6e0ead63378c66b53267827031",
+      "date": "2025-12-23",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Implement migration and database setup for Gaqno SSO service",
+      "description": "20d4ade2c245b7396fed4e1c9b22da513a133772\n\nImplement migration and database setup for Gaqno SSO service\n\nAuthor: gaqno Date: 2025-12-23",
+      "commitHash": "20d4ade2c245b7396fed4e1c9b22da513a133772",
+      "date": "2025-12-23",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Add environment configuration and update dependencies",
+      "description": "a23ce62bdf6a31cb369524445316ef9765577d32\n\nAdd environment configuration and update dependencies\n\nAuthor: Gabriel Aquino Date: 2025-12-12",
+      "commitHash": "a23ce62bdf6a31cb369524445316ef9765577d32",
+      "date": "2025-12-12",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Backend",
+      "summary": "Initialize Gaqno SSO service with NestJS, TypeScript, and essential configurations. Added Dockerfile, ESLint configuration, and environment validation. Implemented authentication, user, organization, and whitelabel modules with corresponding controllers a",
+      "description": "ae1eb256750d480187f97923fc3fd83e261c14cf\n\nInitialize Gaqno SSO service with NestJS, TypeScript, and essential configurations. Added Dockerfile, ESLint configuration, and environment validation. Implemented authentication, user, organization, and whitelabel modules with corresponding controllers and services. Included DTOs for user and organization management, and set up session management with guards. Created sample environment file and updated package dependencies.\n\nAuthor: Gabriel Aquino Date: 2025-12-12",
+      "commitHash": "ae1eb256750d480187f97923fc3fd83e261c14cf",
+      "date": "2025-12-12",
+      "repoPath": "gaqno-sso-service"
+    },
+    {
+      "productKey": "finance",
+      "layer": "Backend",
+      "summary": "chore: remove node_modules from git tracking",
+      "description": "196a78863d4f0e25dbbcd4d154f81f083e088a63\n\nchore: remove node_modules from git tracking\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "196a78863d4f0e25dbbcd4d154f81f083e088a63",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-finance-service"
+    },
+    {
+      "productKey": "finance",
+      "layer": "Backend",
+      "summary": "ci(KAN-47): add workflows per repo",
+      "description": "e18a3e471d4ba2c9c5ec310cd6620270afdabab7\n\nci(KAN-47): add workflows per repo\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "e18a3e471d4ba2c9c5ec310cd6620270afdabab7",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-finance-service"
+    },
+    {
+      "productKey": "finance",
+      "layer": "Backend",
+      "summary": "chore(KAN-39): sync with workspace",
+      "description": "0199beb0dc3ffd01fa8a1b58ecc716e99b1be0a2\n\nchore(KAN-39): sync with workspace\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "0199beb0dc3ffd01fa8a1b58ecc716e99b1be0a2",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-finance-service"
+    },
+    {
+      "productKey": "finance",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "3e2a2fefaae9f74c093e668c3c9ccc1a5cd300de\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "3e2a2fefaae9f74c093e668c3c9ccc1a5cd300de",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-finance-service"
+    },
+    {
+      "productKey": "finance",
+      "layer": "Backend",
+      "summary": "feat: Add new feature",
+      "description": "6f92bff8c044cacca7b738430b7dafb6a7479f71\n\nfeat: Add new feature\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "6f92bff8c044cacca7b738430b7dafb6a7479f71",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-finance-service"
+    },
+    {
+      "productKey": "finance",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "2a75256d3af0543ed6da588aef73dae633302a3f\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "2a75256d3af0543ed6da588aef73dae633302a3f",
+      "date": "2026-02-02",
+      "repoPath": "gaqno-finance-service"
+    },
+    {
+      "productKey": "finance",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "e07487ffc5c03a98122af3c18f8212c908af2914\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "e07487ffc5c03a98122af3c18f8212c908af2914",
+      "date": "2026-02-02",
+      "repoPath": "gaqno-finance-service"
+    },
+    {
+      "productKey": "finance",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "a5180dc4fe0f404badee638fd76bc6cdab5b0e3c\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "a5180dc4fe0f404badee638fd76bc6cdab5b0e3c",
+      "date": "2026-02-02",
+      "repoPath": "gaqno-finance-service"
+    },
+    {
+      "productKey": "finance",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "cf5b5bc9ec27c2e5f952a5e414ed0bff455374b6\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-01-31",
+      "commitHash": "cf5b5bc9ec27c2e5f952a5e414ed0bff455374b6",
+      "date": "2026-01-31",
+      "repoPath": "gaqno-finance-service"
+    },
+    {
+      "productKey": "finance",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "0c52816ce495a1ca5580609c524e98f3489c9fc6\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-30",
+      "commitHash": "0c52816ce495a1ca5580609c524e98f3489c9fc6",
+      "date": "2026-01-30",
+      "repoPath": "gaqno-finance-service"
+    },
+    {
+      "productKey": "finance",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "66af93fc52716265be43c28592575c28b4055e50\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-30",
+      "commitHash": "66af93fc52716265be43c28592575c28b4055e50",
+      "date": "2026-01-30",
+      "repoPath": "gaqno-finance-service"
+    },
+    {
+      "productKey": "finance",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "0855513936eaf7e077b444798c94f86df818da26\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-28",
+      "commitHash": "0855513936eaf7e077b444798c94f86df818da26",
+      "date": "2026-01-28",
+      "repoPath": "gaqno-finance-service"
+    },
+    {
+      "productKey": "finance",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "3dd50efe05bf8286aeb404eb2b043c93978efe55\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-27",
+      "commitHash": "3dd50efe05bf8286aeb404eb2b043c93978efe55",
+      "date": "2026-01-27",
+      "repoPath": "gaqno-finance-service"
+    },
+    {
+      "productKey": "finance",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "aa77b1948807856d1fdf30255917a02a2f94184c\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-21",
+      "commitHash": "aa77b1948807856d1fdf30255917a02a2f94184c",
+      "date": "2026-01-21",
+      "repoPath": "gaqno-finance-service"
+    },
+    {
+      "productKey": "finance",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "8f037eb6778ee97662f81853db6f9d8def4e73bb\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-13",
+      "commitHash": "8f037eb6778ee97662f81853db6f9d8def4e73bb",
+      "date": "2026-01-13",
+      "repoPath": "gaqno-finance-service"
+    },
+    {
+      "productKey": "finance",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "10130f697d49301397d97e96b7c8ab5b221b53f6\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-01-08",
+      "commitHash": "10130f697d49301397d97e96b7c8ab5b221b53f6",
+      "date": "2026-01-08",
+      "repoPath": "gaqno-finance-service"
+    },
+    {
+      "productKey": "finance",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "2d428f355fa40cc73a4f5441e55a4fd14b4da91e\n\nUpdate changes\n\nAuthor: gaqno Date: 2026-01-07",
+      "commitHash": "2d428f355fa40cc73a4f5441e55a4fd14b4da91e",
+      "date": "2026-01-07",
+      "repoPath": "gaqno-finance-service"
+    },
+    {
+      "productKey": "finance",
+      "layer": "Backend",
+      "summary": "Initial commit",
+      "description": "9cc013cdc1db5cf238c3d317e146a94d5b82e201\n\nInitial commit\n\nAuthor: gaqno Date: 2026-01-05",
+      "commitHash": "9cc013cdc1db5cf238c3d317e146a94d5b82e201",
+      "date": "2026-01-05",
+      "repoPath": "gaqno-finance-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "chore: remove node_modules from git tracking",
+      "description": "836c99428c86f1f41153b98d8606b4e57a079125\n\nchore: remove node_modules from git tracking\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "836c99428c86f1f41153b98d8606b4e57a079125",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "ci(KAN-47): add workflows per repo",
+      "description": "dcbde64eb6fc8ff367f01f0d1c943b50566d7844\n\nci(KAN-47): add workflows per repo\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "dcbde64eb6fc8ff367f01f0d1c943b50566d7844",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "chore(KAN-39): sync with workspace",
+      "description": "f25d8a64c6d088f949b4c7c1a2eebb51de28f26c\n\nchore(KAN-39): sync with workspace\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "f25d8a64c6d088f949b4c7c1a2eebb51de28f26c",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "2679a9b064133cf5a4b597fa1459f0c28adeda87\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "2679a9b064133cf5a4b597fa1459f0c28adeda87",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "feat: Add type checking for TypeScript",
+      "description": "47a6b8205e0cc2090bdbab5c18a9448b3a8d5cd9\n\nfeat: Add type checking for TypeScript\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "47a6b8205e0cc2090bdbab5c18a9448b3a8d5cd9",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "253e0a619376fb433ccf450fecac1cff5b88feb8\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "253e0a619376fb433ccf450fecac1cff5b88feb8",
+      "date": "2026-02-02",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "fd20945fc6dce36dbdbefc6cdd0e25acdb9a664b\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "fd20945fc6dce36dbdbefc6cdd0e25acdb9a664b",
+      "date": "2026-02-02",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "fix: use local HttpExceptionFilter, update omnichannel e2e port 4008",
+      "description": "a6ca0ce44cc3377d5c9b112ac3a7ac7f62d5b01e\n\nfix: use local HttpExceptionFilter, update omnichannel e2e port 4008\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "a6ca0ce44cc3377d5c9b112ac3a7ac7f62d5b01e",
+      "date": "2026-02-02",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "80beb2860fcf43a358564f4e7a0189f7bda44bab\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "80beb2860fcf43a358564f4e7a0189f7bda44bab",
+      "date": "2026-02-02",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "27928db1108e096e131539b99fec0afc8a94fc61\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "27928db1108e096e131539b99fec0afc8a94fc61",
+      "date": "2026-02-02",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "e0d9adf6c226a23863a601c3932e55b8002e9e44\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-01-31",
+      "commitHash": "e0d9adf6c226a23863a601c3932e55b8002e9e44",
+      "date": "2026-01-31",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "32fa1ea47c5b2bada98b3e319962cd482cf269ee\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-30",
+      "commitHash": "32fa1ea47c5b2bada98b3e319962cd482cf269ee",
+      "date": "2026-01-30",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "82ec7bf87ba37b13ce99b4e0a3bbcab8c9726203\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-30",
+      "commitHash": "82ec7bf87ba37b13ce99b4e0a3bbcab8c9726203",
+      "date": "2026-01-30",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "878a285c5be510a887de8323658b6d4ca69b9032\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-28",
+      "commitHash": "878a285c5be510a887de8323658b6d4ca69b9032",
+      "date": "2026-01-28",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "021b9ae8d82b24349a9293b555d6d71f4a439913\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-27",
+      "commitHash": "021b9ae8d82b24349a9293b555d6d71f4a439913",
+      "date": "2026-01-27",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "7ed372102d4954225d39708cb65d8f0f9aac86d5\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-21",
+      "commitHash": "7ed372102d4954225d39708cb65d8f0f9aac86d5",
+      "date": "2026-01-21",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "7dc266bf77a295571aa7548f5efbccaa7b74d2b7\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-19",
+      "commitHash": "7dc266bf77a295571aa7548f5efbccaa7b74d2b7",
+      "date": "2026-01-19",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "5d470cd224f217be444feeb24a132eb525c9be55\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-16",
+      "commitHash": "5d470cd224f217be444feeb24a132eb525c9be55",
+      "date": "2026-01-16",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "9b74ce7ae762e98ab9df3837d1007537a169298f\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-15",
+      "commitHash": "9b74ce7ae762e98ab9df3837d1007537a169298f",
+      "date": "2026-01-15",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "85c2792abfbde7969e37efdb4641b7243f797f00\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-14",
+      "commitHash": "85c2792abfbde7969e37efdb4641b7243f797f00",
+      "date": "2026-01-14",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "29ea883bcf48fb923af567c2aeb4a9f2f93120cb\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-13",
+      "commitHash": "29ea883bcf48fb923af567c2aeb4a9f2f93120cb",
+      "date": "2026-01-13",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "4e14489d032a6624b16f3f4091e548cd932eb9a8\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-10",
+      "commitHash": "4e14489d032a6624b16f3f4091e548cd932eb9a8",
+      "date": "2026-01-10",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "b68380273f5d0922e71681a830be07b8b398d3a0\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-01-08",
+      "commitHash": "b68380273f5d0922e71681a830be07b8b398d3a0",
+      "date": "2026-01-08",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "425bdf00c0bbef62ddb3e3b6299209972f6b6aea\n\nUpdate changes\n\nAuthor: gaqno Date: 2026-01-07",
+      "commitHash": "425bdf00c0bbef62ddb3e3b6299209972f6b6aea",
+      "date": "2026-01-07",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "aea1fdc6ac7250df2125d4de6a5ed08886bf14dc\n\nUpdate changes\n\nAuthor: gaqno Date: 2026-01-07",
+      "commitHash": "aea1fdc6ac7250df2125d4de6a5ed08886bf14dc",
+      "date": "2026-01-07",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Backend",
+      "summary": "Initial commit",
+      "description": "a27127df180993f21ededf74f8e550e4d9e5e433\n\nInitial commit\n\nAuthor: gaqno Date: 2026-01-05",
+      "commitHash": "a27127df180993f21ededf74f8e550e4d9e5e433",
+      "date": "2026-01-05",
+      "repoPath": "gaqno-rpg-service"
+    },
+    {
+      "productKey": "omnichannel",
+      "layer": "Backend",
+      "summary": "ci(KAN-47): add workflows per repo",
+      "description": "7979683cf24562adecfe826f444e8468c593b418\n\nci(KAN-47): add workflows per repo\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "7979683cf24562adecfe826f444e8468c593b418",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-omnichannel-service"
+    },
+    {
+      "productKey": "omnichannel",
+      "layer": "Backend",
+      "summary": "chore(KAN-39): sync with workspace",
+      "description": "4ca500bae681332db94b66fc28d9c4811926fe20\n\nchore(KAN-39): sync with workspace\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "4ca500bae681332db94b66fc28d9c4811926fe20",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-omnichannel-service"
+    },
+    {
+      "productKey": "omnichannel",
+      "layer": "Backend",
+      "summary": "Update changes",
+      "description": "18d847ea0d5c7a7f92c651341b29bf471aeade20\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "18d847ea0d5c7a7f92c651341b29bf471aeade20",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-omnichannel-service"
+    },
+    {
+      "productKey": "omnichannel",
+      "layer": "Backend",
+      "summary": "chore: remove docs - consolidate in root docs/",
+      "description": "47ec7fb900cc2b247c42cb7589ceadcce926a5ff\n\nchore: remove docs - consolidate in root docs/\n\nAuthor: Gabriel Aquino Date: 2026-02-03",
+      "commitHash": "47ec7fb900cc2b247c42cb7589ceadcce926a5ff",
+      "date": "2026-02-03",
+      "repoPath": "gaqno-omnichannel-service"
+    },
+    {
+      "productKey": "omnichannel",
+      "layer": "Backend",
+      "summary": "fix(cors): use SSO-style CORS config for consistency",
+      "description": "6ad1af13cbaab8bc9c5ebea01cfc90ce35c454d1\n\nfix(cors): use SSO-style CORS config for consistency\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "6ad1af13cbaab8bc9c5ebea01cfc90ce35c454d1",
+      "date": "2026-02-02",
+      "repoPath": "gaqno-omnichannel-service"
+    },
+    {
+      "productKey": "omnichannel",
+      "layer": "Backend",
+      "summary": "fix(cors): enable CORS at platform level, add HttpExceptionFilter",
+      "description": "483825171ef081f99217f0dd5ba98017ff08da14\n\nfix(cors): enable CORS at platform level, add HttpExceptionFilter\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "483825171ef081f99217f0dd5ba98017ff08da14",
+      "date": "2026-02-02",
+      "repoPath": "gaqno-omnichannel-service"
+    },
+    {
+      "productKey": "omnichannel",
+      "layer": "Backend",
+      "summary": "fix(cors): align CORS config with SSO, support CORS_ORIGIN env",
+      "description": "e541c17a9d15cfcc66a4e6e8cc8e6f067f8a4067\n\nfix(cors): align CORS config with SSO, support CORS_ORIGIN env\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "e541c17a9d15cfcc66a4e6e8cc8e6f067f8a4067",
+      "date": "2026-02-02",
+      "repoPath": "gaqno-omnichannel-service"
+    },
+    {
+      "productKey": "omnichannel",
+      "layer": "Backend",
+      "summary": "chore: update docs, push-db, main, add seed-agent-channels script",
+      "description": "5a3c18ef828855e4a57d02b1dfbe8ca6cf78cf83\n\nchore: update docs, push-db, main, add seed-agent-channels script\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "5a3c18ef828855e4a57d02b1dfbe8ca6cf78cf83",
+      "date": "2026-02-02",
+      "repoPath": "gaqno-omnichannel-service"
+    },
+    {
+      "productKey": "omnichannel",
+      "layer": "Backend",
+      "summary": "fix: add wget for healthcheck, simplify HEALTHCHECK, add db name startup log",
+      "description": "30775869a40801bd0a98cdd0e8b17278563ad031\n\nfix: add wget for healthcheck, simplify HEALTHCHECK, add db name startup log\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "30775869a40801bd0a98cdd0e8b17278563ad031",
+      "date": "2026-02-02",
+      "repoPath": "gaqno-omnichannel-service"
+    },
+    {
+      "productKey": "omnichannel",
+      "layer": "Backend",
+      "summary": "fix: add throttler runtime dependency",
+      "description": "7658afa5b04ea8bee58b54ae1edcdb892c7ac574\n\nfix: add throttler runtime dependency\n\nAuthor: Gabriel Aquino Date: 2026-01-30",
+      "commitHash": "7658afa5b04ea8bee58b54ae1edcdb892c7ac574",
+      "date": "2026-01-30",
+      "repoPath": "gaqno-omnichannel-service"
+    },
+    {
+      "productKey": "omnichannel",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "1ae680411222f63e6083e77b566a0c725bb85f24\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-30",
+      "commitHash": "1ae680411222f63e6083e77b566a0c725bb85f24",
+      "date": "2026-01-30",
+      "repoPath": "gaqno-omnichannel-service"
+    },
+    {
+      "productKey": "omnichannel",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "0f3e91c20e46874bd9ff644531c85a54ad583e35\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-30",
+      "commitHash": "0f3e91c20e46874bd9ff644531c85a54ad583e35",
+      "date": "2026-01-30",
+      "repoPath": "gaqno-omnichannel-service"
+    },
+    {
+      "productKey": "omnichannel",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "4427b70c23ef45bff0ffc9d83ca77a092b3b923e\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-30",
+      "commitHash": "4427b70c23ef45bff0ffc9d83ca77a092b3b923e",
+      "date": "2026-01-30",
+      "repoPath": "gaqno-omnichannel-service"
+    },
+    {
+      "productKey": "omnichannel",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "5e5a16f01b6a5e10c6be5e72b7ecc5e59a2752b3\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-30",
+      "commitHash": "5e5a16f01b6a5e10c6be5e72b7ecc5e59a2752b3",
+      "date": "2026-01-30",
+      "repoPath": "gaqno-omnichannel-service"
+    },
+    {
+      "productKey": "omnichannel",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "8091f94b7a23ef959846c4c579777664402ba7a5\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-30",
+      "commitHash": "8091f94b7a23ef959846c4c579777664402ba7a5",
+      "date": "2026-01-30",
+      "repoPath": "gaqno-omnichannel-service"
+    },
+    {
+      "productKey": "omnichannel",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "12ed5bb28d687bce5c982e804eb04e8373e62cb0\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-30",
+      "commitHash": "12ed5bb28d687bce5c982e804eb04e8373e62cb0",
+      "date": "2026-01-30",
+      "repoPath": "gaqno-omnichannel-service"
+    },
+    {
+      "productKey": "omnichannel",
+      "layer": "Backend",
+      "summary": "chore: update changes",
+      "description": "005f7948c6061cdf0125d7ca2fe4ebcf25a8966b\n\nchore: update changes\n\nAuthor: Gabriel Aquino Date: 2026-01-30",
+      "commitHash": "005f7948c6061cdf0125d7ca2fe4ebcf25a8966b",
+      "date": "2026-01-30",
+      "repoPath": "gaqno-omnichannel-service"
+    },
+    {
+      "productKey": "omnichannel",
+      "layer": "Backend",
+      "summary": "Initial: omnichannel backend (WhatsApp/Telegram)",
+      "description": "09d4349e51eac39fd2ecfb5a0e1bd85016d20036\n\nInitial: omnichannel backend (WhatsApp/Telegram)\n\nAuthor: Gabriel Aquino Date: 2026-01-30",
+      "commitHash": "09d4349e51eac39fd2ecfb5a0e1bd85016d20036",
+      "date": "2026-01-30",
+      "repoPath": "gaqno-omnichannel-service"
+    },
+    {
+      "productKey": "shell",
+      "layer": "Frontend",
+      "summary": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+      "description": "69960ee07e16343105ad4a46323f9e5e1a013986\n\nrefactor(KAN-39): remove submodules, add CI workflows and documentation\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+      "date": "2026-02-05",
+      "repoPath": "@gaqno-backcore"
+    },
+    {
+      "productKey": "shell",
+      "layer": "Frontend",
+      "summary": "feat(health): add Health Dashboard - real-time CI/CD, self-healing, agents",
+      "description": "3435448c71628e67df8a72758811e1eaa0e60a85\n\nfeat(health): add Health Dashboard - real-time CI/CD, self-healing, agents\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "3435448c71628e67df8a72758811e1eaa0e60a85",
+      "date": "2026-02-05",
+      "repoPath": "@gaqno-backcore"
+    },
+    {
+      "productKey": "shell",
+      "layer": "Frontend",
+      "summary": "chore: bump frontcore to 1.0.24, SSO path fix, DB config, seed docs",
+      "description": "18adccbb2ad4d027a398f5debfe0ad7942dd13d3\n\nchore: bump frontcore to 1.0.24, SSO path fix, DB config, seed docs\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "18adccbb2ad4d027a398f5debfe0ad7942dd13d3",
+      "date": "2026-02-02",
+      "repoPath": "@gaqno-backcore"
+    },
+    {
+      "productKey": "shell",
+      "layer": "Frontend",
+      "summary": "Initial commit",
+      "description": "01f5cd94ba4c25a76e663679afe042ccaae153c1\n\nInitial commit\n\nAuthor: gaqno Date: 2026-01-05",
+      "commitHash": "01f5cd94ba4c25a76e663679afe042ccaae153c1",
+      "date": "2026-01-05",
+      "repoPath": "@gaqno-backcore"
+    },
+    {
+      "productKey": "shell",
+      "layer": "Frontend",
+      "summary": "feat(KAN-26): add registerServiceConfig to frontcore for MFE 401 handling; update finance-ui and rpg-ui refs",
+      "description": "4f1585222253c3c975ae06f5fe04c77311ce7730\n\nfeat(KAN-26): add registerServiceConfig to frontcore for MFE 401 handling; update finance-ui and rpg-ui refs\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "4f1585222253c3c975ae06f5fe04c77311ce7730",
+      "date": "2026-02-05",
+      "repoPath": "@gaqno-frontcore"
+    },
+    {
+      "productKey": "shell",
+      "layer": "Frontend",
+      "summary": "KAN-30 Unify types (backcore as source)",
+      "description": "77b1f1ee414d5c1b6456d75ca4cde821bb4889e6\n\nKAN-30 Unify types (backcore as source)\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "77b1f1ee414d5c1b6456d75ca4cde821bb4889e6",
+      "date": "2026-02-05",
+      "repoPath": "@gaqno-frontcore"
+    },
+    {
+      "productKey": "shell",
+      "layer": "Frontend",
+      "summary": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+      "description": "69960ee07e16343105ad4a46323f9e5e1a013986\n\nrefactor(KAN-39): remove submodules, add CI workflows and documentation\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+      "date": "2026-02-05",
+      "repoPath": "@gaqno-frontcore"
+    },
+    {
+      "productKey": "shell",
+      "layer": "Frontend",
+      "summary": "feat(health): add Health Dashboard - real-time CI/CD, self-healing, agents",
+      "description": "3435448c71628e67df8a72758811e1eaa0e60a85\n\nfeat(health): add Health Dashboard - real-time CI/CD, self-healing, agents\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "3435448c71628e67df8a72758811e1eaa0e60a85",
+      "date": "2026-02-05",
+      "repoPath": "@gaqno-frontcore"
+    },
+    {
+      "productKey": "shell",
+      "layer": "Frontend",
+      "summary": "chore: update submodule references",
+      "description": "02b1f3b073298aec9198719fa385b93a7c727e52\n\nchore: update submodule references\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "02b1f3b073298aec9198719fa385b93a7c727e52",
+      "date": "2026-02-05",
+      "repoPath": "@gaqno-frontcore"
+    },
+    {
+      "productKey": "shell",
+      "layer": "Frontend",
+      "summary": "chore: update submodule references",
+      "description": "a4ff4b8822f655aba8beb91f1d01f88ab992765e\n\nchore: update submodule references\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "a4ff4b8822f655aba8beb91f1d01f88ab992765e",
+      "date": "2026-02-05",
+      "repoPath": "@gaqno-frontcore"
+    },
+    {
+      "productKey": "shell",
+      "layer": "Frontend",
+      "summary": "Update changes",
+      "description": "cd030a9db1711f79c93aed3c4db352ddb194c9ac\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-03",
+      "commitHash": "cd030a9db1711f79c93aed3c4db352ddb194c9ac",
+      "date": "2026-02-03",
+      "repoPath": "@gaqno-frontcore"
+    },
+    {
+      "productKey": "shell",
+      "layer": "Frontend",
+      "summary": "Update changes",
+      "description": "da3fca93a54cc27e670457a2b55312ede78a56ff\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-03",
+      "commitHash": "da3fca93a54cc27e670457a2b55312ede78a56ff",
+      "date": "2026-02-03",
+      "repoPath": "@gaqno-frontcore"
+    },
+    {
+      "productKey": "shell",
+      "layer": "Frontend",
+      "summary": "chore: align frontend/backend ports (300X→400X), publish frontcore 1.0.26",
+      "description": "0212fcd5fc86d799acc4166797d14bcec259f9bf\n\nchore: align frontend/backend ports (300X→400X), publish frontcore 1.0.26\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "0212fcd5fc86d799acc4166797d14bcec259f9bf",
+      "date": "2026-02-02",
+      "repoPath": "@gaqno-frontcore"
+    },
+    {
+      "productKey": "shell",
+      "layer": "Frontend",
+      "summary": "chore: frontcore 1.0.25 - add SectionWithSubNav, bump consumers",
+      "description": "2a810b55395918ae655c03aa193cbd94589ab6f9\n\nchore: frontcore 1.0.25 - add SectionWithSubNav, bump consumers\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "2a810b55395918ae655c03aa193cbd94589ab6f9",
+      "date": "2026-02-02",
+      "repoPath": "@gaqno-frontcore"
+    },
+    {
+      "productKey": "shell",
+      "layer": "Frontend",
+      "summary": "chore: bump frontcore to 1.0.24, SSO path fix, DB config, seed docs",
+      "description": "18adccbb2ad4d027a398f5debfe0ad7942dd13d3\n\nchore: bump frontcore to 1.0.24, SSO path fix, DB config, seed docs\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "18adccbb2ad4d027a398f5debfe0ad7942dd13d3",
+      "date": "2026-02-02",
+      "repoPath": "@gaqno-frontcore"
+    },
+    {
+      "productKey": "shell",
+      "layer": "Frontend",
+      "summary": "chore: bump @gaqno-development/frontcore to 1.0.22, add components/icons (published)",
+      "description": "f44656e0def7cde105e6a229ee23907913d5ee61\n\nchore: bump @gaqno-development/frontcore to 1.0.22, add components/icons (published)\n\nAuthor: Gabriel Aquino Date: 2026-02-01",
+      "commitHash": "f44656e0def7cde105e6a229ee23907913d5ee61",
+      "date": "2026-02-01",
+      "repoPath": "@gaqno-frontcore"
+    },
+    {
+      "productKey": "shell",
+      "layer": "Frontend",
+      "summary": "chore: bump @gaqno-development/frontcore to 1.0.21 (published)",
+      "description": "afb107091fbecf2140591248a827ccdca632f827\n\nchore: bump @gaqno-development/frontcore to 1.0.21 (published)\n\nAuthor: Gabriel Aquino Date: 2026-02-01",
+      "commitHash": "afb107091fbecf2140591248a827ccdca632f827",
+      "date": "2026-02-01",
+      "repoPath": "@gaqno-frontcore"
+    },
+    {
+      "productKey": "shell",
+      "layer": "Frontend",
+      "summary": "chore(@gaqno-frontcore): publish v1.0.18",
+      "description": "cf5783a231fc10230739a5e346e7b1104a163974\n\nchore(@gaqno-frontcore): publish v1.0.18\n\nAuthor: Gabriel Aquino Date: 2026-01-21",
+      "commitHash": "cf5783a231fc10230739a5e346e7b1104a163974",
+      "date": "2026-01-21",
+      "repoPath": "@gaqno-frontcore"
+    },
+    {
+      "productKey": "shell",
+      "layer": "Frontend",
+      "summary": "Initial commit",
+      "description": "01f5cd94ba4c25a76e663679afe042ccaae153c1\n\nInitial commit\n\nAuthor: gaqno Date: 2026-01-05",
+      "commitHash": "01f5cd94ba4c25a76e663679afe042ccaae153c1",
+      "date": "2026-01-05",
+      "repoPath": "@gaqno-frontcore"
+    },
+    {
+      "productKey": "admin",
+      "layer": "Backend",
+      "summary": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+      "description": "c039124fb916f950a5824c6a48c40ff2a519aeba\n\nci(KAN-47): workflows per repo, PR-Agent, fix npm install\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-admin-service"
+    },
+    {
+      "productKey": "admin",
+      "layer": "Backend",
+      "summary": "chore(KAN-39): update submodule pointers",
+      "description": "53db60cef0bd333d567724aaedea142eab7a9113\n\nchore(KAN-39): update submodule pointers\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "53db60cef0bd333d567724aaedea142eab7a9113",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-admin-service"
+    },
+    {
+      "productKey": "admin",
+      "layer": "Backend",
+      "summary": "feat(health): add Health Dashboard - real-time CI/CD, self-healing, agents",
+      "description": "3435448c71628e67df8a72758811e1eaa0e60a85\n\nfeat(health): add Health Dashboard - real-time CI/CD, self-healing, agents\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "3435448c71628e67df8a72758811e1eaa0e60a85",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-admin-service"
+    },
+    {
+      "productKey": "admin",
+      "layer": "Frontend",
+      "summary": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+      "description": "c039124fb916f950a5824c6a48c40ff2a519aeba\n\nci(KAN-47): workflows per repo, PR-Agent, fix npm install\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-admin-ui"
+    },
+    {
+      "productKey": "admin",
+      "layer": "Frontend",
+      "summary": "chore(KAN-39): update submodule pointers",
+      "description": "53db60cef0bd333d567724aaedea142eab7a9113\n\nchore(KAN-39): update submodule pointers\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "53db60cef0bd333d567724aaedea142eab7a9113",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-admin-ui"
+    },
+    {
+      "productKey": "admin",
+      "layer": "Frontend",
+      "summary": "feat(health): add Health Dashboard - real-time CI/CD, self-healing, agents",
+      "description": "3435448c71628e67df8a72758811e1eaa0e60a85\n\nfeat(health): add Health Dashboard - real-time CI/CD, self-healing, agents\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "3435448c71628e67df8a72758811e1eaa0e60a85",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-admin-ui"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Frontend",
+      "summary": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+      "description": "c039124fb916f950a5824c6a48c40ff2a519aeba\n\nci(KAN-47): workflows per repo, PR-Agent, fix npm install\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-ai-ui"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Frontend",
+      "summary": "chore(KAN-39): update submodule pointers",
+      "description": "53db60cef0bd333d567724aaedea142eab7a9113\n\nchore(KAN-39): update submodule pointers\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "53db60cef0bd333d567724aaedea142eab7a9113",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-ai-ui"
+    },
+    {
+      "productKey": "ai",
+      "layer": "Frontend",
+      "summary": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+      "description": "69960ee07e16343105ad4a46323f9e5e1a013986\n\nrefactor(KAN-39): remove submodules, add CI workflows and documentation\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-ai-ui"
+    },
+    {
+      "productKey": "crm",
+      "layer": "Frontend",
+      "summary": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+      "description": "c039124fb916f950a5824c6a48c40ff2a519aeba\n\nci(KAN-47): workflows per repo, PR-Agent, fix npm install\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-crm-ui"
+    },
+    {
+      "productKey": "crm",
+      "layer": "Frontend",
+      "summary": "chore(KAN-39): update submodule pointers",
+      "description": "53db60cef0bd333d567724aaedea142eab7a9113\n\nchore(KAN-39): update submodule pointers\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "53db60cef0bd333d567724aaedea142eab7a9113",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-crm-ui"
+    },
+    {
+      "productKey": "crm",
+      "layer": "Frontend",
+      "summary": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+      "description": "69960ee07e16343105ad4a46323f9e5e1a013986\n\nrefactor(KAN-39): remove submodules, add CI workflows and documentation\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-crm-ui"
+    },
+    {
+      "productKey": "erp",
+      "layer": "Frontend",
+      "summary": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+      "description": "c039124fb916f950a5824c6a48c40ff2a519aeba\n\nci(KAN-47): workflows per repo, PR-Agent, fix npm install\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-erp-ui"
+    },
+    {
+      "productKey": "erp",
+      "layer": "Frontend",
+      "summary": "chore(KAN-39): update submodule pointers",
+      "description": "53db60cef0bd333d567724aaedea142eab7a9113\n\nchore(KAN-39): update submodule pointers\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "53db60cef0bd333d567724aaedea142eab7a9113",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-erp-ui"
+    },
+    {
+      "productKey": "erp",
+      "layer": "Frontend",
+      "summary": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+      "description": "69960ee07e16343105ad4a46323f9e5e1a013986\n\nrefactor(KAN-39): remove submodules, add CI workflows and documentation\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-erp-ui"
+    },
+    {
+      "productKey": "finance",
+      "layer": "Frontend",
+      "summary": "feat(KAN-26): add registerServiceConfig to frontcore for MFE 401 handling; update finance-ui and rpg-ui refs",
+      "description": "4f1585222253c3c975ae06f5fe04c77311ce7730\n\nfeat(KAN-26): add registerServiceConfig to frontcore for MFE 401 handling; update finance-ui and rpg-ui refs\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "4f1585222253c3c975ae06f5fe04c77311ce7730",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-finance-ui"
+    },
+    {
+      "productKey": "finance",
+      "layer": "Frontend",
+      "summary": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+      "description": "c039124fb916f950a5824c6a48c40ff2a519aeba\n\nci(KAN-47): workflows per repo, PR-Agent, fix npm install\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-finance-ui"
+    },
+    {
+      "productKey": "finance",
+      "layer": "Frontend",
+      "summary": "chore(KAN-39): update submodule pointers",
+      "description": "53db60cef0bd333d567724aaedea142eab7a9113\n\nchore(KAN-39): update submodule pointers\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "53db60cef0bd333d567724aaedea142eab7a9113",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-finance-ui"
+    },
+    {
+      "productKey": "finance",
+      "layer": "Frontend",
+      "summary": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+      "description": "69960ee07e16343105ad4a46323f9e5e1a013986\n\nrefactor(KAN-39): remove submodules, add CI workflows and documentation\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-finance-ui"
+    },
+    {
+      "productKey": "landing",
+      "layer": "Frontend",
+      "summary": "chore(KAN-52): update submodule refs after node_modules removal",
+      "description": "6b4809b310048619f7faa7e9bd04f05bac5abd51\n\nchore(KAN-52): update submodule refs after node_modules removal\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "6b4809b310048619f7faa7e9bd04f05bac5abd51",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-landing-ui"
+    },
+    {
+      "productKey": "landing",
+      "layer": "Frontend",
+      "summary": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+      "description": "c039124fb916f950a5824c6a48c40ff2a519aeba\n\nci(KAN-47): workflows per repo, PR-Agent, fix npm install\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-landing-ui"
+    },
+    {
+      "productKey": "landing",
+      "layer": "Frontend",
+      "summary": "chore(KAN-39): update submodule pointers",
+      "description": "53db60cef0bd333d567724aaedea142eab7a9113\n\nchore(KAN-39): update submodule pointers\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "53db60cef0bd333d567724aaedea142eab7a9113",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-landing-ui"
+    },
+    {
+      "productKey": "landing",
+      "layer": "Frontend",
+      "summary": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+      "description": "69960ee07e16343105ad4a46323f9e5e1a013986\n\nrefactor(KAN-39): remove submodules, add CI workflows and documentation\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-landing-ui"
+    },
+    {
+      "productKey": "lenin",
+      "layer": "Frontend",
+      "summary": "chore(KAN-52): update submodule refs after node_modules removal",
+      "description": "6b4809b310048619f7faa7e9bd04f05bac5abd51\n\nchore(KAN-52): update submodule refs after node_modules removal\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "6b4809b310048619f7faa7e9bd04f05bac5abd51",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-lenin-ui"
+    },
+    {
+      "productKey": "lenin",
+      "layer": "Frontend",
+      "summary": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+      "description": "c039124fb916f950a5824c6a48c40ff2a519aeba\n\nci(KAN-47): workflows per repo, PR-Agent, fix npm install\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-lenin-ui"
+    },
+    {
+      "productKey": "lenin",
+      "layer": "Frontend",
+      "summary": "chore(KAN-39): update submodule pointers",
+      "description": "53db60cef0bd333d567724aaedea142eab7a9113\n\nchore(KAN-39): update submodule pointers\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "53db60cef0bd333d567724aaedea142eab7a9113",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-lenin-ui"
+    },
+    {
+      "productKey": "lenin",
+      "layer": "Frontend",
+      "summary": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+      "description": "69960ee07e16343105ad4a46323f9e5e1a013986\n\nrefactor(KAN-39): remove submodules, add CI workflows and documentation\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-lenin-ui"
+    },
+    {
+      "productKey": "omnichannel",
+      "layer": "Frontend",
+      "summary": "chore(KAN-52): update submodule refs after node_modules removal",
+      "description": "6b4809b310048619f7faa7e9bd04f05bac5abd51\n\nchore(KAN-52): update submodule refs after node_modules removal\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "6b4809b310048619f7faa7e9bd04f05bac5abd51",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-omnichannel-ui"
+    },
+    {
+      "productKey": "omnichannel",
+      "layer": "Frontend",
+      "summary": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+      "description": "c039124fb916f950a5824c6a48c40ff2a519aeba\n\nci(KAN-47): workflows per repo, PR-Agent, fix npm install\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-omnichannel-ui"
+    },
+    {
+      "productKey": "omnichannel",
+      "layer": "Frontend",
+      "summary": "chore(KAN-39): update submodule pointers",
+      "description": "53db60cef0bd333d567724aaedea142eab7a9113\n\nchore(KAN-39): update submodule pointers\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "53db60cef0bd333d567724aaedea142eab7a9113",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-omnichannel-ui"
+    },
+    {
+      "productKey": "omnichannel",
+      "layer": "Frontend",
+      "summary": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+      "description": "69960ee07e16343105ad4a46323f9e5e1a013986\n\nrefactor(KAN-39): remove submodules, add CI workflows and documentation\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-omnichannel-ui"
+    },
+    {
+      "productKey": "pdv",
+      "layer": "Frontend",
+      "summary": "chore(KAN-52): update submodule refs after node_modules removal",
+      "description": "6b4809b310048619f7faa7e9bd04f05bac5abd51\n\nchore(KAN-52): update submodule refs after node_modules removal\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "6b4809b310048619f7faa7e9bd04f05bac5abd51",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-pdv-ui"
+    },
+    {
+      "productKey": "pdv",
+      "layer": "Frontend",
+      "summary": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+      "description": "c039124fb916f950a5824c6a48c40ff2a519aeba\n\nci(KAN-47): workflows per repo, PR-Agent, fix npm install\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-pdv-ui"
+    },
+    {
+      "productKey": "pdv",
+      "layer": "Frontend",
+      "summary": "chore(KAN-39): update submodule pointers",
+      "description": "53db60cef0bd333d567724aaedea142eab7a9113\n\nchore(KAN-39): update submodule pointers\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "53db60cef0bd333d567724aaedea142eab7a9113",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-pdv-ui"
+    },
+    {
+      "productKey": "pdv",
+      "layer": "Frontend",
+      "summary": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+      "description": "69960ee07e16343105ad4a46323f9e5e1a013986\n\nrefactor(KAN-39): remove submodules, add CI workflows and documentation\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-pdv-ui"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Frontend",
+      "summary": "feat(KAN-26): add registerServiceConfig to frontcore for MFE 401 handling; update finance-ui and rpg-ui refs",
+      "description": "4f1585222253c3c975ae06f5fe04c77311ce7730\n\nfeat(KAN-26): add registerServiceConfig to frontcore for MFE 401 handling; update finance-ui and rpg-ui refs\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "4f1585222253c3c975ae06f5fe04c77311ce7730",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-rpg-ui"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Frontend",
+      "summary": "chore(KAN-52): update submodule refs after node_modules removal",
+      "description": "6b4809b310048619f7faa7e9bd04f05bac5abd51\n\nchore(KAN-52): update submodule refs after node_modules removal\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "6b4809b310048619f7faa7e9bd04f05bac5abd51",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-rpg-ui"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Frontend",
+      "summary": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+      "description": "c039124fb916f950a5824c6a48c40ff2a519aeba\n\nci(KAN-47): workflows per repo, PR-Agent, fix npm install\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-rpg-ui"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Frontend",
+      "summary": "KAN-46 chore: update gaqno-rpg-ui submodule (Session hooks migration)",
+      "description": "28cde7a136867de05e054228187e68f85179fe30\n\nKAN-46 chore: update gaqno-rpg-ui submodule (Session hooks migration)\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "28cde7a136867de05e054228187e68f85179fe30",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-rpg-ui"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Frontend",
+      "summary": "chore(KAN-39): update submodule pointers",
+      "description": "53db60cef0bd333d567724aaedea142eab7a9113\n\nchore(KAN-39): update submodule pointers\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "53db60cef0bd333d567724aaedea142eab7a9113",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-rpg-ui"
+    },
+    {
+      "productKey": "rpg",
+      "layer": "Frontend",
+      "summary": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+      "description": "69960ee07e16343105ad4a46323f9e5e1a013986\n\nrefactor(KAN-39): remove submodules, add CI workflows and documentation\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-rpg-ui"
+    },
+    {
+      "productKey": "saas",
+      "layer": "Backend",
+      "summary": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+      "description": "c039124fb916f950a5824c6a48c40ff2a519aeba\n\nci(KAN-47): workflows per repo, PR-Agent, fix npm install\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-saas-service"
+    },
+    {
+      "productKey": "saas",
+      "layer": "Backend",
+      "summary": "chore(KAN-39): update submodule pointers",
+      "description": "53db60cef0bd333d567724aaedea142eab7a9113\n\nchore(KAN-39): update submodule pointers\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "53db60cef0bd333d567724aaedea142eab7a9113",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-saas-service"
+    },
+    {
+      "productKey": "saas",
+      "layer": "Backend",
+      "summary": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+      "description": "69960ee07e16343105ad4a46323f9e5e1a013986\n\nrefactor(KAN-39): remove submodules, add CI workflows and documentation\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-saas-service"
+    },
+    {
+      "productKey": "saas",
+      "layer": "Frontend",
+      "summary": "chore(KAN-52): update submodule refs after node_modules removal",
+      "description": "6b4809b310048619f7faa7e9bd04f05bac5abd51\n\nchore(KAN-52): update submodule refs after node_modules removal\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "6b4809b310048619f7faa7e9bd04f05bac5abd51",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-saas-ui"
+    },
+    {
+      "productKey": "saas",
+      "layer": "Frontend",
+      "summary": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+      "description": "c039124fb916f950a5824c6a48c40ff2a519aeba\n\nci(KAN-47): workflows per repo, PR-Agent, fix npm install\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-saas-ui"
+    },
+    {
+      "productKey": "saas",
+      "layer": "Frontend",
+      "summary": "chore(KAN-39): update submodule pointers",
+      "description": "53db60cef0bd333d567724aaedea142eab7a9113\n\nchore(KAN-39): update submodule pointers\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "53db60cef0bd333d567724aaedea142eab7a9113",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-saas-ui"
+    },
+    {
+      "productKey": "saas",
+      "layer": "Frontend",
+      "summary": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+      "description": "69960ee07e16343105ad4a46323f9e5e1a013986\n\nrefactor(KAN-39): remove submodules, add CI workflows and documentation\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-saas-ui"
+    },
+    {
+      "productKey": "shell",
+      "layer": "Frontend",
+      "summary": "chore(KAN-52): update submodule refs after node_modules removal",
+      "description": "6b4809b310048619f7faa7e9bd04f05bac5abd51\n\nchore(KAN-52): update submodule refs after node_modules removal\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "6b4809b310048619f7faa7e9bd04f05bac5abd51",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-shell-ui"
+    },
+    {
+      "productKey": "shell",
+      "layer": "Frontend",
+      "summary": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+      "description": "c039124fb916f950a5824c6a48c40ff2a519aeba\n\nci(KAN-47): workflows per repo, PR-Agent, fix npm install\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-shell-ui"
+    },
+    {
+      "productKey": "shell",
+      "layer": "Frontend",
+      "summary": "chore(KAN-39): update submodule pointers",
+      "description": "53db60cef0bd333d567724aaedea142eab7a9113\n\nchore(KAN-39): update submodule pointers\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "53db60cef0bd333d567724aaedea142eab7a9113",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-shell-ui"
+    },
+    {
+      "productKey": "shell",
+      "layer": "Frontend",
+      "summary": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+      "description": "69960ee07e16343105ad4a46323f9e5e1a013986\n\nrefactor(KAN-39): remove submodules, add CI workflows and documentation\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-shell-ui"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Frontend",
+      "summary": "chore(KAN-52): update submodule refs after node_modules removal",
+      "description": "6b4809b310048619f7faa7e9bd04f05bac5abd51\n\nchore(KAN-52): update submodule refs after node_modules removal\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "6b4809b310048619f7faa7e9bd04f05bac5abd51",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-sso-ui"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Frontend",
+      "summary": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+      "description": "c039124fb916f950a5824c6a48c40ff2a519aeba\n\nci(KAN-47): workflows per repo, PR-Agent, fix npm install\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-sso-ui"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Frontend",
+      "summary": "chore(KAN-39): update submodule pointers",
+      "description": "53db60cef0bd333d567724aaedea142eab7a9113\n\nchore(KAN-39): update submodule pointers\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "53db60cef0bd333d567724aaedea142eab7a9113",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-sso-ui"
+    },
+    {
+      "productKey": "sso",
+      "layer": "Frontend",
+      "summary": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+      "description": "69960ee07e16343105ad4a46323f9e5e1a013986\n\nrefactor(KAN-39): remove submodules, add CI workflows and documentation\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+      "date": "2026-02-05",
+      "repoPath": "gaqno-sso-ui"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "chore: remove gaqno-warehouse-service and gaqno-warehouse-ui (test only)",
+      "description": "07c87f00b9527b26f9cd90497adab4552a6b2df1\n\nchore: remove gaqno-warehouse-service and gaqno-warehouse-ui (test only)\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "07c87f00b9527b26f9cd90497adab4552a6b2df1",
+      "date": "2026-02-05",
+      "repoPath": "docs"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+      "description": "c039124fb916f950a5824c6a48c40ff2a519aeba\n\nci(KAN-47): workflows per repo, PR-Agent, fix npm install\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+      "date": "2026-02-05",
+      "repoPath": "docs"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "chore: update submodule references",
+      "description": "f496684651ca70e1b7f1a9a5e80622e1b83d0a20\n\nchore: update submodule references\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "f496684651ca70e1b7f1a9a5e80622e1b83d0a20",
+      "date": "2026-02-05",
+      "repoPath": "docs"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "Merge pull request #2 from gaqno-development/refactor/KAN-39-remove-submodules-add-ci-docs",
+      "description": "ec21cac929906a7a86d024ce512c31097b3e8d00\n\nMerge pull request #2 from gaqno-development/refactor/KAN-39-remove-submodules-add-ci-docs\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "ec21cac929906a7a86d024ce512c31097b3e8d00",
+      "date": "2026-02-05",
+      "repoPath": "docs"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+      "description": "69960ee07e16343105ad4a46323f9e5e1a013986\n\nrefactor(KAN-39): remove submodules, add CI workflows and documentation\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+      "date": "2026-02-05",
+      "repoPath": "docs"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "feat(health): add Health Dashboard - real-time CI/CD, self-healing, agents",
+      "description": "3435448c71628e67df8a72758811e1eaa0e60a85\n\nfeat(health): add Health Dashboard - real-time CI/CD, self-healing, agents\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "3435448c71628e67df8a72758811e1eaa0e60a85",
+      "date": "2026-02-05",
+      "repoPath": "docs"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "docs(KAN-34): document admin/saas service evolution as stubs",
+      "description": "b09de1797e12348b66f31f08c1fc5d1016540c2e\n\ndocs(KAN-34): document admin/saas service evolution as stubs\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "b09de1797e12348b66f31f08c1fc5d1016540c2e",
+      "date": "2026-02-05",
+      "repoPath": "docs"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "chore: update submodule references",
+      "description": "a4ff4b8822f655aba8beb91f1d01f88ab992765e\n\nchore: update submodule references\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "a4ff4b8822f655aba8beb91f1d01f88ab992765e",
+      "date": "2026-02-05",
+      "repoPath": "docs"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "chore: update submodule references",
+      "description": "ea5bddb3de92f67b22bbd874eb66997de3d7480e\n\nchore: update submodule references\n\nAuthor: Gabriel Aquino Date: 2026-02-03",
+      "commitHash": "ea5bddb3de92f67b22bbd874eb66997de3d7480e",
+      "date": "2026-02-03",
+      "repoPath": "docs"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "chore: update submodule references",
+      "description": "7ff1bcad8b1944854679fb4b20c6f3f693a83acb\n\nchore: update submodule references\n\nAuthor: Gabriel Aquino Date: 2026-02-03",
+      "commitHash": "7ff1bcad8b1944854679fb4b20c6f3f693a83acb",
+      "date": "2026-02-03",
+      "repoPath": "docs"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "chore: update submodule references",
+      "description": "1af2d3745ed87f96a16e30403b662640c20bd22d\n\nchore: update submodule references\n\nAuthor: Gabriel Aquino Date: 2026-02-03",
+      "commitHash": "1af2d3745ed87f96a16e30403b662640c20bd22d",
+      "date": "2026-02-03",
+      "repoPath": "docs"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "chore: update submodule references",
+      "description": "8b878f1d5f2d839a2337dcd6039f347705b46c2a\n\nchore: update submodule references\n\nAuthor: Gabriel Aquino Date: 2026-02-03",
+      "commitHash": "8b878f1d5f2d839a2337dcd6039f347705b46c2a",
+      "date": "2026-02-03",
+      "repoPath": "docs"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "Update changes",
+      "description": "cd030a9db1711f79c93aed3c4db352ddb194c9ac\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-03",
+      "commitHash": "cd030a9db1711f79c93aed3c4db352ddb194c9ac",
+      "date": "2026-02-03",
+      "repoPath": "docs"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "Update changes",
+      "description": "da3fca93a54cc27e670457a2b55312ede78a56ff\n\nUpdate changes\n\nAuthor: Gabriel Aquino Date: 2026-02-03",
+      "commitHash": "da3fca93a54cc27e670457a2b55312ede78a56ff",
+      "date": "2026-02-03",
+      "repoPath": "docs"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "chore: consolidate docs - move root .md to docs/, remove project .md (keep README)",
+      "description": "23dfc5ca57df478c41f088f9b95af13a1e0429c4\n\nchore: consolidate docs - move root .md to docs/, remove project .md (keep README)\n\nAuthor: Gabriel Aquino Date: 2026-02-03",
+      "commitHash": "23dfc5ca57df478c41f088f9b95af13a1e0429c4",
+      "date": "2026-02-03",
+      "repoPath": "docs"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "chore: MFE routing fixes, docs, seeds, add gaqno-landing/lenin/omnichannel submodules",
+      "description": "1c721299b3bff9c2a4d8dcce666675725b99717a\n\nchore: MFE routing fixes, docs, seeds, add gaqno-landing/lenin/omnichannel submodules\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "1c721299b3bff9c2a4d8dcce666675725b99717a",
+      "date": "2026-02-02",
+      "repoPath": "docs"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "fix: ERP port 3004→13004 to resolve port conflict, update docs",
+      "description": "4e63fca40055e71cd4fc487732481781e9b46cf2\n\nfix: ERP port 3004→13004 to resolve port conflict, update docs\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "4e63fca40055e71cd4fc487732481781e9b46cf2",
+      "date": "2026-02-02",
+      "repoPath": "docs"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "chore: bump frontcore to 1.0.24, SSO path fix, DB config, seed docs",
+      "description": "18adccbb2ad4d027a398f5debfe0ad7942dd13d3\n\nchore: bump frontcore to 1.0.24, SSO path fix, DB config, seed docs\n\nAuthor: Gabriel Aquino Date: 2026-02-02",
+      "commitHash": "18adccbb2ad4d027a398f5debfe0ad7942dd13d3",
+      "date": "2026-02-02",
+      "repoPath": "docs"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "chore(KAN-52): update submodule refs after node_modules removal",
+      "description": "6b4809b310048619f7faa7e9bd04f05bac5abd51\n\nchore(KAN-52): update submodule refs after node_modules removal\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "6b4809b310048619f7faa7e9bd04f05bac5abd51",
+      "date": "2026-02-05",
+      "repoPath": "scripts"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "chore: remove gaqno-warehouse-service and gaqno-warehouse-ui (test only)",
+      "description": "07c87f00b9527b26f9cd90497adab4552a6b2df1\n\nchore: remove gaqno-warehouse-service and gaqno-warehouse-ui (test only)\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "07c87f00b9527b26f9cd90497adab4552a6b2df1",
+      "date": "2026-02-05",
+      "repoPath": "scripts"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+      "description": "c039124fb916f950a5824c6a48c40ff2a519aeba\n\nci(KAN-47): workflows per repo, PR-Agent, fix npm install\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+      "date": "2026-02-05",
+      "repoPath": "scripts"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "chore: update submodule references",
+      "description": "f496684651ca70e1b7f1a9a5e80622e1b83d0a20\n\nchore: update submodule references\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "f496684651ca70e1b7f1a9a5e80622e1b83d0a20",
+      "date": "2026-02-05",
+      "repoPath": "scripts"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+      "description": "69960ee07e16343105ad4a46323f9e5e1a013986\n\nrefactor(KAN-39): remove submodules, add CI workflows and documentation\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+      "date": "2026-02-05",
+      "repoPath": "scripts"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "ci(KAN-47): workflows per repo, PR-Agent, fix npm install",
+      "description": "c039124fb916f950a5824c6a48c40ff2a519aeba\n\nci(KAN-47): workflows per repo, PR-Agent, fix npm install\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "c039124fb916f950a5824c6a48c40ff2a519aeba",
+      "date": "2026-02-05",
+      "repoPath": ".github"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "fix(KAN-39): use npm instead of pnpm in CI, add test task to turbo",
+      "description": "18fe640cfce237b764e7fe22bf2daf792880c83d\n\nfix(KAN-39): use npm instead of pnpm in CI, add test task to turbo\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "18fe640cfce237b764e7fe22bf2daf792880c83d",
+      "date": "2026-02-05",
+      "repoPath": ".github"
+    },
+    {
+      "productKey": "shell",
+      "layer": "DevOps",
+      "summary": "refactor(KAN-39): remove submodules, add CI workflows and documentation",
+      "description": "69960ee07e16343105ad4a46323f9e5e1a013986\n\nrefactor(KAN-39): remove submodules, add CI workflows and documentation\n\nAuthor: Gabriel Aquino Date: 2026-02-05",
+      "commitHash": "69960ee07e16343105ad4a46323f9e5e1a013986",
+      "date": "2026-02-05",
+      "repoPath": ".github"
+    }
+  ]
+}
