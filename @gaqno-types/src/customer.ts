@@ -7,4 +7,3 @@ export type Customer = {
   createdAt: Date;
   updatedAt: Date;
 };
-

@@ -10,4 +10,3 @@ export type Sale = {
   createdAt: Date;
   updatedAt: Date;
 };
-

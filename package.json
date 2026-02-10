@@ -6,6 +6,7 @@
   "workspaces": [
     "@gaqno-backcore",
     "@gaqno-frontcore",
+    "@gaqno-types",
     "gaqno-admin-service",
     "gaqno-admin-ui",
     "gaqno-ai-service",
@@ -32,6 +33,7 @@
     "install:all": "npm install --legacy-peer-deps",
     "clean": "rm -rf node_modules */node_modules @**/node_modules",
     "build:packages": "npm run build -w @gaqno-backcore",
+    "build:types": "npm run build -w @gaqno-types",
     "build:all": "npm run build -w gaqno-shell-ui && npm run build -w gaqno-sso-ui && npm run build -w gaqno-ai-ui && npm run build -w gaqno-crm-ui && npm run build -w gaqno-erp-ui && npm run build -w gaqno-finance-ui && npm run build -w gaqno-pdv-ui && npm run build -w gaqno-rpg-ui && npm run build -w gaqno-sso-service && npm run build -w gaqno-ai-service && npm run build -w gaqno-finance-service && npm run build -w gaqno-pdv-service && npm run build -w gaqno-rpg-service",
     "dev": "turbo run dev --concurrency=13",
     "dev:backends": "turbo run dev --concurrency=13 --filter=./gaqno-sso-service --filter=./gaqno-ai-service --filter=./gaqno-finance-service --filter=./gaqno-pdv-service --filter=./gaqno-rpg-service",

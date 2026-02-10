@@ -19,12 +19,6 @@
       "schemas/*": [
         "./dist/schemas/*"
       ],
-      "types/shared": [
-        "./dist/types/shared/index"
-      ],
-      "types/shared/*": [
-        "./dist/types/shared/*"
-      ],
       "config/*": [
         "./dist/config/*"
       ]
@@ -80,46 +74,6 @@
       "import": "./dist/schemas/*.js",
       "types": "./dist/schemas/*.d.ts"
     },
-    "./types/shared": {
-      "require": "./dist/types/shared/index.js",
-      "import": "./dist/types/shared/index.js",
-      "types": "./dist/types/shared/index.d.ts"
-    },
-    "./types/shared/auth": {
-      "require": "./dist/types/shared/auth.js",
-      "import": "./dist/types/shared/auth.js",
-      "types": "./dist/types/shared/auth.d.ts"
-    },
-    "./types/shared/customer": {
-      "require": "./dist/types/shared/customer.js",
-      "import": "./dist/types/shared/customer.js",
-      "types": "./dist/types/shared/customer.d.ts"
-    },
-    "./types/shared/product": {
-      "require": "./dist/types/shared/product.js",
-      "import": "./dist/types/shared/product.js",
-      "types": "./dist/types/shared/product.d.ts"
-    },
-    "./types/shared/sale": {
-      "require": "./dist/types/shared/sale.js",
-      "import": "./dist/types/shared/sale.js",
-      "types": "./dist/types/shared/sale.d.ts"
-    },
-    "./types/shared/user": {
-      "require": "./dist/types/shared/user.js",
-      "import": "./dist/types/shared/user.js",
-      "types": "./dist/types/shared/user.d.ts"
-    },
-    "./types/shared/org": {
-      "require": "./dist/types/shared/org.js",
-      "import": "./dist/types/shared/org.js",
-      "types": "./dist/types/shared/org.d.ts"
-    },
-    "./types/shared/audit": {
-      "require": "./dist/types/shared/audit.js",
-      "import": "./dist/types/shared/audit.js",
-      "types": "./dist/types/shared/audit.d.ts"
-    },
     "./config": {
       "require": "./dist/config/index.js",
       "import": "./dist/config/index.js",
@@ -149,6 +103,7 @@
     "zod": "^3.0.0"
   },
   "dependencies": {
+    "@gaqno-development/types": "^1.0.0",
     "axios": "^1.6.8",
     "zod": "^3.0.0"
   },

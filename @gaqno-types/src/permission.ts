@@ -1,6 +1,12 @@
-export type RoleScope = 'GLOBAL' | 'TENANT' | 'BRANCH';
+export type RoleScope = "GLOBAL" | "TENANT" | "BRANCH";
 
-export type FeatureModule = 'CRM' | 'PDV' | 'ERP' | 'FINANCE' | 'ADMIN' | 'PLATFORM';
+export type FeatureModule =
+  | "CRM"
+  | "PDV"
+  | "ERP"
+  | "FINANCE"
+  | "ADMIN"
+  | "PLATFORM";
 
 export type RoleRecord = {
   id: string;
@@ -52,4 +58,3 @@ export type FeatureFlagRecord = {
   createdAt: string;
   updatedAt: string;
 };
-

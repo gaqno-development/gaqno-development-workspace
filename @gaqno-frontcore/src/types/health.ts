@@ -7,4 +7,4 @@ export type {
   HealthEventType,
   HealthSummary,
   ReleaseInfo,
-} from "@gaqno-development/backcore/types/shared";
+} from "@gaqno-development/types";

@@ -1,0 +1,122 @@
+{
+  "name": "@gaqno-development/types",
+  "version": "1.0.0",
+  "description": "Shared TypeScript interfaces used across frontend and backend for a single source of truth. Source repository is private.",
+  "private": true,
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/gaqno-development",
+    "access": "restricted"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gaqno-development/gaqno-types.git"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./attribution": {
+      "require": "./dist/attribution.js",
+      "import": "./dist/attribution.js",
+      "types": "./dist/attribution.d.ts"
+    },
+    "./billing": {
+      "require": "./dist/billing.js",
+      "import": "./dist/billing.js",
+      "types": "./dist/billing.d.ts"
+    },
+    "./video-template": {
+      "require": "./dist/video-template.js",
+      "import": "./dist/video-template.js",
+      "types": "./dist/video-template.d.ts"
+    },
+    "./video": {
+      "require": "./dist/video.js",
+      "import": "./dist/video.js",
+      "types": "./dist/video.d.ts"
+    },
+    "./auth": {
+      "require": "./dist/auth.js",
+      "import": "./dist/auth.js",
+      "types": "./dist/auth.d.ts"
+    },
+    "./user": {
+      "require": "./dist/user.js",
+      "import": "./dist/user.js",
+      "types": "./dist/user.d.ts"
+    },
+    "./org": {
+      "require": "./dist/org.js",
+      "import": "./dist/org.js",
+      "types": "./dist/org.d.ts"
+    },
+    "./product": {
+      "require": "./dist/product.js",
+      "import": "./dist/product.js",
+      "types": "./dist/product.d.ts"
+    },
+    "./customer": {
+      "require": "./dist/customer.js",
+      "import": "./dist/customer.js",
+      "types": "./dist/customer.d.ts"
+    },
+    "./sale": {
+      "require": "./dist/sale.js",
+      "import": "./dist/sale.js",
+      "types": "./dist/sale.d.ts"
+    },
+    "./rpg": {
+      "require": "./dist/rpg.js",
+      "import": "./dist/rpg.js",
+      "types": "./dist/rpg.d.ts"
+    },
+    "./audit": {
+      "require": "./dist/audit.js",
+      "import": "./dist/audit.js",
+      "types": "./dist/audit.d.ts"
+    },
+    "./usage": {
+      "require": "./dist/usage.js",
+      "import": "./dist/usage.js",
+      "types": "./dist/usage.d.ts"
+    },
+    "./finance": {
+      "require": "./dist/finance.js",
+      "import": "./dist/finance.js",
+      "types": "./dist/finance.d.ts"
+    },
+    "./branch": {
+      "require": "./dist/branch.js",
+      "import": "./dist/branch.js",
+      "types": "./dist/branch.d.ts"
+    },
+    "./health": {
+      "require": "./dist/health.js",
+      "import": "./dist/health.js",
+      "types": "./dist/health.d.ts"
+    },
+    "./permission": {
+      "require": "./dist/permission.js",
+      "import": "./dist/permission.js",
+      "types": "./dist/permission.d.ts"
+    },
+    "./tenant": {
+      "require": "./dist/tenant.js",
+      "import": "./dist/tenant.js",
+      "types": "./dist/tenant.d.ts"
+    }
+  }
+}

@@ -8,4 +8,3 @@ export type Product = {
   createdAt: Date;
   updatedAt: Date;
 };
-
