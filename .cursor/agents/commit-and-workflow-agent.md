@@ -73,12 +73,13 @@ STEP 1 — IDENTIFY CHANGES AND REPOS
 STEP 2 — COMMIT
 ────────────────────────────────────────────
 
-1. **Per-repo**: Run `git add` and `git commit` in each repo that has changes.
-2. **Commit message**: Include the Jira key. If the work is on a **Story branch with subtasks**, use the **subtask** key in the message (see rule "STORY BRANCH → SUBTASK KEY IN COMMITS"); never use the Story key in the commit body. Otherwise use the ticket key (Story, Task, or Bug). Examples:
+1. **Always build before commit**: In each repo that has changes, run the build (e.g. `npm run build` or `pnpm build`) and fix any errors before `git add` / `git commit`. Do not commit if the build fails.
+2. **Per-repo**: Run `git add` and `git commit` in each repo that has changes.
+3. **Commit message**: Include the Jira key. If the work is on a **Story branch with subtasks**, use the **subtask** key in the message (see rule "STORY BRANCH → SUBTASK KEY IN COMMITS"); never use the Story key in the commit body. Otherwise use the ticket key (Story, Task, or Bug). Examples:
    - `GAQNO-1308 Wire retail content engine into AI MFE` (subtask; branch is GAQNO-1307)
    - `GAQNO-47 Add workflows per repo` (single ticket)
    - `fix: GAQNO-32 align finance-ui API client`
-3. Either:
+4. Either:
    - Run `./push-all.sh "GAQNO-XX descrição"` from workspace root to commit and push all changed repos with one message, or
    - Guide the user to run it, or
    - Execute commits (and optionally push) per repo with explicit commands.

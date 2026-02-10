@@ -20,7 +20,7 @@ export function useUsers(_tenantId?: string | null, _search?: string | null) {
       const response = await ssoAxiosClient.get<IUserListItem[]>("/users", {
         params,
       });
-      const raw = (response.data ?? []) as Record<string, unknown>[];
+      const raw = (response.data ?? []) as unknown as Record<string, unknown>[];
       return raw.map((u) => ({
         id: String(u.id),
         email: u.email != null ? String(u.email) : undefined,
