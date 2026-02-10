@@ -1,4 +1,4 @@
-export type UserStatus = 'active' | 'invited' | 'blocked' | 'inactive';
+export type UserStatus = "active" | "invited" | "blocked" | "inactive";
 
 export type UserRecord = {
   id: string;
@@ -14,4 +14,3 @@ export type UserRecord = {
   createdAt: string;
   updatedAt: string;
 };
-

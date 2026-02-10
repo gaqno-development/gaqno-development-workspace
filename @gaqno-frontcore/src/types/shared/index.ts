@@ -1,1 +1,1 @@
-export * from "@gaqno-development/backcore/types/shared";
+export * from "@gaqno-development/types";

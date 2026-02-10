@@ -1,4 +1,4 @@
-export type OrgStatus = 'active' | 'suspended';
+export type OrgStatus = "active" | "suspended";
 
 export type OrgRecord = {
   id: string;
@@ -7,4 +7,3 @@ export type OrgRecord = {
   createdAt: string;
   updatedAt: string;
 };
-

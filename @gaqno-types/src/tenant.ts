@@ -1,4 +1,4 @@
-export type TenantStatus = 'active' | 'suspended' | 'inactive';
+export type TenantStatus = "active" | "suspended" | "inactive";
 
 export type TenantRecord = {
   id: string;
@@ -9,4 +9,3 @@ export type TenantRecord = {
   createdAt: string;
   updatedAt: string;
 };
-
