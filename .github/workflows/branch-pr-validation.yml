@@ -4,7 +4,7 @@ on:
   push:
     branches-ignore: [main, develop]
   pull_request:
-    branches: [main, develop]
+    branches: [main, develop, "epic/**"]
 
 jobs:
   validate-branch:
@@ -14,16 +14,22 @@ jobs:
       - name: Check branch name
         run: |
           BRANCH="${{ github.ref_name }}"
-          PREFIXED='^(feature|fix|refactor|docs|ci|chore)/(KAN|GAQNO)-[0-9]+'
+          EPIC_BRANCH='^epic/(KAN|GAQNO)-[0-9]+$'
+          STORY_BRANCH='^story/(KAN|GAQNO)-[0-9]+$'
           BUG_BRANCH='^GAQNO-[0-9]+$'
-          if echo "$BRANCH" | grep -qE "$PREFIXED"; then
-            echo "Branch name valid: $BRANCH"
+          if echo "$BRANCH" | grep -qE "$EPIC_BRANCH"; then
+            echo "Branch name valid (epic): $BRANCH"
+          elif echo "$BRANCH" | grep -qE "$STORY_BRANCH"; then
+            echo "Branch name valid (story): $BRANCH"
           elif echo "$BRANCH" | grep -qE "$BUG_BRANCH"; then
             echo "Branch name valid (bug): $BRANCH"
           else
-            echo "::error::Branch must match: (feature|fix|refactor|docs|ci|chore)/(KAN|GAQNO)-XX or GAQNO-XX for bugs"
+            echo "::error::Branch must match one of:"
+            echo "  epic/(KAN|GAQNO)-XXXX   — for epic/release branches"
+            echo "  story/(KAN|GAQNO)-XXXX  — for story/feature branches"
+            echo "  GAQNO-XXXX              — for bug/hotfix branches"
             echo "Current branch: $BRANCH"
-            echo "Examples: feature/GAQNO-47-name, GAQNO-1152"
+            echo "Examples: epic/GAQNO-1159, story/GAQNO-1160, GAQNO-1152"
             exit 1
           fi
 
@@ -37,7 +43,28 @@ jobs:
           if ! echo "$TITLE" | grep -qE '(KAN|GAQNO)-[0-9]+'; then
             echo "::error::PR title must include Jira key (e.g. GAQNO-46 or KAN-46)"
             echo "Current title: $TITLE"
-            echo "Example: GAQNO-1152 DevOps fix"
+            echo "Example: GAQNO-1160 Story description"
             exit 1
           fi
           echo "PR title valid: $TITLE"
+
+  validate-pr-base:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR base branch for story branches
+        run: |
+          HEAD="${{ github.head_ref }}"
+          BASE="${{ github.base_ref }}"
+          STORY_BRANCH='^story/(KAN|GAQNO)-[0-9]+$'
+          if echo "$HEAD" | grep -qE "$STORY_BRANCH"; then
+            if ! echo "$BASE" | grep -qE '^epic/(KAN|GAQNO)-[0-9]+$'; then
+              echo "::error::Story branches MUST target an epic branch as PR base."
+              echo "Head: $HEAD → Base: $BASE"
+              echo "Expected base: epic/GAQNO-XXXX"
+              exit 1
+            fi
+            echo "Story PR base valid: $HEAD → $BASE"
+          else
+            echo "Non-story branch, skipping base validation: $HEAD → $BASE"
+          fi

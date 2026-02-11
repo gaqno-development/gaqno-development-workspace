@@ -1,5 +1,5 @@
 ---
-description: Use the Commit and Workflow Agent when committing, pushing, or opening PRs in the workspace. Follows JIRA flow with front-dev (UI) and back-dev (services).
+description: Use the Commit and Workflow Agent when committing, pushing, or opening PRs in the workspace. Enforces JIRA hierarchy (Epic → Story → Subtask) and branch naming (epic/, story/).
 globs: "**/.git/config,**/push-all.sh,docs/governance/workspace-workflow.md,docs/integrations/github-jira.md"
 alwaysApply: false
 ---
@@ -17,10 +17,35 @@ When the user wants to:
 
 Select or invoke the agent **commit-and-workflow-agent** (`.cursor/agents/commit-and-workflow-agent.md`). That agent:
 
-1. Identifies which repos have changes and classifies by **front-dev** (gaqno-_-ui, @gaqno-frontcore) or **back-dev** (gaqno-_-service, @gaqno-backcore)
-2. For **Epic-driven work** (e.g. Epic GAQNO-1159): **branch name = Story** (GAQNO-1160 … GAQNO-1169); **one commit per subtask** — each Story has N subtasks and the branch must have N commits, each with the **subtask** key in the message (e.g. branch GAQNO-1160 has commits GAQNO-1170, GAQNO-1171, GAQNO-1172, GAQNO-1173). Do not squash subtasks into a single commit. For bugs/other: branch name = ticket only (e.g. GAQNO-1118). PR title and commit messages always include the **Story or task** key (GAQNO-XX), **never the Epic key** — children of an Epic must not mention the Epic in branch/commit/PR so Epic commit and PR tracking stays clean.
-3. Commits and pushes (or guides use of `./push-all.sh`)
-4. Opens the **PR in the component repo**: front-dev → gaqno-_-ui / frontcore; back-dev → gaqno-_-service / backcore; never in gaqno-development-workspace unless only root changed
-5. Optionally links branch/PR in Jira via MCP (same JIRA flow for front-dev and back-dev)
+1. **Validates Jira hierarchy** before any work: every Subtask MUST have a parent Story, every Story MUST have a parent Epic. If the chain is broken, STOP and ask the user to fix it.
+2. **Creates/uses correct branches:**
+   - `epic/GAQNO-XXXX` — release branch for the Epic (base: `main`)
+   - `story/GAQNO-XXXX` — feature branch for the Story (base: `epic/GAQNO-YYYY`)
+   - `GAQNO-XXXX` — bug branch (base: `main`, no prefix)
+3. **Commits with subtask keys:** Each commit = one subtask. Format: `GAQNO-XXXX type: description` where GAQNO-XXXX is the **subtask** key and type is `feat`, `fix`, `chore`, `refactor`, `docs`, `test`, `ci`, `style`, or `perf`. NEVER use Story or Epic keys in commit messages.
+4. **Opens PRs in the component repo** (not workspace):
+   - Story PRs target `epic/GAQNO-YYYY` (parent epic branch)
+   - Bug PRs target `main`
+   - Epic PRs target `main` (only when all stories are merged)
+5. Optionally links branch/PR in Jira via MCP and transitions status.
+
+### Branch hierarchy
+
+```
+main
+ └── epic/GAQNO-XXXX  (release)
+      └── story/GAQNO-XXXX  (feature)
+           └── commits: GAQNO-XXXX type: description  (subtasks)
+```
+
+### Validation checklist (agent enforces these)
+
+- [ ] Subtask has parent Story in Jira
+- [ ] Story has parent Epic in Jira
+- [ ] Epic branch exists (`epic/GAQNO-XXXX`)
+- [ ] Story branch based off epic branch (`story/GAQNO-XXXX`)
+- [ ] Each commit references a subtask key only
+- [ ] PR base is the epic branch (for stories) or main (for bugs/releases)
+- [ ] PR opened in the correct component repo, not workspace
 
 Do not open PRs in the workspace repo when the change was only inside a submodule; always open the PR in the repo that was changed (see `docs/governance/workspace-workflow.md` and `docs/integrations/github-jira.md`).

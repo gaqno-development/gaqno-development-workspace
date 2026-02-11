@@ -23,18 +23,67 @@
 
 ---
 
-## Epic vs História: branches de release
+## Hierarquia: Epic → Story → Subtask (branches e commits)
 
-- **Épico** (ex.: GAQNO-1159): tem uma **branch de release** (ex.: `GAQNO-1159`) que agrega as branches das **histórias** concluídas. Não se usa a branch do épico para commits do dia a dia. **Não vincule branch nem PR ao épico** até todas as histórias estarem concluídas; o épico só recebe a branch de release quando todas as histórias estiverem fechadas. O painel Desenvolvimento do épico pode continuar mostrando PRs vindos do app GitHub for Jira (dos filhos); isso é controlado pelo app, não por links remotos do Jira.
-- **História** (ex.: GAQNO-1160 … GAQNO-1169): cada uma tem sua **própria branch** (ex.: `GAQNO-1160`). O nome da branch é sempre o número da **história**.
-- **Commits na branch da história = subtarefas** dessa história. Cada história tem 4 subtarefas; cada subtarefa vira um commit na branch da história, com a chave da **subtask** na mensagem (ex.: GAQNO-1170, GAQNO-1171, GAQNO-1172, GAQNO-1173 na branch `GAQNO-1160`).
-- A branch do épico é atualizada fazendo **merge** das branches das histórias já finalizadas.
+Toda peça de trabalho DEVE pertencer à hierarquia Jira: **Epic → Story → Subtask**.
 
-Exemplo — Epic GAQNO-1159 (AI Content & Video Engine), histórias 1160–1169:
+### Convenção de branches
 
-- Branch `GAQNO-1160` → commits: `GAQNO-1170`, `GAQNO-1171`, `GAQNO-1172`, `GAQNO-1173` (4 subtarefas).
-- Branch `GAQNO-1161` → commits: `GAQNO-1174`, `GAQNO-1175`, `GAQNO-1176`, `GAQNO-1177`.
-- Branch `GAQNO-1159` (release) recebe merge de `GAQNO-1160`, depois de `GAQNO-1161`, etc.
+| Nível     | Padrão da branch   | Base              | Propósito                                       |
+| --------- | ------------------ | ----------------- | ----------------------------------------------- |
+| **Epic**  | `epic/GAQNO-XXXX`  | `main`            | Branch de release; agrega histórias concluídas  |
+| **Story** | `story/GAQNO-XXXX` | `epic/GAQNO-YYYY` | Branch de feature; contém commits de subtarefas |
+| **Bug**   | `GAQNO-XXXX`       | `main`            | Hotfix; só número do ticket, sem prefixo        |
+
+- **Branch do épico** (`epic/GAQNO-XXXX`): Criada uma vez por épico. É a branch de release. Histórias fazem merge NESTA branch quando concluídas. A branch do épico faz merge em `main` quando a release está pronta.
+- **Branch da história** (`story/GAQNO-XXXX`): Criada a partir da branch do épico. Cada história tem sua branch. Contém N commits, um por subtarefa. Quando pronta, abre-se PR com base = `epic/GAQNO-YYYY` (épico pai).
+- **Branch de bug** (`GAQNO-XXXX`): Criada a partir de `main`. Sem prefixo, só número do ticket. PR base = `main`.
+
+### Convenção de commits
+
+Cada commit numa branch de história corresponde a exatamente UMA subtarefa:
+
+```
+GAQNO-XXXX type: descrição
+```
+
+Onde:
+
+- `GAQNO-XXXX` = chave da **Subtarefa** (NUNCA a chave da Story ou Epic)
+- `type` = `feat`, `fix`, `chore`, `refactor`, `docs`, `test`, `ci`, `style`, `perf`
+- Um commit por subtarefa. NÃO combine subtarefas em um único commit.
+
+### Exemplo
+
+Epic GAQNO-1159 (AI Content & Video Engine), histórias 1160–1169:
+
+```
+main
+ └── epic/GAQNO-1159  (release)
+      ├── story/GAQNO-1160  (Story: AI MFE integration)
+      │    ├── GAQNO-1170 feat: add retail content engine to AI MFE
+      │    ├── GAQNO-1171 chore: configure env vars for content API
+      │    ├── GAQNO-1172 fix: resolve SSO token refresh
+      │    └── GAQNO-1173 refactor: extract content service
+      │    └── PR: story/GAQNO-1160 → epic/GAQNO-1159
+      │
+      ├── story/GAQNO-1161  (Story: SSO service integration)
+      │    ├── GAQNO-1174 feat: add SSO endpoint for content auth
+      │    ├── GAQNO-1175 test: add SSO content auth tests
+      │    ├── GAQNO-1176 chore: update SSO config for content
+      │    └── GAQNO-1177 docs: update SSO API documentation
+      │    └── PR: story/GAQNO-1161 → epic/GAQNO-1159
+      │
+      └── (all stories merged) → PR: epic/GAQNO-1159 → main
+```
+
+### Base do PR
+
+| Tipo de branch     | Base do PR                              |
+| ------------------ | --------------------------------------- |
+| `story/GAQNO-XXXX` | `epic/GAQNO-YYYY` (branch do épico pai) |
+| `epic/GAQNO-XXXX`  | `main` (quando a release está pronta)   |
+| `GAQNO-XXXX` (bug) | `main`                                  |
 
 ---
 
@@ -56,8 +105,8 @@ Exemplo — Epic GAQNO-1159 (AI Content & Video Engine), histórias 1160–1169:
    ```bash
    cd gaqno-rpg-ui
    git add .
-   git commit -m "GAQNO-XX descrição"
-   git push origin feature/GAQNO-XX-...
+   git commit -m "GAQNO-1170 feat: add retail content engine"
+   git push origin story/GAQNO-1160
    ```
 
 4. **Abrir PR no repositório individual (não no workspace)**
@@ -67,8 +116,8 @@ Exemplo — Epic GAQNO-1159 (AI Content & Video Engine), histórias 1160–1169:
    - Alterou **@gaqno-backcore/** → abrir PR em **gaqno-development/gaqno-backcore**; após merge, publicar a partir do repo do pacote
    - Alterou **@gaqno-types/** → abrir PR em **gaqno-development/gaqno-types**; após merge, publicar a partir do repo do pacote
    - Alterou só raiz do workspace (docs, scripts) → abrir PR em **gaqno-development/gaqno-development-workspace**
-   - Ex.: `cd gaqno-rpg-ui && gh pr create --base main --head feature/GAQNO-XX-... --title "GAQNO-XX Descrição"`
-   - Para pacotes (quando forem submodule): `cd @gaqno-frontcore && gh pr create --base main --head feature/GAQNO-XX-... --title "GAQNO-XX Descrição"`
+   - Story PR: `cd gaqno-rpg-ui && gh pr create --base epic/GAQNO-1159 --head story/GAQNO-1160 --title "GAQNO-1160 AI MFE integration"`
+   - Bug PR: `cd gaqno-rpg-ui && gh pr create --base main --head GAQNO-1152 --title "GAQNO-1152 fix: DevOps hotfix"`
    - CI e validações disparam no próprio repo
 
 ---
