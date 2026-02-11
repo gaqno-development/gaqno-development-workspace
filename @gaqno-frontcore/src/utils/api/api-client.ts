@@ -324,17 +324,17 @@ const createServiceClientWithPrefix = (serviceName: string): AxiosInstance => {
   const timeoutConfig = aiIntensiveServices.includes(serviceName)
     ? { timeout: 180000 }
     : {};
+  const servicePath = `/${serviceName}`;
+  const baseUrlHasServicePath = serviceUrl.includes(servicePath);
   const pathPrefix =
-    serviceName === "sso" || serviceName === "omnichannel"
-      ? "/v1"
-      : serviceName === "admin"
-        ? ""
+    serviceName === "admin"
+      ? ""
+      : baseUrlHasServicePath || serviceName === "omnichannel"
+        ? "/v1"
         : `/v1/${serviceName}`;
   const baseURL =
-    serviceName === "sso"
-      ? serviceUrl.includes("/sso")
-        ? serviceUrl
-        : `${serviceUrl}/sso`
+    serviceName === "sso" && !baseUrlHasServicePath
+      ? `${serviceUrl.replace(/\/$/, "")}${servicePath}`
       : serviceUrl;
   return createAxiosClient({
     baseURL: `${baseURL}${pathPrefix}`,

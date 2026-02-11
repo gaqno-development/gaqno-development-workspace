@@ -116,6 +116,7 @@ for repo in "${REPOS[@]}"; do
     COMMIT_MESSAGE=$(generate_semantic_commit "$REPO_PATH")
     echo "   💬 Generated: $COMMIT_MESSAGE"
   fi
+  COMMIT_MESSAGE="${COMMIT_MESSAGE%.}"
 
   echo "   💾 Committing with message: '$COMMIT_MESSAGE'"
   git commit -m "$COMMIT_MESSAGE" || {
@@ -123,7 +124,7 @@ for repo in "${REPOS[@]}"; do
   }
   
   echo "   🚀 Pushing to remote..."
-  git push || {
+  git push -u origin HEAD || {
     echo "   ⚠️  Push failed (check if remote is configured)"
   }
   
