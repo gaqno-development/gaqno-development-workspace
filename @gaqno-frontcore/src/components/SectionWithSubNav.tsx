@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import type { LucideIcon } from "lucide-react";
 import { ChevronRight } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { cn } from "../lib/utils";
 
 export interface SectionWithSubNavChild {
@@ -11,6 +12,13 @@ export interface SectionWithSubNavChild {
   icon: LucideIcon;
 }
 
+const CONTENT_TRANSITION = {
+  initial: { opacity: 0, x: 8 },
+  animate: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: -8 },
+  transition: { duration: 0.2 },
+};
+
 export interface SectionWithSubNavProps {
   basePath: string;
   defaultSegment: string;
@@ -19,6 +27,7 @@ export interface SectionWithSubNavProps {
   title: string;
   variant: "vertical" | "horizontal";
   breadcrumbRoot: { label: string; href: string };
+  enableContentTransition?: boolean;
 }
 
 function getSegmentFromPath(pathname: string, basePath: string): string {
@@ -39,6 +48,7 @@ export function SectionWithSubNav({
   title,
   variant,
   breadcrumbRoot,
+  enableContentTransition = false,
 }: SectionWithSubNavProps) {
   const { pathname } = useLocation();
   const rawSegment = getSegmentFromPath(pathname, basePath);
@@ -50,6 +60,25 @@ export function SectionWithSubNav({
     variant === "vertical"
       ? "flex flex-col gap-1 border-r pr-4 mr-4 min-w-[180px] shrink-0"
       : "flex flex-wrap gap-1 border-b pb-2 mb-4";
+
+  const contentArea = ChildComponent ? (
+    enableContentTransition ? (
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={segment}
+          initial={CONTENT_TRANSITION.initial}
+          animate={CONTENT_TRANSITION.animate}
+          exit={CONTENT_TRANSITION.exit}
+          transition={CONTENT_TRANSITION.transition}
+          className="h-full"
+        >
+          <ChildComponent />
+        </motion.div>
+      </AnimatePresence>
+    ) : (
+      <ChildComponent />
+    )
+  ) : null;
 
   return (
     <div className="flex flex-col h-full min-h-0">
@@ -92,9 +121,7 @@ export function SectionWithSubNav({
           ))}
         </nav>
 
-        <div className="flex-1 min-h-0 overflow-auto">
-          {ChildComponent ? <ChildComponent /> : null}
-        </div>
+        <div className="flex-1 min-h-0 overflow-auto">{contentArea}</div>
       </div>
     </div>
   );
