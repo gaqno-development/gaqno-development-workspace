@@ -24,15 +24,18 @@ RULE: WHERE TO OPEN THE PR
 
 **PR is always opened in the repository of the component that was changed, NOT in gaqno-development-workspace.**
 
+**All `@gaqno-*` are packages on GitHub:** each has its own repo under gaqno-development (gaqno-frontcore, gaqno-backcore, gaqno-types). In the workspace they are npm workspaces; to open a PR for package changes, use the corresponding GitHub repo below (or sync the workspace folder there and open the PR in that repo).
+
 | Changed path                      | Open PR in repo                               | After merge                                                                               |
 | --------------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | `@gaqno-frontcore/`               | gaqno-development/gaqno-frontcore             | Publish: `cd @gaqno-frontcore && npm publish` (or `./publish-packages.sh` from workspace) |
 | `@gaqno-backcore/`                | gaqno-development/gaqno-backcore              | Publish from package repo                                                                 |
+| `@gaqno-types/`                   | gaqno-development/gaqno-types                 | Publish from package repo                                                                 |
 | `gaqno-rpg-ui/`                   | gaqno-development/gaqno-rpg-ui                | —                                                                                         |
 | `gaqno-*-ui/`, `gaqno-*-service/` | gaqno-development/gaqno-<folder-name>         | —                                                                                         |
 | Only root (docs/, scripts/, …)    | gaqno-development/gaqno-development-workspace | —                                                                                         |
 
-**Packages (@gaqno-frontcore, @gaqno-backcore):** If the package is a **submodule**, do commit and push **inside the package folder** (e.g. `cd @gaqno-frontcore`), then open the PR in the package repo. After merge, publish from that repo (or run `./publish-packages.sh` from workspace root). If the package is not yet a submodule, the repo must be created and the package added as submodule first; until then, document that the intended flow is PR + publish from the package repo.
+**Packages (@gaqno-frontcore, @gaqno-backcore, @gaqno-types):** If the package is a **submodule**, do commit and push **inside the package folder** (e.g. `cd @gaqno-frontcore`), then open the PR in the package repo. After merge, publish from that repo (or run `./publish-packages.sh` from workspace root). If the package is not yet a submodule, the repo must be created and the package added as submodule first; until then, document that the intended flow is PR + publish from the package repo.
 
 ────────────────────────────────────────────
 RULE: BRANCH NAMES FOR BUGS

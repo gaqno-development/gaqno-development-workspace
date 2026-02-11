@@ -65,6 +65,7 @@ Exemplo — Epic GAQNO-1159 (AI Content & Video Engine), histórias 1160–1169:
    - Alterou `gaqno-ai-service/` → abrir PR em **gaqno-development/gaqno-ai-service**
    - Alterou **@gaqno-frontcore/** → abrir PR em **gaqno-development/gaqno-frontcore**; após merge, publicar: `cd @gaqno-frontcore && npm publish` ou `./publish-packages.sh`
    - Alterou **@gaqno-backcore/** → abrir PR em **gaqno-development/gaqno-backcore**; após merge, publicar a partir do repo do pacote
+   - Alterou **@gaqno-types/** → abrir PR em **gaqno-development/gaqno-types**; após merge, publicar a partir do repo do pacote
    - Alterou só raiz do workspace (docs, scripts) → abrir PR em **gaqno-development/gaqno-development-workspace**
    - Ex.: `cd gaqno-rpg-ui && gh pr create --base main --head feature/GAQNO-XX-... --title "GAQNO-XX Descrição"`
    - Para pacotes (quando forem submodule): `cd @gaqno-frontcore && gh pr create --base main --head feature/GAQNO-XX-... --title "GAQNO-XX Descrição"`
@@ -72,7 +73,9 @@ Exemplo — Epic GAQNO-1159 (AI Content & Video Engine), histórias 1160–1169:
 
 ---
 
-## Pacotes compartilhados (@gaqno-frontcore, @gaqno-backcore)
+## Pacotes compartilhados (@gaqno-frontcore, @gaqno-backcore, @gaqno-types)
+
+**Todos os `@gaqno-*` são pacotes no GitHub:** cada um tem seu próprio repositório em gaqno-development (gaqno-frontcore, gaqno-backcore, gaqno-types). No workspace eles são npm workspaces; para abrir PR de alterações num pacote, use o repo GitHub correspondente.
 
 O fluxo correto é: **PR no repositório do pacote** (ex.: gaqno-development/gaqno-frontcore), **não no workspace**. Após merge, publicar o pacote (`npm publish` no diretório do pacote ou `./publish-packages.sh` na raiz do workspace).
 
