@@ -5,14 +5,20 @@ on:
   push:
     branches: [main, develop]
 
+paths-ignore:
+  - '**/*.md'
+  - 'docs/**'
+  - '.cursor/**'
+
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  build-test:
+  prepare:
     runs-on: ubuntu-latest
-
+    outputs:
+      turbo_hash: ${{ steps.hash.outputs.turbo_hash }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -27,11 +33,74 @@ jobs:
       - name: Install deps
         run: npm install --legacy-peer-deps
 
+      - name: Turbo hash
+        id: hash
+        run: echo "turbo_hash=${{ hashFiles('turbo.json', '**/package.json', '**/package-lock.json') }}" >> $GITHUB_OUTPUT
+
+  lint:
+    needs: prepare
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm install --legacy-peer-deps
+
       - name: Lint
         run: npx turbo run lint
 
-      - name: Tests
-        run: npx turbo run test
+  build:
+    needs: prepare
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Cache Turbo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-${{ needs.prepare.outputs.turbo_hash }}
+          restore-keys: turbo-
+
+      - run: npm install --legacy-peer-deps
 
       - name: Build
         run: npx turbo run build
+
+  test:
+    needs: [prepare, build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Cache Turbo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-${{ needs.prepare.outputs.turbo_hash }}
+          restore-keys: turbo-
+
+      - run: npm install --legacy-peer-deps
+
+      - name: Tests
+        run: npx turbo run test
