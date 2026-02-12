@@ -1,0 +1,21 @@
+---
+description: Use a git worktree for new implementation work to avoid cross-tab branch conflicts.
+alwaysApply: true
+---
+
+# Work in a git worktree for new implementation
+
+When the user asks to implement something (a new feature, fix, or non-trivial change):
+
+1. **Create a worktree** so that work happens on an isolated branch and does not conflict with other Cursor tabs or sessions using the same repo.
+2. **From the relevant repo root** (the repo or submodule you will change):
+   - Create a new branch with a conventional name, e.g. `feat/scope-description`, `fix/scope-description`, or `chore/scope-description`.
+   - Add a worktree:  
+     `git worktree add ../<repo-name>-<short-desc> -b <branch-name>`  
+     Example: `git worktree add ../gaqno-omnichannel-service-templates-fix -b fix/templates-meta-error`
+3. **Work in the worktree path**: Run commands and apply file edits in the new worktree directory (e.g. `../gaqno-omnichannel-service-templates-fix`). If the user's Cursor workspace is the main repo, tell them to open the worktree folder so all edits and commits happen there, avoiding branch mismatches across tabs.
+4. **When done**: Commit and push from the worktree; the user can open a PR from that branch. Optionally remove the worktree with `git worktree remove ../<path>` after merging.
+
+For **monorepos**: If the task touches a single submodule (e.g. `gaqno-omnichannel-service`), create the worktree from that submodule’s directory so the branch lives in that repo. If the task spans multiple submodules, create worktrees from the workspace root and use a branch per repo if needed.
+
+This keeps each task on its own branch in a separate worktree and avoids "multiple tabs, same branch" conflicts.
