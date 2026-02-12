@@ -27,7 +27,9 @@
     "gaqno-saas-ui",
     "gaqno-shell-ui",
     "gaqno-sso-service",
-    "gaqno-sso-ui"
+    "gaqno-sso-ui",
+    "gaqno-wellness-service",
+    "gaqno-wellness-ui"
   ],
   "scripts": {
     "install:all": "npm install --legacy-peer-deps",
@@ -51,10 +53,15 @@
     "dev:finance-service": "npm run start:dev -w gaqno-finance-service",
     "dev:pdv-service": "npm run start:dev -w gaqno-pdv-service",
     "dev:rpg-service": "npm run start:dev -w gaqno-rpg-service",
+    "dev:wellness": "npm run dev -w gaqno-wellness-ui",
+    "dev:wellness-service": "npm run start:dev -w gaqno-wellness-service",
     "release:packages": "./publish-packages.sh",
     "publish:confluence": "echo 'Docs no Confluence DDS. Edite em https://gaqno-development.atlassian.net/wiki/spaces/DDS'"
   },
   "devDependencies": {
     "turbo": "^2.3.0"
+  },
+  "dependencies": {
+    "rxjs": "^7.8.2"
   }
 }
