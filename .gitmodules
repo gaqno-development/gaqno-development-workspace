@@ -61,3 +61,9 @@
 [submodule "gaqno-sso-ui"]
 	path = gaqno-sso-ui
 	url = git@github.com:gaqno-development/gaqno-sso.git
+[submodule "gaqno-wellness-service"]
+	path = gaqno-wellness-service
+	url = git@github.com:gaqno-development/gaqno-wellness-service.git
+[submodule "gaqno-wellness-ui"]
+	path = gaqno-wellness-ui
+	url = git@github.com:gaqno-development/gaqno-wellness.git
