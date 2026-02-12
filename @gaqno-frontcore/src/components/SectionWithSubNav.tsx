@@ -97,11 +97,19 @@ export function SectionWithSubNav({
 
   const toggleCollapsed = () => setCollapsedState((c) => !c);
 
+  const navWrapperClassName =
+    variant === "vertical"
+      ? "flex flex-col border-r shrink-0 min-h-0 self-stretch"
+      : "";
+  const verticalNavBase = "flex flex-col gap-1";
+  const verticalNavSizes = collapsed
+    ? "pr-2 mr-2 w-[52px] min-w-[52px] items-center"
+    : "pr-4 mr-4 min-w-[180px]";
   const navClassName =
     variant === "vertical"
-      ? collapsed
-        ? "flex flex-col gap-1 border-r pr-2 mr-2 w-[52px] min-w-[52px] shrink-0 items-center"
-        : "flex flex-col gap-1 border-r pr-4 mr-4 min-w-[180px] shrink-0"
+      ? canCollapse
+        ? `${verticalNavBase} flex-1 min-h-0 ${verticalNavSizes}`
+        : `${verticalNavBase} shrink-0 ${verticalNavSizes}`
       : "flex flex-wrap gap-1 border-b pb-2 mb-4";
 
   const contentArea = ChildComponent ? (
@@ -123,65 +131,117 @@ export function SectionWithSubNav({
     )
   ) : null;
 
-  const navContent = (
-    <TooltipProvider delayDuration={300}>
-      <nav className={navClassName} aria-label={`${title} sub-navigation`}>
-        {canCollapse && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className={cn(
-                  "shrink-0",
-                  collapsed ? "mb-1 h-8 w-8" : "mb-2 h-8 w-8 -ml-1"
-                )}
-                onClick={toggleCollapsed}
-                aria-label={collapsed ? "Expand navigation" : "Collapse navigation"}
-              >
-                {collapsed ? (
-                  <PanelLeft className="h-4 w-4" />
-                ) : (
-                  <PanelLeftClose className="h-4 w-4" />
-                )}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="right">
-              {collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            </TooltipContent>
-          </Tooltip>
+  const collapseButton = canCollapse ? (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn(
+            "shrink-0",
+            collapsed ? "mb-1 h-8 w-8" : "mb-2 h-8 w-8 -ml-1"
+          )}
+          onClick={toggleCollapsed}
+          aria-label={collapsed ? "Expand navigation" : "Collapse navigation"}
+        >
+          {collapsed ? (
+            <PanelLeft className="h-4 w-4" />
+          ) : (
+            <PanelLeftClose className="h-4 w-4" />
+          )}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent side="right">
+        {collapsed ? "Expand sidebar" : "Collapse sidebar"}
+      </TooltipContent>
+    </Tooltip>
+  ) : null;
+
+  const linkList = children.map(({ segment: s, label, href, icon: Icon }) => {
+    const link = (
+      <Link
+        key={s}
+        to={href}
+        className={cn(
+          "flex items-center gap-2 rounded-md text-sm font-medium transition-colors",
+          collapsed ? "justify-center p-2 w-9 h-9" : "px-3 py-2",
+          segment === s
+            ? "bg-primary text-primary-foreground"
+            : "text-muted-foreground hover:bg-muted hover:text-foreground"
         )}
-        {children.map(({ segment: s, label, href, icon: Icon }) => {
-          const link = (
-            <Link
-              key={s}
-              to={href}
-              className={cn(
-                "flex items-center gap-2 rounded-md text-sm font-medium transition-colors",
-                collapsed ? "justify-center p-2 w-9 h-9" : "px-3 py-2",
-                segment === s
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
-              )}
-              aria-current={segment === s ? "page" : undefined}
-            >
-              <Icon className="h-4 w-4 shrink-0" />
-              {!collapsed && label}
-            </Link>
-          );
-          if (collapsed) {
-            return (
-              <Tooltip key={s}>
-                <TooltipTrigger asChild>{link}</TooltipTrigger>
-                <TooltipContent side="right">{label}</TooltipContent>
-              </Tooltip>
-            );
-          }
-          return link;
-        })}
-      </nav>
+        aria-current={segment === s ? "page" : undefined}
+      >
+        <Icon className="h-4 w-4 shrink-0" />
+        {!collapsed && label}
+      </Link>
+    );
+    if (collapsed) {
+      return (
+        <Tooltip key={s}>
+          <TooltipTrigger asChild>{link}</TooltipTrigger>
+          <TooltipContent side="right">{label}</TooltipContent>
+        </Tooltip>
+      );
+    }
+    return link;
+  });
+
+  const navContent =
+    variant === "vertical" && canCollapse ? (
+      <TooltipProvider delayDuration={300}>
+        <div className={cn(navWrapperClassName, collapsed ? "w-[52px]" : "min-w-[180px]")}>
+          <nav
+            className={navClassName}
+            aria-label={`${title} sub-navigation`}
+          >
+            {collapseButton}
+            <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden flex flex-col gap-1">
+              {linkList}
+            </div>
+          </nav>
+        </div>
+      </TooltipProvider>
+    ) : variant === "vertical" ? (
+      <TooltipProvider delayDuration={300}>
+        <div className={navWrapperClassName}>
+          <nav className={navClassName} aria-label={`${title} sub-navigation`}>
+            {linkList}
+          </nav>
+        </div>
+      </TooltipProvider>
+    ) : (
+      <TooltipProvider delayDuration={300}>
+        <nav className={navClassName} aria-label={`${title} sub-navigation`}>
+          {collapseButton}
+          {linkList}
+        </nav>
+      </TooltipProvider>
+    );
+
+  const breadcrumbCollapseButton = canCollapse ? (
+    <TooltipProvider delayDuration={300}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-8 w-8 shrink-0"
+            onClick={toggleCollapsed}
+            aria-label={collapsed ? "Expand sidebar (icons only)" : "Collapse sidebar to icons"}
+          >
+            {collapsed ? (
+              <PanelLeft className="h-4 w-4" />
+            ) : (
+              <PanelLeftClose className="h-4 w-4" />
+            )}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="bottom">
+          {collapsed ? "Expand sidebar" : "Collapse to icons"}
+        </TooltipContent>
+      </Tooltip>
     </TooltipProvider>
-  );
+  ) : null;
 
   return (
     <div className="flex flex-col h-full min-h-0">
@@ -197,6 +257,12 @@ export function SectionWithSubNav({
         </Link>
         <ChevronRight className="h-4 w-4 text-muted-foreground" aria-hidden />
         <span className="text-foreground font-medium">{title}</span>
+        {breadcrumbCollapseButton != null && (
+          <>
+            <span className="flex-1" aria-hidden />
+            {breadcrumbCollapseButton}
+          </>
+        )}
       </nav>
 
       <div
