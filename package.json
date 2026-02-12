@@ -35,7 +35,7 @@
     "build:packages": "npm run build -w @gaqno-backcore",
     "build:types": "npm run build -w @gaqno-types",
     "build:all": "npm run build -w gaqno-shell-ui && npm run build -w gaqno-sso-ui && npm run build -w gaqno-ai-ui && npm run build -w gaqno-crm-ui && npm run build -w gaqno-erp-ui && npm run build -w gaqno-finance-ui && npm run build -w gaqno-pdv-ui && npm run build -w gaqno-rpg-ui && npm run build -w gaqno-sso-service && npm run build -w gaqno-ai-service && npm run build -w gaqno-finance-service && npm run build -w gaqno-pdv-service && npm run build -w gaqno-rpg-service",
-    "dev": "turbo run dev --concurrency=13",
+    "dev": "turbo run dev --concurrency=19",
     "dev:backends": "turbo run dev --concurrency=13 --filter=./gaqno-sso-service --filter=./gaqno-ai-service --filter=./gaqno-finance-service --filter=./gaqno-pdv-service --filter=./gaqno-rpg-service",
     "dev:frontends": "turbo run dev --concurrency=13 --filter=./gaqno-shell-ui --filter=./gaqno-sso-ui --filter=./gaqno-ai-ui --filter=./gaqno-crm-ui --filter=./gaqno-erp-ui --filter=./gaqno-finance-ui --filter=./gaqno-pdv-ui --filter=./gaqno-rpg-ui",
     "dev:shell": "npm run dev -w gaqno-shell-ui",

@@ -6,11 +6,10 @@ Mapeamento do workspace atual (projeto GAQNO + componentes por repo) para a estr
 
 ## Situação atual
 
-- **Projetos:** GAQNO (Gaqno Development), PROJ (legado), DEV e EPIC. GAQNO é o principal para épicos, histórias, tarefas e débito técnico do workspace; DEV e EPIC para separar desenvolvimento e épicos/roadmap conforme o uso do time.
+- **Projeto:** GAQNO (Gaqno Development) — único projeto Jira do workspace; épicos, histórias, tarefas e débito técnico.
 - **Componentes = repositórios:** no GAQNO, cada `gaqno-*-ui`, `gaqno-*-service`, `@gaqno-frontcore`, `@gaqno-backcore` é um componente. Scripts: `jira-create-components.mjs`, `jira-create-components-and-assign.mjs` (default `JIRA_PROJECT_KEY=GAQNO`).
-- **KAN:** migrado para GAQNO; keys GAQNO-xx.
 
-GAQNO concentra **PLATFORM (infra/arch/DevEx)** e as **applications (MFs + backends)** via componentes. Projetos CORE-PAY, CORE-AUTH, PLAT-INFRA, APP-WEB, OPS-INC ainda não existem; DEV e EPIC são os primeiros espaços adicionais.
+GAQNO concentra **PLATFORM (infra/arch/DevEx)** e as **applications (MFs + backends)** via componentes. Projetos CORE-PAY, CORE-AUTH, PLAT-INFRA, APP-WEB, OPS-INC ainda não existem.
 
 ---
 

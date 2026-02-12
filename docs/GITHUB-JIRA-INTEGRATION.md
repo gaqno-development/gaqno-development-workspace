@@ -91,7 +91,7 @@ Se o app **GitHub for Atlassian** não estiver conectado ao repositório (ex.: `
    - **Link type:** Web link (ou outro disponível).
    - **Title:** `Branch: feature/GAQNO-XX-nome-da-branch` ou `PR #N – GAQNO-XX`.
    - **URL:**
-     - Branch: `https://github.com/gaqno-development/<repo>/tree/feature/KAN-XX-...`
+     - Branch: `https://github.com/gaqno-development/<repo>/tree/feature/GAQNO-XX-...`
      - PR: `https://github.com/gaqno-development/<repo>/pull/N`
 
 Assim o card em **Fazendo** continua com link clicável para a branch e para a PR mesmo sem o app preencher o Development.

@@ -13,4 +13,4 @@ Visão do sistema, frontend, backend, contratos de API e roadmap de refatoraçã
 
 **Backend:** NestJS, serviços por domínio, DB por serviço — ver [system-architecture-audit.md](./system-architecture-audit.md) e [../guides/backend.md](../guides/backend.md).
 
-**Publicação:** Frontend Architecture e outros guias são publicados no Confluence (DDS); ver [../integrations/confluence/README.md](../integrations/confluence/README.md).
+**Publicação:** Frontend Architecture e outros guias no Confluence (DDS): [DDS Overview](https://gaqno-development.atlassian.net/wiki/spaces/DDS/overview).

@@ -196,7 +196,7 @@ frontcore declara peerDependencies: react, react-dom, @tanstack/react-query, rea
 ## 7. Referências no repositório
 
 - **Guias e ambiente:** [../guides/frontend.md](../guides/frontend.md), [../runbooks/environment.md](../runbooks/environment.md)
-- **Confluence (DDS):** [../integrations/confluence/README.md](../integrations/confluence/README.md)
+- **Confluence (DDS):** [DDS Overview](https://gaqno-development.atlassian.net/wiki/spaces/DDS/overview)
 - **Agente de documentação:** `.cursor/agents/frontend-documentation-engineer.md`
 
 Este documento reflete a estrutura atual do monorepo; ao adicionar MFEs ou mudar convenções, atualizar este guia e a página correspondente no Confluence (DDS – Frontend Architecture Guide).

@@ -83,6 +83,32 @@ Produce a Markdown report with sections:
 
 - Concrete, actionable guidance
 
+────────────────────────────────────────────
+BACKEND HANDOFF (WHEN APPLICABLE)
+────────────────────────────────────────────
+
+When violations or refactors REQUIRE backend work, append:
+
+## 📤 Backend Task Handoff
+
+Output a block the user can COPY and paste to a backend agent. Include:
+
+- **Trigger**: What frontend finding requires backend changes (API, DTO, endpoint, service)
+- **Expected backend work**: New endpoint, DTO change, shared contract, validation, etc.
+- **Frontend context**: Affected hooks, endpoints called, expected request/response shape
+- **Service(s)**: Target NestJS service(s) when identifiable (e.g. gaqno-omnichannel-service)
+- **Contract requirements**: If types/DTOs must align, specify the expected shape
+
+Use this format so the user can paste it into the `backend-task-handoff-prompt` agent:
+
+```
+--- BACKEND TASK HANDOFF (copy below) ---
+[Structured handoff content as above]
+--- END HANDOFF ---
+```
+
+Only emit this section when backend changes are REQUIRED to resolve a finding. If purely frontend, omit.
+
 Be blunt.
 Be precise.
 No praise.

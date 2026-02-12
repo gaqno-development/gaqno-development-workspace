@@ -1,18 +1,63 @@
 [submodule "gaqno-ai-service"]
 	path = gaqno-ai-service
-	url = git@github.com-personal:gaqno-development/gaqno-ai-service.git
+	url = git@github.com:gaqno-development/gaqno-ai-service.git
 [submodule "gaqno-pdv-service"]
 	path = gaqno-pdv-service
-	url = git@github.com-personal:gaqno-development/gaqno-pdv-service.git
+	url = git@github.com:gaqno-development/gaqno-pdv-service.git
 [submodule "gaqno-sso-service"]
 	path = gaqno-sso-service
-	url = git@github.com-personal:gaqno-development/gaqno-sso-service.git
+	url = git@github.com:gaqno-development/gaqno-sso-service.git
 [submodule "gaqno-finance-service"]
 	path = gaqno-finance-service
-	url = git@github.com-personal:gaqno-development/gaqno-finance-service.git
+	url = git@github.com:gaqno-development/gaqno-finance-service.git
 [submodule "gaqno-rpg-service"]
 	path = gaqno-rpg-service
-	url = git@github.com-personal:gaqno-development/gaqno-rpg-service.git
+	url = git@github.com:gaqno-development/gaqno-rpg-service.git
 [submodule "gaqno-omnichannel-service"]
 	path = gaqno-omnichannel-service
-	url = git@github.com-personal:gaqno-development/gaqno-omnichannel-service.git
+	url = git@github.com:gaqno-development/gaqno-omnichannel-service.git
+[submodule "gaqno-admin-service"]
+	path = gaqno-admin-service
+	url = git@github.com:gaqno-development/gaqno-admin-service.git
+[submodule "gaqno-admin-ui"]
+	path = gaqno-admin-ui
+	url = git@github.com:gaqno-development/gaqno-admin-ui.git
+[submodule "gaqno-ai-ui"]
+	path = gaqno-ai-ui
+	url = git@github.com:gaqno-development/gaqno-ai.git
+[submodule "gaqno-crm-ui"]
+	path = gaqno-crm-ui
+	url = git@github.com:gaqno-development/gaqno-crm.git
+[submodule "gaqno-erp-ui"]
+	path = gaqno-erp-ui
+	url = git@github.com:gaqno-development/gaqno-erp.git
+[submodule "gaqno-finance-ui"]
+	path = gaqno-finance-ui
+	url = git@github.com:gaqno-development/gaqno-finance.git
+[submodule "gaqno-landing-ui"]
+	path = gaqno-landing-ui
+	url = git@github.com:gaqno/gaqno_landing.git
+[submodule "gaqno-lenin-ui"]
+	path = gaqno-lenin-ui
+	url = git@github.com:gaqno/llm_lenin.git
+[submodule "gaqno-omnichannel-ui"]
+	path = gaqno-omnichannel-ui
+	url = git@github.com:gaqno-development/gaqno-omnichannel.git
+[submodule "gaqno-pdv-ui"]
+	path = gaqno-pdv-ui
+	url = git@github.com:gaqno-development/gaqno-pdv.git
+[submodule "gaqno-rpg-ui"]
+	path = gaqno-rpg-ui
+	url = git@github.com:gaqno-development/gaqno-rpg.git
+[submodule "gaqno-saas-service"]
+	path = gaqno-saas-service
+	url = git@github.com:gaqno-development/gaqno-saas-service.git
+[submodule "gaqno-saas-ui"]
+	path = gaqno-saas-ui
+	url = git@github.com:gaqno-development/gaqno-saas-ui.git
+[submodule "gaqno-shell-ui"]
+	path = gaqno-shell-ui
+	url = git@github.com:gaqno-development/gaqno-shell.git
+[submodule "gaqno-sso-ui"]
+	path = gaqno-sso-ui
+	url = git@github.com:gaqno-development/gaqno-sso.git

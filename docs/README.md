@@ -12,7 +12,7 @@
 | [runbooks/](./runbooks/)         | Como rodar o ambiente, portas, variáveis, banco de dados                      | Subir stack, configurar dev, criar DBs               |
 | [guides/](./guides/)             | Guias técnicos por stack (frontend, backend)                                  | Convenções de código, env, Module Federation, NestJS |
 | [governance/](./governance/)     | TPM, fluxo de trabalho, agentes, revisão por agents                           | Processo de desenvolvimento, épicos, PRs             |
-| [integrations/](./integrations/) | GitHub–Jira, Jira (espaços, automações), Confluence                           | Integrações e ferramentas de gestão                  |
+| [integrations/](./integrations/) | GitHub–Jira, Jira (espaços, automações)                                        | Integrações e ferramentas de gestão                  |
 | [data/](./data/)                 | Scripts SQL (pgAdmin, seeds por serviço)                                      | Criar DBs, seeds, referência de schemas              |
 | [product/](./product/)           | Contratos e fundação de produto (AI, ERP)                                     | Conteúdo de produto e contratos de dados             |
 
@@ -43,7 +43,7 @@
 ### Produto / TPM
 
 - [Governança](./governance/) — TPM, traceability, workflow, agentes
-- [Integrações](./integrations/) — Jira, Confluence
+- [Integrações](./integrations/) — Jira; Confluence (DDS) em [Atlassian](https://gaqno-development.atlassian.net/wiki/spaces/DDS/overview)
 - [Produto](./product/) — contratos e conteúdo AI/ERP
 
 ---
@@ -52,4 +52,4 @@
 
 - Cada pasta tem um **README.md** com o índice dos arquivos e responsabilidade.
 - Links entre documentos usam caminhos relativos (ex.: `../runbooks/environment.md`).
-- Documentos publicados no Confluence têm fonte nesta árvore; ver [integrations/confluence/](./integrations/confluence/).
+- Documentos publicados no Confluence (DDS): [DDS Overview](https://gaqno-development.atlassian.net/wiki/spaces/DDS/overview).

@@ -1,0 +1,6 @@
+Execute the backend work described in the handoff below. Target the NestJS service(s) indicated. Implement endpoints, DTOs, and shared contracts as specified. Confirm changes and list modified files when done.
+
+--- PASTE FRONTEND AGENT HANDOFF BELOW ---
+
+
+--- END ---

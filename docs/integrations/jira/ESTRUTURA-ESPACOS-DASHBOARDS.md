@@ -14,7 +14,7 @@ Referência de estrutura que escala com produto + engenharia + operação.
 
 ## 1. Estrutura de Espaços / Projetos no JIRA
 
-No JIRA, "Espaço" normalmente = **Projeto**. Projetos atuais no workspace: **GAQNO** (Gaqno Development — onde estão os boards de trabalho: Épicos, Histórias, Desenvolvimento; ver [README.md](README.md) § 3 boards no GAQNO), **PROJ** (projeto legado; principal é GAQNO), **DEV**, **EPIC**. Ver [README.md](README.md) e [CENARIO-PROJ-SaaS-MF.md](CENARIO-PROJ-SaaS-MF.md).
+No JIRA, "Espaço" normalmente = **Projeto**. Projeto atual no workspace: **GAQNO** (Gaqno Development — onde estão os boards de trabalho: Épicos, Histórias, Desenvolvimento; ver [README.md](README.md) § 3 boards no GAQNO). Ver [README.md](README.md) e [CENARIO-PROJ-SaaS-MF.md](CENARIO-PROJ-SaaS-MF.md).
 
 ### Visão macro (recomendada)
 
@@ -303,4 +303,4 @@ Para isso ser válido é preciso: (1) criar os projetos CORE, PLATFORM, APP no J
 
 ---
 
-Ver também: [README.md](README.md) (GAQNO, migração KAN, componentes, hierarquia). [CENARIO-PROJ-SaaS-MF.md](CENARIO-PROJ-SaaS-MF.md) (mapeamento GAQNO ↔ CORE/PLAT/APP/OPS no cenário SaaS + MF). [REESTRUTURACAO-NAVEGACAO.md](REESTRUTURACAO-NAVEGACAO.md) (reestruturação Planejamento / Execução / Acompanhamento, filtros e dashboards por papel).
+Ver também: [README.md](README.md) (GAQNO, componentes, hierarquia). [CENARIO-PROJ-SaaS-MF.md](CENARIO-PROJ-SaaS-MF.md) (mapeamento GAQNO ↔ CORE/PLAT/APP/OPS no cenário SaaS + MF). [REESTRUTURACAO-NAVEGACAO.md](REESTRUTURACAO-NAVEGACAO.md) (reestruturação Planejamento / Execução / Acompanhamento, filtros e dashboards por papel).

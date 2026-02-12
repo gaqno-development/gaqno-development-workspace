@@ -33,7 +33,7 @@ Dashboards
 | 71  | Epicos            | Kanban | [Abrir 71](https://gaqno.atlassian.net/jira/software/c/projects/GAQNO/boards/71) | Planejar   |
 | 76  | Backlog           | Kanban | [Abrir 76](https://gaqno.atlassian.net/jira/software/c/projects/GAQNO/boards/76) | Planejar   |
 | 77  | Sprint Atual      | Kanban | [Abrir 77](https://gaqno.atlassian.net/jira/software/c/projects/GAQNO/boards/77) | Executar   |
-| 72  | Historias         | Kanban | [Abrir 72](https://gaqno.atlassian.net/jira/software/c/projects/GAQNO/boards/72) | Executar   |
+| 111 | Historias         | Kanban | [Abrir 111](https://gaqno.atlassian.net/jira/software/c/projects/GAQNO/boards/111) | Executar   |
 | 73  | Desenvolvimento   | Scrum  | [Abrir 73](https://gaqno.atlassian.net/jira/software/c/projects/GAQNO/boards/73) | Executar   |
 | 78  | Bugs & Incidentes | Kanban | [Abrir 78](https://gaqno.atlassian.net/jira/software/c/projects/GAQNO/boards/78) | Acompanhar |
 
@@ -41,7 +41,7 @@ Dashboards
 - **71 Epicos:** governança, visão macro, progresso por módulo.
 - **76 Backlog:** refinamento, planejamento, histórias fora da sprint (priorizar).
 - **77 Sprint Atual:** daily, prioridades do dia, bloqueios.
-- **72 Historias:** unidade de entrega, valor por sprint.
+- **111 Historias:** unidade de entrega, valor por sprint.
 - **73 Desenvolvimento:** execução técnica, subtasks, sprint Scrum (renomear para **Execução Técnica** se quiser).
 - **78 Bugs & Incidentes:** suporte, SRE, hotfix (produção separada de feature).
 
@@ -52,7 +52,7 @@ Ver também: [README.md § boards no GAQNO](README.md#3-boards-no-gaqno).
 | Seção              | Itens de menu / uso                                                                             |
 | ------------------ | ----------------------------------------------------------------------------------------------- |
 | **PLANEJAMENTO**   | Epicos (board 71), Roadmap (épicos por período), Backlog (histórias priorizadas fora da sprint) |
-| **EXECUÇÃO**       | Sprint Atual (board 73), Historias (board 72), Execução Técnica (board 73, ex‑Desenvolvimento)  |
+| **EXECUÇÃO**       | Sprint Atual (board 77), Historias (board 111), Execução Técnica (board 73, ex‑Desenvolvimento)  |
 | **ACOMPANHAMENTO** | Dashboards, Bugs & Incidentes, Métricas                                                         |
 
 ### Ajustes manuais no Jira (sem API de rename de board)
@@ -79,7 +79,7 @@ Criados pelo script `scripts/jira-restructure-navigation-filters.mjs`. Nomes com
 | [EXECUÇÃO] Sprint Atual             | `project = GAQNO AND sprint IN openSprints() ORDER BY rank ASC`                                          |
 | [EXECUÇÃO] Historias em Progresso   | `project = GAQNO AND issuetype = Story AND status = "In Progress"` (se PT: `status = "Fazendo"`)         |
 | [ACOMPANHAMENTO] Bugs Críticos      | `project = GAQNO AND issuetype = Bug AND priority IN (High, Highest) AND status != Done`                 |
-| [ACOMPANHAMENTO] Incidentes Abertos | `project = OPS AND status NOT IN (Done, Resolved)` (ajustar para GAQNO/label se projeto OPS não existir) |
+| [ACOMPANHAMENTO] Incidentes Abertos | `project = GAQNO AND issuetype = Bug AND status NOT IN (Done, Resolved)` (ou label `incidente` se usar) |
 
 Se o projeto usar status em português, edite o filtro no Jira e troque: `Done` → `Feito`, `Cancelled` → `Cancelado`, `In Progress` → `Fazendo`, `Resolved` → `Resolvido`.
 

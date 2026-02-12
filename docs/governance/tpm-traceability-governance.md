@@ -22,9 +22,9 @@ Confluence (DDS space)
     └── https://gaqno-development.atlassian.net/wiki/spaces/DDS
             │
             ▼
-Jira (KAN project)
+Jira (GAQNO project)
     │
-    └── https://gaqno.atlassian.net/browse/KAN
+    └── https://gaqno.atlassian.net/browse/GAQNO
             │
             ▼
 Stories → Tasks → Code Changes
@@ -92,7 +92,7 @@ Stories → Tasks → Code Changes
 ## References
 
 - [Confluence DDS](https://gaqno-development.atlassian.net/wiki/spaces/DDS)
-- [Jira KAN](https://gaqno.atlassian.net/browse/KAN)
+- [Jira GAQNO](https://gaqno.atlassian.net/browse/GAQNO)
 - [../architecture/system-architecture-audit.md](../architecture/system-architecture-audit.md)
 - [../architecture/refactoring-roadmap.md](../architecture/refactoring-roadmap.md)
-- [../integrations/confluence/README.md](../integrations/confluence/README.md)
+- [Confluence DDS](https://gaqno-development.atlassian.net/wiki/spaces/DDS/overview)
