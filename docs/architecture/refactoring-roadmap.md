@@ -1,6 +1,6 @@
 # Refactoring Roadmap
 
-**Baseado em:** [system-architecture-audit.md](./system-architecture-audit.md)  
+**Baseado em:** [system-architecture-audit.md](./system-architecture-audit.md), [STRUCTURE-ANALYSIS-2025-02.md](./STRUCTURE-ANALYSIS-2025-02.md)  
 **Responsáveis:** @front-dev, @back-dev  
 **Data:** 2025-02-05
 
@@ -166,6 +166,7 @@ Este documento operacionaliza o audit de arquitetura em passos executáveis.
 | Documentar convenção snake_case vs camelCase   | ✅ [contracts-and-types.md](./contracts-and-types.md) |
 | Adicionar hooks/index.ts em saas-ui e admin-ui | ✅                                                    |
 | CostingPage e UsersPage usam barrel (hooks/)   | ✅                                                    |
+| gaqno-finance-ui hooks/finance/index.ts       | ✅                                                    |
 | Testes para useCostingData e useUsersPage      | Pendente (requer vitest nos MFEs)                     |
 
 ---
