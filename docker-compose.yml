@@ -383,6 +383,47 @@ services:
       omnichannel-service:
         condition: service_started
 
+  wellness-service:
+    build:
+      context: ./gaqno-wellness-service
+      dockerfile: Dockerfile
+    container_name: gaqno-wellness-service
+    ports:
+      - "4009:4009"
+    environment:
+      - NODE_ENV=production
+      - PORT=4009
+      - DATABASE_URL=${WELLNESS_DATABASE_URL:-${DATABASE_URL}}
+      - AI_SERVICE_URL=http://ai-service:4002
+      - CORS_ORIGIN=${CORS_ORIGIN:-*}
+    env_file:
+      - .env
+    restart: unless-stopped
+    networks:
+      - gaqno-network
+
+  wellness:
+    build:
+      context: ./gaqno-wellness-ui
+      dockerfile: Dockerfile
+      args:
+        - VITE_SERVICE_WELLNESS_URL=http://localhost:4009
+    container_name: gaqno-wellness
+    ports:
+      - "3011:3011"
+    environment:
+      - NODE_ENV=production
+      - PORT=3011
+      - VITE_SERVICE_WELLNESS_URL=http://wellness-service:4009
+    env_file:
+      - .env
+    restart: unless-stopped
+    networks:
+      - gaqno-network
+    depends_on:
+      wellness-service:
+        condition: service_started
+
 networks:
   gaqno-network:
     driver: bridge
