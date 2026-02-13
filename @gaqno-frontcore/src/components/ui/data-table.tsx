@@ -1,5 +1,3 @@
-
-
 import * as React from 'react'
 import {
   ColumnDef,
@@ -15,6 +13,7 @@ import {
 } from '@tanstack/react-table'
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './table'
+import { DataTablePagination } from './data-table-pagination'
 
 export interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -24,8 +23,11 @@ export interface DataTableProps<TData, TValue> {
   enableFiltering?: boolean
   enableVisibility?: boolean
   enableRowSelection?: boolean
+  showPagination?: boolean
   renderToolbar?: (ctx: { table: ReturnType<typeof useReactTable<TData>> }) => React.ReactNode
   emptyMessage?: string
+  onRowClick?: (row: TData) => void
+  getRowId?: (row: TData, index: number) => string
 }
 
 export function DataTable<TData, TValue>({
@@ -36,8 +38,11 @@ export function DataTable<TData, TValue>({
   enableFiltering = true,
   enableVisibility = true,
   enableRowSelection = false,
+  showPagination = true,
   renderToolbar,
   emptyMessage = 'Sem resultados.',
+  onRowClick,
+  getRowId,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -55,6 +60,7 @@ export function DataTable<TData, TValue>({
     onColumnFiltersChange: enableFiltering ? setColumnFilters : undefined,
     onColumnVisibilityChange: enableVisibility ? setColumnVisibility : undefined,
     onRowSelectionChange: enableRowSelection ? setRowSelection : undefined,
+    getRowId: getRowId,
     initialState: {
       pagination: { pageSize: initialPageSize },
     },
@@ -89,7 +95,12 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map(row => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && 'selected'}
+                  onClick={onRowClick ? () => onRowClick(row.original as TData) : undefined}
+                  className={onRowClick ? 'cursor-pointer hover:bg-muted/50' : undefined}
+                >
                   {row.getVisibleCells().map(cell => (
                     <TableCell key={cell.id}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -107,6 +118,9 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
+      {showPagination && table.getRowModel().rows?.length > 0 ? (
+        <DataTablePagination table={table} />
+      ) : null}
     </div>
   )
 }
