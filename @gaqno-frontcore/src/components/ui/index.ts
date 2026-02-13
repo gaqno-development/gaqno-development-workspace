@@ -32,6 +32,7 @@ export * from './dialog';
 export * from './dropdown-menu';
 export * from './empty-state';
 export * from './form';
+export * from './hover-card';
 export * from './input';
 export { InputWithAI } from './input/InputWithAI';
 export type { InputWithAIProps } from './input/InputWithAI';

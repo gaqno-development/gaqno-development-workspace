@@ -22,6 +22,7 @@ import { EmptyState } from './empty-state'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './sheet'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './dialog'
 import { Form } from './form'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from './hover-card'
 import { Filter, SearchX } from 'lucide-react'
 import type {
   DataTableDataProp,
@@ -84,6 +85,7 @@ export interface DataTableProps<TData, TValue> {
   onLoadMore?: () => void
   openOnRowActionType?: OpenOnRowActionType
   renderRowDetail?: (row: TData) => React.ReactNode
+  renderRowHoverContent?: (row: TData) => React.ReactNode
 }
 
 export function DataTable<TData, TValue>({
@@ -118,6 +120,7 @@ export function DataTable<TData, TValue>({
   onLoadMore,
   openOnRowActionType,
   renderRowDetail,
+  renderRowHoverContent,
 }: DataTableProps<TData, TValue>) {
   const { data, error, isLoading } = normalizeDataProp(dataProp)
   const [filterSheetOpen, setFilterSheetOpen] = React.useState(false)
@@ -295,28 +298,41 @@ export function DataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {filteredRows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && 'selected'}
-                onClick={
-                  onRowClick || (openOnRowActionType && renderRowDetail)
-                    ? () => handleRowClick(row.original as TData)
-                    : undefined
-                }
-                className={
-                  onRowClick || (openOnRowActionType && renderRowDetail)
-                    ? 'cursor-pointer border-border hover:bg-muted/50 data-[state=selected]:bg-muted'
-                    : 'border-border'
-                }
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="border-border text-foreground">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
+            {filteredRows.map((row) => {
+              const rowEl = (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && 'selected'}
+                  onClick={
+                    onRowClick || (openOnRowActionType && renderRowDetail)
+                      ? () => handleRowClick(row.original as TData)
+                      : undefined
+                  }
+                  className={
+                    onRowClick || (openOnRowActionType && renderRowDetail)
+                      ? 'cursor-pointer border-border hover:bg-muted/50 data-[state=selected]:bg-muted'
+                      : 'border-border'
+                  }
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="border-border text-foreground">
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              )
+              if (renderRowHoverContent) {
+                return (
+                  <HoverCard key={row.id} openDelay={400} closeDelay={150}>
+                    <HoverCardTrigger asChild>{rowEl}</HoverCardTrigger>
+                    <HoverCardContent side="right" align="start" className="max-w-sm">
+                      {renderRowHoverContent(row.original as TData)}
+                    </HoverCardContent>
+                  </HoverCard>
+                )
+              }
+              return rowEl
+            })}
           </TableBody>
         </Table>
       </div>
