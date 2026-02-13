@@ -47,6 +47,11 @@ function saveCollapsed(title: string, collapsed: boolean): void {
   localStorage.setItem(getStorageKey(title), String(collapsed));
 }
 
+export interface SectionWithSubNavGroup {
+  label: string;
+  children: SectionWithSubNavChild[];
+}
+
 export interface SectionWithSubNavProps {
   basePath: string;
   defaultSegment: string;
@@ -58,6 +63,7 @@ export interface SectionWithSubNavProps {
   enableContentTransition?: boolean;
   collapsible?: boolean;
   defaultCollapsed?: boolean;
+  navGroups?: SectionWithSubNavGroup[];
 }
 
 function getSegmentFromPath(pathname: string, basePath: string): string {
@@ -68,6 +74,42 @@ function getSegmentFromPath(pathname: string, basePath: string): string {
     .slice(normalizedBase.length)
     .replace(/^\//, "");
   return remainder.split("/")[0] ?? "";
+}
+
+function renderLink(
+  s: string,
+  label: string,
+  href: string,
+  Icon: LucideIcon,
+  segment: string,
+  collapsed: boolean
+) {
+  const link = (
+    <Link
+      key={s}
+      to={href}
+      className={cn(
+        "flex items-center gap-2 rounded-md text-sm font-medium transition-colors",
+        collapsed ? "justify-center p-2 w-9 h-9" : "px-3 py-2",
+        segment === s
+          ? "bg-primary text-primary-foreground"
+          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+      )}
+      aria-current={segment === s ? "page" : undefined}
+    >
+      <Icon className="h-4 w-4 shrink-0" />
+      {!collapsed && label}
+    </Link>
+  );
+  if (collapsed) {
+    return (
+      <Tooltip key={s}>
+        <TooltipTrigger asChild>{link}</TooltipTrigger>
+        <TooltipContent side="right">{label}</TooltipContent>
+      </Tooltip>
+    );
+  }
+  return link;
 }
 
 export function SectionWithSubNav({
@@ -81,6 +123,7 @@ export function SectionWithSubNav({
   enableContentTransition = false,
   collapsible = true,
   defaultCollapsed = false,
+  navGroups,
 }: SectionWithSubNavProps) {
   const { pathname } = useLocation();
   const isMobile = useIsMobile();
@@ -161,34 +204,28 @@ export function SectionWithSubNav({
     </Tooltip>
   ) : null;
 
-  const linkList = children.map(({ segment: s, label, href, icon: Icon }) => {
-    const link = (
-      <Link
-        key={s}
-        to={href}
-        className={cn(
-          "flex items-center gap-2 rounded-md text-sm font-medium transition-colors",
-          collapsed ? "justify-center p-2 w-9 h-9" : "px-3 py-2",
-          segment === s
-            ? "bg-primary text-primary-foreground"
-            : "text-muted-foreground hover:bg-muted hover:text-foreground"
-        )}
-        aria-current={segment === s ? "page" : undefined}
-      >
-        <Icon className="h-4 w-4 shrink-0" />
-        {!collapsed && label}
-      </Link>
-    );
-    if (collapsed) {
-      return (
-        <Tooltip key={s}>
-          <TooltipTrigger asChild>{link}</TooltipTrigger>
-          <TooltipContent side="right">{label}</TooltipContent>
-        </Tooltip>
-      );
-    }
-    return link;
-  });
+  const linkList = navGroups ? (
+    <>
+      {navGroups.map((group) => (
+        <div key={group.label} className="flex flex-col gap-1">
+          {!collapsed && (
+            <div className="px-3 py-1.5 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              {group.label}
+            </div>
+          )}
+          {group.children.map(({ segment: s, label, href, icon: Icon }) =>
+            renderLink(s, label, href, Icon, segment, collapsed)
+          )}
+        </div>
+      ))}
+    </>
+  ) : (
+    <>
+      {children.map(({ segment: s, label, href, icon: Icon }) =>
+        renderLink(s, label, href, Icon, segment, collapsed)
+      )}
+    </>
+  );
 
   const navContent =
     variant === "vertical" && canCollapse ? (
