@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import type { LucideIcon } from "lucide-react";
 import { ChevronRight, PanelLeftClose, PanelLeft } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import { useIsMobile } from "../hooks";
 import { Button } from "./ui/button";
 import {
   Tooltip,
@@ -10,6 +11,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
+import { Sheet, SheetContent, SheetTitle } from "./ui/sheet";
 import { cn } from "../lib/utils";
 
 export interface SectionWithSubNavChild {
@@ -81,6 +83,7 @@ export function SectionWithSubNav({
   defaultCollapsed = false,
 }: SectionWithSubNavProps) {
   const { pathname } = useLocation();
+  const isMobile = useIsMobile();
   const rawSegment = getSegmentFromPath(pathname, basePath);
   const segment =
     rawSegment && segmentToComponent[rawSegment] ? rawSegment : defaultSegment;
@@ -90,6 +93,7 @@ export function SectionWithSubNav({
   const [collapsed, setCollapsedState] = useState(() =>
     canCollapse ? loadCollapsed(title, defaultCollapsed) : false
   );
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   useEffect(() => {
     if (canCollapse) saveCollapsed(title, collapsed);
@@ -218,33 +222,84 @@ export function SectionWithSubNav({
       </TooltipProvider>
     );
 
-  const breadcrumbCollapseButton = canCollapse ? (
-    <TooltipProvider delayDuration={300}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-8 w-8 shrink-0"
-            onClick={toggleCollapsed}
-            aria-label={collapsed ? "Expand sidebar (icons only)" : "Collapse sidebar to icons"}
-          >
-            {collapsed ? (
-              <PanelLeft className="h-4 w-4" />
-            ) : (
-              <PanelLeftClose className="h-4 w-4" />
-            )}
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent side="bottom">
-          {collapsed ? "Expand sidebar" : "Collapse to icons"}
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  ) : null;
+  const isMobileVertical = isMobile && variant === "vertical";
+  const mobileNavTrigger =
+    isMobileVertical && canCollapse ? (
+      <Button
+        variant="outline"
+        size="icon"
+        className="h-9 w-9 min-w-[44px] min-h-[44px] shrink-0"
+        onClick={() => setSheetOpen(true)}
+        aria-label="Open menu"
+      >
+        <PanelLeft className="h-5 w-5" />
+      </Button>
+    ) : null;
+  const breadcrumbCollapseButton =
+    !isMobileVertical && canCollapse ? (
+      <TooltipProvider delayDuration={300}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8 shrink-0"
+              onClick={toggleCollapsed}
+              aria-label={
+                collapsed
+                  ? "Expand sidebar (icons only)"
+                  : "Collapse sidebar to icons"
+              }
+            >
+              {collapsed ? (
+                <PanelLeft className="h-4 w-4" />
+              ) : (
+                <PanelLeftClose className="h-4 w-4" />
+              )}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">
+            {collapsed ? "Expand sidebar" : "Collapse to icons"}
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    ) : null;
+
+  const mobileSheetLinks = isMobileVertical
+    ? children.map(({ segment: s, label, href, icon: Icon }) => (
+        <Link
+          key={s}
+          to={href}
+          onClick={() => setSheetOpen(false)}
+          className={cn(
+            "flex items-center gap-3 rounded-md px-3 py-3 text-sm font-medium transition-colors min-h-[44px]",
+            segment === s
+              ? "bg-primary text-primary-foreground"
+              : "text-muted-foreground hover:bg-muted hover:text-foreground"
+          )}
+          aria-current={segment === s ? "page" : undefined}
+        >
+          <Icon className="h-5 w-5 shrink-0" />
+          {label}
+        </Link>
+      ))
+    : null;
 
   return (
     <div className="flex flex-col h-full min-h-0">
+      {isMobileVertical && canCollapse && (
+        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+          <SheetContent side="left" className="w-[280px] sm:max-w-[85vw]">
+            <SheetTitle className="sr-only">{title}</SheetTitle>
+            <nav
+              className="flex flex-col gap-1 pt-2"
+              aria-label={`${title} sub-navigation`}
+            >
+              {mobileSheetLinks}
+            </nav>
+          </SheetContent>
+        </Sheet>
+      )}
       <nav
         aria-label="Breadcrumb"
         className="flex items-center gap-2 text-sm text-muted-foreground mb-4 shrink-0"
@@ -257,10 +312,10 @@ export function SectionWithSubNav({
         </Link>
         <ChevronRight className="h-4 w-4 text-muted-foreground" aria-hidden />
         <span className="text-foreground font-medium">{title}</span>
-        {breadcrumbCollapseButton != null && (
+        {(mobileNavTrigger != null || breadcrumbCollapseButton != null) && (
           <>
             <span className="flex-1" aria-hidden />
-            {breadcrumbCollapseButton}
+            {mobileNavTrigger ?? breadcrumbCollapseButton}
           </>
         )}
       </nav>
@@ -271,7 +326,7 @@ export function SectionWithSubNav({
           variant === "vertical" ? "flex-1 min-h-0 gap-4" : "flex-col"
         )}
       >
-        {navContent}
+        {!isMobileVertical && navContent}
         <div className="flex-1 min-h-0 overflow-auto">{contentArea}</div>
       </div>
     </div>
