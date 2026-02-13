@@ -59,7 +59,7 @@ export interface SectionWithSubNavProps {
   segmentToComponent: Record<string, React.ComponentType>;
   title: string;
   variant: "vertical" | "horizontal";
-  breadcrumbRoot: { label: string; href: string };
+  breadcrumbRoot?: { label: string; href: string };
   enableContentTransition?: boolean;
   collapsible?: boolean;
   defaultCollapsed?: boolean;
@@ -337,25 +337,31 @@ export function SectionWithSubNav({
           <PanelLeft className="h-5 w-5" />
         </Button>
       )}
-      <nav
-        aria-label="Breadcrumb"
-        className="flex items-center gap-2 text-sm text-muted-foreground mb-4 shrink-0"
-      >
-        <Link
-          to={breadcrumbRoot.href}
-          className="hover:text-foreground transition-colors"
+      {(breadcrumbRoot != null || breadcrumbCollapseButton != null || mobileNavTrigger != null) && (
+        <nav
+          aria-label={breadcrumbRoot != null ? "Breadcrumb" : undefined}
+          className="flex items-center gap-2 text-sm text-muted-foreground mb-4 shrink-0"
         >
-          {breadcrumbRoot.label}
-        </Link>
-        <ChevronRight className="h-4 w-4 text-muted-foreground" aria-hidden />
-        <span className="text-foreground font-medium">{title}</span>
-        {(mobileNavTrigger != null || breadcrumbCollapseButton != null) && (
-          <>
-            <span className="flex-1" aria-hidden />
-            {mobileNavTrigger ?? breadcrumbCollapseButton}
-          </>
-        )}
-      </nav>
+          {breadcrumbRoot != null ? (
+            <>
+              <Link
+                to={breadcrumbRoot.href}
+                className="hover:text-foreground transition-colors"
+              >
+                {breadcrumbRoot.label}
+              </Link>
+              <ChevronRight className="h-4 w-4 text-muted-foreground" aria-hidden />
+            </>
+          ) : null}
+          <span className="text-foreground font-medium">{title}</span>
+          {(mobileNavTrigger != null || breadcrumbCollapseButton != null) && (
+            <>
+              <span className="flex-1" aria-hidden />
+              {mobileNavTrigger ?? breadcrumbCollapseButton}
+            </>
+          )}
+        </nav>
+      )}
 
       <div
         className={cn(

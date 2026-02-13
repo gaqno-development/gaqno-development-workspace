@@ -4,6 +4,7 @@ import { ChevronDown } from 'lucide-react'
 import {
     Sidebar,
     SidebarContent,
+    SidebarFooter,
     SidebarGroup,
     SidebarGroupContent,
     SidebarGroupLabel,
@@ -21,11 +22,19 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '../../ui/dropdown-menu'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { LogOut, User, Settings, Bell } from 'lucide-react'
 import { useFilteredMenu } from '../../../hooks/useFilteredMenu'
 import { useWhiteLabel } from '../../../hooks/useWhiteLabel'
+import { useHeader } from '../header/hooks/useHeader'
+import { ThemeToggle } from '../header/components/ThemeToggle'
+import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar'
+import { Button } from '../../ui/button'
+import { cn } from '../../../lib/utils'
 import { ISidebarItem } from './types'
 
 interface AppSidebarProps {
@@ -36,9 +45,11 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ customMenuItems }) => {
     const location = useLocation()
     const pathname = location.pathname
     const searchParams = location.search
+    const navigate = useNavigate()
     const backendMenuItems = useFilteredMenu()
     const { config: whiteLabel } = useWhiteLabel()
     const { state } = useSidebar()
+    const { profile, user, handleSignOut } = useHeader()
     const isCollapsed = state === 'collapsed'
     
     // Use only backend menu (server-side filtered by permissions)
@@ -72,7 +83,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ customMenuItems }) => {
 
     const CollapsedMenuItemWithDropdown: React.FC<{ item: ISidebarItem }> = ({ item }) => {
         const [open, setOpen] = useState(false)
-        const timeoutRef = React.useRef<NodeJS.Timeout | null>(null)
+        const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
         const Icon = item.icon
 
         const handleMouseEnter = () => {
@@ -365,6 +376,59 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ customMenuItems }) => {
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
+            <SidebarFooter>
+                <ThemeToggle />
+                {(profile || user) && (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className={cn("w-full rounded-full", isCollapsed ? "h-10 w-10 p-0 justify-center" : "h-auto py-2 justify-start gap-2")}>
+                                <Avatar className="h-8 w-8 shrink-0">
+                                    <AvatarImage src={profile?.avatar_url} alt={profile?.name || user?.email} />
+                                    <AvatarFallback>
+                                        {(profile?.name || user?.email)?.charAt(0).toUpperCase() || <User className="h-4 w-4" />}
+                                    </AvatarFallback>
+                                </Avatar>
+                                {!isCollapsed && (
+                                    <span className="truncate text-sm font-medium">
+                                        {profile?.name || user?.email || 'Account'}
+                                    </span>
+                                )}
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56" align="end" side="right" forceMount>
+                            <DropdownMenuLabel className="font-normal">
+                                <div className="flex flex-col space-y-1">
+                                    <p className="text-sm font-medium leading-none">{profile?.name || user?.email}</p>
+                                    {user?.email && (
+                                        <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+                                    )}
+                                    {profile?.role && (
+                                        <p className="text-xs leading-none text-muted-foreground capitalize mt-1">{profile.role}</p>
+                                    )}
+                                </div>
+                            </DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => navigate('/dashboard/profile')}>
+                                <User className="mr-2 h-4 w-4" />
+                                <span>Ver Perfil</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <Bell className="mr-2 h-4 w-4" />
+                                <span>Notificações</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <Settings className="mr-2 h-4 w-4" />
+                                <span>Configurações</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={handleSignOut} className="text-destructive focus:text-destructive">
+                                <LogOut className="mr-2 h-4 w-4" />
+                                <span>Sair</span>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                )}
+            </SidebarFooter>
         </Sidebar>
     )
 }
