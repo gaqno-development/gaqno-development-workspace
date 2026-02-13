@@ -11,7 +11,7 @@ const SidebarInsetWithMargin: React.FC<{ children: React.ReactNode; className?: 
 
   return (
     <SidebarInset
-      className={`flex-1 flex flex-col min-w-0 overflow-hidden md:transition-[margin-left] md:duration-200 md:ease-linear ${isCollapsed ? 'md:ml-[3rem]' : 'md:ml-[16rem]'
+      className={`flex-1 flex flex-col min-w-0 min-h-0 overflow-hidden md:transition-[margin-left] md:duration-200 md:ease-linear ${isCollapsed ? 'md:ml-[3rem]' : 'md:ml-[16rem]'
         } ${className || ''}`}
     >
       {children}
@@ -24,11 +24,11 @@ export const DashboardLayout: React.FC<IDashboardLayoutProps> = ({ children, men
 
   return (
     <SidebarProvider open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
-      <div className="min-h-screen w-full flex">
+      <div className="h-screen w-full flex overflow-hidden">
         <AppSidebar customMenuItems={menuItems} />
         <SidebarInsetWithMargin>
           <Header userProfile={null} />
-          <main>
+          <main className="flex-1 min-h-0 overflow-auto">
             {children}
           </main>
         </SidebarInsetWithMargin>

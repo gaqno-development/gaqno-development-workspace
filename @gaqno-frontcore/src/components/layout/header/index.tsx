@@ -37,17 +37,17 @@ export const Header: React.FC<IHeaderProps> = () => {
         <SidebarTrigger />
 
         <div className="flex items-center gap-2">
-          {whiteLabelConfig?.logoUrl ? (
+          {whiteLabelConfig && 'logoUrl' in whiteLabelConfig ? (
             <img
               src={whiteLabelConfig.logoUrl}
-              alt={whiteLabelConfig.companyName || 'Logo'}
+              alt={whiteLabelConfig.companyName || whiteLabelConfig.appName || 'Logo'}
               width={120}
               height={40}
               className="whitelabel-logo h-8 w-auto object-contain"
             />
           ) : (
             <h1 className="text-xl font-bold">
-              {whiteLabelConfig?.appName || 'Dashboard'}
+              {whiteLabelConfig && 'appName' in whiteLabelConfig ? whiteLabelConfig.appName : 'Dashboard'}
             </h1>
           )}
         </div>
@@ -55,17 +55,17 @@ export const Header: React.FC<IHeaderProps> = () => {
         <div className="flex-1" />
 
         {/* Show tenant branding info when on tenant details page */}
-        {isTenantDetailsPage && whiteLabelConfig && (
+        {isTenantDetailsPage && whiteLabelConfig && 'logoUrl' in whiteLabelConfig && (
           <div className="flex items-center gap-3 px-4 py-2 bg-muted/50 rounded-lg">
             {whiteLabelConfig.logoUrl ? (
               <img
                 src={whiteLabelConfig.logoUrl}
-                alt={whiteLabelConfig.companyName || 'Tenant Logo'}
+                alt={whiteLabelConfig.companyName || whiteLabelConfig.appName || 'Tenant Logo'}
                 className="w-8 h-8 object-contain rounded"
               />
             ) : (
               <div className="w-8 h-8 bg-muted rounded flex items-center justify-center text-sm font-bold">
-                {whiteLabelConfig.companyName?.charAt(0).toUpperCase() || 'T'}
+                {whiteLabelConfig.companyName?.charAt(0).toUpperCase() || whiteLabelConfig.appName?.charAt(0).toUpperCase() || 'T'}
               </div>
             )}
             <div className="text-sm">
