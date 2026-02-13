@@ -223,18 +223,7 @@ export function SectionWithSubNav({
     );
 
   const isMobileVertical = isMobile && variant === "vertical";
-  const mobileNavTrigger =
-    isMobileVertical && canCollapse ? (
-      <Button
-        variant="outline"
-        size="icon"
-        className="h-9 w-9 min-w-[44px] min-h-[44px] shrink-0"
-        onClick={() => setSheetOpen(true)}
-        aria-label="Open menu"
-      >
-        <PanelLeft className="h-5 w-5" />
-      </Button>
-    ) : null;
+  const mobileNavTrigger = null;
   const breadcrumbCollapseButton =
     !isMobileVertical && canCollapse ? (
       <TooltipProvider delayDuration={300}>
@@ -299,6 +288,17 @@ export function SectionWithSubNav({
             </nav>
           </SheetContent>
         </Sheet>
+      )}
+      {isMobileVertical && canCollapse && (
+        <Button
+          variant="default"
+          size="icon"
+          className="fixed bottom-6 right-6 z-40 h-14 w-14 min-h-[56px] min-w-[56px] rounded-full shadow-lg"
+          onClick={() => setSheetOpen(true)}
+          aria-label={`Open ${title} navigation`}
+        >
+          <PanelLeft className="h-5 w-5" />
+        </Button>
       )}
       <nav
         aria-label="Breadcrumb"
