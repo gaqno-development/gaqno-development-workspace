@@ -23,9 +23,10 @@ MFE_RPG_URL=https://portal.gaqno.com.br/rpg
 MFE_SSO_URL=https://portal.gaqno.com.br/auth
 MFE_SAAS_URL=https://portal.gaqno.com.br/saas
 MFE_OMNICHANNEL_URL=https://portal.gaqno.com.br/omnichannel
+MFE_ADMIN_URL=https://portal.gaqno.com.br/admin
 ```
 
-Defaults: `http://localhost:3XXX`. Production must override with portal URLs.
+Defaults: `http://localhost:3XXX`. Production must override with portal URLs. In Coolify, set **MFE_ADMIN_URL** (gaqno-admin) and **MFE_SAAS_URL** the same way as MFE_AI_URL and MFE_OMNICHANNEL_URL (e.g. `https://portal.gaqno.com.br/admin`, `https://portal.gaqno.com.br/saas`) so /admin/users and saas load.
 
 ## API URLs (VITE*SERVICE*\*)
 
@@ -86,5 +87,7 @@ Replace `<path>` with: ai, crm, erp, finance, pdv, rpg, auth (sso), omnichannel.
 | gaqno-pdv         | `https://portal.gaqno.com.br/pdv`         | `https://portal.gaqno.com.br/pdv/assets`         |
 | gaqno-rpg         | `https://portal.gaqno.com.br/rpg`         | `https://portal.gaqno.com.br/rpg/assets`         |
 | gaqno-omnichannel | `https://portal.gaqno.com.br/omnichannel` | `https://portal.gaqno.com.br/omnichannel/assets` |
+| gaqno-saas        | `https://portal.gaqno.com.br/saas`        | `https://portal.gaqno.com.br/saas/assets`        |
+| gaqno-admin       | `https://portal.gaqno.com.br/admin`         | `https://portal.gaqno.com.br/admin/assets`        |
 
 **Why:** With `/omnichannel`, Traefik routes ALL `/omnichannel/*` to the MFE container. The MFE nginx only serves assets; non-asset paths hit `location /` which returns `302 /`. With nginx's default `absolute_redirect on`, that becomes `http://portal.gaqno.com.br:3010/` (backend port leaks into the redirect). With `/omnichannel/assets`, only asset requests hit the MFE; routes like `/omnichannel/overview` go to the shell.
