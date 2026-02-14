@@ -149,7 +149,21 @@ Use this to align **gaqno-omnichannel-service** with **gaqno-sso-service** in Co
 | **Middleware** | stripSsoPrefix → cookieParser → helmet → CORS → … | stripOmnichannelPrefix → requestLogger → CORS → express.json (rawBody) → … |
 | **Body parser** | Default Nest | `bodyParser: false` + express.json (for rawBody) |
 | **WebSocket** | No | Yes (OmnichannelIoAdapter) |
-| **Health** | (app default) | `/v1/health` (HEALTHCHECK in Dockerfile) |
+| **Health** | `/v1/health` (see [Coolify health check for SSO](#coolify-health-check-for-sso)) | `/v1/health` (HEALTHCHECK in Dockerfile) |
+
+### Coolify health check for SSO
+
+Coolify runs the health check; you can configure it in the **application** settings (path, port, interval). The container must have **curl** or **wget** (gaqno-sso-service Dockerfile adds curl). If health check is configured in both the Coolify UI and the Dockerfile and both are enabled, the **Dockerfile takes precedence**.
+
+**In Coolify UI (gaqno-sso-service):**
+
+1. Open the application → **Health Check** (or **Advanced**).
+2. **Path:** `/v1/health` (Coolify checks the container directly; no `/sso` prefix).
+3. **Port:** `4001` (if the UI has a port field).
+4. **Expected status:** `200`.
+5. **Start period / grace period:** Set to **90** seconds so Coolify does not mark the container unhealthy before `push-db.js` and Nest finish starting.
+
+Alternatively, **disable** the health check in the Coolify UI for this app and rely only on the Dockerfile `HEALTHCHECK` (image includes curl and `start-period=90s`).
 
 **Coolify checklist for Omnichannel (match SSO):**
 
