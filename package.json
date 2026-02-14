@@ -4,6 +4,8 @@
   "private": true,
   "packageManager": "npm@11.6.2",
   "workspaces": [
+    "apps/*",
+    "libs/*",
     "@gaqno-backcore",
     "@gaqno-frontcore",
     "@gaqno-types",
@@ -56,6 +58,7 @@
     "dev:wellness": "npm run dev -w gaqno-wellness-ui",
     "dev:wellness-service": "npm run start:dev -w gaqno-wellness-service",
     "release:packages": "./publish-packages.sh",
+    "publish:frontcore": "sh -c 'set -a && [ -f .env ] && . ./.env && set +a && npm publish -w @gaqno-development/frontcore'",
     "publish:confluence": "echo 'Docs no Confluence DDS. Edite em https://gaqno-development.atlassian.net/wiki/spaces/DDS'"
   },
   "devDependencies": {
