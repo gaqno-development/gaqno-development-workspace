@@ -133,6 +133,31 @@ When widgets, summary, or preferences fail with `net::ERR_CONNECTION_TIMED_OUT`,
 
 **Check:** After redeploy, reload the portal page that loads the omnichannel MFE and open DevTools → Network. Requests to `https://api.gaqno.com.br/omnichannel/v1/...` should return 200, not CORS errors.
 
+## Coolify: SSO vs Omnichannel (backend) comparison
+
+Use this to align **gaqno-omnichannel-service** with **gaqno-sso-service** in Coolify when SSO works and Omnichannel does not.
+
+| Aspect | gaqno-sso-service | gaqno-omnichannel-service |
+|--------|-------------------|---------------------------|
+| **Port** | 4001 | 4008 |
+| **API path (proxy)** | `/sso` | `/omnichannel` |
+| **URL strip** | `stripSsoPrefix`: `/sso` → `` | `stripOmnichannelPrefix`: `/omnichannel` → `` |
+| **Global prefix** | `v1` → `/sso/v1/*` | `v1` → `/omnichannel/v1/*` |
+| **Required env (Coolify)** | DATABASE_URL, JWT_SECRET, **CORS_ORIGIN** | DATABASE_URL, JWT_SECRET, **CORS_ORIGIN** |
+| **CORS** | Same logic: CORS_ORIGIN / ALLOWED_ORIGINS, regex `*.gaqno.com` + localhost, normalize origin | Same |
+| **Extra env** | COOKIE_SECRET (cookie-parser) | SSO_SERVICE_URL (internal), DEBUGGER_HEADER (optional), REDIS_* (BullMQ), WHATSAPP_* |
+| **Middleware** | stripSsoPrefix → cookieParser → helmet → CORS → … | stripOmnichannelPrefix → requestLogger → CORS → express.json (rawBody) → … |
+| **Body parser** | Default Nest | `bodyParser: false` + express.json (for rawBody) |
+| **WebSocket** | No | Yes (OmnichannelIoAdapter) |
+| **Health** | (app default) | `/v1/health` (HEALTHCHECK in Dockerfile) |
+
+**Coolify checklist for Omnichannel (match SSO):**
+
+1. **Domain / path:** Same host as SSO (e.g. `api.gaqno.com.br`) with path **/omnichannel** (SSO uses `/sso`).
+2. **Environment:** Set **CORS_ORIGIN** to the same value as on gaqno-sso-service (see [Omnichannel CORS](#troubleshooting-omnichannel-cors-errors-other-backends-ok)).
+3. **Headers:** Proxy must forward **Origin**, **Authorization**, and **Cookie** (same as SSO).
+4. **Port:** Container exposes **4008**; Coolify/Traefik should route `/omnichannel` to this service on 4008.
+
 ## gaqno-ai-service Model List
 
 Text and image model lists are fetched from the [Vercel AI Gateway](https://ai-gateway.vercel.sh/v1/models) (no auth, cached 5 min). Models are filtered by configured API keys (OPENAI_API_KEY, GEMINI_API_KEY). Local/self-hosted models remain in config.
