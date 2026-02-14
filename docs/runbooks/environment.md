@@ -115,6 +115,24 @@ When widgets, summary, or preferences fail with `net::ERR_CONNECTION_TIMED_OUT`,
 
 **Referência:** [docs/guides/backend.md § Proxy / Gateway](../guides/backend.md).
 
+## Troubleshooting: Omnichannel CORS errors (other backends OK)
+
+**Symptom:** `/sso/v1/*` and other backends return 200, but `/omnichannel/v1/*` fails with **CORS error** in the browser (e.g. teams, channels, conversations, templates, reports/dashboard).
+
+**Cause:** The omnichannel backend allows origins only from env or from `*.gaqno.com` / localhost. If **CORS_ORIGIN** is not set in Coolify for **gaqno-omnichannel-service**, or the proxy does not forward the **Origin** header to that service, the backend rejects the preflight/request.
+
+**Fix in Coolify:**
+
+1. Open **gaqno-omnichannel-service** → **Environment**.
+2. Add or set **CORS_ORIGIN** to the allowed origins (comma-separated, no spaces after commas), for example:
+   ```
+   CORS_ORIGIN=https://portal.gaqno.com.br,https://api.gaqno.com.br,https://gaqno.com.br,https://gaqno.com,https://lenin.gaqno.com.br,http://localhost:3000,http://localhost:3001,http://127.0.0.1:3000
+   ```
+3. Ensure the reverse proxy (Traefik / Coolify) **forwards the Origin header** to this service. If Origin is stripped, the backend cannot allow the request.
+4. **Redeploy** gaqno-omnichannel-service.
+
+**Check:** After redeploy, reload the portal page that loads the omnichannel MFE and open DevTools → Network. Requests to `https://api.gaqno.com.br/omnichannel/v1/...` should return 200, not CORS errors.
+
 ## gaqno-ai-service Model List
 
 Text and image model lists are fetched from the [Vercel AI Gateway](https://ai-gateway.vercel.sh/v1/models) (no auth, cached 5 min). Models are filtered by configured API keys (OPENAI_API_KEY, GEMINI_API_KEY). Local/self-hosted models remain in config.
