@@ -11,6 +11,7 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    SidebarTrigger,
     useSidebar,
 } from '../../ui/sidebar'
 import {
@@ -338,14 +339,14 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ customMenuItems }) => {
         <Sidebar collapsible="icon">
             <SidebarContent>
                 <SidebarGroup>
-                    <SidebarGroupLabel className="flex items-center justify-center p-4">
+                    <SidebarGroupLabel className={cn("flex items-center gap-2 p-4", isCollapsed && "justify-center p-2")}>
                         {whiteLabel?.logoUrl ? (
-                            <img 
-                                src={whiteLabel.logoUrl} 
-                                alt={whiteLabel?.companyName || 'Logo'} 
-                                width={120} 
-                                height={40} 
-                                className="object-contain h-10 w-auto"
+                            <img
+                                src={whiteLabel.logoUrl}
+                                alt={whiteLabel?.companyName || 'Logo'}
+                                width={120}
+                                height={40}
+                                className={cn("object-contain h-10 w-auto min-w-0", isCollapsed ? "hidden" : "flex-1")}
                                 onError={(e) => {
                                     const target = e.target as HTMLImageElement
                                     const parent = target.parentElement
@@ -355,7 +356,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ customMenuItems }) => {
                                 }}
                             />
                         ) : (
-                            <div className="text-lg font-bold text-center">
+                            <div className={cn("text-lg font-bold min-w-0 truncate", isCollapsed ? "hidden" : "flex-1")}>
                                 {whiteLabel?.companyName || whiteLabel?.appName || 'Logo'}
                             </div>
                         )}
@@ -377,11 +378,13 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ customMenuItems }) => {
                 </SidebarGroup>
             </SidebarContent>
             <SidebarFooter>
-                <ThemeToggle />
-                {(profile || user) && (
+                <div className={cn("flex items-center w-full gap-1", isCollapsed ? "flex-col" : "flex-row flex-wrap gap-2")}>
+                    <SidebarTrigger className="shrink-0" aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"} />
+                    <ThemeToggle />
+                    {(profile || user) && (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className={cn("w-full rounded-full", isCollapsed ? "h-10 w-10 p-0 justify-center" : "h-auto py-2 justify-start gap-2")}>
+                            <Button variant="ghost" className={cn("rounded-full flex-1 min-w-0", isCollapsed ? "h-10 w-10 p-0 justify-center flex-none" : "h-auto py-2 justify-start gap-2")}>
                                 <Avatar className="h-8 w-8 shrink-0">
                                     <AvatarImage src={profile?.avatar_url} alt={profile?.name || user?.email} />
                                     <AvatarFallback>
@@ -427,7 +430,8 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ customMenuItems }) => {
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
-                )}
+                    )}
+                </div>
             </SidebarFooter>
         </Sidebar>
     )

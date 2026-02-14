@@ -1,0 +1,27 @@
+{
+  "name": "api-gateway",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "nest build",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "lint": "eslint \"src/**/*.ts\""
+  },
+  "dependencies": {
+    "@gaqno-ai-platform/shared-kernel": "*",
+    "@nestjs/common": "^11.0.1",
+    "@nestjs/config": "^3.2.2",
+    "@nestjs/core": "^11.0.1",
+    "@nestjs/platform-express": "^11.0.1",
+    "axios": "^1.7.7",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.0",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.7",
+    "typescript": "^5.7.3"
+  }
+}

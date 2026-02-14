@@ -1,0 +1,116 @@
+---
+description: Responsive system — breakpoints, panel logic, layout per size. WhatsApp-like immersive + BI. Optimize for Medium (laptops).
+globs: gaqno-omnichannel-ui/**/*.tsx, gaqno-omnichannel-ui/**/*.css, gaqno-shell-ui/**/*.tsx, "**/frontcore/**/*.tsx"
+alwaysApply: false
+---
+
+# Responsive Behavior (System Rule)
+
+Design order: **Medium (1024–1439px) → Large → Small → Mobile**. Primary target = laptops (SMB). Do NOT design mobile-first.
+
+---
+
+## 1. Breakpoints (4 only)
+
+| Size   | Width           | Target                    |
+| ------ | --------------- | ------------------------- |
+| Large  | ≥ 1440px        | Large desktops / monitors |
+| Medium | 1024px – 1439px | Laptops (primary)         |
+| Small  | 768px – 1023px  | Small laptops / tablets   |
+| Mobile | < 768px         | Tablets portrait / phones |
+
+Use these consistently (e.g. Tailwind `md` 768, `lg` 1024, `xl` 1440). Primary optimization = **Medium**.
+
+---
+
+## 2. Panel Collapse Priority (Non-Negotiable)
+
+When shrinking, hide in this order:
+
+1. **Metrics** → hide first  
+2. **Customer / right info panel** → hide second  
+3. **Conversation list** → hide third (or become toggle/overlay)  
+4. **Chat** → never hide  
+
+Chat is sacred. Never sacrifice chat visibility.
+
+---
+
+## 3. Layout by Size
+
+**Large (≥ 1440px):**  
+`| Rail | Context Panel | Main Chat | Right Panel |` — all 4 visible. Right panel always open. Comfortable padding (16–24px). Max content width for forms; chat fluid.
+
+**Medium (1024–1439px):**  
+`| Rail | Context Panel | Main Chat |` — right panel **collapsible** (overlay/slide-in). Rail icon-only. Context panel 280–320px. Customer profile icon in chat header opens right panel.
+
+**Small (768–1023px):**  
+Two panels only. Default: `| Rail | Context Panel |`. When conversation selected: `| Rail | Chat (full width) |`. Context panel disappears; back arrow returns to list. Right panel = **modal**. Never 3 columns.
+
+**Mobile (< 768px):**  
+Single-panel flow. Screen 1 = list, Screen 2 = chat, Screen 3 = customer (slide-up). **Rail becomes bottom nav or hamburger** (Inbox, Dashboard, Customers, Settings). Do NOT keep vertical rail on mobile.
+
+---
+
+## 4. Width Definitions
+
+- **Rail:** 64px fixed (icon-only where applicable).  
+- **Context panel:** Large 360px, Medium 300px, Small 280px.  
+- **Right panel:** Large 340px fixed, Medium overlay 320px, Small modal, Mobile full screen.  
+- **Chat:** Fluid width.
+
+---
+
+## 5. Spacing per Size
+
+- Large: 24px section padding  
+- Medium: 20px  
+- Small: 16px  
+- Mobile: 12–16px  
+
+No random padding. Consistency = perceived quality.
+
+---
+
+## 6. Dashboard Responsive
+
+- Large: KPI cards 4-column grid.  
+- Medium: 2-column grid.  
+- Small: 1-column stacked.  
+Never squeeze 4 cards in small view.
+
+---
+
+## 7. Component Behavior
+
+- **Buttons:** Large = full labels. Small = icon + short label. Mobile = primary button full-width.  
+- **Tables:** Large = full. Medium = fewer columns. Small = horizontal scroll or stacked rows. Never squash text.
+
+---
+
+## 8. Advanced Behavior
+
+- **Auto-compact:** If width < 1200px, switch conversation list to compact density automatically.  
+- **Performance (small/mobile):** Lazy load dashboard graphs, reduce animation complexity, avoid heavy background patterns.
+
+---
+
+## 9. Interaction Summary
+
+| Feature     | Large   | Medium   | Small  | Mobile    |
+| ----------- | ------- | -------- | ------ | --------- |
+| Right panel | Fixed   | Slide-in | Modal | Full screen |
+| Chat list   | Persistent | Persistent | Toggle | Screen 1 |
+| Metrics     | Visible | Limited  | Hidden | Hidden   |
+| Rail        | Icon-only | Icon-only | Icon-only | Bottom nav |
+
+---
+
+## 10. Philosophy
+
+- **Large** → Immersive & powerful  
+- **Medium** → Focused & practical  
+- **Small** → Simplified & guided  
+- **Mobile** → Sequential & minimal  
+
+Responsive must feel **intentional** at every size, never a broken desktop.

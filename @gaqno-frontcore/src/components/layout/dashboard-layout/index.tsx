@@ -1,7 +1,6 @@
 import React from 'react'
-import { Header } from '../header'
 import { AppSidebar } from '../app-sidebar'
-import { SidebarProvider, SidebarInset, SidebarTrigger, useSidebar } from '../../ui/sidebar'
+import { SidebarProvider, SidebarInset, useSidebar } from '../../ui/sidebar'
 import { useDashboardLayout } from './hooks/useDashboardLayout'
 import { IDashboardLayoutProps } from './types'
 
@@ -27,7 +26,6 @@ export const DashboardLayout: React.FC<IDashboardLayoutProps> = ({ children, men
       <div className="h-screen w-full flex overflow-hidden">
         <AppSidebar customMenuItems={menuItems} />
         <SidebarInsetWithMargin>
-          <Header userProfile={null} />
           <main className="flex-1 min-h-0 overflow-auto">
             {children}
           </main>

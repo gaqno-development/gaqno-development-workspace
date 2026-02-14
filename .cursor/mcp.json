@@ -9,8 +9,11 @@
       "args": ["-y", "@masonator/coolify-mcp"],
       "env": {
         "COOLIFY_ACCESS_TOKEN": "02|k3WtyHGHFxkDf204wQtSB4yid7G9pi1hsZjtvkun99fd291f",
-        "COOLIFY_BASE_URL": "https://coolify.gaqno.com.br"
+        "COOLIFY_BASE_URL": "http://72.61.221.19:8000/"
       }
+    },
+    "速推AI": {
+      "url": "https://api.xskill.ai/api/v3/mcp-http?api_key=sk-30c8fa18149264c33cf196557a5ee50e583e80459c85199f"
     },
     "atlassian": {
       "command": "uvx",

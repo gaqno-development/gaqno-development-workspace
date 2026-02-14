@@ -1,0 +1,16 @@
+{
+  "name": "@gaqno-ai-platform/encryption",
+  "version": "0.0.1",
+  "private": true,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@gaqno-ai-platform/shared-kernel": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}
