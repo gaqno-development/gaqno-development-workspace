@@ -8,16 +8,28 @@ echo ""
 
 echo "Building @gaqno-backcore..."
 cd @gaqno-backcore
-npm run build
-npm publish --access restricted
+BACKCORE_VERSION=$(node -p "require('./package.json').version")
+PUBLISHED_BACKCORE=$(npm view @gaqno-development/backcore version 2>/dev/null || echo "")
+if [ "${BACKCORE_VERSION}" = "${PUBLISHED_BACKCORE}" ]; then
+  echo "⏭️  @gaqno-development/backcore@${BACKCORE_VERSION} already published, skipping"
+else
+  npm run build
+  npm publish --access restricted
+  echo "✅ @gaqno-development/backcore@${BACKCORE_VERSION} published"
+fi
 cd ..
-echo "✅ @gaqno-development/backcore published"
 echo ""
 
 echo "Publishing @gaqno-frontcore..."
 cd @gaqno-frontcore
-npm publish --access public
+FRONTCORE_VERSION=$(node -p "require('./package.json').version")
+PUBLISHED_FRONTCORE=$(npm view @gaqno-development/frontcore version 2>/dev/null || echo "")
+if [ "${FRONTCORE_VERSION}" = "${PUBLISHED_FRONTCORE}" ]; then
+  echo "⏭️  @gaqno-development/frontcore@${FRONTCORE_VERSION} already published, skipping"
+else
+  npm publish --access public
+  echo "✅ @gaqno-development/frontcore@${FRONTCORE_VERSION} published"
+fi
 cd ..
-echo "✅ @gaqno-development/frontcore published"
 echo ""
-echo "🎉 Packages published successfully!"
+echo "🎉 Done."
