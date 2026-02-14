@@ -9,6 +9,11 @@ const DEFAULT_ALLOWED_HEADERS = [
   "sec-ch-ua",
   "sec-ch-ua-mobile",
   "sec-ch-ua-platform",
+  "Origin",
+  "Accept",
+  "newrelic",
+  "traceparent",
+  "tracestate",
 ];
 
 const gaqnoHttpsOriginRegex =
@@ -69,7 +74,7 @@ export function getCorsOptions(
       if (allowOrigin(origin)) {
         return cb(null, origin);
       }
-      return cb(new Error("Not allowed by CORS"));
+      return cb(null, false);
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
