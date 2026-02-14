@@ -25,14 +25,7 @@ export interface GetCorsOptionsOverrides {
 export function getCorsOptions(
   config: ConfigService,
   overrides?: GetCorsOptionsOverrides
-): {
-  origin: (origin: string | undefined, cb: (err: Error | null, allow?: boolean) => void) => void;
-  credentials: boolean;
-  methods: string[];
-  allowedHeaders: string[];
-  exposedHeaders: string[];
-  optionsSuccessStatus: number;
-} {
+) {
   const corsOrigin =
     config.get<string>("CORS_ORIGIN") ??
     process.env.CORS_ORIGIN ??
@@ -40,22 +33,22 @@ export function getCorsOptions(
     (process.env.NODE_ENV === "production" ? "" : "*");
 
   const allowedList =
-    corsOrigin === "*"
-      ? null
-      : new Set(
+    corsOrigin && corsOrigin !== "*"
+      ? new Set(
           corsOrigin
             .split(",")
             .map((item: string) => item.trim())
             .filter(Boolean)
-        );
+        )
+      : null;
 
-  const normalizeOrigin = (o: string | undefined): string =>
+  const normalizeOrigin = (o?: string): string =>
     (o ?? "").trim().replace(/\/+$/, "");
 
-  const allowOrigin = (o: string | undefined): boolean => {
+  const allowOrigin = (origin?: string): boolean => {
+    if (!origin) return true;
+    const norm = normalizeOrigin(origin);
     if (corsOrigin === "*") return true;
-    if (o === undefined || o === "") return true;
-    const norm = normalizeOrigin(o);
     if (!norm) return true;
     return (
       (allowedList?.has(norm) ?? false) ||
@@ -69,7 +62,15 @@ export function getCorsOptions(
     overrides?.allowedHeaders ?? DEFAULT_ALLOWED_HEADERS;
 
   return {
-    origin: (origin, cb) => cb(null, allowOrigin(origin)),
+    origin: (origin: string | undefined, cb: (err: Error | null, allow?: boolean | string) => void) => {
+      if (!origin) {
+        return cb(null, true);
+      }
+      if (allowOrigin(origin)) {
+        return cb(null, origin);
+      }
+      return cb(new Error("Not allowed by CORS"));
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders,
