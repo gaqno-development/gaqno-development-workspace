@@ -1,25 +1,35 @@
-import React from 'react'
-import { cn } from '../../../lib/utils'
-import { Input } from './Input'
-import type { IInputProps } from './types'
-import { Button } from '../button'
-import { Sparkles, Loader2 } from 'lucide-react'
+import React from "react";
+import { cn } from "../../../lib/utils";
+import { Input } from "./Input";
+import type { IInputProps } from "./types";
+import { Button } from "../button";
+import { LoaderPinwheelIcon } from "../loader-pinwheel";
+import { SparklesIcon } from "../sparkles";
 
 export interface InputWithAIProps extends IInputProps {
-  onAISuggest?: () => void | Promise<void>
-  isAIGenerating?: boolean
-  aiSuggestLabel?: string
+  onAISuggest?: () => void | Promise<void>;
+  isAIGenerating?: boolean;
+  aiSuggestLabel?: string;
 }
 
 export const InputWithAI = React.forwardRef<HTMLInputElement, InputWithAIProps>(
-  ({ onAISuggest, isAIGenerating = false, aiSuggestLabel = 'Gerar com IA', className, ...inputProps }, ref) => {
-    const hasAISuggest = !!onAISuggest
+  (
+    {
+      onAISuggest,
+      isAIGenerating = false,
+      aiSuggestLabel = "Gerar com IA",
+      className,
+      ...inputProps
+    },
+    ref
+  ) => {
+    const hasAISuggest = !!onAISuggest;
 
     return (
       <div className="relative w-full">
         <Input
           ref={ref}
-          className={cn(hasAISuggest && 'pr-28', className)}
+          className={cn(hasAISuggest && "pr-28", className)}
           {...inputProps}
         />
         {hasAISuggest && (
@@ -34,12 +44,12 @@ export const InputWithAI = React.forwardRef<HTMLInputElement, InputWithAIProps>(
             >
               {isAIGenerating ? (
                 <>
-                  <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                  <LoaderPinwheelIcon size={12} className="mr-1" />
                   <span className="hidden sm:inline">Gerando...</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-3 h-3 mr-1" />
+                  <SparklesIcon size={12} className="mr-1" />
                   <span className="hidden sm:inline">{aiSuggestLabel}</span>
                 </>
               )}
@@ -47,8 +57,8 @@ export const InputWithAI = React.forwardRef<HTMLInputElement, InputWithAIProps>(
           </div>
         )}
       </div>
-    )
+    );
   }
-)
+);
 
-InputWithAI.displayName = 'InputWithAI'
+InputWithAI.displayName = "InputWithAI";

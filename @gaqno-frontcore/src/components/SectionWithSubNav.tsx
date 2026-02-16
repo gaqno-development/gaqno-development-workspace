@@ -122,7 +122,7 @@ export function SectionWithSubNav({
   breadcrumbRoot,
   enableContentTransition = false,
   collapsible = true,
-  defaultCollapsed = false,
+  defaultCollapsed = true,
   navGroups,
 }: SectionWithSubNavProps) {
   const { pathname } = useLocation();
@@ -230,11 +230,13 @@ export function SectionWithSubNav({
   const navContent =
     variant === "vertical" && canCollapse ? (
       <TooltipProvider delayDuration={300}>
-        <div className={cn(navWrapperClassName, collapsed ? "w-[52px]" : "min-w-[180px]")}>
-          <nav
-            className={navClassName}
-            aria-label={`${title} sub-navigation`}
-          >
+        <div
+          className={cn(
+            navWrapperClassName,
+            collapsed ? "w-[52px]" : "min-w-[180px]"
+          )}
+        >
+          <nav className={navClassName} aria-label={`${title} sub-navigation`}>
             {collapseButton}
             <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden flex flex-col gap-1">
               {linkList}
@@ -337,7 +339,9 @@ export function SectionWithSubNav({
           <PanelLeft className="h-5 w-5" />
         </Button>
       )}
-      {(breadcrumbRoot != null || breadcrumbCollapseButton != null || mobileNavTrigger != null) && (
+      {(breadcrumbRoot != null ||
+        breadcrumbCollapseButton != null ||
+        mobileNavTrigger != null) && (
         <nav
           aria-label={breadcrumbRoot != null ? "Breadcrumb" : undefined}
           className="flex items-center gap-2 text-sm text-muted-foreground mb-4 shrink-0"
@@ -350,7 +354,10 @@ export function SectionWithSubNav({
               >
                 {breadcrumbRoot.label}
               </Link>
-              <ChevronRight className="h-4 w-4 text-muted-foreground" aria-hidden />
+              <ChevronRight
+                className="h-4 w-4 text-muted-foreground"
+                aria-hidden
+              />
             </>
           ) : null}
           <span className="text-foreground font-medium">{title}</span>

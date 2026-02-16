@@ -1,43 +1,44 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useEffect } from 'react'
-import { useIsRootAdmin } from '../../hooks/usePermissions'
-import { useAuth } from '../../hooks/useAuth'
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { LoaderPinwheelIcon } from "../ui/loader-pinwheel";
+import { useIsRootAdmin } from "../../hooks/usePermissions";
+import { useAuth } from "../../hooks/useAuth";
 
 interface IRootAdminGuardProps {
-  children: React.ReactNode
-  fallback?: React.ReactNode
-  redirectTo?: string
+  children: React.ReactNode;
+  fallback?: React.ReactNode;
+  redirectTo?: string;
 }
 
 export const RootAdminGuard: React.FC<IRootAdminGuardProps> = ({
   children,
   fallback,
-  redirectTo = '/dashboard',
+  redirectTo = "/dashboard",
 }) => {
-  const navigate = useNavigate()
-  const { loading } = useAuth()
-  const isRootAdmin = useIsRootAdmin()
+  const navigate = useNavigate();
+  const { loading } = useAuth();
+  const isRootAdmin = useIsRootAdmin();
 
   useEffect(() => {
     if (!loading && !isRootAdmin) {
       if (redirectTo) {
-        navigate(redirectTo)
+        navigate(redirectTo);
       }
     }
-  }, [isRootAdmin, loading, navigate, redirectTo])
+  }, [isRootAdmin, loading, navigate, redirectTo]);
 
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        <LoaderPinwheelIcon size={48} />
       </div>
-    )
+    );
   }
 
   if (!isRootAdmin) {
     if (fallback) {
-      return <>{fallback}</>
+      return <>{fallback}</>;
     }
 
     return (
@@ -47,11 +48,10 @@ export const RootAdminGuard: React.FC<IRootAdminGuardProps> = ({
           You need Root Administrator privileges to access this area.
         </p>
       </div>
-    )
+    );
   }
 
-  return <>{children}</>
-}
+  return <>{children}</>;
+};
 
-RootAdminGuard.displayName = 'RootAdminGuard'
-
+RootAdminGuard.displayName = "RootAdminGuard";

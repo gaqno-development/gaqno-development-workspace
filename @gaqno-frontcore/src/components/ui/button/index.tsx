@@ -1,12 +1,26 @@
-import React from 'react'
-import { Slot } from '@radix-ui/react-slot'
-import { cn } from '../../../lib/utils'
-import { IButtonProps } from './types'
-import { useButton } from './hooks/useButton'
-import { buttonVariants } from './variants'
+import React from "react";
+import { Slot } from "@radix-ui/react-slot";
+import { cn } from "../../../lib/utils";
+import { IButtonProps } from "./types";
+import { useButton } from "./hooks/useButton";
+import { buttonVariants } from "./variants";
+import { LoaderPinwheelIcon } from "../loader-pinwheel";
 
 export const Button = React.forwardRef<HTMLButtonElement, IButtonProps>(
-  ({ className, variant, size, disabled, loading, onClick, children, asChild = false, ...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      disabled,
+      loading,
+      onClick,
+      children,
+      asChild = false,
+      ...props
+    },
+    ref
+  ) => {
     const { isPressed, handleMouseDown, handleMouseUp } = useButton({
       variant,
       size,
@@ -14,9 +28,9 @@ export const Button = React.forwardRef<HTMLButtonElement, IButtonProps>(
       loading,
       onClick,
       children,
-    })
-    
-    const Comp = asChild ? Slot : 'button'
+    });
+
+    const Comp = asChild ? Slot : "button";
 
     return (
       <Comp
@@ -30,16 +44,15 @@ export const Button = React.forwardRef<HTMLButtonElement, IButtonProps>(
       >
         {loading ? (
           <>
-            <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent" />
+            <LoaderPinwheelIcon size={16} className="mr-2" />
             {children}
           </>
         ) : (
           children
         )}
       </Comp>
-    )
+    );
   }
-)
+);
 
-Button.displayName = 'Button'
-
+Button.displayName = "Button";

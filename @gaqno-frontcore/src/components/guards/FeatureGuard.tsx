@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { LoaderPinwheelIcon } from "../ui/loader-pinwheel";
 import { FeatureModule, FeaturePermissionLevel } from "../../types/user";
 import { useHasFeatureRole } from "../../hooks/usePermissions";
 import { useAuth } from "../../hooks/useAuth";
@@ -38,7 +39,7 @@ export const FeatureGuard: React.FC<IFeatureGuardProps> = ({
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        <LoaderPinwheelIcon size={48} />
       </div>
     );
   }

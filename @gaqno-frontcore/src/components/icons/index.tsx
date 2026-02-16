@@ -56,3 +56,8 @@ export const XIcon: LucideIcon = X;
 export const MagnifierIcon: LucideIcon = Search;
 export const TriangleAlertIcon: LucideIcon = TriangleAlert;
 export const BulbSvg: LucideIcon = Lightbulb;
+
+export { BellIcon as AnimatedBellIcon } from "../ui/bell";
+export { ClapIcon as AnimatedClapIcon } from "../ui/clap";
+export { LoaderPinwheelIcon } from "../ui/loader-pinwheel";
+export { SparklesIcon as AnimatedSparklesIcon } from "../ui/sparkles";

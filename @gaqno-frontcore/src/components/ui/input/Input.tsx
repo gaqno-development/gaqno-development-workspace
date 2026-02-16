@@ -1,31 +1,44 @@
-import React from 'react'
-import { cn } from '../../../lib/utils'
-import { IInputProps } from './types'
-import { useInput } from './hooks/useInput'
-import { Button } from '../button'
-import { Sparkles, Loader2 } from 'lucide-react'
-import { InputHTMLAttributes } from 'react'
+import React from "react";
+import { cn } from "../../../lib/utils";
+import { IInputProps } from "./types";
+import { useInput } from "./hooks/useInput";
+import { Button } from "../button";
+import { LoaderPinwheelIcon } from "../loader-pinwheel";
+import { SparklesIcon } from "../sparkles";
+import { InputHTMLAttributes } from "react";
 
-const CUSTOM_PROPS: readonly string[] = ['error', 'showAISuggest', 'onAISuggest', 'isAIGenerating', 'aiSuggestLabel'] as const
+const CUSTOM_PROPS: readonly string[] = [
+  "error",
+  "showAISuggest",
+  "onAISuggest",
+  "isAIGenerating",
+  "aiSuggestLabel",
+] as const;
 
 export const Input = React.forwardRef<HTMLInputElement, IInputProps>(
-  ({ 
-    className, 
-    type, 
-    error, 
-    showAISuggest = false,
-    onAISuggest,
-    isAIGenerating = false,
-    aiSuggestLabel = 'Gerar com IA',
-    ...restProps 
-  }, ref) => {
-    const hasAISuggest = showAISuggest && onAISuggest
+  (
+    {
+      className,
+      type,
+      error,
+      showAISuggest = false,
+      onAISuggest,
+      isAIGenerating = false,
+      aiSuggestLabel = "Gerar com IA",
+      ...restProps
+    },
+    ref
+  ) => {
+    const hasAISuggest = showAISuggest && onAISuggest;
 
     const inputProps = Object.fromEntries(
       Object.entries(restProps).filter(([key]) => !CUSTOM_PROPS.includes(key))
-    ) as InputHTMLAttributes<HTMLInputElement>
+    ) as InputHTMLAttributes<HTMLInputElement>;
 
-    const { isFocused, handleFocus, handleBlur } = useInput({ error, ...inputProps })
+    const { isFocused, handleFocus, handleBlur } = useInput({
+      error,
+      ...inputProps,
+    });
 
     return (
       <div className="w-full">
@@ -33,9 +46,9 @@ export const Input = React.forwardRef<HTMLInputElement, IInputProps>(
           <input
             type={type}
             className={cn(
-              'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-              error && 'border-destructive focus-visible:ring-destructive',
-              hasAISuggest && 'pr-28',
+              "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+              error && "border-destructive focus-visible:ring-destructive",
+              hasAISuggest && "pr-28",
               className
             )}
             ref={ref}
@@ -55,12 +68,12 @@ export const Input = React.forwardRef<HTMLInputElement, IInputProps>(
               >
                 {isAIGenerating ? (
                   <>
-                    <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                    <LoaderPinwheelIcon size={12} className="mr-1" />
                     <span className="hidden sm:inline">Gerando...</span>
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-3 h-3 mr-1" />
+                    <SparklesIcon size={12} className="mr-1" />
                     <span className="hidden sm:inline">{aiSuggestLabel}</span>
                   </>
                 )}
@@ -68,12 +81,10 @@ export const Input = React.forwardRef<HTMLInputElement, IInputProps>(
             </div>
           )}
         </div>
-        {error && (
-          <p className="mt-1 text-sm text-destructive">{error}</p>
-        )}
+        {error && <p className="mt-1 text-sm text-destructive">{error}</p>}
       </div>
-    )
+    );
   }
-)
+);
 
-Input.displayName = 'Input'
+Input.displayName = "Input";
