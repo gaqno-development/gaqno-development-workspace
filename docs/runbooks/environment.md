@@ -133,6 +133,24 @@ When widgets, summary, or preferences fail with `net::ERR_CONNECTION_TIMED_OUT`,
 
 **Check:** After redeploy, reload the portal page that loads the omnichannel MFE and open DevTools → Network. Requests to `https://api.gaqno.com.br/omnichannel/v1/...` should return 200, not CORS errors.
 
+## Troubleshooting: AI module CORS (models endpoint)
+
+**Symptom:** In the AI module (portal), requests to `https://api.gaqno.com.br/ai/v1/models` (or `/v1/models/registry`, `/v1/videos/models`, etc.) fail with **CORS error** in the browser; other api.gaqno.com.br endpoints (e.g. widgets, me, preferences) return 200 or 304.
+
+**Cause:** The AI backend (gaqno-ai-service) must allow the portal origin. Backcore allows `https://portal.gaqno.com.br` and `*.gaqno.com.br` by default. If the reverse proxy in front of api.gaqno.com.br does **not forward the Origin header** to gaqno-ai-service, or answers **OPTIONS preflight** itself without CORS headers, the browser blocks the request.
+
+**Fix in Coolify:**
+
+1. Open **gaqno-ai-service** → **Environment**.
+2. Ensure **CORS_ORIGIN** is either unset (so backcore uses regex and always-allowed origins), or includes the portal, e.g.:
+   ```
+   CORS_ORIGIN=https://portal.gaqno.com.br,https://portal.dev.gaqno.com.br,https://api.gaqno.com.br
+   ```
+3. Ensure the reverse proxy **forwards the Origin header** to gaqno-ai-service (same as for SSO/Omnichannel). OPTIONS requests must be proxied to the app so Nest can respond with CORS headers.
+4. **Redeploy** gaqno-ai-service.
+
+**Check:** Reload the AI module in the portal and open DevTools → Network. Requests to `https://api.gaqno.com.br/ai/v1/models` should return 200 with `Access-Control-Allow-Origin: https://portal.gaqno.com.br` (or the request origin) in the response headers.
+
 ## Coolify: SSO vs Omnichannel (backend) comparison
 
 Use this to align **gaqno-omnichannel-service** with **gaqno-sso-service** in Coolify when SSO works and Omnichannel does not.

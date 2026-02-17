@@ -46,6 +46,13 @@ const gaqnoHttpOriginRegex =
 const localhostOriginRegex =
   /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
 
+const ALWAYS_ALLOWED_ORIGINS = new Set([
+  "https://portal.gaqno.com.br",
+  "http://portal.gaqno.com.br",
+  "https://portal.dev.gaqno.com.br",
+  "http://portal.dev.gaqno.com.br",
+]);
+
 export interface GetCorsOptionsOverrides {
   allowedHeaders?: string[];
 }
@@ -93,6 +100,7 @@ export function getCorsOptions(
     if (corsOrigin === "*") return true;
     if (!norm) return true;
     return (
+      ALWAYS_ALLOWED_ORIGINS.has(norm) ||
       (allowedList?.has(norm) ?? false) ||
       gaqnoHttpsOriginRegex.test(norm) ||
       gaqnoHttpOriginRegex.test(norm) ||
