@@ -130,7 +130,7 @@ export function UsageByUserView({
               <span>Você ({user?.email ?? row.original.userId})</span>
             ) : (
               (userDisplayMap[row.original.userId as string] ??
-                String(row.original.userId))
+              String(row.original.userId))
             )}
           </span>
         ),
@@ -159,9 +159,7 @@ export function UsageByUserView({
             <PieChart className="h-8 w-8" />
             {noTenantTitle}
           </h1>
-          <p className="text-muted-foreground mt-1">
-            {noTenantDescription}
-          </p>
+          <p className="text-muted-foreground mt-1">{noTenantDescription}</p>
         </div>
         <Card>
           <CardHeader>
