@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
- * Creates a new gaqno project with UI and Service.
+ * Creates a new gaqno project with UI and/or Service.
  *
- * Usage: node scripts/create-project.js <name> [--ui-port=3XXX] [--service-port=4XXX]
+ * Usage:
+ *   Interactive: node scripts/create-project.js --interactive  (or -i)
+ *   CLI:         node scripts/create-project.js <name> [--type=frontend|backend|both] [--ui-port=3XXX] [--service-port=4XXX] [--install]
  *
- * Example: node scripts/create-project.js inventory --ui-port=3011 --service-port=4011
- *
- * Default ports: 3011 (UI), 4011 (Service)
+ * Default: type=both, UI port 3011, Service port 4011
  */
 
 const fs = require("fs");
@@ -14,9 +14,31 @@ const path = require("path");
 
 const ROOT = path.resolve(__dirname, "..");
 
+const BANNER = `
+  \x1b[36m╔══════════════════════════════════════════╗\x1b[0m
+  \x1b[36m║\x1b[0m   \x1b[1mGaqno — Create new module\x1b[0m              \x1b[36m║\x1b[0m
+  \x1b[36m╚══════════════════════════════════════════╝\x1b[0m
+`;
+const COLORS = {
+  dim: "\x1b[2m",
+  green: "\x1b[32m",
+  cyan: "\x1b[36m",
+  yellow: "\x1b[33m",
+  reset: "\x1b[0m",
+  bold: "\x1b[1m",
+};
+
+const TYPE_FRONTEND = "frontend";
+const TYPE_BACKEND = "backend";
+const TYPE_BOTH = "both";
+const VALID_TYPES = [TYPE_FRONTEND, TYPE_BACKEND, TYPE_BOTH];
+
 function parseArgs() {
   const args = process.argv.slice(2);
   const name = args.find((a) => !a.startsWith("--"));
+  const typeRaw =
+    args.find((a) => a.startsWith("--type="))?.split("=")[1] || TYPE_BOTH;
+  const type = VALID_TYPES.includes(typeRaw) ? typeRaw : TYPE_BOTH;
   const uiPort = parseInt(
     args.find((a) => a.startsWith("--ui-port="))?.split("=")[1] || "3011",
     10
@@ -28,17 +50,20 @@ function parseArgs() {
   const install = args.includes("--install");
   if (!name || !/^[a-z][a-z0-9-]*$/.test(name)) {
     console.error(
-      "Usage: node scripts/create-project.js <name> [--ui-port=3XXX] [--service-port=4XXX] [--install]"
+      "Usage: node scripts/create-project.js <name> [--type=frontend|backend|both] [--ui-port=3XXX] [--service-port=4XXX] [--install]"
     );
     console.error(
       "  name: lowercase, alphanumeric and hyphens (e.g. inventory, my-module)"
+    );
+    console.error(
+      "  --type: frontend (UI only), backend (service only), or both (default)"
     );
     console.error(
       "  --install: run npm install in each package after creation"
     );
     process.exit(1);
   }
-  return { name, uiPort, servicePort, install };
+  return { name, type, uiPort, servicePort, install };
 }
 
 function toPascalCase(str) {
@@ -89,6 +114,8 @@ function createService({ name, servicePort }) {
           "@nestjs/config": "^3.2.2",
           "@nestjs/core": "^11.0.1",
           "@nestjs/platform-express": "^11.0.1",
+          "class-transformer": "^0.5.1",
+          "class-validator": "^0.14.1",
           "reflect-metadata": "^0.2.2",
           rxjs: "^7.8.1",
         },
@@ -176,22 +203,89 @@ module.exports = {
   },
 };
 `,
+    ".npmrc": "@gaqno-development:registry=https://npm.pkg.github.com\n",
+    "src/common/http-exception.filter.ts": `import {
+  ExceptionFilter,
+  Catch,
+  ArgumentsHost,
+  HttpException,
+} from "@nestjs/common";
+import { Request, Response } from "express";
+
+@Catch(HttpException)
+export class HttpExceptionFilter implements ExceptionFilter {
+  catch(exception: HttpException, host: ArgumentsHost): void {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
+    const status = exception.getStatus();
+    const exceptionResponse = exception.getResponse();
+    const message =
+      typeof exceptionResponse === "string"
+        ? exceptionResponse
+        : (exceptionResponse as Record<string, unknown>).message ||
+          exception.message;
+
+    response.status(status).json({
+      statusCode: status,
+      message,
+      timestamp: new Date().toISOString(),
+      path: request.url,
+    });
+  }
+}
+`,
     "src/main.ts": `import { NestFactory } from "@nestjs/core";
+import { ConfigService } from "@nestjs/config";
+import { ValidationPipe } from "@nestjs/common";
+import { Request, Response, NextFunction } from "express";
+import { HttpExceptionFilter } from "./common/http-exception.filter";
 import { AppModule } from "./app.module";
+
+function stripPrefix(req: Request, _res: Response, next: NextFunction): void {
+  if (req.path.startsWith("/${name}/")) {
+    req.url = req.url.replace(/^\\/${name}/, "") || "/";
+  }
+  next();
+}
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
-  const port = process.env.PORT ?? ${servicePort};
-  const corsOrigin = process.env.CORS_ORIGIN ?? "*";
+  const config = app.get(ConfigService);
 
+  app.use(stripPrefix);
+
+  const corsOrigin =
+    config.get<string>("CORS_ORIGIN") ??
+    process.env.CORS_ORIGIN ??
+    process.env.ALLOWED_ORIGINS ??
+    "*";
   app.enableCors({
     origin:
-      corsOrigin === "*" ? true : corsOrigin.split(",").map((o) => o.trim()),
+      corsOrigin === "*"
+        ? true
+        : corsOrigin.split(",").map((item) => item.trim()),
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "Referer",
+      "User-Agent",
+      "sec-ch-ua",
+      "sec-ch-ua-mobile",
+      "sec-ch-ua-platform",
+    ],
+    exposedHeaders: ["Content-Length", "Content-Type"],
+    optionsSuccessStatus: 204,
   });
 
+  app.setGlobalPrefix("v1");
+  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+
+  const port = config.get<number>("PORT") ?? ${servicePort};
   await app.listen(port);
   console.log(\`${pascal} Service is running on: http://localhost:\${port}\`);
 }
@@ -216,34 +310,42 @@ export class AppModule {}
     Dockerfile: `FROM node:20-alpine AS builder
 WORKDIR /app
 
+ARG NPM_TOKEN
 COPY package*.json ./
 COPY .npmrc* ./
 COPY tsconfig*.json ./
 COPY nest-cli.json ./
 
+RUN if [ -n "$NPM_TOKEN" ]; then echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" >> .npmrc 2>/dev/null || true; fi
 RUN --mount=type=cache,target=/root/.npm \\
     npm config set fetch-timeout 1200000 && \\
     npm config set fetch-retries 10 && \\
-    npm install --legacy-peer-deps --include=dev
+    npm install --legacy-peer-deps --ignore-scripts --include=dev
 
 COPY src ./src
 
-RUN npm run build
+RUN npx nest build
 
 FROM node:20-alpine AS runner
 WORKDIR /app
 
+RUN apk add --no-cache wget
+ARG NPM_TOKEN
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/.npmrc* ./
 COPY --from=builder /app/dist ./dist
 
+RUN if [ -n "$NPM_TOKEN" ]; then echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" >> .npmrc 2>/dev/null || true; fi
 RUN --mount=type=cache,target=/root/.npm \\
     npm config set fetch-timeout 1200000 && \\
     npm config set fetch-retries 10 && \\
-    npm install --omit=dev --legacy-peer-deps
+    npm install --omit=dev --legacy-peer-deps --ignore-scripts
 
 ENV NODE_ENV=production
+ENV PORT=${servicePort}
 EXPOSE ${servicePort}
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \\
+  CMD wget -q -O /dev/null "http://127.0.0.1:${servicePort}/v1" || exit 1
 CMD ["node", "dist/main.js"]
 `,
   };
@@ -254,7 +356,7 @@ CMD ["node", "dist/main.js"]
   console.log(`Created gaqno-${name}-service (port ${servicePort})`);
 }
 
-function createUI({ name, uiPort }) {
+function createUI({ name, uiPort, servicePort }) {
   const dir = path.join(ROOT, `gaqno-${name}-ui`);
   if (fs.existsSync(dir)) {
     console.error(`gaqno-${name}-ui already exists`);
@@ -280,7 +382,7 @@ function createUI({ name, uiPort }) {
           test: `echo "No tests in gaqno-${name}-ui"`,
         },
         dependencies: {
-          "@gaqno-development/frontcore": "^1.0.27",
+          "@gaqno-development/frontcore": "^1.0.35",
           "@tanstack/react-query": "^5.90.12",
           "lucide-react": "^0.468.0",
           react: "^18",
@@ -306,7 +408,7 @@ function createUI({ name, uiPort }) {
           "@commitlint/config-conventional": "^19.6.0",
         },
         overrides: {
-          "@gaqno-development/core": "npm:@gaqno-development/frontcore@^1.0.27",
+          "@gaqno-development/core": "npm:@gaqno-development/frontcore@^1.0.35",
         },
       },
       null,
@@ -517,6 +619,7 @@ declare module "*.svg" {
     "src/pages/.gitkeep": "",
     "src/types/.gitkeep": "",
     "src/utils/.gitkeep": "",
+    ".npmrc": "@gaqno-development:registry=https://npm.pkg.github.com\n",
     Dockerfile: `FROM node:20-alpine AS base
 RUN apk add --no-cache git libc6-compat
 
@@ -525,14 +628,23 @@ WORKDIR /app
 
 COPY package.json ./
 COPY .npmrc* ./
+ARG NPM_TOKEN
+ARG VITE_SERVICE_${name.toUpperCase().replace(/-/g, "_")}_URL=http://localhost:${servicePort}
+ENV VITE_SERVICE_${name.toUpperCase().replace(/-/g, "_")}_URL=\$VITE_SERVICE_${name.toUpperCase().replace(/-/g, "_")}_URL
+RUN if [ -z "$NPM_TOKEN" ] || [ "$NPM_TOKEN" = "REPLACE_WITH_GITHUB_PAT_IN_COOLIFY_UI" ]; then \\
+    echo "ERROR: NPM_TOKEN must be set in Coolify Build Arguments (GitHub PAT with read:packages)."; exit 1; \\
+    fi && \\
+    printf '%s\\\\n' "@gaqno-development:registry=https://npm.pkg.github.com" "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" > .npmrc
+ENV NODE_ENV=development
 RUN --mount=type=cache,target=/root/.npm \\
     npm config set fetch-timeout 1200000 && \\
     npm config set fetch-retries 10 && \\
     npm install --legacy-peer-deps --include=dev
 
 COPY . .
-RUN mkdir -p public
-RUN npm run build
+RUN mkdir -p public && \\
+    (find node_modules -name useDialogForm.ts -exec sed -i.bak '/@ts-expect-error/d' {} \\; -exec rm -f {}.bak \\; 2>/dev/null || true) && \\
+    npm run build
 
 FROM nginx:alpine AS runner
 WORKDIR /app
@@ -543,8 +655,7 @@ COPY --from=builder /app/public /usr/share/nginx/html/public
 RUN echo 'server { listen ${uiPort}; server_name _; root /usr/share/nginx/html; index index.html; absolute_redirect off; \\
     location ${basePath}assets/ { alias /usr/share/nginx/html/assets/; add_header Cache-Control "public, immutable"; add_header Access-Control-Allow-Origin "*"; } \\
     location /assets/ { alias /usr/share/nginx/html/assets/; add_header Cache-Control "public, immutable"; add_header Access-Control-Allow-Origin "*"; } \\
-    location ${basePath} { try_files $uri $uri/ /index.html; } \\
-    location / { return 302 ${basePath}; } }' > /etc/nginx/conf.d/default.conf
+    location / { try_files \$uri \$uri/ /index.html; } }' > /etc/nginx/conf.d/default.conf
 
 EXPOSE ${uiPort}
 CMD ["nginx", "-g", "daemon off;"]
@@ -557,51 +668,71 @@ CMD ["nginx", "-g", "daemon off;"]
   console.log(`Created gaqno-${name}-ui (port ${uiPort})`);
 }
 
-function updateWorkspaces(name) {
+function updateWorkspaces(name, type) {
   const pkgPath = path.join(ROOT, "package.json");
   const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
   const workspaces = pkg.workspaces || [];
   const ui = `gaqno-${name}-ui`;
   const svc = `gaqno-${name}-service`;
-  if (!workspaces.includes(ui)) workspaces.push(ui);
-  if (!workspaces.includes(svc)) workspaces.push(svc);
+  if (
+    (type === TYPE_FRONTEND || type === TYPE_BOTH) &&
+    !workspaces.includes(ui)
+  )
+    workspaces.push(ui);
+  if (
+    (type === TYPE_BACKEND || type === TYPE_BOTH) &&
+    !workspaces.includes(svc)
+  )
+    workspaces.push(svc);
   workspaces.sort();
   pkg.workspaces = workspaces;
   fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2), "utf8");
   console.log("Updated root package.json workspaces");
 }
 
-function setupHusky(name) {
+function setupHusky(name, type) {
   const addHusky = path.join(ROOT, "scripts", "add-husky-to-package.js");
   if (!fs.existsSync(addHusky)) return;
-  const uiPkg = path.join(ROOT, `gaqno-${name}-ui`, "package.json");
-  const svcPkg = path.join(ROOT, `gaqno-${name}-service`, "package.json");
   try {
-    require("child_process").execSync(`node "${addHusky}" "${uiPkg}"`, {
-      stdio: "inherit",
-    });
-    require("child_process").execSync(`node "${addHusky}" "${svcPkg}"`, {
-      stdio: "inherit",
-    });
+    if (type === TYPE_FRONTEND || type === TYPE_BOTH) {
+      const uiPkg = path.join(ROOT, `gaqno-${name}-ui`, "package.json");
+      if (fs.existsSync(uiPkg))
+        require("child_process").execSync(`node "${addHusky}" "${uiPkg}"`, {
+          stdio: "inherit",
+        });
+    }
+    if (type === TYPE_BACKEND || type === TYPE_BOTH) {
+      const svcPkg = path.join(ROOT, `gaqno-${name}-service`, "package.json");
+      if (fs.existsSync(svcPkg))
+        require("child_process").execSync(`node "${addHusky}" "${svcPkg}"`, {
+          stdio: "inherit",
+        });
+    }
   } catch (_) {
     console.warn("Husky setup skipped (run manually if needed)");
   }
 }
 
-function runInstall(name) {
+function runInstall(name, type) {
   const { execSync } = require("child_process");
-  const uiDir = path.join(ROOT, `gaqno-${name}-ui`);
-  const svcDir = path.join(ROOT, `gaqno-${name}-service`);
   console.log("\nInstalling dependencies...");
   try {
-    execSync("npm install --legacy-peer-deps", {
-      cwd: uiDir,
-      stdio: "inherit",
-    });
-    execSync("npm install --legacy-peer-deps", {
-      cwd: svcDir,
-      stdio: "inherit",
-    });
+    if (type === TYPE_FRONTEND || type === TYPE_BOTH) {
+      const uiDir = path.join(ROOT, `gaqno-${name}-ui`);
+      if (fs.existsSync(uiDir))
+        execSync("npm install --legacy-peer-deps", {
+          cwd: uiDir,
+          stdio: "inherit",
+        });
+    }
+    if (type === TYPE_BACKEND || type === TYPE_BOTH) {
+      const svcDir = path.join(ROOT, `gaqno-${name}-service`);
+      if (fs.existsSync(svcDir))
+        execSync("npm install --legacy-peer-deps", {
+          cwd: svcDir,
+          stdio: "inherit",
+        });
+    }
   } catch (e) {
     console.warn(
       "Install failed - run manually: npm install --legacy-peer-deps in each package"
@@ -609,33 +740,142 @@ function runInstall(name) {
   }
 }
 
-function main() {
-  const { name, uiPort, servicePort, install } = parseArgs();
+function run(options) {
+  const { name, type, uiPort, servicePort, install } = options;
+  const creatingUI = type === TYPE_FRONTEND || type === TYPE_BOTH;
+  const creatingSvc = type === TYPE_BACKEND || type === TYPE_BOTH;
   console.log(
-    `Creating project: ${name} (UI: ${uiPort}, Service: ${servicePort})\n`
+    `\n${COLORS.cyan}Creating project: ${COLORS.bold}${name}${COLORS.reset} ${COLORS.dim}(type: ${type}${creatingUI ? `, UI: ${uiPort}` : ""}${creatingSvc ? `, Service: ${servicePort}` : ""})${COLORS.reset}\n`
   );
-  createService({ name, servicePort });
-  createUI({ name, uiPort });
-  updateWorkspaces(name);
-  setupHusky(name);
-  if (install) runInstall(name);
-  console.log("\nDone! Next steps:");
-  if (!install)
+  if (creatingSvc) createService({ name, servicePort });
+  if (creatingUI) createUI({ name, uiPort, servicePort });
+  updateWorkspaces(name, type);
+  setupHusky(name, type);
+  if (install) runInstall(name, type);
+  console.log(
+    `\n${COLORS.green}${COLORS.bold}Done!${COLORS.reset} Next steps:\n`
+  );
+  let step = 1;
+  if (!install) {
     console.log(
-      `  1. npm install (from workspace root) or install in each package`
+      `  ${COLORS.dim}${step}.${COLORS.reset} npm install (from workspace root) or install in each package`
     );
-  console.log(
-    `  ${install ? "1" : "2"}. Add MFE_${name.toUpperCase()}_URL to gaqno-shell-ui vite.config.ts`
-  );
-  console.log(
-    `  ${install ? "2" : "3"}. Add /${name} routes to gaqno-shell-ui App.tsx`
-  );
-  console.log(
-    `  ${install ? "3" : "4"}. Add VITE_SERVICE_${name.toUpperCase()}_URL to frontend env`
-  );
-  console.log(
-    `  ${install ? "4" : "5"}. Add dev:${name} and dev:${name}-service to root package.json scripts`
-  );
+    step++;
+  }
+  if (creatingUI) {
+    console.log(
+      `  ${COLORS.dim}${step}.${COLORS.reset} Add MFE_${name.toUpperCase()}_URL to gaqno-shell-ui vite.config.ts`
+    );
+    step++;
+    console.log(
+      `  ${COLORS.dim}${step}.${COLORS.reset} Add /${name} routes to gaqno-shell-ui App.tsx`
+    );
+    step++;
+    console.log(
+      `  ${COLORS.dim}${step}.${COLORS.reset} Add VITE_SERVICE_${name.toUpperCase()}_URL to frontend env`
+    );
+    step++;
+  }
+  if (creatingUI || creatingSvc) {
+    const scripts = [];
+    if (creatingUI) scripts.push(`dev:${name}`);
+    if (creatingSvc) scripts.push(`dev:${name}-service`);
+    console.log(
+      `  ${COLORS.dim}${step}.${COLORS.reset} Add ${scripts.join(" and ")} to root package.json scripts`
+    );
+  }
+  console.log("");
+}
+
+async function runInteractive() {
+  const inquirer = require("inquirer");
+  console.log(BANNER);
+  const { name } = await inquirer.prompt([
+    {
+      type: "input",
+      name: "name",
+      message: "Project name (lowercase, e.g. inventory, my-module)",
+      validate: (input) =>
+        /^[a-z][a-z0-9-]*$/.test(input)
+          ? true
+          : "Use only lowercase letters, numbers, and hyphens. Must start with a letter.",
+      filter: (input) => input.trim(),
+    },
+  ]);
+  const { type } = await inquirer.prompt([
+    {
+      type: "list",
+      name: "type",
+      message: "What to create?",
+      choices: [
+        { name: "Both — UI (MFE) + Backend (NestJS)", value: TYPE_BOTH },
+        { name: "Frontend only — gaqno-{name}-ui", value: TYPE_FRONTEND },
+        { name: "Backend only — gaqno-{name}-service", value: TYPE_BACKEND },
+      ],
+      default: TYPE_BOTH,
+    },
+  ]);
+  const creatingUI = type === TYPE_FRONTEND || type === TYPE_BOTH;
+  const creatingSvc = type === TYPE_BACKEND || type === TYPE_BOTH;
+  const portPrompts = [];
+  if (creatingUI) {
+    portPrompts.push({
+      type: "input",
+      name: "uiPort",
+      message: "UI dev port",
+      default: "3011",
+      validate: (v) =>
+        (/^\d+$/.test(v) && parseInt(v, 10) > 0) || "Enter a positive number",
+    });
+  }
+  if (creatingSvc) {
+    portPrompts.push({
+      type: "input",
+      name: "servicePort",
+      message: "Service port",
+      default: "4011",
+      validate: (v) =>
+        (/^\d+$/.test(v) && parseInt(v, 10) > 0) || "Enter a positive number",
+    });
+  }
+  const ports = await inquirer.prompt(portPrompts);
+  const { install } = await inquirer.prompt([
+    {
+      type: "confirm",
+      name: "install",
+      message: "Run npm install in new package(s) after creation?",
+      default: true,
+    },
+  ]);
+  return {
+    name,
+    type,
+    uiPort: parseInt(ports.uiPort || "3011", 10),
+    servicePort: parseInt(ports.servicePort || "4011", 10),
+    install,
+  };
+}
+
+function main() {
+  const args = process.argv.slice(2);
+  const interactive =
+    args.length === 0 || args.includes("-i") || args.includes("--interactive");
+  if (interactive) {
+    runInteractive()
+      .then((options) => run(options))
+      .catch((err) => {
+        console.error(err.message || err);
+        process.exit(1);
+      });
+    return;
+  }
+  let options;
+  try {
+    options = parseArgs();
+  } catch (e) {
+    process.exit(1);
+  }
+  run(options);
 }
 
 main();

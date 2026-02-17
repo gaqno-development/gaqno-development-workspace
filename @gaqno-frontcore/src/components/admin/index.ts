@@ -1,8 +1,13 @@
 export * from "./domains/DomainForm";
+export * from "./domains/DomainsList";
 export * from "./domains/SSLStatusCard";
 export * from "./domains/SSLChecker";
 export * from "./tenants/TenantCostsCard";
+export { TenantCostsCard as TenantCostsSummary } from "./tenants/TenantCostsCard";
 export * from "./tenants/TenantForm";
+export * from "./tenants/TenantsList";
+export * from "./CostingView";
+export * from "./UsersList";
 export * from "./branches/BranchesList";
 export * from "./branches/BranchForm";
 export * from "./UserForm";

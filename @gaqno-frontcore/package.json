@@ -41,6 +41,7 @@
     "./components/admin": "./src/components/admin/index.ts",
     "./components/admin/*": "./src/components/admin/*",
     "./components/model-select": "./src/components/model-select/index.ts",
+    "./components/ai": "./src/components/ai/index.ts",
     "./components/SectionWithSubNav": "./src/components/SectionWithSubNav.tsx",
     "./styles": "./src/styles/index.ts",
     "./styles/globals.css": "./src/styles/globals.css",

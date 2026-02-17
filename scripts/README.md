@@ -20,19 +20,44 @@ Executar a partir do workspace root. Os workflows são copiados de `scripts/work
 
 ## create-project.js
 
-Cria um novo projeto Gaqno com UI (MFE) e Service (NestJS).
+Cria um novo projeto Gaqno com UI (MFE) e/ou Service (NestJS).
 
-### Uso
+### Modo interativo (recomendado)
+
+Sem argumentos, o script abre uma interface interativa no terminal:
+
+```bash
+npm run create-project
+```
+
+Serão solicitados: nome do projeto, tipo (frontend / backend / ambos), portas e se deve rodar `npm install` ao final.
+
+### Uso em linha de comando
 
 ```bash
 npm run create-project -- <nome> [opções]
 ```
 
+Ou forçar o modo interativo com `-i` ou `--interactive` mesmo tendo outros argumentos.
+
+### Parâmetros
+
+- **--type=frontend | backend | both** (default: both) — Cria só o frontend (gaqno-{nome}-ui), só o backend (gaqno-{nome}-service), ou os dois.
+- **--ui-port=3XXX** — Porta do dev server da UI (default: 3011).
+- **--service-port=4XXX** — Porta do service NestJS (default: 4011).
+- **--install** — Executa `npm install --legacy-peer-deps` em cada pacote criado.
+
 ### Exemplos
 
 ```bash
-# Projeto "inventory" com portas padrão (UI: 3011, Service: 4011)
+# Projeto "inventory" completo (UI + Service) com portas padrão
 npm run create-project -- inventory
+
+# Apenas frontend
+npm run create-project -- inventory --type=frontend
+
+# Apenas backend
+npm run create-project -- inventory --type=backend
 
 # Com portas customizadas
 npm run create-project -- inventory --ui-port=3012 --service-port=4012
