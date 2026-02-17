@@ -31,23 +31,23 @@ Ports, env vars, and deployment configuration.
 
 ## Quick Reference
 
-| Application               | Type     | Port | Key Env Vars                                                                                                                               |
-| ------------------------- | -------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| gaqno-shell               | Frontend | 80   | MFE*\* (build), VITE_SERVICE*\* (build)                                                                                                    |
-| gaqno-sso                 | Frontend | 3001 | VITE_SERVICE_SSO_URL                                                                                                                       |
-| gaqno-ai                  | Frontend | 3002 | VITE_SERVICE_SSO_URL, VITE_SERVICE_AI_URL                                                                                                  |
-| gaqno-crm                 | Frontend | 3003 | VITE_SERVICE_SSO_URL                                                                                                                       |
-| gaqno-erp                 | Frontend | 3004 | VITE_SERVICE_SSO_URL                                                                                                                       |
-| gaqno-finance             | Frontend | 3005 | VITE_SERVICE_SSO_URL, VITE_SERVICE_FINANCE_URL                                                                                             |
-| gaqno-pdv                 | Frontend | 3006 | VITE_SERVICE_SSO_URL, VITE_SERVICE_PDV_URL                                                                                                 |
-| gaqno-rpg                 | Frontend | 3007 | VITE_SERVICE_SSO_URL, VITE_SERVICE_RPG_URL                                                                                                 |
-| gaqno-omnichannel         | Frontend | 3010 | VITE_SERVICE_SSO_URL, VITE_SERVICE_OMNICHANNEL_URL                                                                                         |
-| gaqno-sso-service         | Backend  | 4001 | DATABASE_URL, JWT_SECRET, CORS_ORIGIN                                                                                                      |
-| gaqno-ai-service          | Backend  | 4002 | DATABASE_URL, JWT_SECRET, CORS_ORIGIN, OPENAI_API_KEY, GEMINI_API_KEY, REPLICATE_API_TOKEN, FIREWORKS_API_KEY, IMAGE_PROVIDER, IMAGE_MODEL |
-| gaqno-finance-service     | Backend  | 4005 | DATABASE_URL, JWT_SECRET, CORS_ORIGIN, SSO_SERVICE_URL                                                                                     |
-| gaqno-pdv-service         | Backend  | 4006 | DATABASE_URL, JWT_SECRET, CORS_ORIGIN, SSO_SERVICE_URL                                                                                     |
-| gaqno-rpg-service         | Backend  | 4007 | DATABASE_URL, JWT_SECRET, CORS_ORIGIN, AI_SERVICE_URL                                                                                      |
-| gaqno-omnichannel-service | Backend  | 4008 | DATABASE_URL, JWT_SECRET, CORS_ORIGIN                                                                                                      |
+| Application               | Type     | Port | Key Env Vars                                                                                                                                                                      |
+| ------------------------- | -------- | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| gaqno-shell               | Frontend | 80   | MFE*\* (build), VITE_SERVICE*\* (build)                                                                                                                                           |
+| gaqno-sso                 | Frontend | 3001 | VITE_SERVICE_SSO_URL                                                                                                                                                              |
+| gaqno-ai                  | Frontend | 3002 | VITE_SERVICE_SSO_URL, VITE_SERVICE_AI_URL                                                                                                                                         |
+| gaqno-crm                 | Frontend | 3003 | VITE_SERVICE_SSO_URL                                                                                                                                                              |
+| gaqno-erp                 | Frontend | 3004 | VITE_SERVICE_SSO_URL                                                                                                                                                              |
+| gaqno-finance             | Frontend | 3005 | VITE_SERVICE_SSO_URL, VITE_SERVICE_FINANCE_URL                                                                                                                                    |
+| gaqno-pdv                 | Frontend | 3006 | VITE_SERVICE_SSO_URL, VITE_SERVICE_PDV_URL                                                                                                                                        |
+| gaqno-rpg                 | Frontend | 3007 | VITE_SERVICE_SSO_URL, VITE_SERVICE_RPG_URL                                                                                                                                        |
+| gaqno-omnichannel         | Frontend | 3010 | VITE_SERVICE_SSO_URL, VITE_SERVICE_OMNICHANNEL_URL                                                                                                                                |
+| gaqno-sso-service         | Backend  | 4001 | DATABASE_URL, JWT_SECRET, CORS_ORIGIN                                                                                                                                             |
+| gaqno-ai-service          | Backend  | 4002 | DATABASE_URL, JWT_SECRET, CORS_ORIGIN, OPENAI_API_KEY, GEMINI_API_KEY, NEXAI_API_KEY, AI_MULTIMEDIA_PROVIDER, REPLICATE_API_TOKEN, FIREWORKS_API_KEY, IMAGE_PROVIDER, IMAGE_MODEL |
+| gaqno-finance-service     | Backend  | 4005 | DATABASE_URL, JWT_SECRET, CORS_ORIGIN, SSO_SERVICE_URL                                                                                                                            |
+| gaqno-pdv-service         | Backend  | 4006 | DATABASE_URL, JWT_SECRET, CORS_ORIGIN, SSO_SERVICE_URL                                                                                                                            |
+| gaqno-rpg-service         | Backend  | 4007 | DATABASE_URL, JWT_SECRET, CORS_ORIGIN, AI_SERVICE_URL                                                                                                                             |
+| gaqno-omnichannel-service | Backend  | 4008 | DATABASE_URL, JWT_SECRET, CORS_ORIGIN                                                                                                                                             |
 
 ## Service URLs
 
@@ -155,19 +155,19 @@ When widgets, summary, or preferences fail with `net::ERR_CONNECTION_TIMED_OUT`,
 
 Use this to align **gaqno-omnichannel-service** with **gaqno-sso-service** in Coolify when SSO works and Omnichannel does not.
 
-| Aspect | gaqno-sso-service | gaqno-omnichannel-service |
-|--------|-------------------|---------------------------|
-| **Port** | 4001 | 4008 |
-| **API path (proxy)** | `/sso` | `/omnichannel` |
-| **URL strip** | `stripSsoPrefix`: `/sso` → `` | `stripOmnichannelPrefix`: `/omnichannel` → `` |
-| **Global prefix** | `v1` → `/sso/v1/*` | `v1` → `/omnichannel/v1/*` |
-| **Required env (Coolify)** | DATABASE_URL, JWT_SECRET, **CORS_ORIGIN** | DATABASE_URL, JWT_SECRET, **CORS_ORIGIN** |
-| **CORS** | Same logic: CORS_ORIGIN / ALLOWED_ORIGINS, regex `*.gaqno.com` + localhost, normalize origin | Same |
-| **Extra env** | COOKIE_SECRET (cookie-parser) | SSO_SERVICE_URL (internal), DEBUGGER_HEADER (optional), REDIS_* (BullMQ), WHATSAPP_* |
-| **Middleware** | stripSsoPrefix → cookieParser → helmet → CORS → … | stripOmnichannelPrefix → requestLogger → CORS → express.json (rawBody) → … |
-| **Body parser** | Default Nest | `bodyParser: false` + express.json (for rawBody) |
-| **WebSocket** | No | Yes (OmnichannelIoAdapter) |
-| **Health** | `/v1/health` (see [Coolify health check for SSO](#coolify-health-check-for-sso)) | `/v1/health` (HEALTHCHECK in Dockerfile) |
+| Aspect                     | gaqno-sso-service                                                                            | gaqno-omnichannel-service                                                             |
+| -------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| **Port**                   | 4001                                                                                         | 4008                                                                                  |
+| **API path (proxy)**       | `/sso`                                                                                       | `/omnichannel`                                                                        |
+| **URL strip**              | `stripSsoPrefix`: `/sso` → ``                                                                | `stripOmnichannelPrefix`: `/omnichannel` → ``                                         |
+| **Global prefix**          | `v1` → `/sso/v1/*`                                                                           | `v1` → `/omnichannel/v1/*`                                                            |
+| **Required env (Coolify)** | DATABASE_URL, JWT_SECRET, **CORS_ORIGIN**                                                    | DATABASE_URL, JWT_SECRET, **CORS_ORIGIN**                                             |
+| **CORS**                   | Same logic: CORS_ORIGIN / ALLOWED_ORIGINS, regex `*.gaqno.com` + localhost, normalize origin | Same                                                                                  |
+| **Extra env**              | COOKIE_SECRET (cookie-parser)                                                                | SSO*SERVICE_URL (internal), DEBUGGER_HEADER (optional), REDIS*_ (BullMQ), WHATSAPP\__ |
+| **Middleware**             | stripSsoPrefix → cookieParser → helmet → CORS → …                                            | stripOmnichannelPrefix → requestLogger → CORS → express.json (rawBody) → …            |
+| **Body parser**            | Default Nest                                                                                 | `bodyParser: false` + express.json (for rawBody)                                      |
+| **WebSocket**              | No                                                                                           | Yes (OmnichannelIoAdapter)                                                            |
+| **Health**                 | `/v1/health` (see [Coolify health check for SSO](#coolify-health-check-for-sso))             | `/v1/health` (HEALTHCHECK in Dockerfile)                                              |
 
 ### Coolify health check for SSO
 
@@ -193,6 +193,16 @@ Alternatively, **disable** the health check in the Coolify UI for this app and r
 ## gaqno-ai-service Model List
 
 Text and image model lists are fetched from the [Vercel AI Gateway](https://ai-gateway.vercel.sh/v1/models) (no auth, cached 5 min). Models are filtered by configured API keys (OPENAI_API_KEY, GEMINI_API_KEY). Local/self-hosted models remain in config.
+
+## gaqno-ai-service Multimedia provider toggle (NEX AI vs Gateway)
+
+Multimodal capabilities (image, video, audio) can use **NEX AI** (xskill API) or **Vercel AI Gateway**–style providers. The toggle is controlled by:
+
+- **`AI_MULTIMEDIA_PROVIDER`** — `nexai` (default) or `gateway`.
+
+When **`nexai`** (default): if `NEXAI_API_KEY` is set, the registry and generation use NEX AI for image, video, and audio; otherwise the registry falls back to the Vercel Gateway model list for image.
+
+When **`gateway`**: the registry uses the Vercel AI Gateway list for image (filtered by OPENAI_API_KEY, GEMINI_API_KEY); NEX AI is not offered. Video and audio generation are only available when using NEX AI, so with `gateway` they are unavailable (endpoints return a clear error). Image generation via NEX AI is disabled when `gateway` is set; gateway-backed image generation may be added in a follow-up.
 
 ## gaqno-ai-service Image Generation
 
