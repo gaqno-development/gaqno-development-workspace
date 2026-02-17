@@ -16,3 +16,4 @@ export * from "./branch";
 export * from "./health";
 export * from "./permission";
 export * from "./tenant";
+export * from "./dashboard";

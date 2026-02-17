@@ -116,6 +116,11 @@
       "require": "./dist/tenant.js",
       "import": "./dist/tenant.js",
       "types": "./dist/tenant.d.ts"
+    },
+    "./dashboard": {
+      "require": "./dist/dashboard.js",
+      "import": "./dist/dashboard.js",
+      "types": "./dist/dashboard.d.ts"
     }
   }
 }
