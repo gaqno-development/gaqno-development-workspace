@@ -1,6 +1,6 @@
 {
   "name": "@gaqno-development/types",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Shared TypeScript interfaces used across frontend and backend for a single source of truth. Source repository is private.",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/gaqno-development",
