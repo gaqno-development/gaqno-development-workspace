@@ -15,6 +15,18 @@
     "速推AI": {
       "url": "https://api.xskill.ai/api/v3/mcp-http?api_key=sk-30c8fa18149264c33cf196557a5ee50e583e80459c85199f"
     },
+    "cloudflare-dns-analytics": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://dns-analytics.mcp.cloudflare.com/mcp"]
+    },
+    "cloudflare-observability": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://observability.mcp.cloudflare.com/mcp"]
+    },
+    "cloudflare-docs": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://docs.mcp.cloudflare.com/mcp"]
+    },
     "atlassian": {
       "command": "uvx",
       "args": ["mcp-atlassian"],
@@ -29,7 +41,15 @@
     },
     "postgres": {
       "command": "docker",
-      "args": ["run", "-i", "--rm", "-e", "DATABASE_URI", "crystaldba/postgres-mcp", "--access-mode=unrestricted"],
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "DATABASE_URI",
+        "crystaldba/postgres-mcp",
+        "--access-mode=unrestricted"
+      ],
       "env": {
         "DATABASE_URI": "postgres://postgres:h0a9Ta1RpDQ0G3bVIRpFVluKDgM4H9FH8OOJLCxDwKXBnDg5ZyhxmJrjVg0y8b2Y@72.61.221.19:5432/postgres"
       }
