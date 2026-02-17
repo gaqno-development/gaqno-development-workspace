@@ -7,20 +7,7 @@ function debugLog(payload: Record<string, unknown>): void {
   const fallbackPath =
     process.env.CORS_DEBUG_LOG ||
     "/home/gaqno/coding/gaqno/gaqno-development-workspace/.cursor/debug.log";
-  fetch(
-    "http://127.0.0.1:7242/ingest/160bfd4b-ead9-47ae-a8af-90cbab183254",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(full),
-    }
-  ).catch(() => {
-    try {
-      appendFileSync(fallbackPath, line);
-    } catch {
-      // ignore
-    }
-  });
+  appendFileSync(fallbackPath, line);
 }
 
 const DEFAULT_ALLOWED_HEADERS = [
@@ -39,12 +26,9 @@ const DEFAULT_ALLOWED_HEADERS = [
   "tracestate",
 ];
 
-const gaqnoHttpsOriginRegex =
-  /^https:\/\/([\w-]+\.)*gaqno\.com(\.br)?(:\d+)?$/;
-const gaqnoHttpOriginRegex =
-  /^http:\/\/([\w-]+\.)*gaqno\.com(\.br)?(:\d+)?$/;
-const localhostOriginRegex =
-  /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
+const gaqnoHttpsOriginRegex = /^https:\/\/([\w-]+\.)*gaqno\.com(\.br)?(:\d+)?$/;
+const gaqnoHttpOriginRegex = /^http:\/\/([\w-]+\.)*gaqno\.com(\.br)?(:\d+)?$/;
+const localhostOriginRegex = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
 
 const ALWAYS_ALLOWED_ORIGINS = new Set([
   "https://portal.gaqno.com.br",
@@ -85,7 +69,9 @@ export function getCorsOptions(
       corsOrigin: corsOrigin === "" ? "(empty)" : corsOrigin,
       nodeEnv: process.env.NODE_ENV,
       allowedListSize: allowedList?.size ?? 0,
-      allowedListSample: allowedList ? Array.from(allowedList).slice(0, 5) : null,
+      allowedListSample: allowedList
+        ? Array.from(allowedList).slice(0, 5)
+        : null,
     },
     hypothesisId: "H1",
   });
@@ -108,11 +94,13 @@ export function getCorsOptions(
     );
   };
 
-  const allowedHeaders =
-    overrides?.allowedHeaders ?? DEFAULT_ALLOWED_HEADERS;
+  const allowedHeaders = overrides?.allowedHeaders ?? DEFAULT_ALLOWED_HEADERS;
 
   return {
-    origin: (origin: string | undefined, cb: (err: Error | null, allow?: boolean | string) => void) => {
+    origin: (
+      origin: string | undefined,
+      cb: (err: Error | null, allow?: boolean | string) => void
+    ) => {
       // #region agent log
       const norm = origin ? normalizeOrigin(origin) : "";
       const inList = allowedList?.has(norm) ?? false;
