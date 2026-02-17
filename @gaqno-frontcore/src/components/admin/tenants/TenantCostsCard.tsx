@@ -10,7 +10,7 @@ interface TenantCostsCardProps {
 }
 
 export const TenantCostsCard: React.FC<TenantCostsCardProps> = ({ tenantId }) => {
-  const { summary, isLoading, syncCosts } = useTenantCosts(tenantId)
+  const { summary, isLoading, isError, error, syncCosts } = useTenantCosts(tenantId)
 
   if (isLoading) {
     return (
@@ -21,6 +21,26 @@ export const TenantCostsCard: React.FC<TenantCostsCardProps> = ({ tenantId }) =>
         </CardHeader>
         <CardContent>
           <Skeleton className="h-8 w-24" />
+        </CardContent>
+      </Card>
+    )
+  }
+
+  if (isError) {
+    const message = error instanceof Error ? error.message : (error as { message?: string })?.message ?? 'Failed to load costs'
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Costs</CardTitle>
+          <CardDescription>Error loading cost data</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              {message}
+            </AlertDescription>
+          </Alert>
         </CardContent>
       </Card>
     )

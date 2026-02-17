@@ -7,7 +7,7 @@ import { ssoAxiosClient } from '../../utils/api/sso-client'
 export const useTenants = () => {
     const queryClient = useQueryClient()
 
-    const { data: tenants, isLoading, refetch } = useApiQuery<ITenant[]>(
+    const { data: tenants, isLoading, isError, error, refetch } = useApiQuery<ITenant[]>(
         ssoAxiosClient,
         ['tenants'],
         async () => {
@@ -129,6 +129,8 @@ export const useTenants = () => {
     return {
         tenants,
         isLoading,
+        isError,
+        error,
         createTenant,
         updateTenant,
         deleteTenant,

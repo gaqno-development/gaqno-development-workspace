@@ -7,7 +7,7 @@ import { ssoAxiosClient } from '../../utils/api/sso-client'
 export const useTenantCosts = (tenantId: string) => {
     const queryClient = useQueryClient()
 
-    const { data: costs, isLoading, refetch } = useApiQuery<ITenantCosts[]>(
+    const { data: costs, isLoading, isError: costsError, error: costsErrorDetail, refetch } = useApiQuery<ITenantCosts[]>(
         ssoAxiosClient,
         ['tenant-costs', tenantId],
         async () => {
@@ -20,7 +20,7 @@ export const useTenantCosts = (tenantId: string) => {
         }
     )
 
-    const { data: summary, isLoading: isLoadingSummary } = useApiQuery<ITenantCostsSummary>(
+    const { data: summary, isLoading: isLoadingSummary, isError: summaryError, error: summaryErrorDetail } = useApiQuery<ITenantCostsSummary>(
         ssoAxiosClient,
         ['tenant-costs-summary', tenantId],
         async () => {
@@ -59,6 +59,8 @@ export const useTenantCosts = (tenantId: string) => {
         costs: costs || [],
         summary,
         isLoading: isLoading || isLoadingSummary,
+        isError: costsError || summaryError,
+        error: costsErrorDetail ?? summaryErrorDetail,
         syncCosts,
         refetch,
     }
