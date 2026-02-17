@@ -11,7 +11,7 @@ interface TenantsListProps {
   basePath?: string;
 }
 
-const basePathDefault = "/sass/tenants";
+const basePathDefault = "/admin/tenants";
 
 export const TenantsList: React.FC<TenantsListProps> = ({
   basePath = basePathDefault,

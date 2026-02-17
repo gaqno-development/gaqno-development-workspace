@@ -12,7 +12,7 @@ interface DomainsListProps {
   basePath?: string;
 }
 
-const basePathDefault = "/sass/domains";
+const basePathDefault = "/admin/domains";
 
 export const DomainsList: React.FC<DomainsListProps> = ({
   basePath = basePathDefault,

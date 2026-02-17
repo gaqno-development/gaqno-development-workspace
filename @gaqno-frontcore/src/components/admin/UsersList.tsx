@@ -19,7 +19,7 @@ interface UsersListProps {
   showCreateButton?: boolean;
 }
 
-const basePathDefault = "/sass/users";
+const basePathDefault = "/admin/users";
 
 export const UsersList: React.FC<UsersListProps> = ({
   basePath = basePathDefault,

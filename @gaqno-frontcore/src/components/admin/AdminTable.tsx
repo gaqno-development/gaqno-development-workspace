@@ -1,5 +1,5 @@
 import React from "react";
-import type { ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef } from "../ui/data-table";
 import { DataTable } from "../ui/data-table";
 import {
   Card,
