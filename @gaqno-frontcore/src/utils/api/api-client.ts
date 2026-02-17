@@ -278,6 +278,15 @@ export const createServiceClient = (baseURL: string): AxiosInstance => {
   return createAxiosClient({ baseURL });
 };
 
+const inferApiBaseUrl = (): string | null => {
+  if (typeof window === "undefined") return null;
+  const host = window.location.hostname;
+  if (host === "localhost" || host === "127.0.0.1") return null;
+  const protocol = window.location.protocol;
+  const apiHost = host.replace(/^portal\./, "api.");
+  return `${protocol}//${apiHost}`;
+};
+
 const getServiceBaseUrl = (serviceName: string): string => {
   if (typeof window === "undefined") {
     const defaultUrls: Record<string, string> = {
@@ -294,28 +303,44 @@ const getServiceBaseUrl = (serviceName: string): string => {
     return defaultUrls[serviceName] || "http://localhost:4001";
   }
 
-  const getEnvVar = (key: string, defaultValue: string): string => {
+  const getEnvVar = (key: string): string | undefined => {
     if (typeof import.meta !== "undefined" && (import.meta as any).env) {
-      return (import.meta as any).env[key] || defaultValue;
+      return (import.meta as any).env[key] || undefined;
     }
-    return defaultValue;
+    return undefined;
   };
 
-  const envUrls: Record<string, string> = {
-    admin: getEnvVar("VITE_SERVICE_ADMIN_URL", "http://localhost:4010"),
-    sso: getEnvVar("VITE_SERVICE_SSO_URL", "http://localhost:4001"),
-    finance: getEnvVar("VITE_SERVICE_FINANCE_URL", "http://localhost:4005"),
-    pdv: getEnvVar("VITE_SERVICE_PDV_URL", "http://localhost:4006"),
-    crm: getEnvVar("VITE_SERVICE_CRM_URL", "http://localhost:4003"),
-    erp: getEnvVar("VITE_SERVICE_ERP_URL", "http://localhost:4004"),
-    ai: getEnvVar("VITE_SERVICE_AI_URL", "http://localhost:4002"),
-    rpg: getEnvVar("VITE_SERVICE_RPG_URL", "http://localhost:4007"),
-    omnichannel: getEnvVar(
-      "VITE_SERVICE_OMNICHANNEL_URL",
-      "http://localhost:4008"
-    ),
+  const envMap: Record<string, string> = {
+    admin: "VITE_SERVICE_ADMIN_URL",
+    sso: "VITE_SERVICE_SSO_URL",
+    finance: "VITE_SERVICE_FINANCE_URL",
+    pdv: "VITE_SERVICE_PDV_URL",
+    crm: "VITE_SERVICE_CRM_URL",
+    erp: "VITE_SERVICE_ERP_URL",
+    ai: "VITE_SERVICE_AI_URL",
+    rpg: "VITE_SERVICE_RPG_URL",
+    omnichannel: "VITE_SERVICE_OMNICHANNEL_URL",
   };
-  return envUrls[serviceName] || "http://localhost:4001";
+
+  const envKey = envMap[serviceName];
+  const envValue = envKey ? getEnvVar(envKey) : undefined;
+  if (envValue) return envValue;
+
+  const inferred = inferApiBaseUrl();
+  if (inferred) return inferred;
+
+  const defaultUrls: Record<string, string> = {
+    admin: "http://localhost:4010",
+    sso: "http://localhost:4001",
+    ai: "http://localhost:4002",
+    crm: "http://localhost:4003",
+    erp: "http://localhost:4004",
+    finance: "http://localhost:4005",
+    pdv: "http://localhost:4006",
+    rpg: "http://localhost:4007",
+    omnichannel: "http://localhost:4008",
+  };
+  return defaultUrls[serviceName] || "http://localhost:4001";
 };
 
 const createServiceClientWithPrefix = (serviceName: string): AxiosInstance => {
@@ -326,16 +351,16 @@ const createServiceClientWithPrefix = (serviceName: string): AxiosInstance => {
     : {};
   const servicePath = `/${serviceName}`;
   const baseUrlHasServicePath = serviceUrl.includes(servicePath);
+  const needsServiceInBase = serviceName === "sso" && !baseUrlHasServicePath;
   const pathPrefix =
     serviceName === "admin"
       ? ""
-      : baseUrlHasServicePath || serviceName === "omnichannel"
+      : baseUrlHasServicePath || serviceName === "omnichannel" || needsServiceInBase
         ? "/v1"
         : `/v1/${serviceName}`;
-  const baseURL =
-    serviceName === "sso" && !baseUrlHasServicePath
-      ? `${serviceUrl.replace(/\/$/, "")}${servicePath}`
-      : serviceUrl;
+  const baseURL = needsServiceInBase
+    ? `${serviceUrl.replace(/\/$/, "")}${servicePath}`
+    : serviceUrl;
   return createAxiosClient({
     baseURL: `${baseURL}${pathPrefix}`,
     ...timeoutConfig,
