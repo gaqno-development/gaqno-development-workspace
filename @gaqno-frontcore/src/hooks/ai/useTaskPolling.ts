@@ -27,16 +27,18 @@ export function useTaskPolling(taskId: string | null) {
   const data = query.data as
     | { status?: string; result?: unknown; error?: string }
     | undefined;
+  const taskStatus = data?.status ?? "idle";
+  const taskError = data?.error ?? query.error;
   return {
-    status: data?.status ?? "idle",
+    ...query,
+    status: taskStatus,
     result: data?.result,
-    error: data?.error ?? query.error,
+    error: taskError,
     isPolling:
       Boolean(taskId) &&
       query.isSuccess &&
       data?.status !== "completed" &&
       data?.status !== "failed" &&
       data?.status !== "error",
-    ...query,
   };
 }

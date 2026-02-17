@@ -27,7 +27,7 @@ export const TenantCostsCard: React.FC<TenantCostsCardProps> = ({ tenantId }) =>
   }
 
   if (isError) {
-    const message = error instanceof Error ? error.message : (error as { message?: string })?.message ?? 'Failed to load costs'
+    const message = error instanceof Error ? error.message : (error as unknown as { message?: string })?.message ?? 'Failed to load costs'
     return (
       <Card>
         <CardHeader>
