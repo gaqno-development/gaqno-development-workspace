@@ -14,3 +14,4 @@ export * from "./UserForm";
 export * from "./AdminSettings";
 export * from "./RolesList";
 export * from "./MenuBuilder";
+export * from "./UsageByUserView";
