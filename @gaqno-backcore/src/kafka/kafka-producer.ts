@@ -5,6 +5,8 @@ export interface KafkaProducerConfig {
   brokers: string[];
   clientId: string;
   topics: TopicRegistry;
+  connectionTimeout?: number;
+  retries?: number;
 }
 
 export interface PublishEnvelope {
@@ -28,6 +30,12 @@ export class KafkaProducer {
     this.kafka = new Kafka({
       clientId: this.config.clientId,
       brokers: this.config.brokers,
+      connectionTimeout: this.config.connectionTimeout ?? 3_000,
+      retry: {
+        retries: this.config.retries ?? 3,
+        initialRetryTime: 300,
+        maxRetryTime: 5_000,
+      },
     });
     this.producer = this.kafka.producer();
     await this.producer.connect();

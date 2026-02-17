@@ -9,7 +9,7 @@
       "args": ["-y", "@masonator/coolify-mcp"],
       "env": {
         "COOLIFY_ACCESS_TOKEN": "02|k3WtyHGHFxkDf204wQtSB4yid7G9pi1hsZjtvkun99fd291f",
-        "COOLIFY_BASE_URL": "https://72.61.221.19:8000/"
+        "COOLIFY_BASE_URL": "http://72.61.221.19:8000"
       }
     },
     "速推AI": {
