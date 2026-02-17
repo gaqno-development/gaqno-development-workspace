@@ -26,8 +26,11 @@ import {
   Lightbulb,
   Home,
   Bell,
+  Dices,
   type LucideIcon,
 } from "lucide-react";
+
+export const DicesIcon: LucideIcon = Dices;
 
 export const HomeIcon: LucideIcon = Home;
 export const FilledBellIcon: LucideIcon = Bell;
@@ -58,6 +61,13 @@ export const TriangleAlertIcon: LucideIcon = TriangleAlert;
 export const BulbSvg: LucideIcon = Lightbulb;
 
 export { BellIcon as AnimatedBellIcon } from "../ui/bell";
+export { BoxesIcon } from "../ui/boxes";
 export { ClapIcon as AnimatedClapIcon } from "../ui/clap";
+export { CctvIcon } from "../ui/cctv";
+export { DollarSignIcon } from "../ui/dollar-sign";
+export { DrumIcon } from "../ui/drum";
+export { GalleryThumbnailsIcon } from "../ui/gallery-thumbnails";
+export { LayoutPanelTopIcon } from "../ui/layout-panel-top";
 export { LoaderPinwheelIcon } from "../ui/loader-pinwheel";
+export { MicIcon } from "../ui/mic";
 export { SparklesIcon as AnimatedSparklesIcon } from "../ui/sparkles";
