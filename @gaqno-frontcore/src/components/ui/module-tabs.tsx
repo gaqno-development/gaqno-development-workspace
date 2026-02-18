@@ -31,7 +31,7 @@ export const ModuleTabs: React.FC<IModuleTabsProps> = ({
 
   return (
     <Tabs value={currentView} onValueChange={handleTabChange} className={className}>
-      <TabsList>
+      <TabsList className="w-full sm:w-auto justify-start">
         {tabs.map((tab) => {
           const Icon = tab.icon
           return (
