@@ -10,20 +10,17 @@ Kafka consumer that enriches leads via Pipedrive API (person search by phone) wi
 - `PIPEDRIVE_CLIENT_SECRET` – Pipedrive OAuth app client secret (runtime only, never in code).
 - `PORT` – HTTP server port (default `4010`).
 
-## Coolify (Passo 5)
+## Coolify
 
-After the application **gaqno-lead-enrichment-service** exists in Coolify:
+The app **gaqno-lead-enrichment-service** was created in Coolify via MCP:
 
-1. **List app UUID** (if needed):
-   - MCP: `list_applications` and find the entry for `gaqno-lead-enrichment-service`; note its `uuid`.
+- **UUID**: `xc4c0skcc4kg8408sgg8gswc`
+- **Domain**: http://xc4c0skcc4kg8408sgg8gswc.gaqno.com.br
+- **Repo**: `gaqno-development/gaqno-development-workspace` (monorepo), branch `main`
+- **Env vars** `PIPEDRIVE_CLIENT_ID` and `PIPEDRIVE_CLIENT_SECRET` were set via MCP.
 
-2. **Set env vars** (MCP `env_vars`, resource `application`, action `create`):
-   - `PIPEDRIVE_CLIENT_ID` = your Pipedrive client ID
-   - `PIPEDRIVE_CLIENT_SECRET` = your Pipedrive client secret (prefer a rotated secret after any exposure)
-   - `KAFKA_BROKERS` and `DATABASE_URL` if not already set
+**Build (monorepo):** In Coolify, set **Base directory** to `gaqno-lead-enrichment-service`. O build usa o **Dockerfile** normal deste microserviço (`gaqno-lead-enrichment-service/Dockerfile`).
 
-3. **Deploy**: MCP `deploy` with `tag_or_uuid` = the application UUID.
+**Deploy:** MCP `deploy` with `tag_or_uuid`: `xc4c0skcc4kg8408sgg8gswc`.
 
-4. **Check logs**: MCP `application_logs` to confirm Kafka connection and subscription to `omnichannel.message.received`.
-
-If the app is not yet in Coolify, create it first (same project/server as other gaqno-*-service apps), then run the steps above.
+**Logs:** MCP `application_logs` with the same UUID. Add `KAFKA_BROKERS` and `DATABASE_URL` in Coolify if not set.
