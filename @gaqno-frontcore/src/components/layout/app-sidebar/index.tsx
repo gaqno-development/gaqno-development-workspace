@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, X } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -55,9 +55,9 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ customMenuItems }) => {
   const navigate = useNavigate();
   const backendMenuItems = useFilteredMenu();
   const { config: whiteLabel } = useWhiteLabel();
-  const { state } = useSidebar();
+  const { state, isMobile, setOpenMobile } = useSidebar();
   const { profile, user, handleSignOut } = useHeader();
-  const isCollapsed = state === "collapsed";
+  const isCollapsed = !isMobile && state === "collapsed";
   const [collapsedOpenKey, setCollapsedOpenKey] = useState<string | null>(null);
   const closeTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -540,6 +540,22 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ customMenuItems }) => {
   return (
     <Sidebar collapsible="icon">
       <SidebarContent>
+        {isMobile && (
+          <div className="flex items-center justify-between border-b border-sidebar-border px-4 py-3">
+            <span className="truncate text-sm font-semibold text-sidebar-foreground">
+              {whiteLabel?.companyName || whiteLabel?.appName || "Menu"}
+            </span>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+              onClick={() => setOpenMobile(false)}
+              aria-label="Close menu"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
         <SidebarGroup>
           <SidebarGroupLabel
             className={cn(

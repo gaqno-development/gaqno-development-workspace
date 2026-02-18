@@ -227,11 +227,12 @@ const Sidebar = React.forwardRef<
             data-sidebar="sidebar"
             data-mobile="true"
             className={cn(
-              "w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden",
+              "w-[--sidebar-width] border-r border-sidebar-border bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden",
               "!bg-sidebar shadow-xl",
               "data-[state=open]:slide-in-from-left data-[state=closed]:slide-out-to-left",
               "data-[state=open]:duration-300 data-[state=closed]:duration-200"
             )}
+            overlayClassName="bg-black/95"
             style={
               {
                 "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
@@ -243,7 +244,7 @@ const Sidebar = React.forwardRef<
               <SheetTitle>Sidebar</SheetTitle>
               <SheetDescription>Displays the mobile sidebar.</SheetDescription>
             </SheetHeader>
-            <div className="flex h-full w-full flex-col">{children}</div>
+            <div className="flex h-full w-full flex-col bg-sidebar text-sidebar-foreground">{children}</div>
           </SheetContent>
         </Sheet>
       )
