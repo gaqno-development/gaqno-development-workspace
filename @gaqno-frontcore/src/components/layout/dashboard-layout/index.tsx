@@ -9,20 +9,6 @@ import { PanelLeft } from 'lucide-react'
 import { Button } from '../../ui/button'
 import { cn } from '../../../lib/utils'
 
-const SidebarInsetWithMargin: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => {
-  const { state } = useSidebar()
-  const isCollapsed = state === 'collapsed'
-
-  return (
-    <SidebarInset
-      className={`flex-1 flex flex-col min-w-0 min-h-0 overflow-hidden md:transition-[margin-left] md:duration-200 md:ease-linear ${isCollapsed ? 'md:ml-[3rem]' : 'md:ml-[16rem]'
-        } ${className || ''}`}
-    >
-      {children}
-    </SidebarInset>
-  )
-}
-
 const MobileTopBar: React.FC = () => {
   const { config: whiteLabel } = useWhiteLabel()
   const companyName = whiteLabel?.companyName || whiteLabel?.appName || 'Dashboard'
@@ -79,13 +65,15 @@ export const DashboardLayout: React.FC<IDashboardLayoutProps> = ({ children, men
     <SidebarProvider open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
       <div className="h-screen w-full flex overflow-hidden">
         <AppSidebar customMenuItems={menuItems} />
-        <SidebarInsetWithMargin>
+        <SidebarInset className="flex-1 flex flex-col min-w-0 min-h-0 overflow-hidden">
           <MobileTopBar />
-          <main className="flex-1 min-h-0 overflow-auto">
-            {children}
+          <main className="flex-1 min-h-0 overflow-auto bg-background">
+            <div className="min-h-full p-4 pt-5 md:p-6 md:pt-6">
+              {children}
+            </div>
           </main>
           <MobileShellMenuFAB />
-        </SidebarInsetWithMargin>
+        </SidebarInset>
       </div>
     </SidebarProvider>
   )
