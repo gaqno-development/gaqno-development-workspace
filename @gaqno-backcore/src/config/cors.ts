@@ -1,13 +1,20 @@
 import { ConfigService } from "@nestjs/config";
-import { appendFileSync } from "fs";
+import { appendFileSync, existsSync } from "fs";
+import { dirname } from "path";
 
 function debugLog(payload: Record<string, unknown>): void {
-  const full = { ...payload, timestamp: Date.now() };
-  const line = JSON.stringify(full) + "\n";
-  const fallbackPath =
-    process.env.CORS_DEBUG_LOG ||
-    "/home/gaqno/coding/gaqno/gaqno-development-workspace/.cursor/debug.log";
-  appendFileSync(fallbackPath, line);
+  const path =
+    process.env.CORS_DEBUG_LOG ??
+    (process.cwd() + "/.cursor/debug.log");
+  try {
+    const dir = dirname(path);
+    if (!existsSync(dir)) return;
+    const full = { ...payload, timestamp: Date.now() };
+    const line = JSON.stringify(full) + "\n";
+    appendFileSync(path, line);
+  } catch {
+    // Skip logging when file/dir is not writable (e.g. in containers)
+  }
 }
 
 const DEFAULT_ALLOWED_HEADERS = [
