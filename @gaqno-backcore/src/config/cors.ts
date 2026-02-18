@@ -1,20 +1,4 @@
 import { ConfigService } from "@nestjs/config";
-import { appendFileSync, existsSync } from "fs";
-import { dirname } from "path";
-
-function debugLog(payload: Record<string, unknown>): void {
-  const path = process.env.CORS_DEBUG_LOG;
-  if (!path?.trim()) return;
-  try {
-    const dir = dirname(path);
-    if (!existsSync(dir)) return;
-    const full = { ...payload, timestamp: Date.now() };
-    const line = JSON.stringify(full) + "\n";
-    appendFileSync(path, line);
-  } catch {
-    // Skip when file/dir not writable (e.g. in containers)
-  }
-}
 
 const DEFAULT_ALLOWED_HEADERS = [
   "Content-Type",
@@ -67,22 +51,6 @@ export function getCorsOptions(
         )
       : null;
 
-  // #region agent log
-  debugLog({
-    location: "cors.ts:getCorsOptions:bootstrap",
-    message: "CORS config resolved",
-    data: {
-      corsOrigin: corsOrigin === "" ? "(empty)" : corsOrigin,
-      nodeEnv: process.env.NODE_ENV,
-      allowedListSize: allowedList?.size ?? 0,
-      allowedListSample: allowedList
-        ? Array.from(allowedList).slice(0, 5)
-        : null,
-    },
-    hypothesisId: "H1",
-  });
-  // #endregion
-
   const normalizeOrigin = (o?: string): string =>
     (o ?? "").trim().replace(/\/+$/, "");
 
@@ -107,28 +75,6 @@ export function getCorsOptions(
       origin: string | undefined,
       cb: (err: Error | null, allow?: boolean | string) => void
     ) => {
-      // #region agent log
-      const norm = origin ? normalizeOrigin(origin) : "";
-      const inList = allowedList?.has(norm) ?? false;
-      const matchGaqnoHttps = norm ? gaqnoHttpsOriginRegex.test(norm) : false;
-      const matchGaqnoHttp = norm ? gaqnoHttpOriginRegex.test(norm) : false;
-      const matchLocalhost = norm ? localhostOriginRegex.test(norm) : false;
-      const allowed = !origin || allowOrigin(origin);
-      debugLog({
-        location: "cors.ts:origin-callback",
-        message: allowed ? "CORS allow" : "CORS deny",
-        data: {
-          origin: origin ?? "(none)",
-          normalized: norm || "(empty)",
-          inList,
-          matchGaqnoHttps,
-          matchGaqnoHttp,
-          matchLocalhost,
-          allowed,
-        },
-        hypothesisId: "H2",
-      });
-      // #endregion
       if (!origin) {
         return cb(null, true);
       }

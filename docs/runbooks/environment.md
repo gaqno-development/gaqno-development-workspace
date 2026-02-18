@@ -140,18 +140,6 @@ When widgets, summary, or preferences fail with `net::ERR_CONNECTION_TIMED_OUT`,
 
 **Check:** After redeploy, reload the portal page that loads the omnichannel MFE and open DevTools → Network. Requests to `https://api.gaqno.com.br/omnichannel/v1/...` should return 200, not CORS errors.
 
-## Troubleshooting: Omnichannel startup ENOENT (.cursor/debug.log)
-
-**Symptom:** gaqno-omnichannel-service (or other backcore services) crashes on startup with `ENOENT: no such file or directory, open '.../.cursor/debug.log'`.
-
-**Cause:** Older @gaqno-development/backcore tried to write CORS debug log to `process.cwd() + "/.cursor/debug.log"` when `CORS_DEBUG_LOG` was unset; that path does not exist in containers.
-
-**Workaround in Coolify (until backcore is updated):** In **gaqno-omnichannel-service** → **Environment**, add:
-   ```
-   CORS_DEBUG_LOG=/tmp/cors-debug.log
-   ```
-   Then **Redeploy**. After upgrading to backcore 1.1.19+, this env var can be removed.
-
 ## Troubleshooting: AI module CORS (models endpoint)
 
 **Symptom:** In the AI module (portal), requests to `https://api.gaqno.com.br/ai/v1/models` (or `/v1/models/registry`, `/v1/videos/models`, etc.) fail with **CORS error** in the browser; other api.gaqno.com.br endpoints (e.g. widgets, me, preferences) return 200 or 304.
