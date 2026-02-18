@@ -1,10 +1,11 @@
 import { useEffect } from 'react'
-import { useForm, UseFormReturn, FieldValues, Path, DefaultValues } from 'react-hook-form'
+import type { BaseSyntheticEvent } from 'react'
+import { useForm, FieldValues, DefaultValues, Resolver, FieldErrors } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { handleMutationError, handleFormError } from '../../utils/error-handler'
 
-interface IUseDialogFormOptions<T extends FieldValues, TEntity = any> {
+interface IUseDialogFormOptions<T extends FieldValues, TEntity = object> {
   schema: z.ZodType<T>
   defaultValues: T
   entity?: TEntity | null
@@ -18,7 +19,7 @@ interface IUseDialogFormOptions<T extends FieldValues, TEntity = any> {
   enabled?: boolean
 }
 
-export function useDialogForm<T extends FieldValues, TEntity = any>({
+export function useDialogForm<T extends FieldValues, TEntity = object>({
   schema,
   defaultValues,
   entity,
@@ -32,7 +33,7 @@ export function useDialogForm<T extends FieldValues, TEntity = any>({
   enabled = true,
 }: IUseDialogFormOptions<T, TEntity>) {
   const form = useForm<T>({
-    resolver: zodResolver(schema as any) as any,
+    resolver: zodResolver(schema) as Resolver<T>,
     defaultValues: defaultValues as DefaultValues<T>,
   })
 
@@ -77,14 +78,13 @@ export function useDialogForm<T extends FieldValues, TEntity = any>({
     }
   }
 
-  const onError = (errors: Record<string, any>) => {
-    handleFormError(errors)
+  const onError = (errors: FieldErrors<T>) => {
+    handleFormError(errors as FieldErrors<FieldValues>)
   }
 
   return {
     form,
-    // @ts-ignore - Type conflict between different instances of react-hook-form when using local packages
-    onSubmit: form.handleSubmit(onSubmit, onError),
+    onSubmit: form.handleSubmit(onSubmit, onError) as (e?: BaseSyntheticEvent) => Promise<void>,
     isSubmitting: form.formState.isSubmitting,
     isEdit,
   }
