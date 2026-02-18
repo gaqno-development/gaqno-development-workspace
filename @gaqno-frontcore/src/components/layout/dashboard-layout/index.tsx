@@ -4,6 +4,10 @@ import { SidebarProvider, SidebarInset, SidebarTrigger, useSidebar } from '../..
 import { useDashboardLayout } from './hooks/useDashboardLayout'
 import { IDashboardLayoutProps } from './types'
 import { useWhiteLabel } from '../../../hooks/useWhiteLabel'
+import { useIsMobile } from '../../../hooks'
+import { PanelLeft } from 'lucide-react'
+import { Button } from '../../ui/button'
+import { cn } from '../../../lib/utils'
 
 const SidebarInsetWithMargin: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => {
   const { state } = useSidebar()
@@ -46,6 +50,28 @@ const MobileTopBar: React.FC = () => {
   )
 }
 
+const MobileShellMenuFAB: React.FC = () => {
+  const isMobile = useIsMobile()
+  const { toggleSidebar } = useSidebar()
+
+  if (!isMobile) return null
+
+  return (
+    <Button
+      variant="secondary"
+      size="icon"
+      className={cn(
+        'fixed bottom-6 left-4 z-30 h-12 w-12 rounded-full shadow-lg md:hidden',
+        'bg-sidebar text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
+      )}
+      onClick={toggleSidebar}
+      aria-label="Open modules menu"
+    >
+      <PanelLeft className="h-5 w-5" />
+    </Button>
+  )
+}
+
 export const DashboardLayout: React.FC<IDashboardLayoutProps> = ({ children, menuItems }) => {
   const { open, defaultOpen, onOpenChange } = useDashboardLayout()
 
@@ -58,6 +84,7 @@ export const DashboardLayout: React.FC<IDashboardLayoutProps> = ({ children, men
           <main className="flex-1 min-h-0 overflow-auto">
             {children}
           </main>
+          <MobileShellMenuFAB />
         </SidebarInsetWithMargin>
       </div>
     </SidebarProvider>
