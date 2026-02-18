@@ -12,6 +12,24 @@ This document maps **project contexts** and **requirements** to places where we 
 
 ---
 
+## Shadcn MCP alignment check (correct components?)
+
+Verified against **@shadcn** registry via MCP (`list_items_in_registries`, `get_item_examples_from_registries`):
+
+| Our component | Shadcn registry | Alignment |
+|---------------|-----------------|-----------|
+| **Spinner** | `spinner` | ✅ Correct. Same pattern: Loader2 + `animate-spin`, `className` for size/color. We have `role="status"` and `aria-label="Loading"` (a11y). |
+| **EmptyState** | `empty` | ✅ Correct usage, different API. Shadcn uses **composition**: `Empty`, `EmptyHeader`, `EmptyMedia`, `EmptyTitle`, `EmptyDescription`, `EmptyContent`. We use a **single prop-based** `EmptyState` (icon, title, description, action, children). Same purpose; our API is simpler for the common case. No change required. |
+| **Command** | `command` | ✅ We use Command, CommandDialog, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem, CommandShortcut (cmdk). Matches shadcn. |
+| **Chart** | `chart` | ✅ We use ChartContainer, ChartTooltip, ChartLegend + Recharts. Matches shadcn. |
+| **Dialog / Sheet / Drawer** | `dialog`, `sheet`, `drawer` | ✅ We have Dialog, AlertDialog, Sheet, Drawer, ResponsiveSheetDrawer. Correct. |
+| **Breadcrumbs** | `breadcrumb` | ✅ We export `breadcrumbs` (shadcn name is `breadcrumb`). Same primitive; naming is fine. |
+| **Form, Input, Select, Label, etc.** | `form`, `input`, `select`, `label`… | ✅ Present in frontcore; usage matches. |
+
+**After adding or changing components:** Run MCP **get_audit_checklist** (no args): verify imports, dependencies, lint, TypeScript, and Playwright if available.
+
+---
+
 ## 1. Spinner (loading states)
 
 **Requirement:** Consistent loading indicators; no raw `Loader2` + `animate-spin` outside the shared `Spinner`.
@@ -25,7 +43,7 @@ This document maps **project contexts** and **requirements** to places where we 
 | **gaqno-shell-ui** | DashboardPage, UserDashboardPage, SettingsPage, ProfilePage, ManagerDashboardPage (inline loading) | Prefer `Spinner` for inline/small loading; keep `LoaderPinwheelIcon` for full-page where already used. |
 | **@gaqno-frontcore** | SSLChecker uses `RefreshCw` + `animate-spin` (semantic: “refresh in progress”) | Keep as-is or add a small “progress” variant if we want consistency. |
 
-**Shadcn registry:** `spinner` (registry:ui). Frontcore already has a custom Spinner; align API (e.g. `size`, `className`) with shadcn if useful.
+**Shadcn registry:** `spinner` (registry:ui). Frontcore Spinner is aligned (Loader2, role="status", aria-label="Loading", className for size/color).
 
 ---
 
@@ -37,8 +55,8 @@ This document maps **project contexts** and **requirements** to places where we 
 
 | Context              | Current pattern                                                                 | Action |
 |----------------------|----------------------------------------------------------------------------------|--------|
-| **@gaqno-frontcore** | `EmptyState` (Card + icon, title, description, action/secondaryAction) in `empty-state.tsx`; used by DataTable, others | Consider aligning with shadcn **empty** (e.g. icon variants, layout). Use MCP: `search_items_in_registries` → "empty" → `get_item_examples_from_registries` to compare. |
-| **gaqno-omnichannel-ui** | `ListEmptyState` (custom), `ConversationListEmpty`, `EmptyState` in TemplateListSidebar | Prefer frontcore `EmptyState` everywhere; retire `ListEmptyState` if redundant. |
+| **@gaqno-frontcore** | `EmptyState` (Card + icon, title, description, action/secondaryAction, children) in `empty-state.tsx`; used by DataTable, others | Aligned with shadcn intent; we use prop-based API (shadcn uses composition). |
+| **gaqno-omnichannel-ui** | Done: frontcore `EmptyState` everywhere; no wrapper components. | — |
 | **gaqno-rpg-ui**     | `EmptyState` in NarrativeFlow (message-only), RPGCard wrapping                         | Use frontcore `EmptyState` with icon + title + description for consistency. |
 | **gaqno-ai-ui**      | BooksListPage, BookDetailPage, BookCoverPage                                        | Use frontcore `EmptyState` for list/detail empty. |
 | **gaqno-crm-ui**     | `PlaceholderPage` (title + description)                                              | Use `EmptyState` for list/content placeholders; keep PlaceholderPage for “coming soon” if needed. |
