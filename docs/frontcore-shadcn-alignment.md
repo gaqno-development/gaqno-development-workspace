@@ -10,10 +10,10 @@ Components in `@gaqno-frontcore` that do not fully follow shadcn patterns, with 
 |-----------------|-------------------------------------|----------|--------|
 | **Badge**       | ~~`div` vs `span`, `rounded-md` vs `rounded-full`, no `asChild`, no `data-slot`~~ | Medium   | **Done:** span, rounded-full, data-slot, data-variant, asChild, [a&]:hover only. |
 | **Toast**      | ~~Hardcoded colors (green-50, red-50, etc.)~~ | Medium   | **Done:** theme tokens (primary, destructive, muted, border). |
-| **Breadcrumbs**| Single component vs composition API; no `BreadcrumbPage` / `BreadcrumbSeparator` / `BreadcrumbEllipsis` | Low     | Optional: add composition API; keep current API as convenience. |
-| **EmptyState** | Prop-based + Card wrapper vs shadcn composition (Empty, EmptyHeader, EmptyMedia, etc.) | Low     | Keep current API (audit says OK). Optional: add composition exports. |
-| **Card**       | `CardContent` uses `data-component` instead of `data-slot` | Low     | Optional: rename to `data-slot="card-content"` for shadcn consistency. |
-| **DialogFormFooter** | Custom composite (no shadcn equivalent) | —        | Keep; ensure it uses DialogFooter + Button. |
+| **Breadcrumbs**| ~~Single component only~~ | Low     | **Done:** composition API (Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator, BreadcrumbEllipsis) + Breadcrumbs convenience. |
+| **EmptyState** | ~~No composition primitives~~ | Low     | **Done:** composition exports (Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription, EmptyContent, emptyMediaVariants); EmptyState unchanged. |
+| **Card**       | ~~`data-component`~~ | Low     | **Done:** CardContent uses `data-slot="card-content"`. |
+| **DialogFormFooter** | Custom composite (no shadcn equivalent) | —        | **Verified:** uses DialogFooter + Button. No change. |
 | **ModuleTabs** | Composes Tabs correctly              | —        | No change. |
 | **LoadingSkeleton** | Custom composite (Card + Skeleton) | —        | No change. |
 | **BellIcon, ClapIcon, etc.** | Custom icons / motion | —        | No change (not in shadcn). |
@@ -38,28 +38,21 @@ Components in `@gaqno-frontcore` that do not fully follow shadcn patterns, with 
 
 ## 2. Breadcrumbs
 
-**Current:** Single `Breadcrumbs` component with `items: IBreadcrumbItem[]`, `showHome`, renders `<nav><ol>` with `Link` and `ChevronRight`. No separate parts for list/link/page/separator.
+**Was:** Single `Breadcrumbs` component with `items`, `showHome`; no composition parts.
 
-**Shadcn:** Composition: `Breadcrumb`, `BreadcrumbList`, `BreadcrumbItem`, `BreadcrumbLink` (with `asChild` for Link), `BreadcrumbPage`, `BreadcrumbSeparator`, `BreadcrumbEllipsis`; each with `data-slot`; separator and ellipsis optional.
+**Shadcn:** Composition: `Breadcrumb`, `BreadcrumbList`, `BreadcrumbItem`, `BreadcrumbLink` (asChild), `BreadcrumbPage`, `BreadcrumbSeparator`, `BreadcrumbEllipsis`; each with `data-slot`.
 
-**Recommendation:**
-
-- Keep existing `Breadcrumbs` for simple use cases.
-- Optionally add a composition API: `Breadcrumb`, `BreadcrumbList`, `BreadcrumbItem`, `BreadcrumbLink` (asChild + react-router Link), `BreadcrumbPage`, `BreadcrumbSeparator` (default `ChevronRight`), `BreadcrumbEllipsis` for overflow.
-- Use `aria-label="breadcrumb"` and current page with `aria-current="page"` (we already use a similar structure; ensure last item has it).
+**Status:** Done. Composition API added: `Breadcrumb`, `BreadcrumbList`, `BreadcrumbItem`, `BreadcrumbLink` (asChild + react-router Link), `BreadcrumbPage`, `BreadcrumbSeparator` (default `ChevronRight`), `BreadcrumbEllipsis`. `Breadcrumbs` (convenience) uses these and keeps same props. `aria-label="breadcrumb"` and `BreadcrumbPage` with `aria-current="page"` for last item.
 
 ---
 
 ## 3. EmptyState
 
-**Current:** Prop-based API (icon, title, description, action, secondaryAction, size, children) with `Card` + `CardContent`.
+**Was:** Prop-based `EmptyState` only; no composition primitives.
 
-**Shadcn:** Composition: `Empty` (div with border-dashed), `EmptyHeader`, `EmptyMedia` (variant: default | icon), `EmptyTitle`, `EmptyDescription`, `EmptyContent`; no Card; `data-slot` on each.
+**Shadcn:** Composition: `Empty`, `EmptyHeader`, `EmptyMedia` (variant: default | icon), `EmptyTitle`, `EmptyDescription`, `EmptyContent`; `data-slot` on each.
 
-**Recommendation:**
-
-- Keep current API (simpler for most usages; see `shadcn-component-audit.md`).
-- Optional: export composition primitives (`Empty`, `EmptyHeader`, `EmptyMedia`, `EmptyTitle`, `EmptyDescription`, `EmptyContent`) for layouts that need full control.
+**Status:** Done. Composition primitives exported: `Empty`, `EmptyHeader`, `EmptyMedia` (variant: default | icon), `EmptyTitle`, `EmptyDescription`, `EmptyContent`, `emptyMediaVariants`. `EmptyState` prop-based API unchanged.
 
 ---
 
@@ -82,13 +75,11 @@ Components in `@gaqno-frontcore` that do not fully follow shadcn patterns, with 
 
 ## 5. Card
 
-**Current:** `CardContent` uses `data-component="card-content"`.
+**Current:** ~~`CardContent` uses `data-component="card-content"`.~~
 
 **Shadcn:** Uses `data-slot` for layout/slot detection.
 
-**Recommendation:**
-
-- Optional: change to `data-slot="card-content"` for consistency with shadcn slot naming.
+**Status:** Done. CardContent now uses `data-slot="card-content"`.
 
 ---
 
@@ -96,7 +87,8 @@ Components in `@gaqno-frontcore` that do not fully follow shadcn patterns, with 
 
 - **Alert, AlertTitle, AlertDescription:** Structure and CVA variants align with shadcn; `[&>svg]` positioning matches. No change needed.
 - **Progress, Spinner, Dialog, Sheet, etc.:** Use Radix or same patterns as shadcn; no material divergence noted.
-- **DialogFormFooter, ModuleTabs, LoadingSkeleton:** App-specific composites; no shadcn 1:1; keep as is.
+- **DialogFormFooter:** Uses DialogFooter + Button; no shadcn equivalent. Verified; keep as is.
+- **ModuleTabs, LoadingSkeleton:** App-specific composites; no shadcn 1:1; keep as is.
 - **SectionWithSubNav:** Layout + breadcrumb strip; uses Link and Button; optional improvement is to use Breadcrumb composition in the nav strip if we add it.
 
 ---
