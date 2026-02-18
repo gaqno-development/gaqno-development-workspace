@@ -170,10 +170,14 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ customMenuItems }) => {
           <DropdownMenuContent
             side="right"
             align="start"
-            className="w-56"
+            sideOffset={0}
+            className="w-56 rounded-r-lg rounded-l-none border-y border-r border-sidebar-border border-l-0 bg-sidebar p-0 py-1 text-sidebar-foreground shadow-xl"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
+            <DropdownMenuLabel className="flex rounded-none border-b border-sidebar-border bg-sidebar px-3 py-2.5 text-xs font-medium text-sidebar-foreground/80">
+              {item.label}
+            </DropdownMenuLabel>
             {item.children?.map((child) => {
               const ChildIcon = child.icon;
               const hasSubChildren =
@@ -181,16 +185,20 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ customMenuItems }) => {
 
               if (hasSubChildren && child.children) {
                 return (
-                  <DropdownMenuSub key={child.href || child.label}>
-                    <DropdownMenuSubTrigger className="gap-2">
+                    <DropdownMenuSub key={child.href || child.label}>
+                    <DropdownMenuSubTrigger className="mx-1 gap-2 rounded-md border-0 bg-transparent focus:bg-sidebar-accent focus:text-sidebar-accent-foreground data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
                       {ChildIcon && <ChildIcon className="h-4 w-4" />}
                       <span>{child.label}</span>
                     </DropdownMenuSubTrigger>
-                    <DropdownMenuSubContent className="w-52">
+                    <DropdownMenuSubContent className="w-52 rounded-lg border-sidebar-border bg-sidebar p-1 text-sidebar-foreground">
                       <DropdownMenuItem asChild>
                         <Link
                           to={child.href || "#"}
-                          className="flex items-center gap-2 cursor-pointer"
+                          className={cn(
+                            "flex cursor-pointer items-center gap-2",
+                            isActive(child.href || "") &&
+                              "bg-sidebar-accent text-sidebar-accent-foreground"
+                          )}
                         >
                           {ChildIcon && <ChildIcon className="h-4 w-4" />}
                           <span>{child.label}</span>
@@ -202,11 +210,15 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ customMenuItems }) => {
                           <DropdownMenuItem
                             key={grandChild.href || grandChild.label}
                             asChild
-                            className="pl-8 gap-2"
+                            className="rounded-md focus:bg-sidebar-accent focus:text-sidebar-accent-foreground"
                           >
                             <Link
                               to={grandChild.href || "#"}
-                              className="flex items-center gap-2 cursor-pointer"
+                              className={cn(
+                                "flex cursor-pointer items-center gap-2 pl-8",
+                                isActive(grandChild.href || "") &&
+                                  "bg-sidebar-accent text-sidebar-accent-foreground"
+                              )}
                             >
                               {GrandChildIcon && (
                                 <GrandChildIcon className="h-3 w-3" />
@@ -222,10 +234,18 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ customMenuItems }) => {
               }
 
               return (
-                <DropdownMenuItem key={child.href || child.label} asChild>
+                <DropdownMenuItem
+                  key={child.href || child.label}
+                  asChild
+                  className="mx-1 rounded-md focus:bg-sidebar-accent focus:text-sidebar-accent-foreground"
+                >
                   <Link
                     to={child.href || "#"}
-                    className="flex items-center gap-2 cursor-pointer"
+                    className={cn(
+                      "flex cursor-pointer items-center gap-2",
+                      isActive(child.href || "") &&
+                        "bg-sidebar-accent text-sidebar-accent-foreground"
+                    )}
                   >
                     {ChildIcon && <ChildIcon className="h-4 w-4" />}
                     <span>{child.label}</span>
@@ -305,14 +325,22 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ customMenuItems }) => {
           <DropdownMenuContent
             side="right"
             align="start"
-            className="w-56"
+            sideOffset={0}
+            className="w-56 rounded-r-lg rounded-l-none border-y border-r border-sidebar-border border-l-0 bg-sidebar p-0 py-1 text-sidebar-foreground shadow-xl"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
-            <DropdownMenuItem asChild>
+            <DropdownMenuItem
+              asChild
+              className="mx-1 rounded-md focus:bg-sidebar-accent focus:text-sidebar-accent-foreground"
+            >
               <Link
                 to={item.href || "#"}
-                className="flex items-center gap-2 cursor-pointer"
+                className={cn(
+                  "flex cursor-pointer items-center gap-2",
+                  isActive(item.href || "") &&
+                    "bg-sidebar-accent text-sidebar-accent-foreground"
+                )}
               >
                 {Icon && <Icon className="h-4 w-4" />}
                 <span>{item.label}</span>
