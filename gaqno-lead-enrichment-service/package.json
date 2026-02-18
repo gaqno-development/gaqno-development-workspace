@@ -11,7 +11,8 @@
     "db:push": "drizzle-kit push",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:cov": "jest --coverage"
+    "test:cov": "jest --coverage",
+    "test:pipedrive": "nest build && node dist/scripts/pipedrive-search-manual.js"
   },
   "dependencies": {
     "@gaqno-development/backcore": "^1.1.15",
