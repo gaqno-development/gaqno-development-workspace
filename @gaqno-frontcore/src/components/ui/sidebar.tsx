@@ -96,6 +96,13 @@ const SidebarProvider = React.forwardRef<
       [setOpenProp]
     )
 
+    React.useEffect(() => {
+      if (!isMobile) {
+        return
+      }
+      setOpenMobile(open)
+    }, [isMobile, open])
+
     const prevIsNarrowRef = React.useRef(isNarrow)
     const hasAutoCollapsedRef = React.useRef(false)
     
