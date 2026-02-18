@@ -3,9 +3,8 @@ import { appendFileSync, existsSync } from "fs";
 import { dirname } from "path";
 
 function debugLog(payload: Record<string, unknown>): void {
-  const path =
-    process.env.CORS_DEBUG_LOG ??
-    (process.cwd() + "/.cursor/debug.log");
+  const path = process.env.CORS_DEBUG_LOG;
+  if (!path?.trim()) return;
   try {
     const dir = dirname(path);
     if (!existsSync(dir)) return;
@@ -13,7 +12,7 @@ function debugLog(payload: Record<string, unknown>): void {
     const line = JSON.stringify(full) + "\n";
     appendFileSync(path, line);
   } catch {
-    // Skip logging when file/dir is not writable (e.g. in containers)
+    // Skip when file/dir not writable (e.g. in containers)
   }
 }
 
