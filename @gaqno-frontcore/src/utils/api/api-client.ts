@@ -327,7 +327,10 @@ const getServiceBaseUrl = (serviceName: string): string => {
   if (envValue) return envValue;
 
   const inferred = inferApiBaseUrl();
-  if (inferred) return inferred;
+  if (inferred) {
+    if (serviceName === "ai") return `${inferred}/ai`;
+    return inferred;
+  }
 
   const defaultUrls: Record<string, string> = {
     admin: "http://localhost:4010",
