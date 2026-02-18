@@ -19,6 +19,7 @@
     "gaqno-finance-ui",
     "gaqno-landing-ui",
     "gaqno-lenin-ui",
+    "gaqno-lead-enrichment-service",
     "gaqno-omnichannel-service",
     "gaqno-omnichannel-ui",
     "gaqno-pdv-service",
