@@ -10,24 +10,24 @@ const ToastItem: React.FC<{ notification: INotification }> = ({ notification }) 
 
   const typeConfig = {
     success: {
-      styles: 'bg-green-50 dark:bg-green-950 border-green-500 text-green-900 dark:text-green-100',
+      styles: 'bg-primary text-primary-foreground border-primary',
       icon: CheckCircle2,
-      iconColor: 'text-green-600 dark:text-green-400',
+      iconColor: 'text-primary-foreground',
     },
     error: {
-      styles: 'bg-red-50 dark:bg-red-950 border-red-500 text-red-900 dark:text-red-100',
+      styles: 'bg-destructive text-destructive-foreground border-destructive',
       icon: AlertCircle,
-      iconColor: 'text-red-600 dark:text-red-400',
+      iconColor: 'text-destructive-foreground',
     },
     warning: {
-      styles: 'bg-yellow-50 dark:bg-yellow-950 border-yellow-500 text-yellow-900 dark:text-yellow-100',
+      styles: 'bg-muted text-muted-foreground border-muted-foreground/50',
       icon: AlertTriangle,
-      iconColor: 'text-yellow-600 dark:text-yellow-400',
+      iconColor: 'text-muted-foreground',
     },
     info: {
-      styles: 'bg-blue-50 dark:bg-blue-950 border-blue-500 text-blue-900 dark:text-blue-100',
+      styles: 'bg-muted text-muted-foreground border-border',
       icon: Info,
-      iconColor: 'text-blue-600 dark:text-blue-400',
+      iconColor: 'text-foreground',
     },
   }
 
@@ -52,7 +52,7 @@ const ToastItem: React.FC<{ notification: INotification }> = ({ notification }) 
       </div>
       <button
         onClick={() => removeNotification(notification.id)}
-        className="ml-2 flex-shrink-0 text-current opacity-60 hover:opacity-100 transition-opacity rounded p-1 hover:bg-black/5 dark:hover:bg-white/5"
+        className="ml-2 flex-shrink-0 opacity-70 hover:opacity-100 transition-opacity rounded p-1 hover:bg-foreground/10"
         aria-label="Fechar notificação"
       >
         <X className="h-4 w-4" />
