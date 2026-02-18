@@ -16,6 +16,8 @@ Ports, env vars, and deployment configuration.
 | gaqno-finance     | 3005 | /finance/assets     |
 | gaqno-pdv         | 3006 | /pdv/assets         |
 | gaqno-rpg         | 3007 | /rpg/assets         |
+| gaqno-saas        | 3008 | /saas/assets        |
+| gaqno-admin       | 3009 | /admin/assets       |
 | gaqno-omnichannel | 3010 | /omnichannel/assets |
 
 ### Backend (api.gaqno.com.br)
@@ -41,6 +43,8 @@ Ports, env vars, and deployment configuration.
 | gaqno-finance             | Frontend | 3005 | VITE_SERVICE_SSO_URL, VITE_SERVICE_FINANCE_URL                                                                                                                                    |
 | gaqno-pdv                 | Frontend | 3006 | VITE_SERVICE_SSO_URL, VITE_SERVICE_PDV_URL                                                                                                                                        |
 | gaqno-rpg                 | Frontend | 3007 | VITE_SERVICE_SSO_URL, VITE_SERVICE_RPG_URL                                                                                                                                        |
+| gaqno-saas                | Frontend | 3008 | VITE_SERVICE_SSO_URL                                                                                                                                                              |
+| gaqno-admin               | Frontend | 3009 | VITE_SERVICE_SSO_URL                                                                                                                                                              |
 | gaqno-omnichannel         | Frontend | 3010 | VITE_SERVICE_SSO_URL, VITE_SERVICE_OMNICHANNEL_URL                                                                                                                                |
 | gaqno-sso-service         | Backend  | 4001 | DATABASE_URL, JWT_SECRET, CORS_ORIGIN                                                                                                                                             |
 | gaqno-ai-service          | Backend  | 4002 | DATABASE_URL, JWT_SECRET, CORS_ORIGIN, OPENAI_API_KEY, GEMINI_API_KEY, NEXAI_API_KEY, AI_MULTIMEDIA_PROVIDER, REPLICATE_API_TOKEN, FIREWORKS_API_KEY, IMAGE_PROVIDER, IMAGE_MODEL |
