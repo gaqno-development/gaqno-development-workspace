@@ -90,4 +90,4 @@ Replace `<path>` with: ai, crm, erp, finance, pdv, rpg, auth (sso), omnichannel.
 | gaqno-saas        | `https://portal.gaqno.com.br/saas`        | `https://portal.gaqno.com.br/saas/assets`        |
 | gaqno-admin       | `https://portal.gaqno.com.br/admin`         | `https://portal.gaqno.com.br/admin/assets`        |
 
-**Why:** With `/omnichannel`, Traefik routes ALL `/omnichannel/*` to the MFE container. The MFE nginx only serves assets; non-asset paths hit `location /` which returns `302 /`. With nginx's default `absolute_redirect on`, that becomes `http://portal.gaqno.com.br:3010/` (backend port leaks into the redirect). With `/omnichannel/assets`, only asset requests hit the MFE; routes like `/omnichannel/overview` go to the shell.
+**Why:** With `/omnichannel`, Traefik routes ALL `/omnichannel/*` to the MFE container. The MFE nginx only serves assets; non-asset paths hit `location /` which returns `302 /`. With nginx's default `absolute_redirect on`, that becomes `http://portal.gaqno.com.br:3011/` (backend port leaks into the redirect). With `/omnichannel/assets`, only asset requests hit the MFE; routes like `/omnichannel/overview` go to the shell.

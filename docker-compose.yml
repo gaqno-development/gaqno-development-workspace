@@ -63,7 +63,7 @@ services:
         - MFE_RPG_URL=http://rpg:3007
         - MFE_SSO_URL=http://sso:3001
         - MFE_SAAS_URL=${MFE_SAAS_URL:-http://localhost:3008}
-        - MFE_OMNICHANNEL_URL=http://omnichannel:3010
+        - MFE_OMNICHANNEL_URL=http://omnichannel:3011
         - VITE_SERVICE_SSO_URL=http://sso-service:4001
         - VITE_SERVICE_AI_URL=http://ai-service:4002
         - VITE_SERVICE_CRM_URL=http://crm:3003
@@ -366,10 +366,10 @@ services:
         - VITE_SERVICE_OMNICHANNEL_URL=http://localhost:4008
     container_name: gaqno-omnichannel
     ports:
-      - "3010:3010"
+      - "3011:3011"
     environment:
       - NODE_ENV=production
-      - PORT=3010
+      - PORT=3011
       - VITE_SERVICE_SSO_URL=http://sso-service:4001
       - VITE_SERVICE_OMNICHANNEL_URL=http://omnichannel-service:4008
     env_file:
@@ -410,10 +410,10 @@ services:
         - VITE_SERVICE_WELLNESS_URL=http://localhost:4009
     container_name: gaqno-wellness
     ports:
-      - "3011:3011"
+      - "3012:3012"
     environment:
       - NODE_ENV=production
-      - PORT=3011
+      - PORT=3012
       - VITE_SERVICE_WELLNESS_URL=http://wellness-service:4009
     env_file:
       - .env

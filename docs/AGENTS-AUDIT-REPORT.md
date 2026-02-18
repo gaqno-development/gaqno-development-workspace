@@ -143,7 +143,7 @@ O workspace possui múltiplos serviços NestJS independentes:
 | ---------------- | ------------- | ----- | ---------------------------------------- |
 | gaqno-rpg-ui     | /rpg          | 3007  | components/, hooks/, pages/rpg/, config/ |
 | gaqno-finance-ui | /finance      | 3005  | Similar                                  |
-| gaqno-admin-ui   | /organization | 3009  | components/, pages/                      |
+| gaqno-admin-ui   | /organization | 3010  | components/, pages/                      |
 | gaqno-saas-ui    | /sass         | 3008  | App único (CostingView)                  |
 | gaqno-pdv-ui     | /pdv          | 3006  | components/layout/, config/              |
 

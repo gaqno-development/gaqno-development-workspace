@@ -28,7 +28,7 @@ gaqno-shell-ui (Host, port 3000)
 ├── Dashboard (Manager, User)
 └── Lazy loads: ai, crm, erp, finance, pdv, rpg, sso, saas, omnichannel
 
-MFEs (ports 3001–3010):
+MFEs (ports 3001–3011):
 ├── gaqno-ai-ui, gaqno-crm-ui, gaqno-erp-ui, gaqno-finance-ui
 ├── gaqno-pdv-ui, gaqno-rpg-ui, gaqno-sso-ui
 ├── gaqno-saas-ui, gaqno-omnichannel-ui

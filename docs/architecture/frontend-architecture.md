@@ -30,7 +30,7 @@ O Shell roda na porta 3000. Cada MFE tem porta própria (ex.: ai 3002, crm 3003,
 | gaqno-rpg-ui         | rpg         | 3007        | /rpg, /rpg/\*                 |
 | gaqno-sso-ui         | sso         | 3001        | /sso, /sso/\*                 |
 | gaqno-saas-ui        | saas        | 3008        | (fallback CostingPage)        |
-| gaqno-omnichannel-ui | omnichannel | 3010        | /omnichannel, /omnichannel/\* |
+| gaqno-omnichannel-ui | omnichannel | 3011        | /omnichannel, /omnichannel/\* |
 
 ### 2.2 Estrutura padrão de um MFE
 

@@ -142,7 +142,7 @@
       "id": "10009",
       "key": "KAN-10",
       "summary": "gaqno-admin-ui — Tenant admin",
-      "description": "Admin MFE. Base path /organization. Port 3009. ✅ Concluído.",
+      "description": "Admin MFE. Base path /organization. Port 3010. ✅ Concluído.",
       "status": {
         "name": "Feito",
         "category": "Itens concluídos",
@@ -172,7 +172,7 @@
       "id": "10011",
       "key": "KAN-12",
       "summary": "gaqno-omnichannel-ui — Omnichannel",
-      "description": "Omnichannel MFE. Base path /omnichannel. Port 3010. ✅ Concluído.",
+      "description": "Omnichannel MFE. Base path /omnichannel. Port 3011. ✅ Concluído.",
       "status": {
         "name": "Feito",
         "category": "Itens concluídos",
