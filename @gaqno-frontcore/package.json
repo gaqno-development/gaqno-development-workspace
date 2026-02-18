@@ -1,6 +1,6 @@
 {
   "name": "@gaqno-development/frontcore",
-  "version": "1.0.46",
+  "version": "1.0.47",
   "private": false,
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/gaqno-development",
