@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { DatabaseModule } from "./database/db.module";
 import { EnrichmentModule } from "./enrichment/enrichment.module";
+import { HealthModule } from "./health/health.module";
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { EnrichmentModule } from "./enrichment/enrichment.module";
       envFilePath: ".env",
     }),
     DatabaseModule,
+    HealthModule,
     EnrichmentModule,
   ],
 })
