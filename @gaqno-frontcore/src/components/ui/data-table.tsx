@@ -40,6 +40,7 @@ import {
   SheetTrigger,
 } from "./sheet";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./dialog";
+import { ResponsiveSheetDrawer } from "./responsive-sheet-drawer";
 import { Form } from "./form";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./hover-card";
 import { Filter, SearchX } from "lucide-react";
@@ -495,46 +496,51 @@ export function DataTable<TData, TValue>({
       {openOnRowActionType === "sheet" &&
         selectedRow != null &&
         renderRowDetail && (
-          <Sheet
+          <ResponsiveSheetDrawer
             open={!!selectedRow}
             onOpenChange={(open) => !open && handleCloseRowDetail()}
+            sheetSide="right"
+            drawerDirection="bottom"
           >
-            <SheetContent
-              side="right"
-              className="border-border bg-background text-foreground overflow-y-auto"
-            >
+            <ResponsiveSheetDrawer.Content className="border-border bg-background text-foreground overflow-y-auto">
               {renderRowDetail(selectedRow)}
-            </SheetContent>
-          </Sheet>
+            </ResponsiveSheetDrawer.Content>
+          </ResponsiveSheetDrawer>
         )}
 
       {openOnRowActionType === "dialog" &&
         selectedRow != null &&
         renderRowDetail && (
-          <Dialog
+          <ResponsiveSheetDrawer
             open={!!selectedRow}
             onOpenChange={(open) => !open && handleCloseRowDetail()}
+            sheetSide="right"
+            drawerDirection="bottom"
           >
-            <DialogContent className="max-w-2xl border-border bg-background text-foreground">
-              <DialogHeader>
-                <DialogTitle className="text-foreground">Detalhe</DialogTitle>
-              </DialogHeader>
+            <ResponsiveSheetDrawer.Content className="max-w-2xl border-border bg-background text-foreground overflow-y-auto">
+              <ResponsiveSheetDrawer.Header>
+                <ResponsiveSheetDrawer.Title className="text-foreground">
+                  Detalhe
+                </ResponsiveSheetDrawer.Title>
+              </ResponsiveSheetDrawer.Header>
               {renderRowDetail(selectedRow)}
-            </DialogContent>
-          </Dialog>
+            </ResponsiveSheetDrawer.Content>
+          </ResponsiveSheetDrawer>
         )}
 
       {openOnRowActionType === "popover" &&
         selectedRow != null &&
         renderRowDetail && (
-          <Dialog
+          <ResponsiveSheetDrawer
             open={popoverOpen}
             onOpenChange={(open) => !open && handleCloseRowDetail()}
+            sheetSide="right"
+            drawerDirection="bottom"
           >
-            <DialogContent className="max-w-sm border-border bg-background text-foreground">
+            <ResponsiveSheetDrawer.Content className="max-w-sm border-border bg-background text-foreground">
               {renderRowDetail(selectedRow)}
-            </DialogContent>
-          </Dialog>
+            </ResponsiveSheetDrawer.Content>
+          </ResponsiveSheetDrawer>
         )}
     </div>
   );

@@ -91,11 +91,14 @@ export function UsageByUserView({
     return map;
   }, [users]);
 
-  const { rows, columns } = useMemo(() => {
+  const { rows, columns, renderRowHoverContent } = useMemo(() => {
     if (!usage?.metrics?.length)
       return {
         rows: [] as Record<string, number | string>[],
         columns: [] as ColumnDef<Record<string, number | string>, unknown>[],
+        renderRowHoverContent: undefined as
+          | ((row: Record<string, number | string>) => React.ReactNode)
+          | undefined,
       };
     const metricCols = usage.metrics
       .filter((m) => m.byUser != null)
@@ -148,7 +151,34 @@ export function UsageByUserView({
             : "—",
       })),
     ];
-    return { rows: dataRows, columns: columnDefs };
+    const hoverContent = (row: Record<string, number | string>) => {
+      const displayName =
+        row.userId === user?.id
+          ? `Você (${user?.email ?? row.userId})`
+          : (userDisplayMap[row.userId as string] ?? String(row.userId));
+      const items = usage.metrics.filter(
+        (m) => m.byUser && m.byUser[row.userId as string] != null
+      );
+      return (
+        <div className="space-y-2 p-1">
+          <p className="font-medium text-sm">{displayName}</p>
+          <ul className="text-xs text-muted-foreground space-y-1">
+            {items.map((m) => (
+              <li key={`${m.serviceName}-${m.metricKey}`}>
+                {m.serviceName === "ai" ? "IA (tokens)" : m.serviceName} (
+                {m.unit}):{" "}
+                {Number(m.byUser![row.userId as string]).toLocaleString("pt-BR")}
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
+    };
+    return {
+      rows: dataRows,
+      columns: columnDefs,
+      renderRowHoverContent: hoverContent,
+    };
   }, [usage, user?.id, user?.email, userDisplayMap]);
 
   if (!tenantId) {
@@ -215,6 +245,7 @@ export function UsageByUserView({
               enableVisibility={false}
               showPagination={rows.length > 10}
               emptyMessage={emptyMessage}
+              renderRowHoverContent={renderRowHoverContent}
             />
           )}
         </CardContent>

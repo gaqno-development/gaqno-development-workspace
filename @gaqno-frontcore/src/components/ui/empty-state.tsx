@@ -14,6 +14,7 @@ interface IEmptyStateProps {
     label: string
     onClick: () => void
     icon?: LucideIcon
+    disabled?: boolean
   }
   secondaryAction?: {
     label: string
@@ -21,6 +22,7 @@ interface IEmptyStateProps {
   }
   className?: string
   size?: 'sm' | 'md' | 'lg'
+  children?: React.ReactNode
 }
 
 export const EmptyState: React.FC<IEmptyStateProps> = ({
@@ -31,6 +33,7 @@ export const EmptyState: React.FC<IEmptyStateProps> = ({
   secondaryAction,
   className,
   size = 'md',
+  children,
 }) => {
   const sizeClasses = {
     sm: 'py-8',
@@ -58,7 +61,12 @@ export const EmptyState: React.FC<IEmptyStateProps> = ({
         )}
         <div className="flex flex-col sm:flex-row gap-3">
           {action && (
-            <Button onClick={action.onClick} size="lg" className="min-w-[140px]">
+            <Button
+              onClick={action.onClick}
+              size="lg"
+              className="min-w-[140px]"
+              disabled={action.disabled}
+            >
               {action.icon && <action.icon className="mr-2 h-4 w-4" />}
               {action.label}
             </Button>
@@ -74,6 +82,7 @@ export const EmptyState: React.FC<IEmptyStateProps> = ({
             </Button>
           )}
         </div>
+        {children}
       </CardContent>
     </Card>
   )
