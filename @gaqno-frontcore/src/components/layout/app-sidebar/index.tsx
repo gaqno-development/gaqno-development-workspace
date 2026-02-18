@@ -25,6 +25,9 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -43,6 +46,8 @@ interface AppSidebarProps {
   customMenuItems?: ISidebarItem[];
 }
 
+const HOVER_CLOSE_DELAY_MS = 120;
+
 export const AppSidebar: React.FC<AppSidebarProps> = ({ customMenuItems }) => {
   const location = useLocation();
   const pathname = location.pathname;
@@ -53,6 +58,19 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ customMenuItems }) => {
   const { state } = useSidebar();
   const { profile, user, handleSignOut } = useHeader();
   const isCollapsed = state === "collapsed";
+  const [collapsedOpenKey, setCollapsedOpenKey] = useState<string | null>(null);
+  const closeTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearCloseTimeout = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+  };
+
+  React.useEffect(() => {
+    return clearCloseTimeout;
+  }, []);
 
   // Use only backend menu (server-side filtered by permissions)
   // Custom menu items can override if provided
@@ -83,38 +101,41 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ customMenuItems }) => {
     return true;
   };
 
+  const itemKey = (item: ISidebarItem) =>
+    item.href ? `${item.label}:${item.href}` : item.label;
+
   const CollapsedMenuItemWithDropdown: React.FC<{ item: ISidebarItem }> = ({
     item,
   }) => {
-    const [open, setOpen] = useState(false);
-    const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+    const key = itemKey(item);
+    const open = collapsedOpenKey === key;
     const Icon = item.icon;
 
     const handleMouseEnter = () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
-      setOpen(true);
+      clearCloseTimeout();
+      setCollapsedOpenKey(key);
     };
 
     const handleMouseLeave = () => {
-      timeoutRef.current = setTimeout(() => {
-        setOpen(false);
-      }, 150);
+      closeTimeoutRef.current = setTimeout(() => {
+        setCollapsedOpenKey(null);
+        closeTimeoutRef.current = null;
+      }, HOVER_CLOSE_DELAY_MS);
     };
-
-    React.useEffect(() => {
-      return () => {
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-        }
-      };
-    }, []);
 
     return (
       <SidebarMenuItem key={item.label}>
-        <DropdownMenu open={open} onOpenChange={setOpen}>
+        <DropdownMenu
+          open={open}
+          onOpenChange={(next) => {
+            if (!next) {
+              clearCloseTimeout();
+              setCollapsedOpenKey(null);
+            } else {
+              setCollapsedOpenKey(key);
+            }
+          }}
+        >
           <DropdownMenuTrigger asChild>
             <div
               onMouseEnter={handleMouseEnter}
@@ -155,46 +176,148 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ customMenuItems }) => {
           >
             {item.children?.map((child) => {
               const ChildIcon = child.icon;
-              const displayChildren =
-                child.children && child.children.length > 0
-                  ? child.children
-                  : [];
+              const hasSubChildren =
+                child.children && child.children.length > 0;
 
-              return (
-                <React.Fragment key={child.href || child.label}>
-                  <DropdownMenuItem asChild>
-                    <Link
-                      to={child.href || "#"}
-                      className="flex items-center gap-2 cursor-pointer"
-                    >
+              if (hasSubChildren && child.children) {
+                return (
+                  <DropdownMenuSub key={child.href || child.label}>
+                    <DropdownMenuSubTrigger className="gap-2">
                       {ChildIcon && <ChildIcon className="h-4 w-4" />}
                       <span>{child.label}</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  {/* Render second level children */}
-                  {displayChildren.map((grandChild) => {
-                    const GrandChildIcon = grandChild.icon;
-                    return (
-                      <DropdownMenuItem
-                        key={grandChild.href || grandChild.label}
-                        asChild
-                        className="pl-8"
-                      >
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent className="w-52">
+                      <DropdownMenuItem asChild>
                         <Link
-                          to={grandChild.href || "#"}
+                          to={child.href || "#"}
                           className="flex items-center gap-2 cursor-pointer"
                         >
-                          {GrandChildIcon && (
-                            <GrandChildIcon className="h-3 w-3" />
-                          )}
-                          <span className="text-sm">{grandChild.label}</span>
+                          {ChildIcon && <ChildIcon className="h-4 w-4" />}
+                          <span>{child.label}</span>
                         </Link>
                       </DropdownMenuItem>
-                    );
-                  })}
-                </React.Fragment>
+                      {child.children.map((grandChild) => {
+                        const GrandChildIcon = grandChild.icon;
+                        return (
+                          <DropdownMenuItem
+                            key={grandChild.href || grandChild.label}
+                            asChild
+                            className="pl-8 gap-2"
+                          >
+                            <Link
+                              to={grandChild.href || "#"}
+                              className="flex items-center gap-2 cursor-pointer"
+                            >
+                              {GrandChildIcon && (
+                                <GrandChildIcon className="h-3 w-3" />
+                              )}
+                              <span className="text-sm">{grandChild.label}</span>
+                            </Link>
+                          </DropdownMenuItem>
+                        );
+                      })}
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
+                );
+              }
+
+              return (
+                <DropdownMenuItem key={child.href || child.label} asChild>
+                  <Link
+                    to={child.href || "#"}
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
+                    {ChildIcon && <ChildIcon className="h-4 w-4" />}
+                    <span>{child.label}</span>
+                  </Link>
+                </DropdownMenuItem>
               );
             })}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </SidebarMenuItem>
+    );
+  };
+
+  const CollapsedSingleItemWithDropdown: React.FC<{ item: ISidebarItem }> = ({
+    item,
+  }) => {
+    const key = itemKey(item);
+    const open = collapsedOpenKey === key;
+    const Icon = item.icon;
+
+    const handleMouseEnter = () => {
+      clearCloseTimeout();
+      setCollapsedOpenKey(key);
+    };
+
+    const handleMouseLeave = () => {
+      closeTimeoutRef.current = setTimeout(() => {
+        setCollapsedOpenKey(null);
+        closeTimeoutRef.current = null;
+      }, HOVER_CLOSE_DELAY_MS);
+    };
+
+    return (
+      <SidebarMenuItem key={item.label}>
+        <DropdownMenu
+          open={open}
+          onOpenChange={(next) => {
+            if (!next) {
+              clearCloseTimeout();
+              setCollapsedOpenKey(null);
+            } else {
+              setCollapsedOpenKey(key);
+            }
+          }}
+        >
+          <DropdownMenuTrigger asChild>
+            <div
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              className="w-full"
+            >
+              <SidebarMenuButton tooltip={open ? undefined : item.label}>
+                <div
+                  className="flex items-center justify-center rounded-md p-1.5"
+                  style={{
+                    backgroundColor: item.iconBackgroundColor || "transparent",
+                  }}
+                >
+                  <Icon />
+                </div>
+                {!isCollapsed && (
+                  <>
+                    <span>{item.label}</span>
+                    {item.notificationCount !== undefined &&
+                      item.notificationCount > 0 && (
+                        <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-primary text-primary-foreground text-xs font-medium ml-auto">
+                          {item.notificationCount > 99
+                            ? "99+"
+                            : item.notificationCount}
+                        </span>
+                      )}
+                  </>
+                )}
+              </SidebarMenuButton>
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            side="right"
+            align="start"
+            className="w-56"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
+            <DropdownMenuItem asChild>
+              <Link
+                to={item.href || "#"}
+                className="flex items-center gap-2 cursor-pointer"
+              >
+                {Icon && <Icon className="h-4 w-4" />}
+                <span>{item.label}</span>
+              </Link>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
@@ -347,6 +470,10 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ customMenuItems }) => {
     }
 
     const itemIsActive = item.href ? isActive(item.href) : false;
+
+    if (isCollapsed) {
+      return <CollapsedSingleItemWithDropdown item={item} />;
+    }
 
     return (
       <SidebarMenuItem key={item.href || item.label} isActive={itemIsActive}>
