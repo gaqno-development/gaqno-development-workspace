@@ -1,17 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import type { LucideIcon } from "lucide-react";
-import { ChevronRight, PanelLeftClose, PanelLeft } from "lucide-react";
+import { ChevronRight, ChevronsUpDown, PanelLeftClose, PanelLeft } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useIsMobile } from "../hooks";
 import { Button } from "./ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
-import { Sheet, SheetContent, SheetTitle } from "./ui/sheet";
 import { cn } from "../lib/utils";
 
 export interface SectionWithSubNavChild {
@@ -136,7 +143,6 @@ export function SectionWithSubNav({
   const [collapsed, setCollapsedState] = useState(() =>
     canCollapse ? loadCollapsed(title, defaultCollapsed) : false
   );
-  const [sheetOpen, setSheetOpen] = useState(false);
 
   useEffect(() => {
     if (canCollapse) saveCollapsed(title, collapsed);
@@ -227,6 +233,12 @@ export function SectionWithSubNav({
     </>
   );
 
+  const navItems = navGroups
+    ? navGroups.flatMap((group) => group.children)
+    : children;
+  const currentNavItem = navItems.find((item) => item.segment === segment);
+  const CurrentIcon = currentNavItem?.icon;
+
   const navContent =
     variant === "vertical" && canCollapse ? (
       <TooltipProvider delayDuration={300}>
@@ -261,10 +273,73 @@ export function SectionWithSubNav({
       </TooltipProvider>
     );
 
-  const isMobileVertical = isMobile && variant === "vertical";
-  const mobileNavTrigger = null;
+  const isMobileLayout = isMobile;
+  const mobileNavTrigger = isMobileLayout ? (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="outline"
+          className="h-9 min-w-[180px] justify-between gap-2 px-3 text-left font-medium"
+          aria-label={`Open ${title} navigation`}
+        >
+          <span className="flex min-w-0 items-center gap-2">
+            {CurrentIcon ? <CurrentIcon className="h-4 w-4 shrink-0" /> : null}
+            <span className="truncate">
+              {currentNavItem?.label || title}
+            </span>
+          </span>
+          <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-70" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="end"
+        className="w-[min(90vw,20rem)] max-h-[60vh] overflow-y-auto"
+      >
+        {navGroups ? (
+          navGroups.map((group, groupIndex) => (
+            <React.Fragment key={group.label}>
+              {groupIndex > 0 ? <DropdownMenuSeparator /> : null}
+              <DropdownMenuLabel>{group.label}</DropdownMenuLabel>
+              {group.children.map((item) => {
+                const ItemIcon = item.icon;
+                return (
+                  <DropdownMenuItem key={item.segment} asChild>
+                    <Link
+                      to={item.href}
+                      className="flex items-center gap-2"
+                      aria-current={segment === item.segment ? "page" : undefined}
+                    >
+                      <ItemIcon className="h-4 w-4 shrink-0" />
+                      <span className="truncate">{item.label}</span>
+                    </Link>
+                  </DropdownMenuItem>
+                );
+              })}
+            </React.Fragment>
+          ))
+        ) : (
+          children.map((item) => {
+            const ItemIcon = item.icon;
+            return (
+              <DropdownMenuItem key={item.segment} asChild>
+                <Link
+                  to={item.href}
+                  className="flex items-center gap-2"
+                  aria-current={segment === item.segment ? "page" : undefined}
+                >
+                  <ItemIcon className="h-4 w-4 shrink-0" />
+                  <span className="truncate">{item.label}</span>
+                </Link>
+              </DropdownMenuItem>
+            );
+          })
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  ) : null;
+
   const breadcrumbCollapseButton =
-    !isMobileVertical && canCollapse ? (
+    !isMobileLayout && canCollapse ? (
       <TooltipProvider delayDuration={300}>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -293,52 +368,8 @@ export function SectionWithSubNav({
       </TooltipProvider>
     ) : null;
 
-  const mobileSheetLinks = isMobileVertical
-    ? children.map(({ segment: s, label, href, icon: Icon }) => (
-        <Link
-          key={s}
-          to={href}
-          onClick={() => setSheetOpen(false)}
-          className={cn(
-            "flex items-center gap-3 rounded-md px-3 py-3 text-sm font-medium transition-colors min-h-[44px]",
-            segment === s
-              ? "bg-primary text-primary-foreground"
-              : "text-muted-foreground hover:bg-muted hover:text-foreground"
-          )}
-          aria-current={segment === s ? "page" : undefined}
-        >
-          <Icon className="h-5 w-5 shrink-0" />
-          {label}
-        </Link>
-      ))
-    : null;
-
   return (
     <div className="flex flex-col h-full min-h-0">
-      {isMobileVertical && canCollapse && (
-        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-          <SheetContent side="left" className="w-[280px] sm:max-w-[85vw]">
-            <SheetTitle className="sr-only">{title}</SheetTitle>
-            <nav
-              className="flex flex-col gap-1 pt-2"
-              aria-label={`${title} sub-navigation`}
-            >
-              {mobileSheetLinks}
-            </nav>
-          </SheetContent>
-        </Sheet>
-      )}
-      {isMobileVertical && canCollapse && (
-        <Button
-          variant="default"
-          size="icon"
-          className="fixed bottom-6 right-6 z-40 h-14 w-14 min-h-[56px] min-w-[56px] rounded-full shadow-lg"
-          onClick={() => setSheetOpen(true)}
-          aria-label={`Open ${title} navigation`}
-        >
-          <PanelLeft className="h-5 w-5" />
-        </Button>
-      )}
       {(breadcrumbRoot != null ||
         breadcrumbCollapseButton != null ||
         mobileNavTrigger != null) && (
@@ -373,10 +404,12 @@ export function SectionWithSubNav({
       <div
         className={cn(
           "flex",
-          variant === "vertical" ? "flex-1 min-h-0 gap-4" : "flex-col"
+          variant === "vertical" && !isMobileLayout
+            ? "flex-1 min-h-0 gap-4"
+            : "flex-col"
         )}
       >
-        {!isMobileVertical && navContent}
+        {!isMobileLayout && navContent}
         <div className="flex-1 min-h-0 overflow-auto">{contentArea}</div>
       </div>
     </div>
