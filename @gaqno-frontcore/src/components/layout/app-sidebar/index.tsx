@@ -168,10 +168,12 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ customMenuItems }) => {
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent
+            data-sidebar-dropdown
             side="right"
             align="start"
             sideOffset={0}
             className="w-56 rounded-r-lg rounded-l-none border-y border-r border-sidebar-border border-l-0 bg-sidebar p-0 py-1 text-sidebar-foreground shadow-xl"
+            style={{ backgroundColor: "var(--sidebar-background, hsl(240 5.9% 10%))" }}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
@@ -190,7 +192,11 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ customMenuItems }) => {
                       {ChildIcon && <ChildIcon className="h-4 w-4" />}
                       <span>{child.label}</span>
                     </DropdownMenuSubTrigger>
-                    <DropdownMenuSubContent className="w-52 rounded-lg border-sidebar-border bg-sidebar p-1 text-sidebar-foreground">
+                    <DropdownMenuSubContent
+                      data-sidebar-dropdown
+                      className="w-52 rounded-lg border-sidebar-border bg-sidebar p-1 text-sidebar-foreground"
+                      style={{ backgroundColor: "var(--sidebar-background, hsl(240 5.9% 10%))" }}
+                    >
                       <DropdownMenuItem asChild>
                         <Link
                           to={child.href || "#"}
@@ -323,10 +329,12 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ customMenuItems }) => {
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent
+            data-sidebar-dropdown
             side="right"
             align="start"
             sideOffset={0}
             className="w-56 rounded-r-lg rounded-l-none border-y border-r border-sidebar-border border-l-0 bg-sidebar p-0 py-1 text-sidebar-foreground shadow-xl"
+            style={{ backgroundColor: "var(--sidebar-background, hsl(240 5.9% 10%))" }}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
@@ -653,10 +661,12 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ customMenuItems }) => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className="w-56"
+                data-sidebar-dropdown
+                className="w-56 bg-popover"
                 align="end"
                 side="right"
                 forceMount
+                style={{ backgroundColor: "var(--sidebar-background, var(--popover, hsl(0 0% 100%)))" }}
               >
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">

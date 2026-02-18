@@ -113,6 +113,10 @@
   --radius-sm: calc(var(--radius) - 4px);
 }
 
+[data-sidebar-dropdown] {
+  background-color: var(--sidebar-background, hsl(240 5.9% 10%)) !important;
+}
+
 @layer base {
   * {
     @apply border-border;
