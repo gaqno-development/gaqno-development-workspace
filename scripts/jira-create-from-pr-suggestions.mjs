@@ -1,10 +1,84 @@
 #!/usr/bin/env node
 
 import fs from "fs";
-import { loadJiraEnv, jira, createIssueLink } from "./jira-rest-utils.mjs";
+import path from "path";
 
 const MAX_SUMMARY_LENGTH = 255;
 const PROJECT_KEY = "GAQNO";
+const DEFAULT_JIRA_URL = "https://gaqno.atlassian.net";
+
+function loadEnvFile(filename) {
+  const envPath = path.join(process.cwd(), filename);
+  if (!fs.existsSync(envPath)) return;
+  for (const line of fs.readFileSync(envPath, "utf8").split("\n")) {
+    const m = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.+)\s*$/);
+    if (m)
+      process.env[m[1]] = m[2]
+        .trim()
+        .replace(/^["']|["',]+$/g, "")
+        .trim();
+  }
+}
+
+function loadJiraEnv() {
+  loadEnvFile(".env.jira");
+  loadEnvFile(".env");
+  const baseUrl = (process.env.JIRA_URL || DEFAULT_JIRA_URL)
+    .trim()
+    .replace(/\/$/, "");
+  const username = process.env.JIRA_USERNAME;
+  const apiToken = process.env.JIRA_API_TOKEN;
+  if (!username || !apiToken) {
+    throw new Error(
+      "Set JIRA_USERNAME and JIRA_API_TOKEN (or .env.jira / .env)"
+    );
+  }
+  const auth = Buffer.from(`${username}:${apiToken}`).toString("base64");
+  return { baseUrl, auth };
+}
+
+async function jira(env, pathname, opts = {}) {
+  const res = await fetch(`${env.baseUrl}${pathname}`, {
+    ...opts,
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Basic ${env.auth}`,
+      ...opts.headers,
+    },
+  });
+  const text = await res.text();
+  if (!res.ok) throw new Error(`${res.status} ${pathname}: ${text}`);
+  return text ? JSON.parse(text) : null;
+}
+
+async function getIssueLinkTypes(env) {
+  const data = await jira(env, "/rest/api/3/issueLinkType");
+  return data.issueLinkTypes ?? [];
+}
+
+async function createIssueLink(env, inwardKey, outwardKey, linkTypeName) {
+  const types = await getIssueLinkTypes(env);
+  const name = (linkTypeName || "").trim().toLowerCase();
+  const linkType = types.find(
+    (t) =>
+      t.name?.toLowerCase() === name ||
+      t.inward?.toLowerCase() === name ||
+      t.outward?.toLowerCase() === name
+  );
+  if (!linkType)
+    throw new Error(
+      `Link type "${linkTypeName}" not found. Available: ${types.map((t) => t.name).join(", ")}`
+    );
+  return jira(env, "/rest/api/3/issueLink", {
+    method: "POST",
+    body: JSON.stringify({
+      type: { name: linkType.name },
+      inwardIssue: { key: inwardKey },
+      outwardIssue: { key: outwardKey },
+    }),
+  });
+}
 
 function readCommentBody() {
   const filePath = process.env.PR_AGENT_COMMENT_FILE;
