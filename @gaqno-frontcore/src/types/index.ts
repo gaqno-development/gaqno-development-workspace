@@ -6,6 +6,7 @@ export * from "./database";
 export * from "./permissions";
 export * from "./user";
 export * from "./whitelabel";
+export * from "./sidebar";
 export {
   type RoleScope,
   type RoleRecord,

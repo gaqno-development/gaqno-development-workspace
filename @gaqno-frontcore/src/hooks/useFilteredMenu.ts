@@ -2,7 +2,7 @@ import { useMemo, useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getIconComponent } from '../utils/icon-mapper';
 import { ssoClient } from '../utils/api';
-import { ISidebarItem } from '../components/layout/app-sidebar/types';
+import { ISidebarItem } from '../types/sidebar';
 import { useAuth } from './useAuth';
 
 interface MenuItemFromBackend {
