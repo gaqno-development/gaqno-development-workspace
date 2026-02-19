@@ -36,8 +36,8 @@ export const ModuleTabs: React.FC<IModuleTabsProps> = ({
           const Icon = tab.icon
           return (
             <TabsTrigger key={tab.id} value={tab.id}>
-              {Icon && <Icon className="h-4 w-4 mr-2" />}
-              {tab.label}
+              {Icon && <Icon className="h-4 w-4 shrink-0" />}
+              <span>{tab.label}</span>
             </TabsTrigger>
           )
         })}
