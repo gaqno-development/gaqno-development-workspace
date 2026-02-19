@@ -14,7 +14,7 @@
 
 | Criterion | Status | Evidence |
 |-----------|--------|----------|
-| ONE primary navigation axis (vertical rail) | **Pass** | Shell uses `DashboardLayout` → `AppSidebar` (vertical) + `SidebarInset`. Single sidebar as primary nav. |
+| ONE primary navigation axis (vertical rail) | **Pass** | Shell uses `ShellLayout` → `ShellSidebar` (vertical) + `SidebarInset`. Single sidebar as primary nav. |
 | No duplicated navigation (no top + side redundancy) | **Pass** | No duplicate nav tabs in header; sidebar holds all app/section links. |
 | Breadcrumbs removed | **Fail** | `PageWithBreadcrumb` and `breadcrumbRoot` used in InboxSection, DashboardSection, useOmnichannelView (Agents, Agent personas). Breadcrumbs still present. |
 | Global profile inside main menu (bottom of rail) | **Fail** | Profile (avatar, Ver Perfil, Notificações, Configurações, Sair) is in the **Header** (top right), not in the sidebar footer. Rule requires profile in rail. |

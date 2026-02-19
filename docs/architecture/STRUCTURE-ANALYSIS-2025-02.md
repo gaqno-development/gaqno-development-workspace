@@ -39,7 +39,7 @@ MFEs (ports 3001–3011):
 
 | Area        | Contents                                                                 |
 | ----------- | ----------------------------------------------------------------------- |
-| components  | UI (shadcn), admin, guards, layout (sidebar, header, dashboard-layout)  |
+| components  | UI (shadcn), admin, guards, layout (apenas tipo ISidebarItem; sidebar/layout no Shell)  |
 | hooks       | auth, admin, ai, health, ui (useDialog, useFilteredMenu, usePermissions) |
 | contexts    | AuthContext, TenantContext                                              |
 | store       | authStore, uiStore, whiteLabelStore                                     |

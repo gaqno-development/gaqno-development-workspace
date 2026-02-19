@@ -16,7 +16,7 @@
 | Icons only (no text labels) | ✅ | When collapsed (`collapsible="icon"`), `SidebarMenuButton` shows icon only; text hidden. |
 | Active state clearly visible | ✅ | `isActive` / `data-[active=true]` and `sidebarMenuButtonVariants` style active. |
 | Hover tooltip present | ✅ | `SidebarMenuButton` has `tooltip` prop; collapsed items use tooltips. |
-| Bottom section: User avatar | ❌ | AppSidebar has no `SidebarFooter`. Profile is in top Header. |
+| Bottom section: User avatar | ❌ | ShellSidebar has trigger only at bottom. Profile is in top Header. |
 | Bottom section: Notifications | ❌ | Notifications in Header dropdown, not in rail. |
 | Bottom section: Settings access | ❌ | Settings in Header dropdown, not in rail. |
 
@@ -24,7 +24,7 @@
 
 | Criterion | Status | Evidence |
 |----------|--------|----------|
-| No horizontal header bar | ❌ | `DashboardLayout` includes `<Header />` (h-14, border-b, logo, trigger, theme, profile). |
+| No horizontal header bar | ❌ | `ShellLayout` includes a top header (border-b, logo, trigger, theme, profile). |
 | No duplicated navigation layers | ✅ | Single sidebar; no second top nav. |
 | No breadcrumb system | ❌ | `PageWithBreadcrumb` and `breadcrumbRoot` used (InboxSection, DashboardSection, Agents, etc.). |
 

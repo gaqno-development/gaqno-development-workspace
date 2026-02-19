@@ -10,7 +10,7 @@ Documentação da arquitetura frontend: MFEs, Shell, pacote compartilhado e conv
 | ------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | Host    | **gaqno-shell-ui**                                                                                                                       | Roteamento, auth, layout, carregamento dos MFEs via Module Federation                          |
 | Remotes | gaqno-ai-ui, gaqno-crm-ui, gaqno-erp-ui, gaqno-finance-ui, gaqno-pdv-ui, gaqno-rpg-ui, gaqno-sso-ui, gaqno-saas-ui, gaqno-omnichannel-ui | Aplicações independentes expostas como `./App`                                                 |
-| Shared  | **@gaqno-development/frontcore**                                                                                                         | Componentes, hooks, contextos, providers, tipos, API client, layout (DashboardLayout, sidebar) |
+| Shared  | **@gaqno-development/frontcore**                                                                                                         | Componentes UI, hooks, contextos, providers, tipos, API client, tipo ISidebarItem (layout/sidebar ficam no Shell) |
 
 O Shell roda na porta 3000. Cada MFE tem porta própria (ex.: ai 3002, crm 3003, rpg 3007). Em produção, o Shell serve em `/` e os MFEs servem apenas assets em `/<mfe>/assets/`.
 
@@ -73,7 +73,7 @@ Estrutura de pastas típica (ex.: gaqno-rpg-ui, gaqno-ai-ui):
 
 - **Roteamento:** React Router; rotas `/` (home), `/login`, `/register`, `/dashboard`, `/admin/*`, e por MFE (`/ai`, `/crm`, `/erp`, etc.).
 - **Auth e guards:** uso de `useAuth` (frontcore); redirecionamento para `/login` em rotas autenticadas; definição de rotas públicas vs autenticadas no `ShellLayoutWrapper`.
-- **Layout:** `ShellLayoutWrapper` aplica `DashboardLayout` (frontcore) com menu filtrado por permissões quando o usuário está autenticado em rotas que exigem layout.
+- **Layout:** `ShellLayoutWrapper` aplica `ShellLayout` (shell) com `ShellSidebar` e menu filtrado por permissões via `useFilteredMenu()` quando o usuário está autenticado em rotas que exigem layout.
 - **Carregamento de MFEs:** lazy `import("ai/App")`, `import("rpg/App")`, etc., com `Suspense` e fallback "Carregando...". Cada rota de MFE tem `errorElement: <RouteErrorElement />`.
 - **Providers globais:** no `App.tsx` raiz: ThemeProvider, QueryProvider, AuthProvider (frontcore), ToastContainer; dentro do layout: AppProvider, WhiteLabelProvider, TenantProvider.
 
@@ -89,8 +89,8 @@ Variáveis de ambiente para remotes: `MFE_AI_URL`, `MFE_CRM_URL`, `MFE_ERP_URL`,
 
 ### 3.3 Menu e navegação
 
-- Itens de menu definidos em `src/config/menu-config.ts` (MENU_ITEMS) com ícones, href e `requiredPermissions`.
-- Menu exibido é filtrado por permissões via `useFilteredMenu()` (frontcore); sidebar e layout vêm de `@gaqno-development/frontcore` (DashboardLayout).
+- Itens de menu: fallback em `src/config/shell-menu.tsx` (SHELL_MENU_ITEMS); backend via `useFilteredMenu()` (frontcore) quando disponível.
+- Menu exibido é filtrado por permissões via `useFilteredMenu()` (frontcore); fallback em `src/config/shell-menu.tsx` (SHELL_MENU_ITEMS). Sidebar e layout são `ShellSidebar` e `ShellLayout` no próprio shell.
 
 ### 3.4 Estrutura do Shell
 
@@ -98,8 +98,8 @@ Variáveis de ambiente para remotes: `MFE_AI_URL`, `MFE_CRM_URL`, `MFE_ERP_URL`,
 | ----------------- | ---------------------------------------------------------------------------------- |
 | `src/App.tsx`     | Router + lazy MFEs + providers                                                     |
 | `src/pages/`      | Páginas próprias do Shell (Home, Login, Register, Dashboard, Admin, etc.)          |
-| `src/components/` | shell-layout-wrapper, route-error-element, microfrontend-error-boundary, dashboard |
-| `src/config/`     | menu-config, widget-registry                                                       |
+| `src/components/` | shell-layout-wrapper, shell-layout, shell-sidebar, route-error-element, microfrontend-error-boundary |
+| `src/config/`     | shell-menu (SHELL_MENU_ITEMS), menu-config, widget-registry                        |
 | `src/hooks/`      | useAuthWithStorage, useLogin, useDashboard, useProfile, etc.                       |
 | `tests/`          | E2E Playwright (login, menu, módulos AI, certificação UI)                          |
 
@@ -123,7 +123,7 @@ O frontcore centraliza tudo que é comum entre Shell e MFEs para evitar duplica�
 | `./hooks/health`         | useHealthSummary, useHealthAgents, useHealthEvents, useHealthFailures, useHealthReleases                 |
 | `./contexts`             | AuthContext, TenantContext                                                                               |
 | `./store`                | authStore, uiStore, whiteLabelStore                                                                      |
-| `./components`           | Layout (DashboardLayout, sidebar, etc.)                                                                  |
+| `./components`           | Export do tipo ISidebarItem (layout/sidebar estão no Shell)                                              |
 | `./components/providers` | QueryProvider, ThemeProvider, AppProvider, WhiteLabelProvider                                            |
 | `./components/ui`        | Componentes UI (shadcn-style), ToastContainer                                                            |
 | `./utils/api`            | api-client, sso-client                                                                                   |
@@ -134,7 +134,7 @@ O frontcore centraliza tudo que é comum entre Shell e MFEs para evitar duplica�
 | No frontcore                                         | No MFE                                            |
 | ---------------------------------------------------- | ------------------------------------------------- |
 | Auth, tenant, permissões, menu filtrado              | Lógica de negócio do domínio (RPG, AI, CRM, etc.) |
-| Layout (DashboardLayout, sidebar), providers globais | Páginas e fluxos específicos do módulo            |
+| Providers globais, UI, hooks, tipos                  | Layout (ShellLayout, ShellSidebar), páginas e fluxos do módulo |
 | Componentes UI e ícones compartilhados               | Componentes e hooks específicos do domínio        |
 | API client base, SSO client                          | Chamadas e tipos de API do próprio serviço        |
 | Hooks de admin, health, AI (preferências/modelos)    | Hooks de livros, campanhas, sessões, etc.         |
@@ -179,7 +179,7 @@ frontcore declara peerDependencies: react, react-dom, @tanstack/react-query, rea
 [Shell - gaqno-shell-ui :3000]
     | ThemeProvider, QueryProvider, AuthProvider
     | Router: /, /login, /dashboard, /ai, /crm, /rpg, ...
-    | ShellLayoutWrapper -> DashboardLayout (frontcore) + useFilteredMenu
+    | ShellLayoutWrapper -> ShellLayout + ShellSidebar (shell) + useFilteredMenu
     |
     +-- Lazy load MFEs via import("ai/App"), import("rpg/App"), ...
     |       each MFE exposes ./App -> src/App.tsx
