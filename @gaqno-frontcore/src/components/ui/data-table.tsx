@@ -434,7 +434,7 @@ export function DataTable<TData, TValue>({
                       >
                         {filterSheetContent}
                         <div className="flex gap-2 pt-4">
-                          <Button type="submit" size="sm">
+                          <Button type="submit" variant="default" size="sm">
                             Aplicar
                           </Button>
                           <Button
