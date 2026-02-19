@@ -158,6 +158,19 @@ When widgets, summary, or preferences fail with `net::ERR_CONNECTION_TIMED_OUT`,
 
 **Check:** Reload the AI module in the portal and open DevTools → Network. Requests to `https://api.gaqno.com.br/ai/v1/models` should return 200 with `Access-Control-Allow-Origin: https://portal.gaqno.com.br` (or the request origin) in the response headers.
 
+## Troubleshooting: Proxy 504 / proxy loses route (Docker networks)
+
+**Sintoma:** O proxy do Coolify retorna **504 Gateway Timeout** ou perde a rota para o container após algum tempo, mesmo com a aplicação rodando.
+
+**Causa mais frequente – isolamento de redes Docker:** Se o `docker-compose` do app usa **redes customizadas** (ex.: `networks: - gaqno-network`), o proxy do Coolify pode perder a rota para o container, pois não está na mesma rede gerenciada pelo Coolify.
+
+**Solução:**
+
+- **Remova redes customizadas** do compose usado no Coolify para esse app (no repositório, os `docker-compose.yml` locais usam `gaqno-network` para rodar tudo junto em dev; em produção cada app é deployado separadamente).
+- No Coolify, use os **Destinations nativos**: configure o app para usar o Destination padrão (ou o destino onde o proxy está) e **não** defina redes manuais no compose do deploy. Deixe o Coolify gerenciar a rede interna para que o proxy alcance a aplicação de forma estável.
+
+**Resumo:** No deploy no Coolify, não use `networks:` customizadas no compose; deixe o Coolify gerenciar a rede.
+
 ## Coolify: SSO vs Omnichannel (backend) comparison
 
 Use this to align **gaqno-omnichannel-service** with **gaqno-sso-service** in Coolify when SSO works and Omnichannel does not.
