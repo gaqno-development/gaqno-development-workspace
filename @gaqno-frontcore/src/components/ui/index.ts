@@ -54,6 +54,7 @@ export * from "./table";
 export * from "./tabs";
 export * from "./module-tabs";
 export * from "./textarea";
+export * from "./sonner";
 export * from "./toast";
 export * from "./toggle";
 export * from "./tooltip";

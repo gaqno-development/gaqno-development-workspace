@@ -4,7 +4,7 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from "axios";
-import { useUIStore } from "../../store/uiStore";
+import { toast } from "sonner";
 
 declare module "axios" {
   interface InternalAxiosRequestConfig {
@@ -189,11 +189,7 @@ const showErrorToast = (error: AxiosError): void => {
       ? String(raw)
       : error.message;
 
-  useUIStore.getState().addNotification({
-    type: "error",
-    title: `Error ${status}`,
-    message,
-  });
+  toast.error(message, { description: `Error ${status}` });
 };
 
 const onResponse = <T = unknown>(response: AxiosResponse<T>) => response;
