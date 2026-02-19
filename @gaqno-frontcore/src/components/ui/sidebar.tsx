@@ -278,11 +278,11 @@ const Sidebar = React.forwardRef<
           style={{
             width: state === "expanded" ? "var(--sidebar-width)" : "0",
             minWidth: 0,
-            transition: "width 200ms ease-linear",
+            transition: "width 220ms cubic-bezier(0.32, 0.72, 0, 1)",
           } as React.CSSProperties}
         >
           <div
-            className="flex h-dvh min-w-[var(--sidebar-width)] flex-col"
+            className="flex h-dvh min-w-[var(--sidebar-width)] flex-col transition-[opacity,transform] duration-200 ease-out group-data-[state=collapsed]:translate-x-[-6%] group-data-[state=collapsed]:opacity-0"
             style={{
               backgroundColor: "var(--sidebar-background, hsl(240 5.9% 10%))",
             }}
