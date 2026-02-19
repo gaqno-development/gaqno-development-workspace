@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import type { LucideIcon } from "lucide-react";
-import { ChevronRight, ChevronsUpDown, PanelLeftClose, PanelLeft } from "lucide-react";
+import {
+  ChevronRight,
+  ChevronsUpDown,
+  PanelLeftClose,
+  PanelLeft,
+} from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useIsMobile } from "../hooks";
 import { Button } from "./ui/button";
@@ -89,7 +94,7 @@ function renderLink(
   href: string,
   Icon: LucideIcon,
   segment: string,
-  collapsed: boolean
+  collapsed: boolean,
 ) {
   const link = (
     <Link
@@ -100,7 +105,7 @@ function renderLink(
         collapsed ? "justify-center p-2 w-9 h-9" : "px-3 py-2",
         segment === s
           ? "bg-primary text-primary-foreground"
-          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+          : "text-muted-foreground hover:bg-muted hover:text-foreground",
       )}
       aria-current={segment === s ? "page" : undefined}
     >
@@ -141,7 +146,7 @@ export function SectionWithSubNav({
 
   const canCollapse = collapsible && variant === "vertical";
   const [collapsed, setCollapsedState] = useState(() =>
-    canCollapse ? loadCollapsed(title, defaultCollapsed) : false
+    canCollapse ? loadCollapsed(title, defaultCollapsed) : false,
   );
 
   useEffect(() => {
@@ -192,7 +197,7 @@ export function SectionWithSubNav({
           size="icon"
           className={cn(
             "shrink-0",
-            collapsed ? "mb-1 h-8 w-8" : "mb-2 h-8 w-8 -ml-1"
+            collapsed ? "mb-1 h-8 w-8" : "mb-2 h-8 w-8 -ml-1",
           )}
           onClick={toggleCollapsed}
           aria-label={collapsed ? "Expand navigation" : "Collapse navigation"}
@@ -220,7 +225,7 @@ export function SectionWithSubNav({
             </div>
           )}
           {group.children.map(({ segment: s, label, href, icon: Icon }) =>
-            renderLink(s, label, href, Icon, segment, collapsed)
+            renderLink(s, label, href, Icon, segment, collapsed),
           )}
         </div>
       ))}
@@ -228,7 +233,7 @@ export function SectionWithSubNav({
   ) : (
     <>
       {children.map(({ segment: s, label, href, icon: Icon }) =>
-        renderLink(s, label, href, Icon, segment, collapsed)
+        renderLink(s, label, href, Icon, segment, collapsed),
       )}
     </>
   );
@@ -245,7 +250,7 @@ export function SectionWithSubNav({
         <div
           className={cn(
             navWrapperClassName,
-            collapsed ? "w-[52px]" : "min-w-[180px]"
+            collapsed ? "w-[52px]" : "min-w-[180px]",
           )}
         >
           <nav className={navClassName} aria-label={`${title} sub-navigation`}>
@@ -284,9 +289,7 @@ export function SectionWithSubNav({
         >
           <span className="flex min-w-0 items-center gap-2">
             {CurrentIcon ? <CurrentIcon className="h-4 w-4 shrink-0" /> : null}
-            <span className="truncate">
-              {currentNavItem?.label || title}
-            </span>
+            <span className="truncate">{currentNavItem?.label || title}</span>
           </span>
           <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-70" />
         </Button>
@@ -295,45 +298,45 @@ export function SectionWithSubNav({
         align="end"
         className="w-[min(90vw,20rem)] max-h-[60vh] overflow-y-auto"
       >
-        {navGroups ? (
-          navGroups.map((group, groupIndex) => (
-            <React.Fragment key={group.label}>
-              {groupIndex > 0 ? <DropdownMenuSeparator /> : null}
-              <DropdownMenuLabel>{group.label}</DropdownMenuLabel>
-              {group.children.map((item) => {
-                const ItemIcon = item.icon;
-                return (
-                  <DropdownMenuItem key={item.segment} asChild>
-                    <Link
-                      to={item.href}
-                      className="flex items-center gap-2"
-                      aria-current={segment === item.segment ? "page" : undefined}
-                    >
-                      <ItemIcon className="h-4 w-4 shrink-0" />
-                      <span className="truncate">{item.label}</span>
-                    </Link>
-                  </DropdownMenuItem>
-                );
-              })}
-            </React.Fragment>
-          ))
-        ) : (
-          children.map((item) => {
-            const ItemIcon = item.icon;
-            return (
-              <DropdownMenuItem key={item.segment} asChild>
-                <Link
-                  to={item.href}
-                  className="flex items-center gap-2"
-                  aria-current={segment === item.segment ? "page" : undefined}
-                >
-                  <ItemIcon className="h-4 w-4 shrink-0" />
-                  <span className="truncate">{item.label}</span>
-                </Link>
-              </DropdownMenuItem>
-            );
-          })
-        )}
+        {navGroups
+          ? navGroups.map((group, groupIndex) => (
+              <React.Fragment key={group.label}>
+                {groupIndex > 0 ? <DropdownMenuSeparator /> : null}
+                <DropdownMenuLabel>{group.label}</DropdownMenuLabel>
+                {group.children.map((item) => {
+                  const ItemIcon = item.icon;
+                  return (
+                    <DropdownMenuItem key={item.segment} asChild>
+                      <Link
+                        to={item.href}
+                        className="flex items-center gap-2"
+                        aria-current={
+                          segment === item.segment ? "page" : undefined
+                        }
+                      >
+                        <ItemIcon className="h-4 w-4 shrink-0" />
+                        <span className="truncate">{item.label}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  );
+                })}
+              </React.Fragment>
+            ))
+          : children.map((item) => {
+              const ItemIcon = item.icon;
+              return (
+                <DropdownMenuItem key={item.segment} asChild>
+                  <Link
+                    to={item.href}
+                    className="flex items-center gap-2"
+                    aria-current={segment === item.segment ? "page" : undefined}
+                  >
+                    <ItemIcon className="h-4 w-4 shrink-0" />
+                    <span className="truncate">{item.label}</span>
+                  </Link>
+                </DropdownMenuItem>
+              );
+            })}
       </DropdownMenuContent>
     </DropdownMenu>
   ) : null;
@@ -370,43 +373,12 @@ export function SectionWithSubNav({
 
   return (
     <div className="flex flex-col h-full min-h-0">
-      {(breadcrumbRoot != null ||
-        breadcrumbCollapseButton != null ||
-        mobileNavTrigger != null) && (
-        <nav
-          aria-label={breadcrumbRoot != null ? "Breadcrumb" : undefined}
-          className="flex items-center gap-2 text-sm text-muted-foreground mb-4 shrink-0"
-        >
-          {breadcrumbRoot != null ? (
-            <>
-              <Link
-                to={breadcrumbRoot.href}
-                className="hover:text-foreground transition-colors"
-              >
-                {breadcrumbRoot.label}
-              </Link>
-              <ChevronRight
-                className="h-4 w-4 text-muted-foreground"
-                aria-hidden
-              />
-            </>
-          ) : null}
-          <span className="text-foreground font-medium">{title}</span>
-          {(mobileNavTrigger != null || breadcrumbCollapseButton != null) && (
-            <>
-              <span className="flex-1" aria-hidden />
-              {mobileNavTrigger ?? breadcrumbCollapseButton}
-            </>
-          )}
-        </nav>
-      )}
-
       <div
         className={cn(
           "flex",
           variant === "vertical" && !isMobileLayout
             ? "flex-1 min-h-0 gap-4"
-            : "flex-col"
+            : "flex-col",
         )}
       >
         {!isMobileLayout && navContent}
