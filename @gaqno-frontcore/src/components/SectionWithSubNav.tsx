@@ -105,7 +105,7 @@ function renderLink(
         collapsed ? "justify-center p-2 w-9 h-9" : "px-3 py-2",
         segment === s
           ? "bg-primary text-primary-foreground"
-          : "text-muted-foreground hover:bg-muted hover:text-foreground",
+          : "text-foreground hover:bg-muted",
       )}
       aria-current={segment === s ? "page" : undefined}
     >
