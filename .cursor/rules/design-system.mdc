@@ -52,3 +52,7 @@ Use only: **8, 16, 24, 32, 48** (Tailwind: `p-2`, `p-4`, `p-6`, `p-8`, `p-12` or
 ## 7. Product Simplicity
 
 If a feature needs explanation to use, it’s too complex for SMB. Simplify before shipping.
+
+## 8. UI Component Imports
+
+In apps that use frontcore (e.g. gaqno-omnichannel-ui, gaqno-shell-ui), **always** import UI components from `@gaqno-development/frontcore/components/ui` or the app alias `@/components/ui` when it points to frontcore. **Never** import directly from `@radix-ui/*` in app code — those primitives are wrapped and styled in frontcore; using Radix directly bypasses the design system and can break styling. ESLint enforces this via shared rules from frontcore: in your app's `.eslintrc.cjs` use `...require("@gaqno-development/frontcore/config/eslint-rules-consumer").rules` so all fronts follow the same source of truth.

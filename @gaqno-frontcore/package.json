@@ -1,6 +1,6 @@
 {
   "name": "@gaqno-development/frontcore",
-  "version": "1.0.47",
+  "version": "1.0.49",
   "private": false,
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/gaqno-development",
@@ -52,6 +52,7 @@
     "./config/next.config.base.js": "./src/config/next.config.base.js",
     "./config/tailwind": "./src/config/tailwind.config.ts",
     "./config/eslint": "./src/config/eslint.config.mjs",
+    "./config/eslint-rules-consumer": "./src/config/eslint-rules-consumer.cjs",
     "./config/postcss": "./src/config/postcss.config.js",
     "./config/typescript": "./src/config/tsconfig.base.json",
     "./config/tsconfig.base.json": "./src/config/tsconfig.base.json",
