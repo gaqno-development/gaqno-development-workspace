@@ -87,9 +87,9 @@ async function main() {
       failed.push({
         name,
         uuid,
-        deploymentUuid: latest.uuid,
+        deploymentUuid: latest.deployment_uuid ?? latest.uuid,
         status,
-        log: null,
+        latest,
       });
     } else {
       running.push({ name, status });
@@ -100,22 +100,20 @@ async function main() {
     console.log("--- Applications with failed/crashed deployments ---\n");
     for (const f of failed) {
       console.log(`${f.name} (${f.uuid}): ${f.status}`);
-      if (f.deploymentUuid) {
+      const rawLogs = f.latest?.logs;
+      if (rawLogs) {
         try {
-          const logRes = await coolifyFetch(
-            "GET",
-            `/applications/${f.uuid}/logs?lines=${LINES}`
-          );
-          const logText =
-            typeof logRes === "string"
-              ? logRes
-              : logRes?.logs ?? logRes?.data ?? JSON.stringify(logRes);
-          if (logText) {
-            console.log("Last log lines:");
-            console.log(logText.slice(-2000));
+          const entries = typeof rawLogs === "string" ? JSON.parse(rawLogs) : rawLogs;
+          const outputs = Array.isArray(entries)
+            ? entries.map((e) => e?.output ?? "").filter(Boolean)
+            : [];
+          const tail = outputs.slice(-80);
+          if (tail.length > 0) {
+            console.log("Last build log lines:");
+            console.log(tail.join(""));
           }
         } catch (e) {
-          console.log("Log fetch error:", e.message);
+          console.log("Log parse error:", e.message);
         }
       }
       console.log("");

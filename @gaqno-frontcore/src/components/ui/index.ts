@@ -41,6 +41,7 @@ export { InputWithAI } from "./input/InputWithAI";
 export type { InputWithAIProps } from "./input/InputWithAI";
 export * from "./label";
 export * from "./loading-skeleton";
+export * from "./pagination";
 export * from "./popover";
 export * from "./progress";
 export * from "./scroll-area";

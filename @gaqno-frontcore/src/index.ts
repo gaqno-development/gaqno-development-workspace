@@ -1,3 +1,4 @@
+export { FRONTCORE_VERSION } from "./version";
 export * from './hooks';
 export * from './lib';
 export * from './types';

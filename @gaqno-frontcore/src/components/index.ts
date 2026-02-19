@@ -6,3 +6,4 @@ export * from "./admin";
 export * from "./model-select";
 export * from "./SectionWithSubNav";
 export * from "./ai";
+export * from "./blocks";
