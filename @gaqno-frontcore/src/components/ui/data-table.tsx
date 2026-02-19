@@ -357,7 +357,7 @@ export function DataTable<TData, TValue>({
                   }
                   className={
                     onRowClick || (openOnRowActionType && renderRowDetail)
-                      ? "cursor-pointer border-border hover:bg-muted/50 data-[state=selected]:bg-muted"
+                      ? "cursor-pointer border-border hover:bg-muted/50 active:bg-muted/70 data-[state=selected]:bg-muted"
                       : "border-border"
                   }
                 >

@@ -108,13 +108,19 @@ const config = {
   					opacity: '0',
   					transform: 'translateY(-8px)'
   				}
+  			},
+  			shake: {
+  				'0%, 100%': { transform: 'translateX(0)' },
+  				'20%, 60%': { transform: 'translateX(-2px)' },
+  				'40%, 80%': { transform: 'translateX(2px)' }
   			}
   		},
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out',
   			'collapsible-down': 'collapsible-down 0.3s ease-out',
-  			'collapsible-up': 'collapsible-up 0.3s ease-out'
+  			'collapsible-up': 'collapsible-up 0.3s ease-out',
+  			shake: 'shake 0.15s ease-in-out'
   		}
   	}
   },
