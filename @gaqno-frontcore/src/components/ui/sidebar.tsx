@@ -121,6 +121,7 @@ const SidebarProvider = React.forwardRef<
     const toggleSidebar = React.useCallback(() => {
       if (isMobile) {
         setOpenMobile((prev) => !prev)
+        setOpen((prev) => !prev)
         return
       }
       const currentState = openRef.current
@@ -221,7 +222,7 @@ const Sidebar = React.forwardRef<
       )
     }
 
-    if (isMobile) {
+    if (isMobile && collapsible !== "offcanvas") {
       return (
         <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
           <SheetContent
@@ -269,7 +270,7 @@ const Sidebar = React.forwardRef<
       return (
         <div
           ref={ref}
-          className="group peer hidden shrink-0 overflow-hidden text-sidebar-foreground md:block"
+          className="group peer flex shrink-0 overflow-hidden text-sidebar-foreground"
           data-state={state}
           data-collapsible={state === "collapsed" ? collapsible : ""}
           data-variant={variant}
