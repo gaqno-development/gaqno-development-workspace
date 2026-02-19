@@ -4,6 +4,13 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from "axios";
+import { useUIStore } from "../../store/uiStore";
+
+declare module "axios" {
+  interface InternalAxiosRequestConfig {
+    _silentError?: boolean;
+  }
+}
 
 type AxiosClientConfig = {
   baseURL?: string;
@@ -163,6 +170,32 @@ const onRequest = (config: InternalAxiosRequestConfig) => {
 
 const onRequestError = (error: AxiosError) => Promise.reject(error);
 
+const showErrorToast = (error: AxiosError): void => {
+  const config = error.config as InternalAxiosRequestConfig & {
+    _silentError?: boolean;
+  };
+  if (config?._silentError) return;
+
+  const status = error.response?.status;
+  if (!status || status === 401) return;
+
+  const data = error.response?.data as
+    | { message?: string | string[] }
+    | undefined;
+  const raw = data?.message;
+  const message = Array.isArray(raw)
+    ? raw.join(" ")
+    : raw
+      ? String(raw)
+      : error.message;
+
+  useUIStore.getState().addNotification({
+    type: "error",
+    title: `Error ${status}`,
+    message,
+  });
+};
+
 const onResponse = <T = unknown>(response: AxiosResponse<T>) => response;
 
 const onResponseError = async (
@@ -238,6 +271,7 @@ const onResponseError = async (
     }
   }
 
+  showErrorToast(error);
   return Promise.reject(error);
 };
 
