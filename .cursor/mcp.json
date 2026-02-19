@@ -44,18 +44,73 @@
       }
     },
     "postgres": {
-      "command": "docker",
+      "command": "uvx",
       "args": [
-        "run",
-        "-i",
-        "--rm",
-        "-e",
-        "DATABASE_URI",
-        "crystaldba/postgres-mcp",
+        "postgres-mcp",
         "--access-mode=unrestricted"
       ],
       "env": {
         "DATABASE_URI": "postgres://postgres:h0a9Ta1RpDQ0G3bVIRpFVluKDgM4H9FH8OOJLCxDwKXBnDg5ZyhxmJrjVg0y8b2Y@72.61.221.19:5432/postgres"
+      }
+    },
+    "postgres-sso": {
+      "command": "uvx",
+      "args": [
+        "postgres-mcp",
+        "--access-mode=unrestricted"
+      ],
+      "env": {
+        "DATABASE_URI": "postgres://postgres:h0a9Ta1RpDQ0G3bVIRpFVluKDgM4H9FH8OOJLCxDwKXBnDg5ZyhxmJrjVg0y8b2Y@72.61.221.19:5432/gaqno_sso_db"
+      }
+    },
+    "postgres-finance": {
+      "command": "uvx",
+      "args": [
+        "postgres-mcp",
+        "--access-mode=unrestricted"
+      ],
+      "env": {
+        "DATABASE_URI": "postgres://postgres:h0a9Ta1RpDQ0G3bVIRpFVluKDgM4H9FH8OOJLCxDwKXBnDg5ZyhxmJrjVg0y8b2Y@72.61.221.19:5432/gaqno_finance_db"
+      }
+    },
+    "postgres-pdv": {
+      "command": "uvx",
+      "args": [
+        "postgres-mcp",
+        "--access-mode=unrestricted"
+      ],
+      "env": {
+        "DATABASE_URI": "postgres://postgres:h0a9Ta1RpDQ0G3bVIRpFVluKDgM4H9FH8OOJLCxDwKXBnDg5ZyhxmJrjVg0y8b2Y@72.61.221.19:5432/gaqno_pdv_db"
+      }
+    },
+    "postgres-rpg": {
+      "command": "uvx",
+      "args": [
+        "postgres-mcp",
+        "--access-mode=unrestricted"
+      ],
+      "env": {
+        "DATABASE_URI": "postgres://postgres:h0a9Ta1RpDQ0G3bVIRpFVluKDgM4H9FH8OOJLCxDwKXBnDg5ZyhxmJrjVg0y8b2Y@72.61.221.19:5432/gaqno_rpg_db"
+      }
+    },
+    "postgres-ai": {
+      "command": "uvx",
+      "args": [
+        "postgres-mcp",
+        "--access-mode=unrestricted"
+      ],
+      "env": {
+        "DATABASE_URI": "postgres://postgres:h0a9Ta1RpDQ0G3bVIRpFVluKDgM4H9FH8OOJLCxDwKXBnDg5ZyhxmJrjVg0y8b2Y@72.61.221.19:5432/gaqno_ai_db"
+      }
+    },
+    "postgres-omnichannel": {
+      "command": "uvx",
+      "args": [
+        "postgres-mcp",
+        "--access-mode=unrestricted"
+      ],
+      "env": {
+        "DATABASE_URI": "postgres://postgres:h0a9Ta1RpDQ0G3bVIRpFVluKDgM4H9FH8OOJLCxDwKXBnDg5ZyhxmJrjVg0y8b2Y@72.61.221.19:5432/gaqno_omnichannel_db"
       }
     }
   }
