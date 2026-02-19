@@ -256,6 +256,52 @@ const Sidebar = React.forwardRef<
       )
     }
 
+    const panelWidth =
+      state === "collapsed" && collapsible === "icon"
+        ? variant === "floating" || variant === "inset"
+          ? "calc(var(--sidebar-width-icon) + 1rem + 2px)"
+          : "var(--sidebar-width-icon)"
+        : "var(--sidebar-width)"
+
+    const isOffcanvas = collapsible === "offcanvas"
+
+    if (isOffcanvas) {
+      return (
+        <div
+          ref={ref}
+          className="group peer hidden shrink-0 overflow-hidden text-sidebar-foreground md:block"
+          data-state={state}
+          data-collapsible={state === "collapsed" ? collapsible : ""}
+          data-variant={variant}
+          data-side={side}
+          style={{
+            width: state === "expanded" ? "var(--sidebar-width)" : "0",
+            minWidth: 0,
+            transition: "width 200ms ease-linear",
+          } as React.CSSProperties}
+        >
+          <div
+            className="flex h-dvh min-w-[var(--sidebar-width)] flex-col"
+            style={{
+              backgroundColor: "var(--sidebar-background, hsl(240 5.9% 10%))",
+            }}
+          >
+            <div
+              data-sidebar="sidebar"
+              className={cn(
+                "flex h-full w-full flex-col border-sidebar-border bg-sidebar",
+                "group-data-[side=left]:border-r group-data-[side=right]:border-l",
+                className
+              )}
+              {...props}
+            >
+              {children}
+            </div>
+          </div>
+        </div>
+      )
+    }
+
     return (
       <div
         ref={ref}
@@ -277,11 +323,7 @@ const Sidebar = React.forwardRef<
         />
         <div
           style={{
-            width: state === "collapsed" && collapsible === "icon"
-              ? variant === "floating" || variant === "inset"
-                ? "calc(var(--sidebar-width-icon) + 1rem + 2px)"
-                : "var(--sidebar-width-icon)"
-              : "var(--sidebar-width)",
+            width: panelWidth,
             backgroundColor: "var(--sidebar-background, hsl(240 5.9% 10%))",
           } as React.CSSProperties}
           className={cn(
