@@ -88,6 +88,9 @@ function getSegmentFromPath(pathname: string, basePath: string): string {
   return remainder.split("/")[0] ?? "";
 }
 
+const activeLinkClasses =
+  "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary";
+
 function renderLink(
   s: string,
   label: string,
@@ -96,6 +99,7 @@ function renderLink(
   segment: string,
   collapsed: boolean,
 ) {
+  const isActive = segment === s;
   const link = (
     <Link
       key={s}
@@ -103,11 +107,9 @@ function renderLink(
       className={cn(
         "flex items-center gap-2 rounded-md text-sm font-medium transition-colors",
         collapsed ? "justify-center p-2 w-9 h-9" : "px-3 py-2",
-        segment === s
-          ? "bg-primary text-primary-foreground"
-          : "text-foreground hover:bg-muted",
+        isActive ? activeLinkClasses : "text-muted-foreground hover:bg-muted",
       )}
-      aria-current={segment === s ? "page" : undefined}
+      aria-current={isActive ? "page" : undefined}
     >
       <Icon className="h-4 w-4 shrink-0" />
       {!collapsed && label}
@@ -382,7 +384,9 @@ export function SectionWithSubNav({
         )}
       >
         {!isMobileLayout && navContent}
-        <div className="flex min-h-0 flex-1 flex-col overflow-hidden">{contentArea}</div>
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+          {contentArea}
+        </div>
       </div>
     </div>
   );
