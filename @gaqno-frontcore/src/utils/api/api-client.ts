@@ -329,6 +329,7 @@ const getServiceBaseUrl = (serviceName: string): string => {
       pdv: "http://localhost:4006",
       rpg: "http://localhost:4007",
       omnichannel: "http://localhost:4008",
+      saas: "http://localhost:4009",
     };
     return defaultUrls[serviceName] || "http://localhost:4001";
   }
@@ -350,6 +351,7 @@ const getServiceBaseUrl = (serviceName: string): string => {
     ai: "VITE_SERVICE_AI_URL",
     rpg: "VITE_SERVICE_RPG_URL",
     omnichannel: "VITE_SERVICE_OMNICHANNEL_URL",
+    saas: "VITE_SERVICE_SAAS_URL",
   };
 
   const envKey = envMap[serviceName];
@@ -372,6 +374,7 @@ const getServiceBaseUrl = (serviceName: string): string => {
     pdv: "http://localhost:4006",
     rpg: "http://localhost:4007",
     omnichannel: "http://localhost:4008",
+    saas: "http://localhost:4009",
   };
   return defaultUrls[serviceName] || "http://localhost:4001";
 };
@@ -406,7 +409,9 @@ export const coreAxiosClient = {
   ai: createServiceClientWithPrefix("ai"),
   rpg: createServiceClientWithPrefix("rpg"),
   omnichannel: createServiceClientWithPrefix("omnichannel"),
+  saas: createServiceClientWithPrefix("saas"),
 };
 
 export const ssoClient = coreAxiosClient.sso;
 export const financeClient = coreAxiosClient.finance;
+export const saasClient = coreAxiosClient.saas;

@@ -140,6 +140,19 @@ When widgets, summary, or preferences fail with `net::ERR_CONNECTION_TIMED_OUT`,
 
 **Check:** After redeploy, reload the portal page that loads the omnichannel MFE and open DevTools → Network. Requests to `https://api.gaqno.com.br/omnichannel/v1/...` should return 200, not CORS errors.
 
+## Troubleshooting: gaqno-omnichannel-ui Docker build failed
+
+**Symptom:** Coolify deployment fails during Docker build with "Command execution failed (exit code 255)" when running the build step (`npm run build` or `npx tsc --noEmit` / `npx vite build`).
+
+**Checks:**
+
+1. **Build context:** In Coolify, the **Build Context** for gaqno-omnichannel-ui must be the **gaqno-omnichannel-ui** directory (e.g. `./gaqno-omnichannel-ui` or the path to that folder in the repo). If the context is the repo root, `COPY package.json` and `COPY . .` will use the root `package.json` and the build will not be the omnichannel app.
+2. **Which step failed:** The Dockerfile runs `npx tsc --noEmit` and `npx vite build` in separate steps. Check the Coolify log to see whether the failure is at **tsc** (type errors) or **vite build** (bundling/runtime).
+3. **NPM_TOKEN:** The build needs `NPM_TOKEN` (GitHub PAT with `read:packages`) to install `@gaqno-development/frontcore` from GitHub Packages. If it is missing or invalid, `npm install` will fail earlier in the log.
+4. **Memory / timeout:** The build uses `NODE_OPTIONS=--max-old-space-size=4096`. If the Coolify runner has less memory or the step times out, the process may be killed; increase build timeout or memory if needed.
+
+**Reproduce locally:** From the repo root, `cd gaqno-omnichannel-ui && npm run build`. If this passes, the failure is likely context, env (NPM_TOKEN), or Coolify runner limits.
+
 ## Troubleshooting: AI module CORS (models endpoint)
 
 **Symptom:** In the AI module (portal), requests to `https://api.gaqno.com.br/ai/v1/models` (or `/v1/models/registry`, `/v1/videos/models`, etc.) fail with **CORS error** in the browser; other api.gaqno.com.br endpoints (e.g. widgets, me, preferences) return 200 or 304.

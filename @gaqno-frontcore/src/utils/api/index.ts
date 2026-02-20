@@ -4,6 +4,7 @@ export {
   createServiceClient,
   ssoClient,
   financeClient,
+  saasClient,
   coreAxiosClient,
   getAuthToken,
   registerServiceConfig,
