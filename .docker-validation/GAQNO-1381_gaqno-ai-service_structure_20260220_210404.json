@@ -1,0 +1,104 @@
+{
+  "ticket": "GAQNO-1381",
+  "service": "gaqno-ai-service",
+  "timestamp": "2026-02-20T21:04:04+00:00",
+  "environment": "no-docker",
+  "validations": [
+    {
+      "name": "Dockerfile_exists",
+      "status": "PASSED",
+      "message": "Dockerfile encontrado"
+    },
+    {
+      "name": "package.json_exists",
+      "status": "PASSED",
+      "message": "package.json encontrado"
+    },
+    {
+      "name": ".gitignore_exists",
+      "status": "PASSED",
+      "message": ".gitignore encontrado"
+    },
+    {
+      "name": "dockerfile_multi_stage",
+      "status": "WARNING",
+      "message": "Não é multi-stage"
+    },
+    {
+      "name": "node_version",
+      "status": "PASSED",
+      "message": "Node.js 22"
+    },
+    {
+      "name": "ports_exposed",
+      "status": "PASSED",
+      "message": "Portas: EXPOSE 4002 "
+    },
+    {
+      "name": "package_json_valid",
+      "status": "PASSED",
+      "message": "JSON válido"
+    },
+    {
+      "name": "package_name",
+      "status": "PASSED",
+      "message": "Nome: gaqno-ai-service"
+    },
+    {
+      "name": "package_version",
+      "status": "PASSED",
+      "message": "Versão: 0.0.1"
+    },
+    {
+      "name": "script_build",
+      "status": "PASSED",
+      "message": "build definido"
+    },
+    {
+      "name": "script_start",
+      "status": "PASSED",
+      "message": "start definido"
+    },
+    {
+      "name": "dependencies",
+      "status": "PASSED",
+      "message": "26 prod, 30 dev"
+    },
+    {
+      "name": "dir_src",
+      "status": "PASSED",
+      "message": "143 arquivos"
+    },
+    {
+      "name": "dir_test",
+      "status": "PASSED",
+      "message": "11 arquivos"
+    },
+    {
+      "name": "config_tsconfig.json",
+      "status": "PASSED",
+      "message": "Encontrado"
+    },
+    {
+      "name": "config_nest-cli.json",
+      "status": "PASSED",
+      "message": "Encontrado"
+    },
+    {
+      "name": "config_.env.example",
+      "status": "PASSED",
+      "message": "Encontrado"
+    },
+    {
+      "name": "config_docker-compose.yml",
+      "status": "WARNING",
+      "message": "Não encontrado"
+    }
+  ],
+  "summary": {
+    "total": 18,
+    "passed": 16,
+    "failed": 0,
+    "warnings": 2
+  }
+}

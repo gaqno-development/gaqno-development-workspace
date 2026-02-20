@@ -1,0 +1,49 @@
+{
+  "ticket": "GAQNO-1381",
+  "service": "gaqno-ai-service",
+  "timestamp": "2026-02-20T21:02:24+00:00",
+  "validations": [
+    {
+      "name": "dockerfile_exists",
+      "status": "PASSED",
+      "message": "Dockerfile encontrado",
+      "details": "/data/gaqno-development-workspace/gaqno-ai-service/Dockerfile"
+    },
+    {
+      "name": "package_json_exists",
+      "status": "PASSED",
+      "message": "package.json encontrado",
+      "details": "/data/gaqno-development-workspace/gaqno-ai-service/package.json"
+    },
+    {
+      "name": "dockerfile_syntax",
+      "status": "WARNING",
+      "message": "Possíveis issues no Dockerfile",
+      "details": "Recomendado revisar com hadolint"
+    },
+    {
+      "name": "package_json_valid",
+      "status": "PASSED",
+      "message": "package.json JSON válido",
+      "details": "JSON syntax OK"
+    },
+    {
+      "name": "build_script_defined",
+      "status": "PASSED",
+      "message": "Script de build definido",
+      "details": "nest build"
+    },
+    {
+      "name": "docker_build",
+      "status": "FAILED",
+      "message": "",
+      "details": "Verifique o log: /data/gaqno-development-workspace/.docker-validation/GAQNO-1381_gaqno-ai-service_build_20260220_210224.log"
+    }
+  ],
+  "summary": {
+    "total": 6,
+    "passed": 4,
+    "failed": 1,
+    "warnings": 1
+  }
+}
