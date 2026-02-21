@@ -17,4 +17,3 @@ export * from "./health";
 export * from "./permission";
 export * from "./tenant";
 export * from "./dashboard";
-export * from "./openclaw";
