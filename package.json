@@ -7,6 +7,7 @@
     "@gaqno-backcore",
     "@gaqno-frontcore",
     "@gaqno-types",
+    "gaqno-agent",
     "gaqno-admin-service",
     "gaqno-admin-ui",
     "gaqno-ai-service",
