@@ -1,6 +1,6 @@
 {
   "name": "@gaqno-development/types",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Shared TypeScript interfaces used across frontend and backend for a single source of truth. Source repository is private.",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/gaqno-development",
@@ -121,6 +121,11 @@
       "require": "./dist/dashboard.js",
       "import": "./dist/dashboard.js",
       "types": "./dist/dashboard.d.ts"
+    },
+    "./openclaw": {
+      "require": "./dist/openclaw.js",
+      "import": "./dist/openclaw.js",
+      "types": "./dist/openclaw.d.ts"
     }
   }
 }

@@ -223,6 +223,47 @@ Alternatively, **disable** the health check in the Coolify UI for this app and r
 3. **Headers:** Proxy must forward **Origin**, **Authorization**, and **Cookie** (same as SSO).
 4. **Port:** Container exposes **4008**; Coolify/Traefik should route `/omnichannel` to this service on 4008.
 
+## Coolify: openclaw-gaqno service (OpenClaw)
+
+The **openclaw-gaqno** service runs two containers: **openclaw** (main app) and **browser** (Chrome for CDP). The service is marked unhealthy when the **openclaw** container fails its healthcheck (`curl -sf http://127.0.0.1:8080/healthz`).
+
+**If openclaw stays in "restarting" or "unhealthy":**
+
+1. **Healthcheck too strict:** OpenClaw can take 1–2 minutes to start (connects to browser, loads config). The service template was updated to use:
+   - `start_period: 120s` (no failed check counts for 2 minutes)
+   - `interval: 15s`, `timeout: 15s`, `retries: 10`
+   In Coolify, edit the service → **Docker Compose** (or raw) and ensure the **openclaw** service healthcheck includes `start_period: 120s`. Then **Restart** the service.
+
+2. **Restart the service:** In Coolify MCP or UI, use **Restart** on the openclaw-gaqno service so containers pick up the new healthcheck.
+
+3. **Env vars:** Ensure at least one LLM API key is set (e.g. `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `OPENCODE_API_KEY`) and `OPENCLAW_PRIMARY_MODEL` is set. Missing credentials can cause the process to exit.
+
+4. **Logs:** In Coolify, open the **openclaw** container logs (not the browser) to see startup errors or healthcheck failures.
+
+## Cloudflare and OpenClaw (openclaw.gaqno.com.br)
+
+For the OpenClaw web UI and gateway to work when the zone `gaqno.com.br` is on Cloudflare:
+
+1. **DNS**
+   - In Cloudflare Dashboard → **DNS** for `gaqno.com.br`, ensure a record for **openclaw** (e.g. `openclaw.gaqno.com.br`):
+     - **Type:** `A` (to your Coolify server IP) or `CNAME` (to the host that Traefik/Coolify uses).
+   - If the record is missing, add it so `openclaw.gaqno.com.br` resolves to the same origin as other Coolify apps (e.g. same IP as `api.gaqno.com.br` or `portal.gaqno.com.br`).
+
+2. **Proxy (orange cloud)**
+   - **Proxied (orange):** SSL at Cloudflare; ensure **SSL/TLS** is not “Off” and **WebSockets** are enabled (default). OpenClaw UI may use WebSockets.
+   - **DNS only (grey):** Traffic goes directly to Coolify; SSL is terminated at Traefik/Coolify. Ensure the Coolify app for openclaw has a valid certificate or is behind HTTPS at the edge.
+
+3. **WebSockets**
+   - OpenClaw gateway and UI can use WebSockets. In Cloudflare, WebSockets are supported by default; do not disable them for `openclaw.gaqno.com.br`.
+
+4. **Checklist**
+   - [ ] `openclaw.gaqno.com.br` exists in Cloudflare DNS and points to the Coolify server (or CNAME target).
+   - [ ] SSL: either Cloudflare proxy with SSL/TLS Full (or Full Strict) or DNS-only with HTTPS at Coolify/Traefik.
+   - [ ] WebSockets enabled (no rule turning them off for this hostname).
+   - [ ] In Coolify, the openclaw-gaqno service FQDN is set to `https://openclaw.gaqno.com.br` (or `http://openclaw.gaqno.com.br` if TLS is only at Cloudflare and you use Flexible there; prefer Full/Full Strict in production).
+
+You can confirm DNS with `dig openclaw.gaqno.com.br` or Cloudflare MCP (e.g. DNS analytics) if the zone is in your Cloudflare account.
+
 ## gaqno-ai-service Model List
 
 Text and image model lists are fetched from the [Vercel AI Gateway](https://ai-gateway.vercel.sh/v1/models) (no auth, cached 5 min). Models are filtered by configured API keys (OPENAI_API_KEY, GEMINI_API_KEY). Local/self-hosted models remain in config.
