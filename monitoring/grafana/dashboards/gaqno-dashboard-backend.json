@@ -1,0 +1,498 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [
+    { "title": "Front", "url": "/d/gaqno-dashboard-front", "type": "dashboard" },
+    { "title": "DevOps", "url": "/d/gaqno-dashboard-devops", "type": "dashboard" }
+  ],
+  "liveNow": false,
+  "panels": [
+    {
+      "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
+      "id": 0,
+      "options": {
+        "content": "**Backend** — Golden Signals (latência, tráfego, erros, saturação) + Banco + Infra + Deploy. Dados atuais: Prometheus (*-service). Latência por endpoint/versão, DB e K8s exigem métricas adicionais.",
+        "mode": "markdown"
+      },
+      "title": "",
+      "type": "text"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 2 },
+      "id": 10,
+      "panels": [],
+      "title": "Linha 1 — Saúde geral",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus" },
+      "description": "5xx > 1% = alerta. 4xx+5xx em *-service.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 1}, {"color": "red", "value": 5}] },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 4, "x": 0, "y": 3 },
+      "id": 11,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus" },
+          "expr": "100 * (sum(rate(http_requests_total{job=~\".*-service\",status=~\"[45]..\"}[5m])) / sum(rate(http_requests_total{job=~\".*-service\"}[5m])))",
+          "legendFormat": "Error %",
+          "refId": "A"
+        }
+      ],
+      "title": "Error rate %",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus" },
+      "description": "Quando existir http_request_duration_seconds_bucket nos *-service.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 500}, {"color": "red", "value": 2000}] },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 4, "x": 4, "y": 3 },
+      "id": 12,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus" },
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=~\".*-service\"}[5m])) by (le)) * 1000",
+          "legendFormat": "P95",
+          "refId": "A"
+        }
+      ],
+      "title": "Latência P95 (ms)",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}] }
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 4, "x": 8, "y": 3 },
+      "id": 13,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus" },
+          "expr": "sum(rate(http_requests_total{job=~\".*-service\"}[5m]))",
+          "legendFormat": "RPS",
+          "refId": "A"
+        }
+      ],
+      "title": "RPS",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus" },
+      "description": "Containers (cAdvisor). Filtro por nome; ajuste name=~ para seus serviços.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 70}, {"color": "red", "value": 90}] },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 4, "x": 12, "y": 3 },
+      "id": 14,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus" },
+          "expr": "avg(rate(container_cpu_usage_seconds_total{name=~\".+\"}[5m])) by () * 100",
+          "legendFormat": "CPU",
+          "refId": "A"
+        }
+      ],
+      "title": "CPU (containers avg)",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}] },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 4, "x": 16, "y": 3 },
+      "id": 15,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus" },
+          "expr": "sum(container_memory_usage_bytes{name=~\".+\"})",
+          "legendFormat": "Mem",
+          "refId": "A"
+        }
+      ],
+      "title": "Memória (containers)",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 8 },
+      "id": 20,
+      "panels": [],
+      "title": "Linha 2 — Latência detalhada",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+          "mappings": [],
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 9 },
+      "id": 21,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus" },
+          "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket{job=~\".*-service\"}[5m])) by (le, job)) * 1000",
+          "legendFormat": "P50 {{job}}",
+          "refId": "A"
+        },
+        {
+          "datasource": { "type": "prometheus" },
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=~\".*-service\"}[5m])) by (le, job)) * 1000",
+          "legendFormat": "P95 {{job}}",
+          "refId": "B"
+        }
+      ],
+      "title": "Latência por serviço (P50 / P95)",
+      "type": "timeseries"
+    },
+    {
+      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 9 },
+      "id": 22,
+      "options": {
+        "content": "**Latência por endpoint**\n\nTop endpoints lentos. Requer: métricas com label `path` ou `route` (ex.: NestJS Prometheus com path).",
+        "mode": "markdown"
+      },
+      "title": "Por endpoint (placeholder)",
+      "type": "text"
+    },
+    {
+      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 9 },
+      "id": 23,
+      "options": {
+        "content": "**Latência por versão**\n\nCorrelacionar release com latência. Requer: label `version` no histogram ou em http_requests_total.",
+        "mode": "markdown"
+      },
+      "title": "Por versão (placeholder)",
+      "type": "text"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 17 },
+      "id": 30,
+      "panels": [],
+      "title": "Linha 3 — Erros",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 18 },
+      "id": 31,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+      "targets": [
+        { "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{job=~\".*-service\",status=~\"5..\"}[5m])) by (job)", "legendFormat": "{{job}}", "refId": "A" }
+      ],
+      "title": "5xx por serviço",
+      "type": "timeseries"
+    },
+    {
+      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 18 },
+      "id": 32,
+      "options": {
+        "content": "**Exceptions por tipo**\n\nRequer: métricas de exceção (ex.: NestJS exception filter exportando contador por tipo) ou logs em Loki.",
+        "mode": "markdown"
+      },
+      "title": "Exceptions (placeholder)",
+      "type": "text"
+    },
+    {
+      "datasource": { "type": "prometheus" },
+      "description": "Por job. Com label path/route: agrupe por path para top endpoints.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 18 },
+      "id": 33,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+      "targets": [
+        { "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{job=~\".*-service\",status=~\"[45]..\"}[5m])) by (job)", "legendFormat": "{{job}}", "refId": "A" }
+      ],
+      "title": "Top serviços com erro",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 26 },
+      "id": 40,
+      "panels": [],
+      "title": "Linha 4 — Banco",
+      "type": "row"
+    },
+    {
+      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 27 },
+      "id": 41,
+      "datasource": { "type": "prometheus" },
+      "description": "Maior duração de transação ativa (proxy para slow queries). Requer pg_stat_statements no Postgres para métricas por query.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+          "mappings": [],
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+      "targets": [
+        { "datasource": { "type": "prometheus" }, "expr": "pg_stat_activity_max_tx_duration_seconds{job=\"postgres-exporter\"}", "legendFormat": "{{datname}}", "refId": "A" }
+      ],
+      "title": "Longest running tx (s)",
+      "type": "timeseries"
+    },
+    {
+      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 27 },
+      "id": 42,
+      "datasource": { "type": "prometheus" },
+      "description": "Conexões ativas por database. Fonte: postgres_exporter.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+      "targets": [
+        { "datasource": { "type": "prometheus" }, "expr": "pg_stat_database_numbackends{job=\"postgres-exporter\"}", "legendFormat": "{{datname}}", "refId": "A" }
+      ],
+      "title": "Conexões por database",
+      "type": "timeseries"
+    },
+    {
+      "gridPos": { "h": 6, "w": 8, "x": 16, "y": 27 },
+      "id": 43,
+      "datasource": { "type": "prometheus" },
+      "description": "Só existe se houver réplicas. Fonte: postgres_exporter.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+          "mappings": [],
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+      "targets": [
+        { "datasource": { "type": "prometheus" }, "expr": "pg_replication_lag{job=\"postgres-exporter\"} or pg_replication_lag_in_seconds{job=\"postgres-exporter\"} or vector(0)", "legendFormat": "lag", "refId": "A" }
+      ],
+      "title": "Replication lag (s)",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 33 },
+      "id": 50,
+      "panels": [],
+      "title": "Linha 5 — Infra",
+      "type": "row"
+    },
+    {
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 34 },
+      "id": 51,
+      "options": {
+        "content": "**Pods running**\n\nRequer: Kubernetes + kube-state-metrics ou Prometheus Operator. Métricas: kube_pod_status_ready.",
+        "mode": "markdown"
+      },
+      "title": "Pods (placeholder)",
+      "type": "text"
+    },
+    {
+      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 34 },
+      "id": 52,
+      "options": {
+        "content": "**Restarts / OOMKills**\n\nRequer: kube-state-metrics (kube_pod_container_status_restarts_total) e eventos OOMKilled.",
+        "mode": "markdown"
+      },
+      "title": "Restart (placeholder)",
+      "type": "text"
+    },
+    {
+      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 34 },
+      "id": 53,
+      "options": {
+        "content": "**HPA scaling**\n\nRequer: K8s HPA + kube-state-metrics (horizontalpodautoscaler_status_*).",
+        "mode": "markdown"
+      },
+      "title": "HPA (placeholder)",
+      "type": "text"
+    },
+    {
+      "datasource": { "type": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+          "mappings": [],
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 34 },
+      "id": 54,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+      "targets": [
+        { "datasource": { "type": "prometheus" }, "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\".+\"}[5m])) by (name) * 100", "legendFormat": "{{name}}", "refId": "A" }
+      ],
+      "title": "CPU por container (cAdvisor)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+          "mappings": [],
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 39 },
+      "id": 55,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+      "targets": [
+        { "datasource": { "type": "prometheus" }, "expr": "container_memory_usage_bytes{name=~\".+\"}", "legendFormat": "{{name}}", "refId": "A" }
+      ],
+      "title": "Memória por container (cAdvisor)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 39 },
+      "id": 56,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+      "targets": [
+        { "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{job=~\".*-service\"}[5m])) by (job)", "legendFormat": "{{job}}", "refId": "A" }
+      ],
+      "title": "RPS por serviço",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["gaqno", "backend"],
+  "templating": { "list": [] },
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Gaqno — Backend",
+  "uid": "gaqno-dashboard-backend",
+  "version": 2,
+  "weekStart": ""
+}

@@ -28,6 +28,35 @@ services:
     networks:
       - gaqno-network
 
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.2
+    container_name: gaqno-cadvisor
+    privileged: true
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    networks:
+      - gaqno-network
+
+  postgres-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter:v0.15.0
+    container_name: gaqno-postgres-exporter
+    ports:
+      - "9187:9187"
+    environment:
+      DATA_SOURCE_URI: ${POSTGRES_EXPORTER_URI:-localhost:5432/postgres?sslmode=disable}
+      DATA_SOURCE_USER: ${POSTGRES_EXPORTER_USER:-postgres}
+      DATA_SOURCE_PASS: ${POSTGRES_EXPORTER_PASS:-}
+    restart: unless-stopped
+    networks:
+      - gaqno-network
+
   grafana:
     image: grafana/grafana:10.2.0
     container_name: gaqno-grafana
