@@ -24,3 +24,49 @@ jobs:
           if [ -n "$COOLIFY_WEBHOOK_URL" ]; then
             curl -fsS -X POST "$COOLIFY_WEBHOOK_URL" -H "Content-Type: application/json" -d "{\"ref\":\"${{ github.ref }}\",\"sha\":\"${{ github.sha }}\"}"
           fi
+
+      - name: Push DORA metrics to Pushgateway
+        env:
+          PUSHGATEWAY_URL: ${{ secrets.PROMETHEUS_PUSHGATEWAY_URL }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -z "$PUSHGATEWAY_URL" ]; then echo "PROMETHEUS_PUSHGATEWAY_URL not set, skipping"; exit 0; fi
+          set -e
+          REPO="${{ github.repository }}"
+          SHA="${{ github.sha }}"
+          NOW_TS=$(date -u +%s)
+          SEVEN_DAYS_AGO=$(date -u -d '7 days ago' +%Y-%m-%d)
+          ONE_DAY_AGO=$(date -u -d '1 day ago' +%Y-%m-%d)
+
+          COMMIT_ISO=$(curl -sS -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/$REPO/commits/$SHA" | jq -r '.commit.committer.date')
+          COMMIT_TS=$(date -u -d "$COMMIT_ISO" +%s)
+          LEAD_TIME=$((NOW_TS - COMMIT_TS))
+
+          WF_LIST=$(curl -sS -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/$REPO/actions/workflows")
+          WF_ID=$(echo "$WF_LIST" | jq -r '.workflows[] | select(.path | endswith("cd.yml")) | .id')
+          if [ -z "$WF_ID" ] || [ "$WF_ID" = "null" ]; then
+            echo "CD workflow not found, skipping metrics push"
+            exit 0
+          fi
+
+          RUNS_7D=$(curl -sS -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/$REPO/actions/workflows/$WF_ID/runs?per_page=1&status=success&created=>=$SEVEN_DAYS_AGO" | jq -r '.total_count')
+          RUNS_24H=$(curl -sS -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/$REPO/actions/workflows/$WF_ID/runs?per_page=1&status=success&created=>=$ONE_DAY_AGO" | jq -r '.total_count')
+
+          RUNS_7D=${RUNS_7D:-0}
+          RUNS_24H=${RUNS_24H:-0}
+
+          cat <<EOF | curl -fsS --data-binary @- "$PUSHGATEWAY_URL/metrics/job/cd/instance/github_actions"
+          # TYPE cicd_deployments_last_24h gauge
+          cicd_deployments_last_24h{repo="$REPO",workflow="CD"} $RUNS_24H
+          # TYPE cicd_deployments_last_7d gauge
+          cicd_deployments_last_7d{repo="$REPO",workflow="CD"} $RUNS_7D
+          # TYPE cicd_deployment_lead_time_seconds gauge
+          cicd_deployment_lead_time_seconds{repo="$REPO",workflow="CD"} $LEAD_TIME
+          # TYPE cicd_last_deployment_timestamp_seconds gauge
+          cicd_last_deployment_timestamp_seconds{repo="$REPO",workflow="CD"} $NOW_TS
+          EOF
+          echo "Pushed DORA metrics: deployments_24h=$RUNS_24H deployments_7d=$RUNS_7D lead_time_sec=$LEAD_TIME"

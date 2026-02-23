@@ -1,106 +1,38 @@
 {
-  "annotations": {
-    "list": []
-  },
+  "annotations": { "list": [] },
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": null,
-  "links": [],
+  "links": [
+    { "title": "Front", "url": "/d/gaqno-dashboard-front", "type": "dashboard" },
+    { "title": "Backend", "url": "/d/gaqno-dashboard-backend", "type": "dashboard" },
+    { "title": "DevOps", "url": "/d/gaqno-dashboard-devops", "type": "dashboard" }
+  ],
   "liveNow": false,
   "panels": [
     {
-      "datasource": { "type": "prometheus" },
-      "fieldConfig": {
-        "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 1 }] } },
-        "overrides": []
-      },
-      "gridPos": { "h": 4, "w": 12, "x": 0, "y": 0 },
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 0 },
       "id": 1,
-      "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "pluginVersion": "10.2.0",
-      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "count(up == 0)", "legendFormat": "Down", "refId": "A" }],
-      "title": "Targets down (services unreachable)",
-      "type": "stat"
-    },
-    {
-      "datasource": { "type": "prometheus" },
-      "fieldConfig": {
-        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } }, "mappings": [] },
-        "overrides": []
+      "options": {
+        "content": "# Gaqno — Dashboards\n\n| Dashboard | For | Content |\n|-----------|-----|--------|\n| **[Front](/d/gaqno-dashboard-front)** | Frontend | UIs (*-ui), 4xx/5xx by app |\n| **[Backend](/d/gaqno-dashboard-backend)** | Backend | Services (*-service), 4xx/5xx by service |\n| **[DevOps](/d/gaqno-dashboard-devops)** | Ops / Infra | Host CPU/memory/load, containers, Prometheus, targets |\n\nUse the links above or the dashboard dropdown.",
+        "mode": "markdown"
       },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
-      "id": 2,
-      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "up", "legendFormat": "{{job}} (instance {{instance}})", "refId": "A" }],
-      "title": "Service / target health (1 = up, 0 = down)",
-      "type": "timeseries"
-    },
-    {
-      "datasource": { "type": "prometheus" },
-      "fieldConfig": {
-        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } }, "mappings": [] },
-        "overrides": []
-      },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
-      "id": 3,
-      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "scrape_duration_seconds", "legendFormat": "{{job}}", "refId": "A" }],
-      "title": "Scrape duration by job (high = slow / failing)",
-      "type": "timeseries"
-    },
-    {
-      "datasource": { "type": "prometheus" },
-      "description": "When services expose HTTP metrics (e.g. NestJS with prom-client), 5xx rate per service will appear here.",
-      "fieldConfig": {
-        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } }, "mappings": [] },
-        "overrides": []
-      },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
-      "id": 4,
-      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{status=~\"5..\"}[5m])) by (job)", "legendFormat": "{{job}}", "refId": "A" }],
-      "title": "HTTP 5xx error rate by service",
-      "type": "timeseries"
-    },
-    {
-      "datasource": { "type": "prometheus" },
-      "description": "When services expose HTTP metrics, 4xx rate per service will appear here.",
-      "fieldConfig": {
-        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } }, "mappings": [] },
-        "overrides": []
-      },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
-      "id": 5,
-      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{status=~\"4..\"}[5m])) by (job)", "legendFormat": "{{job}}", "refId": "A" }],
-      "title": "HTTP 4xx error rate by service",
-      "type": "timeseries"
-    },
-    {
-      "datasource": { "type": "prometheus" },
-      "fieldConfig": {
-        "defaults": { "color": { "mode": "thresholds" }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 1 }] } },
-        "overrides": []
-      },
-      "gridPos": { "h": 6, "w": 12, "x": 12, "y": 16 },
-      "id": 6,
-      "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "sum(increase(prometheus_tsdb_head_samples_appended_total[1h]))", "legendFormat": "Samples", "refId": "A" }],
-      "title": "Prometheus: samples appended (last 1h)",
-      "type": "stat"
+      "title": "",
+      "type": "text"
     }
   ],
   "refresh": "30s",
   "schemaVersion": 38,
   "style": "dark",
-  "tags": ["gaqno", "errors", "services"],
+  "tags": ["gaqno"],
   "templating": { "list": [] },
   "time": { "from": "now-1h", "to": "now" },
   "timepicker": {},
   "timezone": "",
-  "title": "Gaqno — Errors by Service",
+  "title": "Gaqno — Overview",
   "uid": "gaqno-errors-by-service",
-  "version": 1,
+  "meta": { "grafana.app/saved-from-ui": false },
+  "version": 6,
   "weekStart": ""
 }

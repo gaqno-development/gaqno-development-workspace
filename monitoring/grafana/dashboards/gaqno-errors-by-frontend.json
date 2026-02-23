@@ -72,6 +72,7 @@
   "timezone": "",
   "title": "Gaqno — Errors by Frontend",
   "uid": "gaqno-errors-by-frontend",
+  "meta": { "grafana.app/saved-from-ui": false },
   "version": 1,
   "weekStart": ""
 }

@@ -380,7 +380,7 @@
       },
       "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
       "targets": [
-        { "datasource": { "type": "prometheus" }, "expr": "pg_replication_lag{job=\"postgres-exporter\"} or pg_replication_lag_in_seconds{job=\"postgres-exporter\"} or vector(0)", "legendFormat": "lag", "refId": "A" }
+        { "datasource": { "type": "prometheus" }, "expr": "pg_replication_lag_in_seconds{job=\"postgres-exporter\"}", "legendFormat": "lag", "refId": "A" }
       ],
       "title": "Replication lag (s)",
       "type": "timeseries"
@@ -493,6 +493,7 @@
   "timezone": "",
   "title": "Gaqno — Backend",
   "uid": "gaqno-dashboard-backend",
+  "meta": { "grafana.app/saved-from-ui": false },
   "version": 2,
   "weekStart": ""
 }

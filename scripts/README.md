@@ -88,3 +88,36 @@ npm run create-project -- inventory --install
 3. Adicionar rotas `/{nome}/*` no `gaqno-shell-ui/src/App.tsx`
 4. Adicionar `VITE_SERVICE_{NOME}_URL` nas variáveis de ambiente do frontend
 5. Adicionar scripts `dev:{nome}` e `dev:{nome}-service` no `package.json` raiz
+
+---
+
+## list-cloudflare-dns.mjs
+
+Lista registros DNS da zona **gaqno.com.br** no Cloudflare. Opcionalmente filtra por nome (ex.: grafana, lenin).
+
+### Uso
+
+```bash
+export CLOUDFLARE_API_TOKEN=seu_token
+npm run list-cloudflare-dns
+```
+
+Para ver apenas registros cujo nome contenha "grafana" ou "lenin":
+
+```bash
+npm run list-cloudflare-dns -- grafana lenin
+```
+
+### Variáveis
+
+- **CLOUDFLARE_API_TOKEN** (obrigatório) — Token da API Cloudflare com permissão de leitura DNS.
+- **CLOUDFLARE_ZONE_ID** (opcional) — ID da zona; padrão é a zona gaqno.com.br.
+
+### DNS checklist (Coolify)
+
+Ao verificar DNS no Cloudflare para serviços expostos via Coolify:
+
+| Hostname | Verificar |
+|----------|-----------|
+| **lenin.gaqno.com.br** | Registro A ou CNAME apontando para o destino correto (Coolify/túnel); proxy (orange cloud) conforme desejado. |
+| **grafana.gaqno.com.br** | Registro existe e aponta para o serviço Grafana (Coolify/túnel). |

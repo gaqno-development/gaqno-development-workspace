@@ -35,6 +35,8 @@
   ],
   "scripts": {
     "create-project": "node scripts/create-project.js",
+    "list-cloudflare-dns": "node scripts/list-cloudflare-dns.mjs",
+    "cloudflare-tunnel-add-grafana": "node scripts/cloudflare-tunnel-add-grafana-route.mjs",
     "secret-scan": "gitleaks protect --config .gitleaks.toml --no-git --verbose",
     "prepare": "husky",
     "install:all": "npm install --legacy-peer-deps",

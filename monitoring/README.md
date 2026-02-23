@@ -6,9 +6,9 @@ Three **exclusive** dashboards (use the Overview to jump between them):
 
 | Dashboard | Audience | Content |
 |-----------|----------|--------|
-| **Gaqno — Front** | Frontend | **Saúde:** Error rate %, LCP P75, API P95, usuários ativos, sessões com erro %. **Performance:** Core Web Vitals (placeholder), latência API, bundle (placeholder). **Erros:** 4xx/5xx por app, erros JS/por browser (placeholder), 5xx backend. **Negócio:** conversão, checkout, funil (placeholders). Dados atuais: Prometheus (4xx/5xx). LCP, RUM e negócio exigem Sentry/OpenTelemetry/analytics. |
+| **Gaqno — Front** | Frontend | **Saúde:** Error rate %, LCP P75, API P95, usuários ativos, sessões com erro %. **Performance:** Core Web Vitals (placeholder), latência API, **bundle size (Vite, CI → Pushgateway)**. **Erros:** 4xx/5xx por app, erros JS/por browser (placeholder), 5xx backend. **Negócio:** conversão, checkout, funil (placeholders). Dados atuais: Prometheus (4xx/5xx). LCP, RUM e negócio exigem Sentry/OpenTelemetry/analytics. |
 | **Gaqno — Backend** | Backend | **Saúde:** Error rate %, Latência P95, RPS, CPU/Mem (containers). **Latência:** por serviço (P50/P95), por endpoint/versão (placeholders). **Erros:** 5xx por serviço, Exceptions (placeholder), Top serviços com erro. **Banco:** Longest running tx, Conexões por database, Replication lag (postgres_exporter). **Infra:** Pods, Restart, HPA (placeholders K8s), CPU/Mem por container (cAdvisor), RPS por serviço. |
-| **Gaqno — DevOps** | Ops / Infra | **DORA:** Deployment frequency, Lead time, Change failure rate, MTTR (placeholders). **CI/CD:** Sucesso pipeline, Tempo build/deploy, Qualidade (placeholders). **Infra:** Targets down/up, Host CPU/Mem, Load, Pods restart (placeholder K8s), Prometheus samples, Scrape targets/duration, Containers CPU/Mem (cAdvisor). **Segurança:** Vulnerabilidades, Certificados, Secrets (placeholders). **Custo:** Gasto por ambiente/namespace (placeholders). |
+| **Gaqno — DevOps** | Ops / Infra | **DORA:** Deployment frequency, Lead time, Change failure rate, MTTR (placeholders). **CI/CD:** Sucesso pipeline, Tempo build/deploy, Qualidade (placeholders). **Infra:** Targets down/up, Host CPU/Mem, Load, Prometheus samples, Scrape targets/duration, Containers CPU/Mem (cAdvisor). **Cloudflare Tunnel:** requests/s, errors/s, active streams (requer cloudflared --metrics). **Segurança:** Vulnerabilidades, Certificados, Secrets (placeholders). **Custo:** Gasto por ambiente/namespace (placeholders). |
 
 **Gaqno — Overview**: entry point with links to Front, Backend, DevOps.
 
@@ -30,19 +30,37 @@ The compose runs one **postgres-exporter** instance. Set these env vars so it ca
 - `POSTGRES_EXPORTER_USER` — Postgres user (default `postgres`).
 - `POSTGRES_EXPORTER_PASS` — Postgres password.
 
+**Usando o Coolify MCP**: você pode obter `DATABASE_URL` no Coolify (MCP `env_vars`, aplicação `gaqno-sso-service`) e gerar `.env.monitoring` com:
+
+```bash
+DATABASE_URL='postgresql://...' node scripts/configure-postgres-exporter-env.mjs
+# ou: node scripts/configure-postgres-exporter-env.mjs 'postgresql://...'
+```
+
+Depois: `docker compose -f docker-compose.monitoring.yml --env-file .env.monitoring up -d`. O arquivo `.env.monitoring` está no `.gitignore`.
+
 For multiple Postgres instances (e.g. one per service), run one exporter per instance and add a scrape job per target in `monitoring/prometheus.yml`.
 
 ## Using with Coolify
 
-If Grafana runs in Coolify (not from this compose):
+O serviço **gaqno-grafana** no Coolify já está configurado com:
 
-1. In Grafana, add a **Prometheus** datasource pointing to your Prometheus URL (e.g. `http://prometheus:9090` if on the same Docker network).
-2. **Import** the dashboards:
-   - Go to **Dashboards** → **New** → **Import**.
-   - Upload or paste the JSON from:
-     - `monitoring/grafana/dashboards/gaqno-errors-by-service.json`
-     - `monitoring/grafana/dashboards/gaqno-errors-by-frontend.json`
-   - Select the Prometheus datasource and import.
+- **node-exporter**, **prometheus**, **postgres-exporter** e **grafana**
+- Variáveis de ambiente no recurso: `POSTGRES_EXPORTER_URI`, `POSTGRES_EXPORTER_USER`, `POSTGRES_EXPORTER_PASS` (para o Postgres do SSO; obtidas via Coolify MCP a partir da aplicação gaqno-sso-service)
+- Prometheus faz scrape de: prometheus, node-exporter e postgres-exporter
+
+O compose usado no Coolify está em `monitoring/docker-compose.coolify.yml`. Inclui **cloudflared** (Cloudflare Tunnel): o container sobe com `--metrics 0.0.0.0:60123` e o Prometheus faz scrape em `cloudflared:60123`. Configure no Coolify a variável **`CLOUDFLARE_TUNNEL_TOKEN`** (token do connector em Cloudflare Zero Trust → Tunnels → Run connector).
+
+**Grafana** está em **http://grafana.gaqno.com.br** (porta 5678). Como o Coolify não monta o repositório, os dashboards e o datasource não são provisionados automaticamente. Faça manualmente:
+
+1. Em Grafana, adicione o **datasource Prometheus** apontando para `http://prometheus:9090` (mesma rede Docker do stack).
+2. **Importe** os dashboards: **Dashboards** → **New** → **Import** e faça upload dos JSON em `monitoring/grafana/dashboards/`:
+   - **Gaqno — Backend**: `gaqno-dashboard-backend.json`
+   - **Gaqno — Front**: `gaqno-dashboard-front.json`
+   - **Gaqno — DevOps**: `gaqno-dashboard-devops.json` (inclui Deployment frequency e Lead time com dados do GitHub Actions + Pushgateway)
+   - Overview/erros: `gaqno-errors-by-service.json`, `gaqno-errors-by-frontend.json`
+
+Para **atualizar** um dashboard já importado: use **Import** de novo com o mesmo JSON e escolha **Overwrite**. Assim você passa a ter as últimas alterações do repositório (ex.: painéis DORA reais, correções de PromQL nos Targets down/up).
 
 ## Getting HTTP error metrics (4xx/5xx) per service/frontend
 
@@ -77,7 +95,7 @@ Para preencher os placeholders:
 | **Sessões com erro %** | RUM contando sessões com ≥1 erro / total de sessões |
 | **Top erros JS / por navegador** | Sentry (data source Grafana) ou Loki com logs de erro |
 | **Conversão, checkout, funil** | Analytics ou eventos no backend exportados para Grafana |
-| **Bundle size / tempo download** | Build metrics (Webpack/Vite) ou RUM resource timing → Prometheus/Loki |
+| **Bundle size** | **Implementado:** todos os *-ui usam Vite; no CI, após `turbo run build`, o script `scripts/push-bundle-size-metrics.mjs` envia `frontend_bundle_size_bytes{app}` para o Pushgateway (requer `PROMETHEUS_PUSHGATEWAY_URL`). Painel **Bundle size (Vite total)** no dashboard Front. Tempo de download: RUM (resource timing) → Prometheus/Loki. |
 
 Métricas mais importantes para começar: **Error rate %**, **LCP P75**, **API latência P95**, **Sessões com erro %**, **Conversão principal**.
 
@@ -99,7 +117,15 @@ Para preencher os placeholders:
 
 ## DevOps dashboard: DORA + CI/CD + Infra + Segurança + Custo
 
-O **Gaqno — DevOps** segue o layout: **Linha 1 — DORA** (Deployment frequency, Lead time, Change failure rate, MTTR), **Linha 2 — CI/CD** (Sucesso pipeline, Tempo build, Tempo deploy, Qualidade), **Linha 3 — Infra** (Targets, Host CPU/Mem, Load, Pods restart, Scrape, Containers CPU/Mem), **Linha 4 — Segurança** (Vulnerabilidades, Certificados, Secrets), **Linha 5 — Custo** (Gasto por ambiente, por namespace/serviço).
+O **Gaqno — DevOps** segue o layout: **Linha 1 — DORA** (Deployment frequency, Lead time, Change failure rate, MTTR), **Linha 2 — CI/CD** (Sucesso pipeline, Tempo build, Tempo deploy, Qualidade), **Linha 3 — Infra** (Targets, Host CPU/Mem, Load, Scrape, Containers CPU/Mem), **Cloudflare Tunnel** (requests/s, errors/s, active streams), **Linha 4 — Segurança** (Vulnerabilidades, Certificados, Secrets), **Linha 5 — Custo** (Gasto por ambiente, por namespace/serviço).
+
+### Cloudflare Tunnel (cloudflared)
+
+Para ver os painéis **Tunnel requests/s**, **Tunnel errors/s** e **Tunnel active streams** no dashboard DevOps:
+
+1. No host onde o `cloudflared` roda, inicie o tunnel com métricas: `cloudflared tunnel --metrics <host>:60123 run <tunnel-name>`. Use `0.0.0.0:60123` se o Prometheus estiver em outra máquina/rede. Ver [Monitor Cloudflare Tunnel with Grafana](https://developers.cloudflare.com/cloudflare-one/tutorials/grafana/) e [Tunnel metrics](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/monitor-tunnels/metrics/).
+2. No `monitoring/prometheus.yml` (e no compose do Coolify, se usar), descomente o job `cloudflared` e defina `targets` com o host e porta do endpoint de métricas (ex.: `host.docker.internal:60123` ou o IP do servidor cloudflared).
+3. Reinicie o Prometheus e reimporte o dashboard DevOps para ver a seção **Cloudflare Tunnel**.
 
 Para preencher os placeholders:
 
@@ -114,7 +140,20 @@ Para preencher os placeholders:
 
 ### Implementar DORA e CI/CD
 
-Para preencher os painéis DORA e CI/CD no dashboard DevOps:
+**Deployment frequency e Lead time (implementados)**  
+O workflow **CD** (.github/workflows/cd.yml) envia métricas para um **Pushgateway** após cada deploy bem-sucedido:
+
+- **Deployment frequency**: número de runs do workflow CD com sucesso nas últimas 24h e 7 dias (via API do GitHub).
+- **Lead time**: tempo entre o commit e o fim do job de CD (commit → deploy).
+
+O stack de monitoramento inclui o serviço **pushgateway** (porta 9091). O Prometheus faz scrape do Pushgateway; os painéis **Deployment frequency (7d)** e **Lead time (commit → deploy)** no dashboard DevOps usam as métricas `cicd_deployments_last_7d` e `cicd_deployment_lead_time_seconds`.
+
+Para as métricas serem enviadas a partir do GitHub Actions:
+
+1. Expor o Pushgateway (ex.: `https://pushgateway.gaqno.com.br` ou URL interna acessível pelos runners).
+2. Em **Settings → Secrets and variables → Actions** do repositório, criar o secret **`PROMETHEUS_PUSHGATEWAY_URL`** com a URL base do Pushgateway (ex.: `https://pushgateway.gaqno.com.br`). O job de CD faz `POST $PROMETHEUS_PUSHGATEWAY_URL/metrics/job/cd/instance/github_actions`. Se o secret não estiver definido, o passo é ignorado.
+
+Demais placeholders DORA/CI/CD:
 
 1. **Criar token** com escopo de leitura para workflows/deployments (GitHub) ou equivalente no Coolify/Argo CD.
 2. **Escolher fonte**: exporter que preenche Prometheus (ex.: prometheus-github-actions-exporter) ou data source do Grafana (ex.: GitHub).

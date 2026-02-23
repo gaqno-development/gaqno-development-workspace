@@ -284,9 +284,39 @@ npm run dev:sso-service
 | `dev:backends` | Turbo dev for main NestJS services |
 | `dev:shell`, `dev:sso`, `dev:ai`, … | Single app or service dev |
 | `create-project` | Interactive script to add new UI and/or service (see [Adding a New Project](#adding-a-new-project)) |
+| `list-cloudflare-dns` | List Cloudflare DNS records for gaqno.com.br (see [scripts/README.md](scripts/README.md#list-cloudflare-dnsmjs)); requires `CLOUDFLARE_API_TOKEN`. |
 | `release:packages` | Run `publish-packages.sh` |
 | `publish:frontcore` | Publish `@gaqno-development/frontcore` (uses `.env` for token) |
 | `publish:agent` | Publish `@gaqno-development/gaqno-agent` |
+
+### Cloudflare DNS checklist (Coolify)
+
+Zone **gaqno.com.br**. Para listar registros (ex.: Grafana, Lenin) via API:
+
+```bash
+export CLOUDFLARE_API_TOKEN=your_token
+npm run list-cloudflare-dns -- grafana lenin
+```
+
+| Hostname | O que verificar |
+|----------|-----------------|
+| **lenin.gaqno.com.br** | Registro A ou CNAME apontando para o destino (Coolify/túnel); proxy conforme desejado. |
+| **grafana.gaqno.com.br** | Registro existe e aponta para o serviço Grafana (Coolify/túnel). |
+
+Dashboard: [Cloudflare](https://dash.cloudflare.com) → gaqno.com.br → DNS → Records.
+
+**502 Bad Gateway em grafana.gaqno.com.br** — DNS está ok (wildcard Tunnel `*` → GAQNO_PROD_01). O erro é entre Cloudflare e o origin. Duas opções:
+
+1. **Via API (recomendado):** adicionar a rota no túnel com o script (requer token com permissão Cloudflare Tunnel Write):
+
+   ```bash
+   export CLOUDFLARE_API_TOKEN=seu_token
+   npm run cloudflare-tunnel-add-grafana
+   ```
+
+   O script usa `CLOUDFLARE_ACCOUNT_ID` (default: conta do zone gaqno.com.br) e opcionalmente `CLOUDFLARE_TUNNEL_ID` ou `GRAFANA_ORIGIN` (default: `http://localhost:5678`).
+
+2. **Manual:** no [Cloudflare Dashboard](https://dash.cloudflare.com) → Zero Trust ou Tunnels → túnel GAQNO_PROD_01 → Public Hostname → add `grafana.gaqno.com.br` → HTTP → `localhost:5678`.
 
 ---
 
@@ -337,7 +367,7 @@ Then:
 
 ## Documentation
 
-- **Scripts**: [scripts/README.md](scripts/README.md) — create-project, copy-workflows, etc.
+- **Scripts**: [scripts/README.md](scripts/README.md) — create-project, copy-workflows, list-cloudflare-dns, etc.
 - **Agent**: [@gaqno-agent/README.md](@gaqno-agent/README.md) — OpenClaw setup and skills
 - **GitHub / CI**: [.github/README.md](.github/README.md) — per-repo workflows
 - **Confluence**: [DDS space](https://gaqno-development.atlassian.net/wiki/spaces/DDS) — product/architecture docs (`npm run publish:confluence` prints the link)

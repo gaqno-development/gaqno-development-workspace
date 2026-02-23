@@ -1,0 +1,334 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [
+    { "title": "Backend", "url": "/d/gaqno-dashboard-backend", "type": "dashboard" },
+    { "title": "DevOps", "url": "/d/gaqno-dashboard-devops", "type": "dashboard" }
+  ],
+  "liveNow": false,
+  "panels": [
+    {
+      "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
+      "id": 0,
+      "options": {
+        "content": "**Front** — UX, Core Web Vitals, erros e negócio. Dados atuais: Prometheus (4xx/5xx). LCP, RUM e negócio exigem Sentry/OpenTelemetry/analytics.",
+        "mode": "markdown"
+      },
+      "title": "",
+      "type": "text"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 2 },
+      "id": 10,
+      "panels": [],
+      "title": "Linha 1 — Saúde geral",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus" },
+      "description": "Meta: baixo. 4xx+5xx em *-ui.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 1}, {"color": "red", "value": 5}] },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 4, "x": 0, "y": 3 },
+      "id": 11,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus" },
+          "expr": "100 * (sum(rate(http_requests_total{job=~\".*-ui\",status=~\"[45]..\"}[5m])) / sum(rate(http_requests_total{job=~\".*-ui\"}[5m])))",
+          "legendFormat": "Error %",
+          "refId": "A"
+        }
+      ],
+      "title": "Error rate %",
+      "type": "stat"
+    },
+    {
+      "gridPos": { "h": 5, "w": 4, "x": 4, "y": 3 },
+      "id": 12,
+      "options": {
+        "content": "**LCP P75**\n\nMeta: **< 2.5s**\n\nRequer: **RUM** (Sentry, OpenTelemetry browser, Datadog RUM). Envie `largest-contentful-paint` e agregue P75 no backend.",
+        "mode": "markdown"
+      },
+      "title": "LCP P75 (placeholder)",
+      "type": "text"
+    },
+    {
+      "datasource": { "type": "prometheus" },
+      "description": "Quando existir http_request_duration_seconds_bucket nos jobs *-ui ou *-service.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 500}, {"color": "red", "value": 2000}] },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 4, "x": 8, "y": 3 },
+      "id": 13,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus" },
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=~\".*-ui\"}[5m])) by (le)) * 1000",
+          "legendFormat": "P95",
+          "refId": "A"
+        }
+      ],
+      "title": "API latência P95 (ms)",
+      "type": "stat"
+    },
+    {
+      "gridPos": { "h": 5, "w": 4, "x": 12, "y": 3 },
+      "id": 14,
+      "options": {
+        "content": "**Usuários ativos**\n\nDAU / MAU.\n\nRequer: **analytics** (GA, Mixpanel, PostHog) ou backend de sessões exportando para Prometheus/Loki.",
+        "mode": "markdown"
+      },
+      "title": "Usuários ativos (placeholder)",
+      "type": "text"
+    },
+    {
+      "gridPos": { "h": 5, "w": 4, "x": 16, "y": 3 },
+      "id": 15,
+      "options": {
+        "content": "**Sessões com erro %**\n\nMeta: baixo.\n\nRequer: **RUM** (Sentry, Datadog RUM, OpenTelemetry) contando sessões com ≥1 erro / total de sessões.",
+        "mode": "markdown"
+      },
+      "title": "Sessões com erro % (placeholder)",
+      "type": "text"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 8 },
+      "id": 20,
+      "panels": [],
+      "title": "Linha 2 — Performance",
+      "type": "row"
+    },
+    {
+      "gridPos": { "h": 5, "w": 8, "x": 0, "y": 9 },
+      "id": 21,
+      "options": {
+        "content": "**Core Web Vitals**\n\n- **LCP** < 2.5s\n- **INP/FID** < 200ms\n- **CLS** < 0.1\n\nRequer: RUM (Sentry, OpenTelemetry). Visualize P50/P75/P95 e evolução no tempo.",
+        "mode": "markdown"
+      },
+      "title": "CWV (placeholder)",
+      "type": "text"
+    },
+    {
+      "datasource": { "type": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+          "mappings": [],
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 9 },
+      "id": 22,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus" },
+          "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket{job=~\".*-ui\"}[5m])) by (le, job)) * 1000",
+          "legendFormat": "P50 {{job}}",
+          "refId": "A"
+        },
+        {
+          "datasource": { "type": "prometheus" },
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=~\".*-ui\"}[5m])) by (le, job)) * 1000",
+          "legendFormat": "P95 {{job}}",
+          "refId": "B"
+        }
+      ],
+      "title": "Latência API (P50 / P95) por app",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus" },
+      "description": "Bundle size: total dos dist/ dos *-ui (Vite), enviado no CI para Pushgateway. Tempo de download: requer RUM (resource timing); exporte para Prometheus ou Loki.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 50}, {"color": "red", "value": 100}] },
+          "unit": "megabytes"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 8, "x": 16, "y": 9 },
+      "id": 23,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus" },
+          "expr": "sum(frontend_bundle_size_bytes{job=\"frontend-bundle\"}) / 1024 / 1024",
+          "legendFormat": "Total MB",
+          "refId": "A"
+        }
+      ],
+      "title": "Bundle size (Vite total)",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 17 },
+      "id": 30,
+      "panels": [],
+      "title": "Linha 3 — Erros",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 18 },
+      "id": 31,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+      "targets": [
+        { "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{job=~\".*-ui\",status=~\"4..\"}[5m])) by (job)", "legendFormat": "4xx {{job}}", "refId": "A" },
+        { "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{job=~\".*-ui\",status=~\"5..\"}[5m])) by (job)", "legendFormat": "5xx {{job}}", "refId": "B" }
+      ],
+      "title": "4xx / 5xx por app (frontend)",
+      "type": "timeseries"
+    },
+    {
+      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 18 },
+      "id": 32,
+      "options": {
+        "content": "**Top erros JS**\n\nRequer: **Sentry** ou RUM. Agrupe por stack trace e exiba no Grafana via Sentry data source ou Loki.",
+        "mode": "markdown"
+      },
+      "title": "Erros JS (placeholder)",
+      "type": "text"
+    },
+    {
+      "datasource": { "type": "prometheus" },
+      "description": "5xx nos backends que o front chama.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 18 },
+      "id": 33,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+      "targets": [
+        { "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{job=~\".*-service\",status=~\"5..\"}[5m])) by (job)", "legendFormat": "{{job}}", "refId": "A" }
+      ],
+      "title": "5xx backend",
+      "type": "timeseries"
+    },
+    {
+      "gridPos": { "h": 4, "w": 12, "x": 12, "y": 23 },
+      "id": 34,
+      "options": {
+        "content": "**Erros por navegador / dispositivo** — Sentry ou RUM. **Sessões com erro %** — RUM.",
+        "mode": "markdown"
+      },
+      "title": "Erros por browser (placeholder)",
+      "type": "text"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 27 },
+      "id": 40,
+      "panels": [],
+      "title": "Linha 4 — Negócio",
+      "type": "row"
+    },
+    {
+      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 28 },
+      "id": 41,
+      "options": {
+        "content": "**Conversão principal**\n\nRequer: analytics (GA, PostHog, Mixpanel) ou eventos no backend exportados para Grafana.",
+        "mode": "markdown"
+      },
+      "title": "Conversão (placeholder)",
+      "type": "text"
+    },
+    {
+      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 28 },
+      "id": 42,
+      "options": {
+        "content": "**Checkout / carrinho**\n\nAbandono, taxa de erro no checkout. Fonte: analytics ou backend.",
+        "mode": "markdown"
+      },
+      "title": "Checkout (placeholder)",
+      "type": "text"
+    },
+    {
+      "gridPos": { "h": 6, "w": 8, "x": 16, "y": 28 },
+      "id": 43,
+      "options": {
+        "content": "**Funil de navegação**\n\nPassos até conversão. Fonte: analytics ou eventos.",
+        "mode": "markdown"
+      },
+      "title": "Funil (placeholder)",
+      "type": "text"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["gaqno", "front"],
+  "templating": { "list": [] },
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Gaqno — Front",
+  "uid": "gaqno-dashboard-front",
+  "meta": { "grafana.app/saved-from-ui": false },
+  "version": 2,
+  "weekStart": ""
+}

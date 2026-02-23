@@ -29,24 +29,72 @@
       "type": "row"
     },
     {
+      "datasource": { "type": "prometheus" },
+      "description": "Deploys via CD workflow (GitHub Actions) nos últimos 7 dias. Requer secret PROMETHEUS_PUSHGATEWAY_URL e Pushgateway no stack.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{"color": "blue", "value": null}] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
       "gridPos": { "h": 5, "w": 4, "x": 0, "y": 3 },
       "id": 11,
       "options": {
-        "content": "**Deployment frequency**\n\nDeploys/dia ou /semana; por ambiente (dev/staging/prod).\n\nRequer: API do pipeline (GitHub Actions, Coolify, Argo CD) ou ferramenta DORA (Sleuth, LinearB) exportando para Prometheus/Loki.",
-        "mode": "markdown"
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
       },
-      "title": "Deployment frequency (placeholder)",
-      "type": "text"
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus" },
+          "expr": "cicd_deployments_last_7d{job=\"cd\"}",
+          "legendFormat": "Deployments (7d)",
+          "refId": "A"
+        }
+      ],
+      "title": "Deployment frequency (7d)",
+      "type": "stat"
     },
     {
+      "datasource": { "type": "prometheus" },
+      "description": "Tempo do último commit até o deploy (CD). Requer Pushgateway e secret PROMETHEUS_PUSHGATEWAY_URL.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 1}, {"color": "red", "value": 24}] },
+          "unit": "h"
+        },
+        "overrides": []
+      },
       "gridPos": { "h": 5, "w": 4, "x": 4, "y": 3 },
       "id": 12,
       "options": {
-        "content": "**Lead time for changes**\n\nTempo médio commit → produção; PR aberta → merge.\n\nRequer: GitHub/GitLab API ou DORA tool com métricas de lead time.",
-        "mode": "markdown"
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
       },
-      "title": "Lead time (placeholder)",
-      "type": "text"
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus" },
+          "expr": "cicd_deployment_lead_time_seconds{job=\"cd\"} / 3600",
+          "legendFormat": "Lead time (h)",
+          "refId": "A"
+        }
+      ],
+      "title": "Lead time (commit → deploy)",
+      "type": "stat"
     },
     {
       "gridPos": { "h": 5, "w": 4, "x": 8, "y": 3 },
@@ -157,7 +205,7 @@
         "textMode": "auto"
       },
       "pluginVersion": "10.2.0",
-      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "scalar(count(up == 0)) or vector(0)", "legendFormat": "Down", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "count(up == 0)", "legendFormat": "Down", "refId": "A" }],
       "title": "Targets down",
       "type": "stat"
     },
@@ -250,7 +298,7 @@
         "textMode": "auto"
       },
       "pluginVersion": "10.2.0",
-      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "scalar(count(up == 1)) or vector(0)", "legendFormat": "Up", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "count(up == 1)", "legendFormat": "Up", "refId": "A" }],
       "title": "Targets up",
       "type": "stat"
     },
@@ -409,13 +457,106 @@
     {
       "collapsed": false,
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 39 },
+      "id": 44,
+      "panels": [],
+      "title": "Cloudflare Tunnel",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus" },
+      "description": "Requires cloudflared run with --metrics <host>:60123 and Prometheus scrape job 'cloudflared'. See https://developers.cloudflare.com/cloudflare-one/tutorials/grafana/",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}] },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 40 },
+      "id": 45,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        { "datasource": { "type": "prometheus" }, "expr": "sum(rate(cloudflared_tunnel_total_requests{job=\"cloudflared\"}[5m]))", "legendFormat": "req/s", "refId": "A" }
+      ],
+      "title": "Tunnel requests/s",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "red", "value": 0.01}] },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 40 },
+      "id": 46,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        { "datasource": { "type": "prometheus" }, "expr": "sum(rate(cloudflared_tunnel_request_errors{job=\"cloudflared\"}[5m]))", "legendFormat": "errors/s", "refId": "A" }
+      ],
+      "title": "Tunnel errors/s",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{"color": "blue", "value": null}] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 40 },
+      "id": 47,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        { "datasource": { "type": "prometheus" }, "expr": "sum(cloudflared_tunnel_active_streams{job=\"cloudflared\"})", "legendFormat": "streams", "refId": "A" }
+      ],
+      "title": "Tunnel active streams",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 44 },
       "id": 50,
       "panels": [],
       "title": "Linha 4 — Segurança",
       "type": "row"
     },
     {
-      "gridPos": { "h": 5, "w": 8, "x": 0, "y": 40 },
+      "gridPos": { "h": 5, "w": 8, "x": 0, "y": 45 },
       "id": 51,
       "options": {
         "content": "**Vulnerabilidades**\n\nCríticas/altas abertas; por imagem. Requer: Trivy, Snyk, Dependabot ou similar exportando para Prometheus/Loki/Dashboard.",
@@ -425,7 +566,7 @@
       "type": "text"
     },
     {
-      "gridPos": { "h": 5, "w": 8, "x": 8, "y": 40 },
+      "gridPos": { "h": 5, "w": 8, "x": 8, "y": 45 },
       "id": 52,
       "options": {
         "content": "**Certificados**\n\nExpiração; renovação. Requer: cert-exporter, cron check ou alerting (ex.: Prometheus Blackbox + cert expiry).",
@@ -435,7 +576,7 @@
       "type": "text"
     },
     {
-      "gridPos": { "h": 5, "w": 8, "x": 16, "y": 40 },
+      "gridPos": { "h": 5, "w": 8, "x": 16, "y": 45 },
       "id": 53,
       "options": {
         "content": "**Secrets / auth**\n\nSecrets expostos (scan); falhas de autenticação; tentativas negadas. Requer: auditoria logs ou scanners integrados.",
@@ -446,14 +587,14 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 45 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 50 },
       "id": 60,
       "panels": [],
       "title": "Linha 5 — Custo",
       "type": "row"
     },
     {
-      "gridPos": { "h": 5, "w": 12, "x": 0, "y": 46 },
+      "gridPos": { "h": 5, "w": 12, "x": 0, "y": 51 },
       "id": 61,
       "options": {
         "content": "**Gasto por ambiente**\n\nDev / staging / prod. Requer: cloud billing (AWS Cost Explorer, GCP Billing) ou FinOps tool (Kubecost, Infracost) com export para Grafana.",
@@ -463,7 +604,7 @@
       "type": "text"
     },
     {
-      "gridPos": { "h": 5, "w": 12, "x": 12, "y": 46 },
+      "gridPos": { "h": 5, "w": 12, "x": 12, "y": 51 },
       "id": 62,
       "options": {
         "content": "**Custo por namespace / serviço / deploy** — Kubecost (K8s), tags de billing na cloud ou métricas custom (custo por deploy a partir do CI).",
@@ -483,6 +624,7 @@
   "timezone": "",
   "title": "Gaqno — DevOps",
   "uid": "gaqno-dashboard-devops",
+  "meta": { "grafana.app/saved-from-ui": false },
   "version": 2,
   "weekStart": ""
 }

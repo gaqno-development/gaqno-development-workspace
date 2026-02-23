@@ -1,0 +1,91 @@
+services:
+  node-exporter:
+    image: prom/node-exporter:latest
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - --path.procfs=/host/proc
+      - --path.rootfs=/rootfs
+      - --path.sysfs=/host/sys
+      - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
+    restart: unless-stopped
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - prometheus-data:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.enable-lifecycle
+    configs:
+      - source: prometheus_config
+        target: /etc/prometheus/prometheus.yml
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+  postgres-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter:v0.15.0
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - DATA_SOURCE_URI=${POSTGRES_EXPORTER_URI}
+      - DATA_SOURCE_USER=${POSTGRES_EXPORTER_USER}
+      - DATA_SOURCE_PASS=${POSTGRES_EXPORTER_PASS}
+  pushgateway:
+    image: prom/pushgateway:v1.6.2
+    restart: unless-stopped
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    command:
+      - tunnel
+      - --no-autoupdate
+      - --metrics
+      - 0.0.0.0:60123
+      - run
+      - --token
+      - ${CLOUDFLARE_TUNNEL_TOKEN}
+  grafana:
+    image: grafana/grafana:latest
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana-data:/var/lib/grafana
+    restart: unless-stopped
+    ports:
+      - "5678:3000"
+    depends_on:
+      - prometheus
+configs:
+  prometheus_config:
+    content: |
+      global:
+        scrape_interval: 15s
+        evaluation_interval: 15s
+      scrape_configs:
+        - job_name: prometheus
+          static_configs:
+            - targets: ["localhost:9090"]
+        - job_name: node-exporter
+          static_configs:
+            - targets: ["node-exporter:9100"]
+        - job_name: postgres-exporter
+          static_configs:
+            - targets: ["postgres-exporter:9187"]
+        - job_name: pushgateway
+          honor_labels: true
+          static_configs:
+            - targets: ["pushgateway:9091"]
+        - job_name: cloudflared
+          static_configs:
+            - targets: ["cloudflared:60123"]
+volumes:
+  prometheus-data: {}
+  grafana-data: {}

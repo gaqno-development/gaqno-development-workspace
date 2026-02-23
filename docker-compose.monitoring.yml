@@ -57,6 +57,15 @@ services:
     networks:
       - gaqno-network
 
+  pushgateway:
+    image: prom/pushgateway:v1.6.2
+    container_name: gaqno-pushgateway
+    ports:
+      - "9091:9091"
+    restart: unless-stopped
+    networks:
+      - gaqno-network
+
   grafana:
     image: grafana/grafana:10.2.0
     container_name: gaqno-grafana

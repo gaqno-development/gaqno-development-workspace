@@ -95,7 +95,10 @@ jobs:
       - name: Build
         run: npx turbo run build
 
-  test:
+      - name: Push bundle size metrics
+        env:
+          PROMETHEUS_PUSHGATEWAY_URL: ${{ secrets.PROMETHEUS_PUSHGATEWAY_URL }}
+        run: node scripts/push-bundle-size-metrics.mjs
     needs: [prepare, build]
     runs-on: ubuntu-latest
     steps:
