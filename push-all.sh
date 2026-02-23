@@ -2,7 +2,6 @@
 #
 # Push all submodules from the workspace.
 # Cada repo tem seus próprios workflows em .github/workflows/ — CI dispara no repo individual.
-# Ver docs/WORKSPACE-WORKFLOW.md
 #
 set -e
 

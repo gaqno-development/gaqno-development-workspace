@@ -6,4 +6,4 @@ Os workflows de CI (lint, test, build, branch/PR validation) estão em **cada re
 - Push e PR em `gaqno-admin-service` → workflows disparam em `gaqno-admin-service`
 - etc.
 
-Ver `docs/WORKSPACE-WORKFLOW.md` para o fluxo de desenvolvimento.
+Cada submodule segue seu próprio fluxo de desenvolvimento.

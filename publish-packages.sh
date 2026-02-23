@@ -46,4 +46,17 @@ else
 fi
 cd ..
 echo ""
+
+echo "Publishing @gaqno-agent..."
+cd @gaqno-agent
+AGENT_VERSION=$(node -p "require('./package.json').version")
+PUBLISHED_AGENT=$(npm view @gaqno-development/gaqno-agent version 2>/dev/null || echo "")
+if [ "${AGENT_VERSION}" = "${PUBLISHED_AGENT}" ]; then
+  echo "⏭️  @gaqno-development/gaqno-agent@${AGENT_VERSION} already published, skipping"
+else
+  npm publish --access restricted
+  echo "✅ @gaqno-development/gaqno-agent@${AGENT_VERSION} published"
+fi
+cd ..
+echo ""
 echo "🎉 Done."

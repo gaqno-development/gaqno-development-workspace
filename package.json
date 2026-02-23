@@ -7,7 +7,7 @@
     "@gaqno-backcore",
     "@gaqno-frontcore",
     "@gaqno-types",
-    "gaqno-agent",
+    "@gaqno-agent",
     "gaqno-admin-service",
     "gaqno-admin-ui",
     "gaqno-ai-service",
@@ -59,6 +59,7 @@
     "dev:wellness-service": "npm run start:dev -w gaqno-wellness-service",
     "release:packages": "./publish-packages.sh",
     "publish:frontcore": "sh -c 'set -a && [ -f .env ] && . ./.env && set +a && npm publish -w @gaqno-development/frontcore'",
+    "publish:agent": "npm publish -w @gaqno-development/gaqno-agent",
     "publish:confluence": "echo 'Docs no Confluence DDS. Edite em https://gaqno-development.atlassian.net/wiki/spaces/DDS'"
   },
   "devDependencies": {
