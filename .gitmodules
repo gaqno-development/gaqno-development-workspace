@@ -79,3 +79,6 @@
 [submodule "@gaqno-types"]
 	path = @gaqno-types
 	url = git@github.com:gaqno-development/gaqno-types.git
+[submodule "gaqno-lead-enrichment-service"]
+	path = gaqno-lead-enrichment-service
+	url = git@github.com:gaqno-development/gaqno-lead-enrichment-service.git
