@@ -51,16 +51,33 @@ O serviço **gaqno-grafana** no Coolify já está configurado com:
 
 O compose usado no Coolify está em `monitoring/docker-compose.coolify.yml`. Inclui **cloudflared** (Cloudflare Tunnel): o container sobe com `--metrics 0.0.0.0:60123` e o Prometheus faz scrape em `cloudflared:60123`. Configure no Coolify a variável **`CLOUDFLARE_TUNNEL_TOKEN`** (token do connector em Cloudflare Zero Trust → Tunnels → Run connector).
 
-**Grafana** está em **http://grafana.gaqno.com.br** (porta 5678). Como o Coolify não monta o repositório, os dashboards e o datasource não são provisionados automaticamente. Faça manualmente:
+**Grafana** está em **http://grafana.gaqno.com.br** (porta 5678). O compose do Coolify provisiona o **datasource Prometheus** via variáveis de ambiente (`GF_DATASOURCES_DEFAULT_*`) apontando para `http://prometheus:9090`. Os dashboards precisam ser importados manualmente:
 
-1. Em Grafana, adicione o **datasource Prometheus** apontando para `http://prometheus:9090` (mesma rede Docker do stack).
-2. **Importe** os dashboards: **Dashboards** → **New** → **Import** e faça upload dos JSON em `monitoring/grafana/dashboards/`:
+1. **Importe** os dashboards: **Dashboards** → **New** → **Import** e faça upload dos JSON em `monitoring/grafana/dashboards/`:
    - **Gaqno — Backend**: `gaqno-dashboard-backend.json`
    - **Gaqno — Front**: `gaqno-dashboard-front.json`
    - **Gaqno — DevOps**: `gaqno-dashboard-devops.json` (inclui Deployment frequency e Lead time com dados do GitHub Actions + Pushgateway)
    - Overview/erros: `gaqno-errors-by-service.json`, `gaqno-errors-by-frontend.json`
 
 Para **atualizar** um dashboard já importado: use **Import** de novo com o mesmo JSON e escolha **Overwrite**. Assim você passa a ter as últimas alterações do repositório (ex.: painéis DORA reais, correções de PromQL nos Targets down/up).
+
+## Troubleshooting: no data on dashboards
+
+Se **todos** os painéis mostram "No data":
+
+1. **Datasource Prometheus**  
+   Em Grafana: **Connections** → **Data sources**. Deve existir um **Prometheus** com URL **`http://prometheus:9090`** e **Save & test** em verde. Se não existir ou estiver com URL errada (ex.: localhost), adicione ou edite para `http://prometheus:9090` (nome do serviço na rede Docker).
+
+2. **Prometheus está coletando**  
+   Abra **http://&lt;seu-prometheus&gt;:9090/targets** (ou o URL do Prometheus que o Coolify expõe). Verifique se os targets **node-exporter**, **prometheus**, **postgres-exporter** estão **UP**. Se estiverem Down, o Grafana não terá métricas (rede, container parado ou scrape config incorreta).
+
+3. **Intervalo de tempo**  
+   No canto superior direito do Grafana, use **Last 15 minutes** ou **Last 1 hour**; "No data" pode ser intervalo no passado sem métricas.
+
+4. **Coolify: datasource automático**  
+   O `docker-compose.coolify.yml` define variáveis `GF_DATASOURCES_DEFAULT_*` para criar o Prometheus ao subir o Grafana. Após alterar o compose, faça **Redeploy** do serviço gaqno-grafana para o Grafana recarregar e criar o datasource.
+
+Alguns painéis (ex.: DORA, Bundle size, Cloudflare Tunnel) só terão dados quando houver deploys no CI, builds com Pushgateway ou o tunnel ativo; o resto (CPU, memória, targets) depende só do Prometheus e dos exporters.
 
 ## Getting HTTP error metrics (4xx/5xx) per service/frontend
 
