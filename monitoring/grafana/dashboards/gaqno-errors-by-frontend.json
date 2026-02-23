@@ -1,0 +1,77 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": { "type": "prometheus" },
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } }, "mappings": [] },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 },
+      "id": 1,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "up{job=~\"shell|sso|ai|crm|erp|finance|pdv|rpg|omnichannel|wellness\"}", "legendFormat": "{{job}}", "refId": "A" }],
+      "title": "Frontend targets health (1 = up, 0 = down)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus" },
+      "description": "When frontends expose HTTP metrics (e.g. /metrics), 5xx rate per app will appear here.",
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } }, "mappings": [] },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "id": 2,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{job=~\"shell|sso|ai|crm|erp|finance|pdv|rpg|omnichannel|wellness\", status=~\"5..\"}[5m])) by (job)", "legendFormat": "{{job}}", "refId": "A" }],
+      "title": "HTTP 5xx error rate by frontend",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus" },
+      "description": "When frontends expose HTTP metrics, 4xx rate per app will appear here.",
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } }, "mappings": [] },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "id": 3,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{job=~\"shell|sso|ai|crm|erp|finance|pdv|rpg|omnichannel|wellness\", status=~\"4..\"}[5m])) by (job)", "legendFormat": "{{job}}", "refId": "A" }],
+      "title": "HTTP 4xx error rate by frontend",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus" },
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } }, "mappings": [] },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 16 },
+      "id": 4,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "scrape_duration_seconds{job=~\"shell|sso|ai|crm|erp|finance|pdv|rpg|omnichannel|wellness\"}", "legendFormat": "{{job}}", "refId": "A" }],
+      "title": "Frontend scrape duration (high = slow or failing)",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["gaqno", "errors", "frontends"],
+  "templating": { "list": [] },
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Gaqno — Errors by Frontend",
+  "uid": "gaqno-errors-by-frontend",
+  "version": 1,
+  "weekStart": ""
+}
