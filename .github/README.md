@@ -83,10 +83,10 @@ flowchart TB
 ```mermaid
 flowchart LR
   subgraph Shared["Shared packages"]
-    T[@gaqno-types]
-    BC[@gaqno-backcore]
-    FC[@gaqno-frontcore]
-    AG[@gaqno-agent]
+    T["@gaqno-types"]
+    BC["@gaqno-backcore"]
+    FC["@gaqno-frontcore"]
+    AG["@gaqno-agent"]
   end
 
   subgraph UIs["UIs (MFEs)"]
