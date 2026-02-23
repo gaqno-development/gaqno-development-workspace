@@ -9,3 +9,4 @@ export * from "./encryption";
 export * from "./event-store";
 export * from "./kafka";
 export * from "./billing";
+export * from "./openclaw";

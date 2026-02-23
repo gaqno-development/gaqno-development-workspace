@@ -6,6 +6,20 @@ cd "${BASE_DIR}"
 echo "📦 Building and publishing packages..."
 echo ""
 
+echo "Building @gaqno-types..."
+cd @gaqno-types
+TYPES_VERSION=$(node -p "require('./package.json').version")
+PUBLISHED_TYPES=$(npm view @gaqno-development/types version 2>/dev/null || echo "")
+if [ "${TYPES_VERSION}" = "${PUBLISHED_TYPES}" ]; then
+  echo "⏭️  @gaqno-development/types@${TYPES_VERSION} already published, skipping"
+else
+  npm run build
+  npm publish --access restricted
+  echo "✅ @gaqno-development/types@${TYPES_VERSION} published"
+fi
+cd ..
+echo ""
+
 echo "Building @gaqno-backcore..."
 cd @gaqno-backcore
 BACKCORE_VERSION=$(node -p "require('./package.json').version")
