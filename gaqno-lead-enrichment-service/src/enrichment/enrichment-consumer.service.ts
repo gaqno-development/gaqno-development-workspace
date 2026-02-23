@@ -31,19 +31,38 @@ export class EnrichmentConsumerService
     private readonly kafkaConsumer: KafkaConsumer
   ) {}
 
+  private connected = false;
+
   async onModuleInit(): Promise<void> {
-    await this.kafkaConsumer.connect();
-    await this.kafkaConsumer.subscribe(
-      TopicNames.MESSAGE_RECEIVED,
-      (payload) => this.handleMessageReceived(payload)
-    );
-    this.logger.log(
-      `Subscribed to ${TopicNames.MESSAGE_RECEIVED} for lead enrichment`
-    );
+    try {
+      await this.kafkaConsumer.connect();
+      await this.kafkaConsumer.subscribe(
+        TopicNames.MESSAGE_RECEIVED,
+        (payload) => this.handleMessageReceived(payload)
+      );
+      this.connected = true;
+      this.logger.log(
+        `Subscribed to ${TopicNames.MESSAGE_RECEIVED} for lead enrichment`
+      );
+    } catch (err) {
+      this.logger.warn(
+        `Kafka consumer unavailable — lead enrichment will not run. ${err instanceof Error ? err.message : String(err)}`
+      );
+      try {
+        await this.kafkaConsumer.disconnect();
+      } catch {
+        // best-effort cleanup
+      }
+    }
   }
 
   async onModuleDestroy(): Promise<void> {
-    await this.kafkaConsumer.disconnect();
+    if (!this.connected) return;
+    try {
+      await this.kafkaConsumer.disconnect();
+    } catch {
+      // ignore
+    }
   }
 
   async handleMessageReceived(msg: KafkaMessagePayload): Promise<void> {

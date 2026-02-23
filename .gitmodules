@@ -70,3 +70,12 @@
 [submodule "@gaqno-agent"]
 	path = @gaqno-agent
 	url = git@github.com:gaqno-development/gaqno-agent.git
+[submodule "@gaqno-backcore"]
+	path = @gaqno-backcore
+	url = git@github.com:gaqno-development/backcore.git
+[submodule "@gaqno-frontcore"]
+	path = @gaqno-frontcore
+	url = git@github.com:gaqno-development/frontcore.git
+[submodule "@gaqno-types"]
+	path = @gaqno-types
+	url = git@github.com:gaqno-development/gaqno-types.git
