@@ -1,11 +1,24 @@
 #!/bin/bash
 
 # Script para criar subtasks para GAQNO-1382 usando curl
+# Requer JIRA_API_TOKEN (e opcionalmente JIRA_URL, JIRA_USERNAME) no ambiente.
+# Ex.: export JIRA_API_TOKEN=... ou copie .env.jira.example para .env.jira e faça source .env.jira
 
-JIRA_URL="https://gaqno.atlassian.net"
-EMAIL="gabriel.aquino@outlook.com"
-TOKEN="ATATT3xFfGF0UzAmDlvKRT0Isu_v1-fzBDyE_tMVgn9JkCkH0ZE5waY2xRyKHRW08EEr7uqXjEv0ww6DdsKE1alVnpPS0mmAQIHvqOI6mberDOtoa54yYGV3sVMArX374dRfLFAIRtyTjnYg9M_hItIFeGmfEy96LK5brjvLhMeGiOX1axaKmf0=66ED92B3"
+if [ -f "$(dirname "$0")/../.env.jira" ]; then
+  set -a
+  source "$(dirname "$0")/../.env.jira"
+  set +a
+fi
+
+JIRA_URL="${JIRA_URL:-https://gaqno.atlassian.net}"
+EMAIL="${JIRA_USERNAME:-}"
+TOKEN="${JIRA_API_TOKEN:-}"
 EPIC_KEY="GAQNO-1382"
+
+if [ -z "$TOKEN" ] || [ -z "$EMAIL" ]; then
+  echo "Erro: defina JIRA_API_TOKEN e JIRA_USERNAME (ou .env.jira)." >&2
+  exit 1
+fi
 
 echo "🚀 Criando subtasks para $EPIC_KEY (Correções Portal)"
 echo "=================================================="

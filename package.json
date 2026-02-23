@@ -35,6 +35,8 @@
   ],
   "scripts": {
     "create-project": "node scripts/create-project.js",
+    "secret-scan": "gitleaks protect --config .gitleaks.toml --no-git --verbose",
+    "prepare": "husky",
     "install:all": "npm install --legacy-peer-deps",
     "clean": "rm -rf node_modules */node_modules @**/node_modules",
     "build:packages": "npm run build -w @gaqno-backcore",
@@ -64,6 +66,7 @@
     "publish:confluence": "echo 'Docs no Confluence DDS. Edite em https://gaqno-development.atlassian.net/wiki/spaces/DDS'"
   },
   "devDependencies": {
+    "husky": "^9.1.7",
     "inquirer": "^9.3.8",
     "turbo": "^2.3.0"
   },

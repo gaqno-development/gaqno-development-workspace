@@ -1,0 +1,86 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"]
+    },
+    "coolify": {
+      "command": "npx",
+      "args": ["-y", "@masonator/coolify-mcp"],
+      "env": {
+        "COOLIFY_ACCESS_TOKEN": "your-coolify-token",
+        "COOLIFY_BASE_URL": "http://localhost:8000"
+      }
+    },
+    "shadcn": {
+      "command": "npx",
+      "args": ["shadcn@latest", "mcp"]
+    },
+    "cloudflare-dns-analytics": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://dns-analytics.mcp.cloudflare.com/mcp"]
+    },
+    "cloudflare-observability": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://observability.mcp.cloudflare.com/mcp"]
+    },
+    "cloudflare-docs": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://docs.mcp.cloudflare.com/mcp"]
+    },
+    "atlassian": {
+      "command": "uvx",
+      "args": ["mcp-atlassian"],
+      "env": {
+        "JIRA_URL": "https://your-domain.atlassian.net",
+        "JIRA_USERNAME": "your-email@example.com",
+        "JIRA_API_TOKEN": "your-jira-api-token",
+        "CONFLUENCE_URL": "https://your-domain.atlassian.net/wiki",
+        "CONFLUENCE_USERNAME": "your-email@example.com",
+        "CONFLUENCE_API_TOKEN": "your-confluence-api-token"
+      }
+    },
+    "postgres-sso": {
+      "command": "uvx",
+      "args": ["postgres-mcp", "--access-mode=unrestricted"],
+      "env": {
+        "DATABASE_URI": "postgres://user:REDACTED@host:5432/gaqno_sso_db"
+      }
+    },
+    "postgres-finance": {
+      "command": "uvx",
+      "args": ["postgres-mcp", "--access-mode=unrestricted"],
+      "env": {
+        "DATABASE_URI": "postgres://user:REDACTED@host:5432/gaqno_finance_db"
+      }
+    },
+    "postgres-pdv": {
+      "command": "uvx",
+      "args": ["postgres-mcp", "--access-mode=unrestricted"],
+      "env": {
+        "DATABASE_URI": "postgres://user:REDACTED@host:5432/gaqno_pdv_db"
+      }
+    },
+    "postgres-rpg": {
+      "command": "uvx",
+      "args": ["postgres-mcp", "--access-mode=unrestricted"],
+      "env": {
+        "DATABASE_URI": "postgres://user:REDACTED@host:5432/gaqno_rpg_db"
+      }
+    },
+    "postgres-ai": {
+      "command": "uvx",
+      "args": ["postgres-mcp", "--access-mode=unrestricted"],
+      "env": {
+        "DATABASE_URI": "postgres://user:REDACTED@host:5432/gaqno_ai_db"
+      }
+    },
+    "postgres-omnichannel": {
+      "command": "uvx",
+      "args": ["postgres-mcp", "--access-mode=unrestricted"],
+      "env": {
+        "DATABASE_URI": "postgres://user:REDACTED@host:5432/gaqno_omnichannel_db"
+      }
+    }
+  }
+}

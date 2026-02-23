@@ -1,0 +1,58 @@
+# Gitleaks config for gaqno-development-workspace.
+# Run: gitleaks protect --config .gitleaks.toml
+# Used by pre-commit hook and CI.
+
+title = "gaqno-development-workspace secrets"
+
+[allowlist]
+description = "Template and example files with placeholders only"
+paths = [
+  '''\.env\.jira\.example$''',
+  '''\.env\.*\.example$''',
+  '''mcp\.json\.example$''',
+  '''\.cursor/README\.md$''',
+]
+regexes = [
+  '''your-[a-z-]+-token''',
+  '''your-[a-z-]+-key''',
+  '''REDACTED''',
+  '''your-email@example\.com''',
+  '''your-domain\.atlassian\.net''',
+  '''localhost''',
+]
+
+[[rules]]
+id = "postgres-connection-string"
+description = "Postgres connection string with credentials"
+regex = '''postgres(?:ql)?://[^:]+:[^@]+@[^\s'"]+'''
+keywords = ["postgres://", "postgresql://"]
+
+[[rules]]
+id = "github-pat"
+description = "GitHub Personal Access Token"
+regex = '''ghp_[0-9a-zA-Z]{36}'''
+keywords = ["ghp_"]
+
+[[rules]]
+id = "atlassian-api-token"
+description = "Atlassian Jira/Confluence API token"
+regex = '''ATATT3[A-Za-z0-9_\-=]{100,}'''
+keywords = ["ATATT3"]
+
+[[rules]]
+id = "openai-api-key"
+description = "OpenAI or similar API key (sk-)"
+regex = '''sk-[a-zA-Z0-9]{20,}'''
+keywords = ["sk-"]
+
+[[rules]]
+id = "google-api-key"
+description = "Google API key"
+regex = '''AIza[0-9A-Za-z_-]{35}'''
+keywords = ["AIza"]
+
+[[rules]]
+id = "generic-api-key"
+description = "Generic API key or token in env assignment"
+regex = '''(?i)(?:api[_-]?key|api[_-]?token|secret|password|passwd)\s*=\s*['\"][^'\"]{20,}['\"]'''
+entropy = 3.5

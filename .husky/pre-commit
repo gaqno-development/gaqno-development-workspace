@@ -1,0 +1,11 @@
+#!/bin/sh
+# Secret scanning before commit. Requires gitleaks (e.g. brew install gitleaks).
+. "$(dirname -- "$0")/_/husky.sh"
+
+if ! command -v gitleaks >/dev/null 2>&1; then
+  echo "gitleaks not found. Install: brew install gitleaks (or see https://github.com/gitleaks/gitleaks)"
+  exit 1
+fi
+
+cd "$(git rev-parse --show-toplevel)" && gitleaks protect --config .gitleaks.toml --staged --verbose
+exit $?
