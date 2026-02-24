@@ -1,0 +1,32 @@
+---
+trigger: model_decision
+description: Jira ticket validation, branch naming, commits, and PR workflow
+globs:
+---
+
+# Jira Workflow
+
+When committing, pushing, or opening PRs: validate tickets via Jira MCP tools; never assume ticket details.
+
+**Branch naming**
+- Epic: `epic/PROJ-100-description`
+- Story: `feature/PROJ-101-description`
+- Subtask: `feature/PROJ-102-description`
+- Bug: `bugfix/PROJ-200-description`
+
+**Base branch**
+- Epic from `main` or `develop`; Story from parent Epic; Subtask from parent Story; Bug from `main`, `develop`, or feature branch.
+
+**Commit**
+- One subtask = one commit. Message format: `[PROJ-102] Brief description`. Run build before commit; commit from the worktree directory.
+
+**Worktree**
+- For new implementation work, create a worktree to avoid cross-session conflicts: `git worktree add ../<repo>-<short-desc> -b <branch-name>`. Do all work in the worktree. After PR is merged: `git worktree remove ../<worktree-path>`.
+
+**Order**
+1. Identify ticket key (PROJECT-NUMBER); fetch details via MCP.
+2. Validate type and hierarchy (Epic → Story → Subtask) via MCP.
+3. Determine branch name and base from hierarchy.
+4. Create worktree; build; commit; push; open PR; update Jira status via MCP if user agrees.
+
+On any validation failure: stop, report which step failed, ask for the missing info, do not guess.

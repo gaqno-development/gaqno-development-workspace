@@ -1,0 +1,16 @@
+---
+trigger: always_on
+description: Run project build before commit/push to avoid pipeline crashes
+globs:
+---
+
+# Build before push
+
+After making code changes in this workspace:
+
+1. **Verify**: Run the project build (and type check if applicable). For monorepos or submodules, run build in the repo(s) you changed.
+2. **Use Docker for deployment validation**: When checking that a service will build on Coolify/CI, build with Docker (e.g. `docker build -f <service>/Dockerfile <service>`) so the same Dockerfile and runtime as production is used; local `npm run build` can pass while the Docker build fails.
+4. **If build passes and there are no type errors**: Stage, commit, and push the changes. Use a short, conventional commit message (e.g. `feat(scope): description` or `fix(scope): description`). Respect the no-Co-authored-by rule; use `git commit -m "..."` and `--no-verify` only if the commit hook would add an unwanted trailer or block a valid message.
+5. **If build or type check fails**: Fix the errors before committing or pushing. Do not push failing code.
+
+Apply this after completing a coding task that modifies files, unless the user explicitly asks not to push.
