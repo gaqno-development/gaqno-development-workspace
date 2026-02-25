@@ -36,3 +36,21 @@ Track progress in the app’s own `docs/` or in this workspace doc as you comple
 1. **High priority**: Pages with forms or multi-step UI (form state, modal state, sync effects).
 2. **Medium**: Reusable UI with local state (e.g. players, panels) — extract to hooks for testability.
 3. **Low**: Pure UI state (e.g. expanded, scroll position) — optional; move to hook only if logic grows.
+
+## Other apps – candidates (from grep)
+
+| App | File | State / notes | Priority |
+|-----|------|----------------|----------|
+| **gaqno-admin-ui** | TenantForm.tsx | formData, useEffect | High |
+| **gaqno-admin-ui** | DomainForm.tsx | formData | High |
+| **gaqno-admin-ui** | SSLChecker.tsx | checkingIds | Medium |
+| **gaqno-admin-ui** | UsageByUserView.tsx | period | Medium |
+| **gaqno-saas-ui** | App.tsx | tenantId, activeTab | Medium |
+| **gaqno-saas-ui** | BudgetAlerts.tsx | alerts, newAlert, showAddForm | Medium |
+| **gaqno-saas-ui** | TenantCostsSummary.tsx | dateRange | Medium |
+| **gaqno-saas-ui** | CodemapView.tsx | activeTab, searchTerm, filterType | Low (UI state) |
+| **gaqno-omnichannel-ui** | SavedViewsPage.tsx | dialogOpen, name, status, assigneeId, queueId | High |
+| **gaqno-omnichannel-ui** | CustomersPage.tsx | notesDraft | Medium |
+| **gaqno-omnichannel-ui** | LiveMetricsPage.tsx | seconds (timer) | Medium |
+
+Excluded: contexts, hooks, mocks, shell-ui demo blocks (dropdown-language, datatable-transaction).
