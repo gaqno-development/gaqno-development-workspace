@@ -1,5 +1,39 @@
 # Scripts
 
+## generate-codemap.js
+
+Gera um codemap interativo do workspace Gaqno, analisando dependências, arquitetura e relacionamentos entre pacotes.
+
+### Uso
+
+```bash
+npm run codemap
+```
+
+### O que é gerado
+
+- **codemap.json**: Arquivo JSON com análise completa do workspace
+- **codemap-viewer.html**: Visualizador interativo com gráficos Mermaid
+
+### Informações incluídas
+
+- **Análise de pacotes**: Shared libraries, services, UI applications
+- **Dependências**: Relacionamentos entre pacotes do workspace
+- **Portas de serviço**: Mapeamento de portas para serviços e UIs
+- **MFE mappings**: Configurações de micro-frontends
+- **Build order**: Ordem recomendada para build baseada em dependências
+- **Visualizações**: Diagramas Mermaid da arquitetura e fluxo de dados
+
+### Visualizações geradas
+
+1. **Architecture**: Visão geral do sistema com todos os componentes
+2. **Dependencies**: Grafo de dependências entre pacotes
+3. **Data Flow**: Fluxo de build e runtime da aplicação
+
+O visualizador HTML oferece tabs interativos para explorar diferentes aspectos da arquitetura do projeto.
+
+---
+
 ## copy-workflows-to-repos.sh
 
 Copia os workflows de CI (`ci.yml`, `branch-pr-validation.yml`) para cada repositório individual.
@@ -117,7 +151,7 @@ npm run list-cloudflare-dns -- grafana lenin
 
 Ao verificar DNS no Cloudflare para serviços expostos via Coolify:
 
-| Hostname | Verificar |
-|----------|-----------|
-| **lenin.gaqno.com.br** | Registro A ou CNAME apontando para o destino correto (Coolify/túnel); proxy (orange cloud) conforme desejado. |
-| **grafana.gaqno.com.br** | Registro existe e aponta para o serviço Grafana (Coolify/túnel). |
+| Hostname                 | Verificar                                                                                                     |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| **lenin.gaqno.com.br**   | Registro A ou CNAME apontando para o destino correto (Coolify/túnel); proxy (orange cloud) conforme desejado. |
+| **grafana.gaqno.com.br** | Registro existe e aponta para o serviço Grafana (Coolify/túnel).                                              |

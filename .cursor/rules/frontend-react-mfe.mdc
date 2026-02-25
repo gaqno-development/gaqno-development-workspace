@@ -17,3 +17,5 @@ alwaysApply: false
 **Worktree**: Use `git worktree add ../<repo>-<desc> -b feature/TICKET-KEY-desc` for feature work; remove after PR merged.
 
 Violations: hook without tests (CRITICAL), business logic in component (HIGH), duplicated shared logic (HIGH).
+
+Refactor checklist and how to find logic-in-component candidates: see `docs/LOGIC-IN-HOOKS-REFACTOR-PLAN.md` at workspace root.

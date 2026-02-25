@@ -65,7 +65,8 @@
     "publish:frontcore": "sh -c 'set -a && [ -f .env ] && . ./.env && set +a && npm publish -w @gaqno-development/frontcore'",
     "publish:agent": "npm publish -w @gaqno-development/gaqno-agent",
     "publish:types": "npm run build:types && npm publish -w @gaqno-development/types --access restricted",
-    "publish:confluence": "echo 'Docs no Confluence DDS. Edite em https://gaqno-development.atlassian.net/wiki/spaces/DDS'"
+    "publish:confluence": "echo 'Docs no Confluence DDS. Edite em https://gaqno-development.atlassian.net/wiki/spaces/DDS'",
+    "codemap": "node scripts/generate-codemap.js"
   },
   "devDependencies": {
     "husky": "^9.1.7",

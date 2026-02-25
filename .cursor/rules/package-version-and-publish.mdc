@@ -1,0 +1,22 @@
+---
+description: When changing a publishable package, bump version and publish so other apps can upgrade
+globs: "@gaqno-frontcore/**", "@gaqno-backcore/**", "@gaqno-types/**", "@gaqno-agent/**"
+alwaysApply: false
+---
+
+# Package version bump and publish
+
+When you make changes to any **publishable package** in this workspace, you must:
+
+1. **Bump the version** in that package’s `package.json` using [semantic versioning](https://semver.org/):
+   - **Patch** (e.g. 1.0.67 → 1.0.68): bug fixes, small tweaks, no API or export changes.
+   - **Minor** (e.g. 1.0.67 → 1.1.0): new exports, new optional props, backward-compatible changes.
+   - **Major** (e.g. 1.0.67 → 2.0.0): breaking API or export changes.
+
+2. **Publish** so other apps can upgrade:
+   - From the **workspace root**: `npm run release:packages` (builds and publishes all packages that have a version not yet on the registry).
+   - Or publish a single package: `npm run publish:frontcore`, `npm run publish:types`, `npm run publish:agent` (see root `package.json` scripts).
+
+Consuming apps use ranges like `^x.y.z`, so they will pick up the new version after you publish and they reinstall or upgrade.
+
+**Publishable packages:** `@gaqno-development/frontcore`, `@gaqno-development/backcore`, `@gaqno-development/types`, `@gaqno-development/gaqno-agent`.

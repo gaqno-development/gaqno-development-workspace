@@ -15,4 +15,6 @@ When you change any file under **@gaqno-frontcore** (the shared frontend package
 
 2. Prefer **patch** bumps for typical UI/component fixes and non-breaking changes.
 
+3. **Publish** so other apps can upgrade: from the workspace root run `npm run release:packages` or `npm run publish:frontcore`. The release script only publishes if the current version is not already on the registry.
+
 Consumers (shell, MFEs) use `^x.y.z`, so they will pick up the new version after publish or workspace install.

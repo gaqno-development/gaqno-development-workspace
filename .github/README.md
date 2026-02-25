@@ -23,15 +23,15 @@
 
 ## Overview
 
-| Item | Description |
-|------|-------------|
-| **Package manager** | npm (v11.6.2) with workspaces |
-| **Build orchestration** | Turborepo |
-| **Backend** | NestJS 11 |
-| **Frontend** | React 18, Vite, Module Federation (MFE) |
-| **Shared UI** | `@gaqno-development/frontcore` (components, theme, auth) |
-| **Shared backend** | `@gaqno-development/backcore` (domain, event-store, multitenancy) |
-| **Types** | `@gaqno-development/types` (shared DTOs/contracts) |
+| Item                    | Description                                                       |
+| ----------------------- | ----------------------------------------------------------------- |
+| **Package manager**     | npm (v11.6.2) with workspaces                                     |
+| **Build orchestration** | Turborepo                                                         |
+| **Backend**             | NestJS 11                                                         |
+| **Frontend**            | React 18, Vite, Module Federation (MFE)                           |
+| **Shared UI**           | `@gaqno-development/frontcore` (components, theme, auth)          |
+| **Shared backend**      | `@gaqno-development/backcore` (domain, event-store, multitenancy) |
+| **Types**               | `@gaqno-development/types` (shared DTOs/contracts)                |
 
 Repositories are typically **git submodules**; each has its own `.github/workflows` and CI runs per repo. The workspace root CI runs lint, build, and test across all packages via Turbo.
 
@@ -132,22 +132,22 @@ flowchart LR
 
 ## Workspace Map
 
-| Category | Packages |
-|----------|----------|
-| **Shared** | `@gaqno-backcore`, `@gaqno-frontcore`, `@gaqno-types`, `@gaqno-agent` |
-| **Services** | `gaqno-sso-service`, `gaqno-ai-service`, `gaqno-finance-service`, `gaqno-pdv-service`, `gaqno-rpg-service`, `gaqno-wellness-service`, `gaqno-admin-service`, `gaqno-saas-service`, `gaqno-omnichannel-service`, `gaqno-lead-enrichment-service` |
-| **UIs** | `gaqno-shell-ui`, `gaqno-sso-ui`, `gaqno-ai-ui`, `gaqno-crm-ui`, `gaqno-erp-ui`, `gaqno-finance-ui`, `gaqno-pdv-ui`, `gaqno-rpg-ui`, `gaqno-wellness-ui`, `gaqno-admin-ui`, `gaqno-saas-ui`, `gaqno-omnichannel-ui`, `gaqno-landing-ui`, `gaqno-lenin-ui` |
+| Category     | Packages                                                                                                                                                                                                                                                  |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Shared**   | `@gaqno-backcore`, `@gaqno-frontcore`, `@gaqno-types`, `@gaqno-agent`                                                                                                                                                                                     |
+| **Services** | `gaqno-sso-service`, `gaqno-ai-service`, `gaqno-finance-service`, `gaqno-pdv-service`, `gaqno-rpg-service`, `gaqno-wellness-service`, `gaqno-admin-service`, `gaqno-saas-service`, `gaqno-omnichannel-service`, `gaqno-lead-enrichment-service`           |
+| **UIs**      | `gaqno-shell-ui`, `gaqno-sso-ui`, `gaqno-ai-ui`, `gaqno-crm-ui`, `gaqno-erp-ui`, `gaqno-finance-ui`, `gaqno-pdv-ui`, `gaqno-rpg-ui`, `gaqno-wellness-ui`, `gaqno-admin-ui`, `gaqno-saas-ui`, `gaqno-omnichannel-ui`, `gaqno-landing-ui`, `gaqno-lenin-ui` |
 
 ---
 
 ## Shared Packages
 
-| Package | Scope | Purpose |
-|---------|--------|---------|
-| **@gaqno-types** | `@gaqno-development/types` | Shared TypeScript types, DTOs, API contracts |
-| **@gaqno-backcore** | `@gaqno-development/backcore` | NestJS shared kernel: domain, event-store, multitenancy, encryption, Kafka, OpenClaw auth |
-| **@gaqno-frontcore** | `@gaqno-development/frontcore` | React shared UI: components, theme, auth, guards, layout |
-| **@gaqno-agent** | `@gaqno-development/gaqno-agent` | OpenClaw agent config, workspace, skills (humanizer, summarize, GitHub, MCP bridge, etc.) |
+| Package              | Scope                            | Purpose                                                                                   |
+| -------------------- | -------------------------------- | ----------------------------------------------------------------------------------------- |
+| **@gaqno-types**     | `@gaqno-development/types`       | Shared TypeScript types, DTOs, API contracts                                              |
+| **@gaqno-backcore**  | `@gaqno-development/backcore`    | NestJS shared kernel: domain, event-store, multitenancy, encryption, Kafka, OpenClaw auth |
+| **@gaqno-frontcore** | `@gaqno-development/frontcore`   | React shared UI: components, theme, auth, guards, layout                                  |
+| **@gaqno-agent**     | `@gaqno-development/gaqno-agent` | OpenClaw agent config, workspace, skills (humanizer, summarize, GitHub, MCP bridge, etc.) |
 
 Build shared packages from the repo root:
 
@@ -162,18 +162,18 @@ npm run build:packages   # backcore
 
 NestJS 11 services. Typical ports in the 4xxx range (e.g. SSO 4001, admin 4010, saas 4009).
 
-| Service | Role |
-|---------|------|
-| **gaqno-sso-service** | SSO BFF, auth, users, permissions |
-| **gaqno-admin-service** | Tenant/org management, users, roles, costs/usage aggregation |
-| **gaqno-saas-service** | SaaS costs aggregation (stub) |
-| **gaqno-ai-service** | AI features |
-| **gaqno-finance-service** | Finance module |
-| **gaqno-pdv-service** | PDV (point of sale) |
-| **gaqno-rpg-service** | RPG module |
-| **gaqno-wellness-service** | Wellness module |
-| **gaqno-omnichannel-service** | Omnichannel (e.g. WhatsApp) |
-| **gaqno-lead-enrichment-service** | Lead enrichment |
+| Service                           | Role                                                         |
+| --------------------------------- | ------------------------------------------------------------ |
+| **gaqno-sso-service**             | SSO BFF, auth, users, permissions                            |
+| **gaqno-admin-service**           | Tenant/org management, users, roles, costs/usage aggregation |
+| **gaqno-saas-service**            | SaaS costs aggregation (stub)                                |
+| **gaqno-ai-service**              | AI features                                                  |
+| **gaqno-finance-service**         | Finance module                                               |
+| **gaqno-pdv-service**             | PDV (point of sale)                                          |
+| **gaqno-rpg-service**             | RPG module                                                   |
+| **gaqno-wellness-service**        | Wellness module                                              |
+| **gaqno-omnichannel-service**     | Omnichannel (e.g. WhatsApp)                                  |
+| **gaqno-lead-enrichment-service** | Lead enrichment                                              |
 
 Run a single service:
 
@@ -189,22 +189,22 @@ npm run dev:ai-service
 
 React 18 + Vite + **Module Federation**. The **shell** (`gaqno-shell-ui`) is the host; other apps are remote MFEs loaded at runtime.
 
-| App | Role |
-|-----|------|
-| **gaqno-shell-ui** | Host app: layout, nav, loads remotes |
-| **gaqno-sso-ui** | SSO / auth flows |
-| **gaqno-ai-ui** | AI features |
-| **gaqno-crm-ui** | CRM |
-| **gaqno-erp-ui** | ERP |
-| **gaqno-finance-ui** | Finance |
-| **gaqno-pdv-ui** | PDV |
-| **gaqno-rpg-ui** | RPG |
-| **gaqno-wellness-ui** | Wellness |
-| **gaqno-admin-ui** | Admin (tenants, users, roles, etc.) |
-| **gaqno-saas-ui** | SaaS |
-| **gaqno-omnichannel-ui** | Omnichannel |
-| **gaqno-landing-ui** | Landing |
-| **gaqno-lenin-ui** | (excluded from root `dev` script) |
+| App                      | Role                                 |
+| ------------------------ | ------------------------------------ |
+| **gaqno-shell-ui**       | Host app: layout, nav, loads remotes |
+| **gaqno-sso-ui**         | SSO / auth flows                     |
+| **gaqno-ai-ui**          | AI features                          |
+| **gaqno-crm-ui**         | CRM                                  |
+| **gaqno-erp-ui**         | ERP                                  |
+| **gaqno-finance-ui**     | Finance                              |
+| **gaqno-pdv-ui**         | PDV                                  |
+| **gaqno-rpg-ui**         | RPG                                  |
+| **gaqno-wellness-ui**    | Wellness                             |
+| **gaqno-admin-ui**       | Admin (tenants, users, roles, etc.)  |
+| **gaqno-saas-ui**        | SaaS                                 |
+| **gaqno-omnichannel-ui** | Omnichannel                          |
+| **gaqno-landing-ui**     | Landing                              |
+| **gaqno-lenin-ui**       | (excluded from root `dev` script)    |
 
 Run the shell and one MFE:
 
@@ -272,22 +272,23 @@ npm run dev:sso-service
 
 ## Scripts
 
-| Script | Description |
-|--------|-------------|
-| `install:all` | `npm install --legacy-peer-deps` |
-| `clean` | Remove all `node_modules` in workspace and packages |
-| `build:types` | Build `@gaqno-types` |
-| `build:packages` | Build `@gaqno-backcore` |
-| `build:all` | Build shell, main MFEs and services (explicit list) |
-| `dev` | Turbo dev for all packages except `gaqno-lenin-ui` |
-| `dev:frontends` | Turbo dev for shell + main MFEs |
-| `dev:backends` | Turbo dev for main NestJS services |
-| `dev:shell`, `dev:sso`, `dev:ai`, … | Single app or service dev |
-| `create-project` | Interactive script to add new UI and/or service (see [Adding a New Project](#adding-a-new-project)) |
-| `list-cloudflare-dns` | List Cloudflare DNS records for gaqno.com.br (see [scripts/README.md](scripts/README.md#list-cloudflare-dnsmjs)); requires `CLOUDFLARE_API_TOKEN`. |
-| `release:packages` | Run `publish-packages.sh` |
-| `publish:frontcore` | Publish `@gaqno-development/frontcore` (uses `.env` for token) |
-| `publish:agent` | Publish `@gaqno-development/gaqno-agent` |
+| Script                              | Description                                                                                                                                        |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `install:all`                       | `npm install --legacy-peer-deps`                                                                                                                   |
+| `clean`                             | Remove all `node_modules` in workspace and packages                                                                                                |
+| `build:types`                       | Build `@gaqno-types`                                                                                                                               |
+| `build:packages`                    | Build `@gaqno-backcore`                                                                                                                            |
+| `build:all`                         | Build shell, main MFEs and services (explicit list)                                                                                                |
+| `dev`                               | Turbo dev for all packages except `gaqno-lenin-ui`                                                                                                 |
+| `dev:frontends`                     | Turbo dev for shell + main MFEs                                                                                                                    |
+| `dev:backends`                      | Turbo dev for main NestJS services                                                                                                                 |
+| `dev:shell`, `dev:sso`, `dev:ai`, … | Single app or service dev                                                                                                                          |
+| `create-project`                    | Interactive script to add new UI and/or service (see [Adding a New Project](#adding-a-new-project))                                                |
+| `codemap`                           | Generate interactive codemap with dependency analysis and architecture visualizations                                                              |
+| `list-cloudflare-dns`               | List Cloudflare DNS records for gaqno.com.br (see [scripts/README.md](scripts/README.md#list-cloudflare-dnsmjs)); requires `CLOUDFLARE_API_TOKEN`. |
+| `release:packages`                  | Run `publish-packages.sh`                                                                                                                          |
+| `publish:frontcore`                 | Publish `@gaqno-development/frontcore` (uses `.env` for token)                                                                                     |
+| `publish:agent`                     | Publish `@gaqno-development/gaqno-agent`                                                                                                           |
 
 ### Cloudflare DNS checklist (Coolify)
 
@@ -298,10 +299,10 @@ export CLOUDFLARE_API_TOKEN=your_token
 npm run list-cloudflare-dns -- grafana lenin
 ```
 
-| Hostname | O que verificar |
-|----------|-----------------|
-| **lenin.gaqno.com.br** | Registro A ou CNAME apontando para o destino (Coolify/túnel); proxy conforme desejado. |
-| **grafana.gaqno.com.br** | Registro existe e aponta para o serviço Grafana (Coolify/túnel). |
+| Hostname                 | O que verificar                                                                        |
+| ------------------------ | -------------------------------------------------------------------------------------- |
+| **lenin.gaqno.com.br**   | Registro A ou CNAME apontando para o destino (Coolify/túnel); proxy conforme desejado. |
+| **grafana.gaqno.com.br** | Registro existe e aponta para o serviço Grafana (Coolify/túnel).                       |
 
 Dashboard: [Cloudflare](https://dash.cloudflare.com) → gaqno.com.br → DNS → Records.
 
@@ -365,6 +366,30 @@ Then:
 
 ---
 
+## Codemap & Architecture Visualization
+
+Generate an interactive codemap to visualize the workspace architecture, dependencies, and relationships:
+
+```bash
+npm run codemap
+```
+
+This generates:
+
+- **codemap.json**: Complete workspace analysis with dependencies, ports, and MFE mappings
+- **codemap-viewer.html**: Interactive viewer with Mermaid diagrams
+
+### Visualizations include:
+
+- **Architecture overview**: System structure with shared packages, services, and UIs
+- **Dependency graph**: Package relationships and build order
+- **Data flow**: Build pipeline and runtime architecture
+- **Package details**: Interactive cards with port mappings and dependency counts
+
+Perfect for understanding the monorepo structure, onboarding new developers, and architectural documentation.
+
+---
+
 ## Documentation
 
 - **Scripts**: [scripts/README.md](scripts/README.md) — create-project, copy-workflows, list-cloudflare-dns, etc.
@@ -376,17 +401,18 @@ Then:
 
 ## Quick reference
 
-| I want to… | Command |
-|------------|--------|
-| Install deps | `npm run install:all` |
-| Run shell + one MFE | `npm run dev:shell` + `npm run dev:sso` (etc.) |
-| Run all frontends | `npm run dev:frontends` |
-| Run all backends | `npm run dev:backends` |
-| Run everything | `npm run dev` |
-| Build shared packages | `npm run build:types` then `npm run build:packages` |
-| Add new app/service | `npm run create-project` |
-| Push all submodules | `./push-all.sh` (optional message: `./push-all.sh "feat: add X"`) |
+| I want to…            | Command                                                           |
+| --------------------- | ----------------------------------------------------------------- |
+| Install deps          | `npm run install:all`                                             |
+| Run shell + one MFE   | `npm run dev:shell` + `npm run dev:sso` (etc.)                    |
+| Run all frontends     | `npm run dev:frontends`                                           |
+| Run all backends      | `npm run dev:backends`                                            |
+| Run everything        | `npm run dev`                                                     |
+| Build shared packages | `npm run build:types` then `npm run build:packages`               |
+| Generate codemap      | `npm run codemap`                                                 |
+| Add new app/service   | `npm run create-project`                                          |
+| Push all submodules   | `./push-all.sh` (optional message: `./push-all.sh "feat: add X"`) |
 
 ---
 
-*Gaqno Development Workspace — monorepo for the Gaqno platform.*
+_Gaqno Development Workspace — monorepo for the Gaqno platform._
