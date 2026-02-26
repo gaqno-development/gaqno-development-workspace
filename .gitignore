@@ -13,3 +13,14 @@ build/
 .cursor/mcp.json
 .npmrc
 .grepai/
+
+# Coverage reports
+coverage/
+*.lcov
+.nyc_output/
+coverage-report/
+test-results/
+junit.xml
+clover.xml
+lcov.info
+coverage-summary.json
