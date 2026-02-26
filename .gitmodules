@@ -82,3 +82,6 @@
 [submodule "gaqno-lead-enrichment-service"]
 	path = gaqno-lead-enrichment-service
 	url = git@github.com:gaqno-development/gaqno-lead-enrichment-service.git
+[submodule "gaqno-crm-service"]
+	path = gaqno-crm-service
+	url = git@github.com:gaqno-development/gaqno-crm-service.git
