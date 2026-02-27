@@ -5,8 +5,10 @@
   "graphTooltip": 0,
   "id": null,
   "links": [
+    { "title": "Services overview", "url": "/d/services-overview", "type": "dashboard" },
     { "title": "Backend", "url": "/d/gaqno-dashboard-backend", "type": "dashboard" },
-    { "title": "DevOps", "url": "/d/gaqno-dashboard-devops", "type": "dashboard" }
+    { "title": "DevOps", "url": "/d/gaqno-dashboard-devops", "type": "dashboard" },
+    { "title": "DNS droppage", "url": "/d/gaqno-dns-droppage", "type": "dashboard" }
   ],
   "liveNow": false,
   "panels": [

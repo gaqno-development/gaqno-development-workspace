@@ -51,15 +51,16 @@ O serviço **gaqno-grafana** no Coolify já está configurado com:
 
 O compose usado no Coolify está em `monitoring/docker-compose.coolify.yml`. Inclui **cloudflared** (Cloudflare Tunnel): o container sobe com `--metrics 0.0.0.0:60123` e o Prometheus faz scrape em `cloudflared:60123`. Configure no Coolify a variável **`CLOUDFLARE_TUNNEL_TOKEN`** (token do connector em Cloudflare Zero Trust → Tunnels → Run connector).
 
-**Grafana** está em **http://grafana.gaqno.com.br** (porta 5678). O compose do Coolify provisiona o **datasource Prometheus** via variáveis de ambiente (`GF_DATASOURCES_DEFAULT_*`) apontando para `http://prometheus:9090`. Os dashboards precisam ser importados manualmente:
+**Grafana** está em **http://grafana.gaqno.com.br** (porta 5678). O compose do Coolify provisiona o **datasource Prometheus** via variáveis de ambiente e os **dashboards** via provisioning (pastas `monitoring/grafana/provisioning` e `monitoring/grafana/dashboards` montadas no container). Após o deploy, os dashboards aparecem na pasta **Gaqno** com os UIDs fixos; os links diretos funcionam:
 
-1. **Importe** os dashboards: **Dashboards** → **New** → **Import** e faça upload dos JSON em `monitoring/grafana/dashboards/`:
-   - **Gaqno — Backend**: `gaqno-dashboard-backend.json`
-   - **Gaqno — Front**: `gaqno-dashboard-front.json`
-   - **Gaqno — DevOps**: `gaqno-dashboard-devops.json` (inclui Deployment frequency e Lead time com dados do GitHub Actions + Pushgateway)
-   - Overview/erros: `gaqno-errors-by-service.json`, `gaqno-errors-by-frontend.json`
+- **Services overview**: `/d/services-overview`
+- **Front**: `/d/gaqno-dashboard-front`
+- **Backend**: `/d/gaqno-dashboard-backend`
+- **DevOps**: `/d/gaqno-dashboard-devops`
+- **DNS droppage**: `/d/gaqno-dns-droppage`
+- **Errors by frontend**: `/d/gaqno-errors-by-frontend` (se existir o JSON)
 
-Para **atualizar** um dashboard já importado: use **Import** de novo com o mesmo JSON e escolha **Overwrite**. Assim você passa a ter as últimas alterações do repositório (ex.: painéis DORA reais, correções de PromQL nos Targets down/up).
+Se o Coolify rodar o compose a partir de outro diretório (ex.: só a pasta `monitoring`), ajuste os volumes no `docker-compose.coolify.yml` para que `./monitoring/grafana/dashboards` e `./monitoring/grafana/provisioning` apontem para os caminhos corretos no host. Para **atualizar** um dashboard após mudanças no repositório: redeploy do serviço ou reiniciar o container Grafana (o provisioning reaplica os JSON a cada 30s).
 
 ## Troubleshooting: no data on dashboards
 
@@ -78,6 +79,25 @@ Se **todos** os painéis mostram "No data":
    O `docker-compose.coolify.yml` define variáveis `GF_DATASOURCES_DEFAULT_*` para criar o Prometheus ao subir o Grafana. Após alterar o compose, faça **Redeploy** do serviço gaqno-grafana para o Grafana recarregar e criar o datasource.
 
 Alguns painéis (ex.: DORA, Bundle size, Cloudflare Tunnel) só terão dados quando houver deploys no CI, builds com Pushgateway ou o tunnel ativo; o resto (CPU, memória, targets) depende só do Prometheus e dos exporters.
+
+## Dashboard DNS droppage (Cloudflare)
+
+O dashboard **Gaqno — DNS droppage** mostra “droppage” de DNS no Cloudflare: queries que **não** retornaram **NOERROR** (ex.: NXDOMAIN, SERVFAIL, REFUSED), úteis para portal.gaqno.com.br e demais hostnames.
+
+**Requisitos:**
+
+1. **Plugin Infinity** — Em Grafana: **Connections** → **Add new connection** → procure **Infinity** e instale.
+2. **Datasource Infinity** — Crie um data source do tipo **Infinity**:
+   - Em **Security** → **Allowed Hosts**, adicione: `https://api.cloudflare.com/client/v4/graphql` e `https://api.cloudflare.com/client/v4/user/tokens/verify`.
+   - Em **Authentication**, use **Bearer Token** e cole um **Cloudflare API token** com permissão **Zone** → **Analytics** → **Read** ([criar token](https://dash.cloudflare.com/profile/api-tokens)).
+3. **Importar o dashboard** — **Dashboards** → **Import** → upload de `monitoring/grafana/dashboards/gaqno-dashboard-dns-droppage.json`. Na tela de import, selecione o datasource Infinity que você criou.
+4. **Variável Zone ID** — No dashboard, preencha a variável **Zone ID** com o ID da zona do Cloudflare (ex.: gaqno.com.br). O ID aparece em **Cloudflare Dashboard** → sua zona → **Overview** → coluna direita.
+
+O dashboard exibe: **DNS droppage (non-NOERROR count)**, **Total DNS queries**, **Tabela por response code** e **Gráfico no tempo**. Para uma réplica completa do DNS Analytics do Cloudflare, use também o [dashboard 22568](https://grafana.com/grafana/dashboards/22568-cloudflare-dns-analytics/) (mesmo datasource Infinity + zone_id).
+
+### Alternativa: integração oficial Grafana Cloud (Cloudflare)
+
+A [integração Cloudflare do Grafana Cloud](https://grafana.com/docs/grafana-cloud/monitor-infrastructure/integrations/integration-reference/integration-cloudflare/) usa outra abordagem: um **Cloudflare Prometheus exporter** que expõe métricas (requests, bandwidth, HTTP status, pool health, workers) e o Grafana Alloy/Prometheus faz scrape. Inclui dashboards pré-built (Zone overview, Worker overview, Geomap) e alertas (HighThreatCount, HighHTTPErrorCodes, UnhealthyPools, etc.). Requer plano **Pro** ou superior no Cloudflare. Se você usar **Grafana Cloud**, pode instalar essa integração em **Connections** → Cloudflare; em self-hosted, pode rodar o exporter e adicionar um job de scrape no Prometheus. Os dashboards atuais (DNS droppage, Services Overview 503/5xx) continuam usando **Infinity + GraphQL** direto na API do Cloudflare, sem exporter.
 
 ## Getting HTTP error metrics (4xx/5xx) per service/frontend
 

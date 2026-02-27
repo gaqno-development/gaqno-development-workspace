@@ -1,0 +1,281 @@
+{
+  "__requires": [
+    { "type": "panel", "id": "stat", "name": "Stat", "version": "" },
+    { "type": "panel", "id": "table", "name": "Table", "version": "" },
+    { "type": "panel", "id": "timeseries", "name": "Time series", "version": "" },
+    { "type": "panel", "id": "text", "name": "Text", "version": "" },
+    { "type": "datasource", "id": "yesoreyeram-infinity-datasource", "name": "Infinity", "version": "" }
+  ],
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [
+    { "title": "Services overview", "url": "/d/services-overview", "type": "dashboard" },
+    { "title": "Front", "url": "/d/gaqno-dashboard-front", "type": "dashboard" },
+    { "title": "Backend", "url": "/d/gaqno-dashboard-backend", "type": "dashboard" },
+    { "title": "DevOps", "url": "/d/gaqno-dashboard-devops", "type": "dashboard" }
+  ],
+  "liveNow": false,
+  "panels": [
+    {
+      "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
+      "id": 1,
+      "options": {
+        "content": "**DNS droppage** — Queries that did not return **NOERROR** (e.g. NXDOMAIN, SERVFAIL, REFUSED). Data from Cloudflare DNS Analytics via GraphQL.\n\n**Setup:** 1) Install plugin **Infinity**. 2) Add datasource: URL allowed host `https://api.cloudflare.com/client/v4/graphql`, Auth = Bearer token (Cloudflare API token with Zone > Analytics Read). 3) Set variable **zone_id** to your Zone ID (Cloudflare Dashboard → zone → Overview, right sidebar).",
+        "mode": "markdown"
+      },
+      "title": "",
+      "type": "text"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 2 },
+      "id": 2,
+      "panels": [],
+      "title": "DNS droppage (Cloudflare)",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${infinity_datasource}" },
+      "description": "Total DNS queries with response code other than NOERROR (errors, NXDOMAIN, SERVFAIL, etc.).",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 1}, {"color": "red", "value": 100}] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 3 },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": true },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "columns": [
+            { "selector": "dimensions.responseCode", "text": "responseCode", "type": "string" },
+            { "selector": "count", "text": "count", "type": "number" }
+          ],
+          "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${infinity_datasource}" },
+          "format": "table",
+          "refId": "A",
+          "root_selector": "data.viewer.zones[0].dnsAnalyticsAdaptiveGroups",
+          "source": "url",
+          "type": "graphql",
+          "url": "https://api.cloudflare.com/client/v4/graphql",
+          "url_options": {
+            "body_content_type": "application/json",
+            "body_graphql_query": "query Viewer {\n  viewer {\n    zones(filter: { zoneTag: \"${zone_id}\" }) {\n      zoneTag\n      dnsAnalyticsAdaptiveGroups(\n        filter: {\n          datetimeMinute_geq: \"${__from:date:YYYY-MM-DDTHH:mm:ssZ}\",\n          datetimeMinute_leq: \"${__to:date:YYYY-MM-DDTHH:mm:ssZ}\"\n        }\n        limit: 100\n        orderBy: [count_DESC]\n      ) {\n        count\n        dimensions { responseCode }\n      }\n    }\n  }\n}\n",
+            "body_type": "graphql",
+            "method": "POST"
+          }
+        }
+      ],
+      "title": "DNS droppage (non-NOERROR count)",
+      "transformations": [
+        { "id": "filterByValue", "options": { "filters": [{ "fieldName": "dimensions.responseCode", "config": { "id": "exclude", "options": { "value": "NOERROR" } }, "operator": "!=" }], "match": "all" } },
+        { "id": "reduce", "options": { "reducers": ["sum"], "fields": "count" } }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${infinity_datasource}" },
+      "description": "All DNS queries in the selected time range.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{"color": "blue", "value": null}] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 3 },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": true },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "columns": [
+            { "selector": "count", "text": "Total", "type": "number" }
+          ],
+          "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${infinity_datasource}" },
+          "format": "table",
+          "refId": "A",
+          "root_selector": "data.viewer.zones[0].dnsAnalyticsAdaptiveGroups",
+          "source": "url",
+          "type": "graphql",
+          "url": "https://api.cloudflare.com/client/v4/graphql",
+          "url_options": {
+            "body_content_type": "application/json",
+            "body_graphql_query": "query Viewer {\n  viewer {\n    zones(filter: { zoneTag: \"${zone_id}\" }) {\n      zoneTag\n      dnsAnalyticsAdaptiveGroups(\n        filter: {\n          datetimeHour_geq: \"${__from:date:YYYY-MM-DDTHH:mm:ssZ}\",\n          datetimeHour_leq: \"${__to:date:YYYY-MM-DDTHH:mm:ssZ}\"\n        }\n        limit: 5000\n      ) {\n        count\n      }\n    }\n  }\n}\n",
+            "body_type": "graphql",
+            "method": "POST"
+          }
+        }
+      ],
+      "title": "Total DNS queries",
+      "transformations": [
+        { "id": "reduce", "options": { "reducers": ["sum"], "fields": "count" } }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${infinity_datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "align": "auto", "cellOptions": { "type": "auto" }, "inspect": false },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}] },
+          "unit": "short"
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "count" }, "properties": [{ "id": "custom.width", "value": 120 }] }
+        ]
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 3 },
+      "id": 5,
+      "options": { "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": true }, "showHeader": true },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "columns": [
+            { "selector": "dimensions.responseCode", "text": "Response code", "type": "string" },
+            { "selector": "count", "text": "Count", "type": "number" }
+          ],
+          "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${infinity_datasource}" },
+          "format": "table",
+          "refId": "A",
+          "root_selector": "data.viewer.zones[0].dnsAnalyticsAdaptiveGroups",
+          "source": "url",
+          "type": "graphql",
+          "url": "https://api.cloudflare.com/client/v4/graphql",
+          "url_options": {
+            "body_content_type": "application/json",
+            "body_graphql_query": "query Viewer {\n  viewer {\n    zones(filter: { zoneTag: \"${zone_id}\" }) {\n      zoneTag\n      dnsAnalyticsAdaptiveGroups(\n        filter: {\n          datetimeMinute_geq: \"${__from:date:YYYY-MM-DDTHH:mm:ssZ}\",\n          datetimeMinute_leq: \"${__to:date:YYYY-MM-DDTHH:mm:ssZ}\"\n        }\n        limit: 20\n        orderBy: [count_DESC]\n      ) {\n        count\n        dimensions { responseCode }\n      }\n    }\n  }\n}\n",
+            "body_type": "graphql",
+            "method": "POST"
+          }
+        }
+      ],
+      "title": "Queries by response code",
+      "type": "table"
+    },
+    {
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${infinity_datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisPlacement": "auto",
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": { "group": "A", "mode": "none" },
+            "thresholdsStyle": { "mode": "off" }
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 11 },
+      "id": 6,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "columns": [
+            { "selector": "count", "text": "Queries", "type": "number" },
+            { "selector": "dimensions.datetimeFifteenMinutes", "text": "Time", "type": "timestamp" },
+            { "selector": "dimensions.responseCode", "text": "response_code", "type": "string" }
+          ],
+          "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${infinity_datasource}" },
+          "format": "table",
+          "refId": "A",
+          "root_selector": "data.viewer.zones[0].dnsAnalyticsAdaptiveGroups",
+          "source": "url",
+          "type": "graphql",
+          "url": "https://api.cloudflare.com/client/v4/graphql",
+          "url_options": {
+            "body_content_type": "application/json",
+            "body_graphql_query": "query Viewer {\n  viewer {\n    zones(filter: { zoneTag: \"${zone_id}\" }) {\n      zoneTag\n      dnsAnalyticsAdaptiveGroups(\n        filter: {\n          datetimeMinute_geq: \"${__from:date:YYYY-MM-DDTHH:mm:ssZ}\",\n          datetimeMinute_leq: \"${__to:date:YYYY-MM-DDTHH:mm:ssZ}\"\n        }\n        limit: 5000\n      ) {\n        count\n        avg { sampleInterval }\n        dimensions { responseCode datetimeFifteenMinutes }\n      }\n    }\n  }\n}\n",
+            "body_type": "graphql",
+            "method": "POST"
+          }
+        }
+      ],
+      "title": "DNS queries by response code over time",
+      "transformations": [
+        { "id": "prepareTimeSeries", "options": { "format": "multi" } }
+      ],
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["dns", "cloudflare", "gaqno"],
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "" },
+        "definition": "",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Infinity (Cloudflare)",
+        "multi": false,
+        "name": "infinity_datasource",
+        "options": [],
+        "query": "yesoreyeram-infinity-datasource",
+        "refresh": 1,
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": { "selected": false, "text": "", "value": "" },
+        "hide": 0,
+        "label": "Zone ID",
+        "name": "zone_id",
+        "options": [],
+        "query": "",
+        "skipUrlSync": false,
+        "type": "text"
+      }
+    ]
+  },
+  "time": { "from": "now-24h", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Gaqno — DNS droppage (Cloudflare)",
+  "uid": "gaqno-dns-droppage",
+  "version": 1,
+  "weekStart": ""
+}
