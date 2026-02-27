@@ -85,3 +85,6 @@
 [submodule "gaqno-crm-service"]
 	path = gaqno-crm-service
 	url = git@github.com:gaqno-development/gaqno-crm-service.git
+[submodule "gaqno-erp-service"]
+	path = gaqno-erp-service
+	url = git@github.com:gaqno-development/gaqno-erp-service.git
