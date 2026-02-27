@@ -51,16 +51,16 @@ O serviço **gaqno-grafana** no Coolify já está configurado com:
 
 O compose usado no Coolify está em `monitoring/docker-compose.coolify.yml`. Inclui **cloudflared** (Cloudflare Tunnel): o container sobe com `--metrics 0.0.0.0:60123` e o Prometheus faz scrape em `cloudflared:60123`. Configure no Coolify a variável **`CLOUDFLARE_TUNNEL_TOKEN`** (token do connector em Cloudflare Zero Trust → Tunnels → Run connector).
 
-**Grafana** está em **http://grafana.gaqno.com.br** (porta 5678). O compose do Coolify provisiona o **datasource Prometheus** via variáveis de ambiente e os **dashboards** via provisioning (pastas `monitoring/grafana/provisioning` e `monitoring/grafana/dashboards` montadas no container). Após o deploy, os dashboards aparecem na pasta **Gaqno** com os UIDs fixos; os links diretos funcionam:
+**Grafana** está em **http://grafana.gaqno.com.br** (porta 5678). O compose do Coolify usa a **imagem Grafana custom** (`monitoring/grafana/Dockerfile`), que já inclui **provisioning** e **dashboards** dentro da imagem — não depende de volumes do host. O datasource Prometheus é configurado por variáveis de ambiente. Após o **build e deploy**, os dashboards aparecem na pasta **Gaqno**; os links diretos funcionam:
 
 - **Services overview**: `/d/services-overview`
 - **Front**: `/d/gaqno-dashboard-front`
 - **Backend**: `/d/gaqno-dashboard-backend`
 - **DevOps**: `/d/gaqno-dashboard-devops`
 - **DNS droppage**: `/d/gaqno-dns-droppage`
-- **Errors by frontend**: `/d/gaqno-errors-by-frontend` (se existir o JSON)
+- **Errors by frontend**: `/d/gaqno-errors-by-frontend`
 
-Se o Coolify rodar o compose a partir de outro diretório (ex.: só a pasta `monitoring`), ajuste os volumes no `docker-compose.coolify.yml` para que `./monitoring/grafana/dashboards` e `./monitoring/grafana/provisioning` apontem para os caminhos corretos no host. Para **atualizar** um dashboard após mudanças no repositório: redeploy do serviço ou reiniciar o container Grafana (o provisioning reaplica os JSON a cada 30s).
+No Coolify, use o **Docker Compose** com o arquivo `monitoring/docker-compose.coolify.yml` e **raiz do repositório** como contexto (ou raiz = `monitoring`); o build do serviço `grafana` usa `context: ./grafana` em relação ao diretório do compose. Para **atualizar** os dashboards após mudanças no repositório: **Redeploy** do aplicativo (rebuild da imagem Grafana e novo deploy).
 
 ## Troubleshooting: no data on dashboards
 

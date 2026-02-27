@@ -50,7 +50,9 @@ services:
       - --token
       - ${CLOUDFLARE_TUNNEL_TOKEN}
   grafana:
-    image: grafana/grafana:latest
+    build:
+      context: ./grafana
+      dockerfile: Dockerfile
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
@@ -63,8 +65,6 @@ services:
       - GF_DATASOURCES_DEFAULT_IS_DEFAULT=true
     volumes:
       - grafana-data:/var/lib/grafana
-      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
-      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
     restart: unless-stopped
     ports:
       - "5678:3000"
