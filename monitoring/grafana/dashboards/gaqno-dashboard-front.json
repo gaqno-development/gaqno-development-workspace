@@ -16,7 +16,7 @@
       "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
       "id": 0,
       "options": {
-        "content": "**Front** — UX, Core Web Vitals, erros e negócio. Dados atuais: Prometheus (4xx/5xx). LCP, RUM e negócio exigem Sentry/OpenTelemetry/analytics.",
+        "content": "**Front** — UX, Core Web Vitals, erros e negócio. Dados: Prometheus (4xx/5xx quando jobs `*-ui` são scraped). Abaixo: containers no host (sempre); HTTP/LCP quando configurado.",
         "mode": "markdown"
       },
       "title": "",
@@ -29,6 +29,40 @@
       "panels": [],
       "title": "Linha 1 — Saúde geral",
       "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus" },
+      "description": "Containers com service no container-name-mapper (pushgateway). Sempre mostra dados se Prometheus scrape pushgateway.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 4, "x": 16, "y": 3 },
+      "id": 50,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus" },
+          "expr": "count(container_info{service!=\"\"})",
+          "legendFormat": "Containers",
+          "refId": "A"
+        }
+      ],
+      "title": "Containers (host)",
+      "type": "stat"
     },
     {
       "datasource": { "type": "prometheus" },

@@ -690,7 +690,33 @@ function updateWorkspaces(name, type) {
   console.log("Updated root package.json workspaces");
 }
 
+const HUSKY_COMMIT_MSG = 'npx --no -- commitlint --edit "$1"';
+const HUSKY_PRE_COMMIT = "npm run test";
+
+function createHuskyHooksInDir(projectDir) {
+  const huskyDir = path.join(projectDir, ".husky");
+  ensureDir(huskyDir);
+  const commitMsgPath = path.join(huskyDir, "commit-msg");
+  const preCommitPath = path.join(huskyDir, "pre-commit");
+  fs.writeFileSync(commitMsgPath, HUSKY_COMMIT_MSG + "\n", "utf8");
+  fs.writeFileSync(preCommitPath, HUSKY_PRE_COMMIT + "\n", "utf8");
+  try {
+    fs.chmodSync(commitMsgPath, 0o755);
+    fs.chmodSync(preCommitPath, 0o755);
+  } catch (_) {
+    // chmod can fail on Windows; hooks may still run
+  }
+}
+
 function setupHusky(name, type) {
+  if (type === TYPE_FRONTEND || type === TYPE_BOTH) {
+    const uiDir = path.join(ROOT, `gaqno-${name}-ui`);
+    if (fs.existsSync(uiDir)) createHuskyHooksInDir(uiDir);
+  }
+  if (type === TYPE_BACKEND || type === TYPE_BOTH) {
+    const svcDir = path.join(ROOT, `gaqno-${name}-service`);
+    if (fs.existsSync(svcDir)) createHuskyHooksInDir(svcDir);
+  }
   const addHusky = path.join(ROOT, "scripts", "add-husky-to-package.js");
   if (!fs.existsSync(addHusky)) return;
   try {
@@ -709,7 +735,7 @@ function setupHusky(name, type) {
         });
     }
   } catch (_) {
-    console.warn("Husky setup skipped (run manually if needed)");
+    console.warn("Husky package.json update skipped (run add-husky-to-package.js manually if needed)");
   }
 }
 

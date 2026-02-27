@@ -9,6 +9,7 @@ REPOS=(
   "gaqno-admin-ui"
   "gaqno-ai-service"
   "gaqno-ai-ui"
+  "gaqno-crm-service"
   "gaqno-crm-ui"
   "gaqno-erp-ui"
   "gaqno-finance-service"

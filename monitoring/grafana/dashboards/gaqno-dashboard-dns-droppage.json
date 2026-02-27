@@ -23,7 +23,7 @@
       "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
       "id": 1,
       "options": {
-        "content": "**DNS droppage** — Queries that did not return **NOERROR** (e.g. NXDOMAIN, SERVFAIL, REFUSED). Data from Cloudflare DNS Analytics via GraphQL.\n\n**Setup:** 1) Install plugin **Infinity**. 2) Add datasource: URL allowed host `https://api.cloudflare.com/client/v4/graphql`, Auth = Bearer token (Cloudflare API token with Zone > Analytics Read). 3) Set variable **zone_id** to your Zone ID (Cloudflare Dashboard → zone → Overview, right sidebar).",
+        "content": "**DNS droppage** — Queries that did not return **NOERROR** (e.g. NXDOMAIN, SERVFAIL, REFUSED). Data from Cloudflare DNS Analytics via GraphQL.\n\n**If you see \"Datasource was not found\":** In the variable **Infinity (Cloudflare)** above, select an Infinity datasource. If none exists: **Connections → Data sources → Add data source → Infinity**. Add allowed host `https://api.cloudflare.com/client/v4/graphql`, Auth = Bearer token (Cloudflare API token with Zone → Analytics Read). Then come back and select it in the variable.\n\n**Then:** Set **zone_id** to your Zone ID (Cloudflare Dashboard → your zone → Overview, right sidebar).",
         "mode": "markdown"
       },
       "title": "",

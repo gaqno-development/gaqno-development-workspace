@@ -37,6 +37,45 @@ services:
   pushgateway:
     image: prom/pushgateway:v1.6.2
     restart: unless-stopped
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    volumes:
+      - /:/rootfs:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    devices:
+      - /dev/kmsg
+    restart: unless-stopped
+  container-name-mapper:
+    image: docker:cli
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - |
+        apk add --no-cache curl jq > /dev/null 2>&1
+        while true; do
+          metrics=""
+          for cid in $$(docker ps -q --no-trunc); do
+            info=$$(docker inspect "$$cid" 2>/dev/null)
+            name=$$(echo "$$info" | jq -r '.[0].Name' | sed 's|^/||')
+            image=$$(echo "$$info" | jq -r '.[0].Config.Image')
+            short=$$(echo "$$cid" | head -c 12)
+            svc=$$(echo "$$info" | jq -r '.[0].Config.Labels["coolify.resourceName"] // empty')
+            comp=$$(echo "$$info" | jq -r '.[0].Config.Labels["coolify.serviceName"] // empty')
+            if [ -z "$$svc" ]; then svc="$$name"; fi
+            if [ -z "$$comp" ]; then comp="$$name"; fi
+            metrics="$${metrics}container_info{container_id=\"$$cid\",short_id=\"$$short\",name=\"$$name\",service=\"$$svc\",component=\"$$comp\",image=\"$$image\"} 1\n"
+          done
+          printf "$$metrics" | curl -s --data-binary @- "http://pushgateway:9091/metrics/job/container_info" 2>/dev/null
+          sleep 30
+        done
+    restart: unless-stopped
   cloudflared:
     image: cloudflare/cloudflared:latest
     restart: unless-stopped
@@ -83,6 +122,9 @@ configs:
         - job_name: node-exporter
           static_configs:
             - targets: ["node-exporter:9100"]
+        - job_name: cadvisor
+          static_configs:
+            - targets: ["cadvisor:8080"]
         - job_name: postgres-exporter
           static_configs:
             - targets: ["postgres-exporter:9187"]

@@ -235,7 +235,7 @@
         "textMode": "auto"
       },
       "pluginVersion": "10.2.0",
-      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "100 * (1 - avg(irate(node_cpu_seconds_total{job=\"node-exporter\",mode=\"idle\"}[5m])) by (instance))", "legendFormat": "CPU", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "100 * (1 - avg(irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) by (instance))", "legendFormat": "CPU", "refId": "A" }],
       "title": "Host CPU %",
       "type": "stat"
     },
@@ -263,7 +263,7 @@
         "textMode": "auto"
       },
       "pluginVersion": "10.2.0",
-      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "100 * (1 - (node_memory_MemAvailable_bytes{job=\"node-exporter\"} / node_memory_MemTotal_bytes{job=\"node-exporter\"}))", "legendFormat": "Mem", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "100 * (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes))", "legendFormat": "Mem", "refId": "A" }],
       "title": "Host Memory %",
       "type": "stat"
     },
@@ -343,7 +343,7 @@
       "gridPos": { "h": 6, "w": 8, "x": 18, "y": 15 },
       "id": 37,
       "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "100 * (1 - avg(irate(node_cpu_seconds_total{job=\"node-exporter\",mode=\"idle\"}[5m])) by (instance))", "legendFormat": "{{instance}}", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "100 * (1 - avg(irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) by (instance))", "legendFormat": "{{instance}}", "refId": "A" }],
       "title": "Host CPU %",
       "type": "timeseries"
     },
@@ -361,7 +361,7 @@
       "gridPos": { "h": 6, "w": 8, "x": 0, "y": 19 },
       "id": 38,
       "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "100 * (1 - (node_memory_MemAvailable_bytes{job=\"node-exporter\"} / node_memory_MemTotal_bytes{job=\"node-exporter\"}))", "legendFormat": "{{instance}}", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "100 * (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes))", "legendFormat": "{{instance}}", "refId": "A" }],
       "title": "Host Memory %",
       "type": "timeseries"
     },
@@ -379,9 +379,9 @@
       "id": 39,
       "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
       "targets": [
-        { "datasource": { "type": "prometheus" }, "expr": "node_load1{job=\"node-exporter\"}", "legendFormat": "1m", "refId": "A" },
-        { "datasource": { "type": "prometheus" }, "expr": "node_load5{job=\"node-exporter\"}", "legendFormat": "5m", "refId": "B" },
-        { "datasource": { "type": "prometheus" }, "expr": "node_load15{job=\"node-exporter\"}", "legendFormat": "15m", "refId": "C" }
+        { "datasource": { "type": "prometheus" }, "expr": "node_load1", "legendFormat": "1m", "refId": "A" },
+        { "datasource": { "type": "prometheus" }, "expr": "node_load5", "legendFormat": "5m", "refId": "B" },
+        { "datasource": { "type": "prometheus" }, "expr": "node_load15", "legendFormat": "15m", "refId": "C" }
       ],
       "title": "Host Load average",
       "type": "timeseries"
@@ -417,7 +417,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 25 },
       "id": 41,
       "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\".+\"}[5m])) by (name) * 100", "legendFormat": "{{name}}", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "sum by (component) (label_replace(rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker.*\",cpu=\"total\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\.scope\") * on(container_id) group_left(component) container_info{service!=\"\"}) * 100", "legendFormat": "{{component}}", "refId": "A" }],
       "title": "Containers — CPU % by name",
       "type": "timeseries"
     },
@@ -435,7 +435,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 25 },
       "id": 42,
       "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "container_memory_usage_bytes{name=~\".+\"}", "legendFormat": "{{name}}", "refId": "A" }],
+      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "sum by (component) (label_replace(container_memory_usage_bytes{id=~\"/system.slice/docker.*\"},\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\.scope\") * on(container_id) group_left(component) container_info{service!=\"\"})", "legendFormat": "{{component}}", "refId": "A" }],
       "title": "Containers — Memory by name",
       "type": "timeseries"
     },

@@ -67,18 +67,26 @@ No Coolify, use o **Docker Compose** com o arquivo `monitoring/docker-compose.co
 Se **todos** os painéis mostram "No data":
 
 1. **Datasource Prometheus**  
-   Em Grafana: **Connections** → **Data sources**. Deve existir um **Prometheus** com URL **`http://prometheus:9090`** e **Save & test** em verde. Se não existir ou estiver com URL errada (ex.: localhost), adicione ou edite para `http://prometheus:9090` (nome do serviço na rede Docker).
+   Em Grafana: **Connections** → **Data sources**. Deve existir um **Prometheus** com URL **`http://prometheus:9090`** e **Save & test** em verde. Se não existir ou estiver com URL errada (ex.: localhost), adicione ou edite para `http://prometheus:9090` (nome do serviço na rede Docker). Se o Grafana e o Prometheus estiverem em **stacks/composes diferentes** no Coolify, a URL precisa apontar para o host:porta onde o Prometheus está acessível (ex.: `http://<coolify-host>:9090` ou o nome do serviço na rede compartilhada).
 
 2. **Prometheus está coletando**  
-   Abra **http://&lt;seu-prometheus&gt;:9090/targets** (ou o URL do Prometheus que o Coolify expõe). Verifique se os targets **node-exporter**, **prometheus**, **postgres-exporter** estão **UP**. Se estiverem Down, o Grafana não terá métricas (rede, container parado ou scrape config incorreta).
+   Abra **http://&lt;seu-prometheus&gt;:9090/targets** (ou o URL do Prometheus que o Coolify expõe). Verifique se os targets **node-exporter**, **cadvisor**, **prometheus**, **postgres-exporter**, **pushgateway** estão **UP**. Se estiverem Down, o Grafana não terá métricas (rede, container parado ou scrape config incorreta). Em **Graph**, teste: `up` ou `node_cpu_seconds_total{mode="idle"}` — se retornar série, o Prometheus está coletando e o problema pode ser só o datasource no Grafana.
 
-3. **Intervalo de tempo**  
+3. **Coolify: mesmo compose**  
+   Para os painéis de **host** (CPU, RAM, Disk, Uptime) e **containers** (CPU/Mem por serviço) funcionarem, o `docker-compose.coolify.yml` precisa rodar **no mesmo host** com **node-exporter**, **cAdvisor**, **container-name-mapper**, **pushgateway** e **prometheus**. O compose deste repositório já inclui **cAdvisor** e **container-name-mapper**; faça **Redeploy** do stack no Coolify para subir esses serviços e recarregar o Prometheus.
+
+4. **Intervalo de tempo**  
    No canto superior direito do Grafana, use **Last 15 minutes** ou **Last 1 hour**; "No data" pode ser intervalo no passado sem métricas.
 
-4. **Coolify: datasource automático**  
+5. **Coolify: datasource automático**  
    O `docker-compose.coolify.yml` define variáveis `GF_DATASOURCES_DEFAULT_*` para criar o Prometheus ao subir o Grafana. Após alterar o compose, faça **Redeploy** do serviço gaqno-grafana para o Grafana recarregar e criar o datasource.
 
-Alguns painéis (ex.: DORA, Bundle size, Cloudflare Tunnel) só terão dados quando houver deploys no CI, builds com Pushgateway ou o tunnel ativo; o resto (CPU, memória, targets) depende só do Prometheus e dos exporters.
+**Resumo:** Se só os painéis de **host** (node_*) têm dados e os de **containers** não, confira se **cAdvisor** e **container-name-mapper** estão no mesmo compose e com targets UP no Prometheus. Se **nada** tem dados, confira o datasource (URL do Prometheus) e os targets em `/targets`. Em hosts com **cgroups v2**, o cAdvisor pode expor `id` com path diferente de `/system.slice/docker.*`; nesse caso os painéis que usam esse filtro podem continuar vazios até ajuste das queries.
+
+### "Datasource was not found" / "Error transforming data: 'undefined'"
+
+- **Em painéis que usam Prometheus (Services Overview, Front, Backend, DevOps):** Grafana precisa de um datasource **Prometheus** definido e, de preferência, como **padrão**. Em **Connections → Data sources**, confira se existe **Prometheus** com URL correta (ex.: `http://prometheus:9090`) e clique em **Save & test**. Se não houver nenhum datasource padrão, marque o Prometheus como **Default**.
+- **Em painéis que usam Cloudflare (DNS droppage, seção 503/5xx do Services Overview):** Esses painéis usam a variável **Infinity (Cloudflare)**. Se a variável estiver vazia (nenhum datasource Infinity criado ou selecionado), o painel mostra "Datasource was not found". **Solução:** Crie um datasource do tipo **Infinity** (ver seção "Dashboard DNS droppage" abaixo), depois abra o dashboard e no seletor no topo escolha esse datasource Infinity. Preencha também a variável **Zone ID** para os painéis de Cloudflare.
 
 ## Dashboard DNS droppage (Cloudflare)
 

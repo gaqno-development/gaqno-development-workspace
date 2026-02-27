@@ -160,7 +160,7 @@
       "targets": [
         {
           "datasource": { "type": "prometheus" },
-          "expr": "avg(rate(container_cpu_usage_seconds_total{name=~\".+\"}[5m])) by () * 100",
+          "expr": "avg(rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker.*\"}[5m])) by () * 100",
           "legendFormat": "CPU",
           "refId": "A"
         }
@@ -193,7 +193,7 @@
       "targets": [
         {
           "datasource": { "type": "prometheus" },
-          "expr": "sum(container_memory_usage_bytes{name=~\".+\"})",
+          "expr": "sum(container_memory_usage_bytes{id=~\"/system.slice/docker.*\"})",
           "legendFormat": "Mem",
           "refId": "A"
         }
@@ -440,7 +440,7 @@
       "id": 54,
       "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
       "targets": [
-        { "datasource": { "type": "prometheus" }, "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\".+\"}[5m])) by (name) * 100", "legendFormat": "{{name}}", "refId": "A" }
+        { "datasource": { "type": "prometheus" }, "expr": "sum by (component) (label_replace(rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker.*\",cpu=\"total\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\.scope\") * on(container_id) group_left(component) container_info{service!=\"\"}) * 100", "legendFormat": "{{component}}", "refId": "A" }
       ],
       "title": "CPU por container (cAdvisor)",
       "type": "timeseries"
@@ -460,7 +460,7 @@
       "id": 55,
       "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
       "targets": [
-        { "datasource": { "type": "prometheus" }, "expr": "container_memory_usage_bytes{name=~\".+\"}", "legendFormat": "{{name}}", "refId": "A" }
+        { "datasource": { "type": "prometheus" }, "expr": "sum by (component) (label_replace(container_memory_usage_bytes{id=~\"/system.slice/docker.*\"},\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\.scope\") * on(container_id) group_left(component) container_info{service!=\"\"})", "legendFormat": "{{component}}", "refId": "A" }
       ],
       "title": "Memória por container (cAdvisor)",
       "type": "timeseries"
