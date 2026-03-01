@@ -8,9 +8,57 @@ alwaysApply: true
 After making code changes in this workspace:
 
 1. **Verify**: Run the project build (and type check if applicable). For monorepos or submodules, run build in the repo(s) you changed.
-2. **Always validate with Docker**: For every changed app or service that has a `Dockerfile`, run a Docker build from the workspace root (e.g. `docker build -f <path>/Dockerfile <path>`). Use `NPM_TOKEN` from the project root `.env` as build-arg when the Dockerfile requires it. This ensures the same Dockerfile and runtime as production/CI; local `npm run build` can pass while the Docker build fails.
-3. **If build and Docker build pass and there are no type errors**: Stage, commit, and push the changes. Use a short, conventional commit message (e.g. `feat(scope): description` or `fix(scope): description`). Respect the no-Co-authored-by rule; use `git commit -m "..."` and `--no-verify` only if the commit hook would add an unwanted trailer or block a valid message.
-4. **If you changed a publishable package** (@gaqno-frontcore, @gaqno-backcore, @gaqno-types, @gaqno-agent): Bump its version in that package’s `package.json` (semver: patch for fixes, minor for new features, major for breaking changes), then from the workspace root run `npm run release:packages` so other apps can upgrade. See the rule *package-version-and-publish* for details.
-5. **If build, type check, or Docker build fails**: Fix the errors before committing or pushing. Do not push failing code.
+2. **Always validate with Docker**: For every changed app or service that has a `Dockerfile`, run a Docker build from the workspace root:
+   ```bash
+   # Example for gaqno-erp-ui
+   docker build -f gaqno-erp-ui/Dockerfile --build-arg NPM_TOKEN=$(cat .npmrc | grep "_authToken" | cut -d'=' -f2) -t gaqno-erp-ui:test gaqno-erp-ui/
+   ```
+   Use `NPM_TOKEN` from the project root `.npmrc` as build-arg when the Dockerfile requires it. This ensures the same Dockerfile and runtime as production/CI; local `npm run build` can pass while the Docker build fails.
+3. **Test Docker image** (optional but recommended):
+   ```bash
+   docker run --rm -d -p 3005:3004 --name test-container gaqno-erp-ui:test
+   sleep 5 && curl -f http://localhost:3005/erp || (docker stop test-container && exit 1)
+   docker stop test-container
+   ```
+4. **If build and Docker build pass and there are no type errors**: Stage, commit, and push the changes. Use a short, conventional commit message (e.g. `feat(scope): description` or `fix(scope): description`). Respect the no-Co-authored-by rule; use `git commit -m "..."` and `--no-verify` only if the commit hook would add an unwanted trailer or block a valid message.
+5. **If you changed a publishable package** (@gaqno-frontcore, @gaqno-backcore, @gaqno-types, @gaqno-agent): Bump its version in that package's `package.json` (semver: patch for fixes, minor for new features, major for breaking changes), then from the workspace root run `npm run release:packages` so other apps can upgrade. See the rule _package-version-and-publish_ for details.
+6. **If build, type check, or Docker build fails**: Fix the errors before committing or pushing. Do not push failing code.
+
+## Docker Build Requirements
+
+### Required Services with Dockerfiles
+
+- `gaqno-erp-ui/` - ERP UI application
+- `gaqno-crm-ui/` - CRM UI application
+- `gaqno-saas-ui/` - SaaS UI application
+- `gaqno-pdv-ui/` - PDV UI application
+
+### NPM Token Management
+
+The NPM token is required for private packages and should be sourced from:
+
+```bash
+# Get token from workspace .npmrc
+NPM_TOKEN=$(cat .npmrc | grep "_authToken" | cut -d'=' -f2)
+
+# Or from user config
+NPM_TOKEN=$(cat ~/.npmrc.personal | grep "_authToken" | cut -d'=' -f2)
+```
+
+### Common Docker Build Commands
+
+```bash
+# ERP UI
+docker build -f gaqno-erp-ui/Dockerfile --build-arg NPM_TOKEN=$NPM_TOKEN -t gaqno-erp-ui:test gaqno-erp-ui/
+
+# CRM UI
+docker build -f gaqno-crm-ui/Dockerfile --build-arg NPM_TOKEN=$NPM_TOKEN -t gaqno-crm-ui:test gaqno-crm-ui/
+
+# SaaS UI
+docker build -f gaqno-saas-ui/Dockerfile --build-arg NPM_TOKEN=$NPM_TOKEN -t gaqno-saas-ui:test gaqno-saas-ui/
+
+# PDV UI
+docker build -f gaqno-pdv-ui/Dockerfile --build-arg NPM_TOKEN=$NPM_TOKEN -t gaqno-pdv-ui:test gaqno-pdv-ui/
+```
 
 Apply this after completing a coding task that modifies files, unless the user explicitly asks not to push.

@@ -1,0 +1,11 @@
+# Personal Git identity for gaqno-development work (Coding/gaqno folder).
+# Copy to ~/.gitconfig-gaqno-development and fill in your details.
+# Then add the includeIf block to ~/.gitconfig (see docs/git-gaqno-identity-setup.md).
+
+[user]
+	name = YOUR_NAME
+	email = YOUR_EMAIL@example.com
+
+# Optional: use a dedicated SSH key for gaqno-development GitHub
+# [core]
+# 	sshCommand = ssh -i ~/.ssh/gaqno_development_ed25519 -o IdentitiesOnly=yes
