@@ -1,0 +1,110 @@
+services:
+  node-exporter:
+    image: 'prom/node-exporter:latest'
+    volumes:
+      - '/proc:/host/proc:ro'
+      - '/sys:/host/sys:ro'
+      - '/:/rootfs:ro'
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    restart: unless-stopped
+  cadvisor:
+    image: 'gcr.io/cadvisor/cadvisor:v0.49.1'
+    volumes:
+      - '/:/rootfs:ro'
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+      - '/sys:/sys:ro'
+      - '/var/lib/docker/:/var/lib/docker:ro'
+      - '/dev/disk/:/dev/disk:ro'
+      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+    privileged: true
+    devices:
+      - /dev/kmsg
+    restart: unless-stopped
+  container-name-mapper:
+    image: 'docker:cli'
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+    entrypoint: /bin/sh
+    command:
+      - '-c'
+      - "apk add --no-cache curl jq > /dev/null 2>&1\nwhile true; do\n  metrics=\"\"\n  for cid in $$(docker ps -q --no-trunc); do\n    info=$$(docker inspect \"$$cid\" 2>/dev/null)\n    name=$$(echo \"$$info\" | jq -r '.[0].Name' | sed 's|^/||')\n    image=$$(echo \"$$info\" | jq -r '.[0].Config.Image')\n    short=$$(echo \"$$cid\" | head -c 12)\n    svc=$$(echo \"$$info\" | jq -r '.[0].Config.Labels[\"coolify.resourceName\"] // empty')\n    comp=$$(echo \"$$info\" | jq -r '.[0].Config.Labels[\"coolify.serviceName\"] // empty')\n    if [ -z \"$$svc\" ]; then svc=\"$$name\"; fi\n    if [ -z \"$$comp\" ]; then comp=\"$$name\"; fi\n    metrics=\"$${metrics}container_info{container_id=\\\"$$cid\\\",short_id=\\\"$$short\\\",name=\\\"$$name\\\",service=\\\"$$svc\\\",component=\\\"$$comp\\\",image=\\\"$$image\\\"} 1\n\"\n  done\n  printf \"$$metrics\" | curl -s --data-binary @- \"http://pushgateway:9091/metrics/job/container_info\" 2>/dev/null\n  sleep 30\ndone\n"
+    restart: unless-stopped
+  prometheus:
+    image: 'prom/prometheus:latest'
+    volumes:
+      - 'prometheus-data:/prometheus'
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-lifecycle'
+    configs:
+      -
+        source: prometheus_config
+        target: /etc/prometheus/prometheus.yml
+    restart: unless-stopped
+    ports:
+      - '9090:9090'
+  postgres-exporter:
+    image: 'quay.io/prometheuscommunity/postgres-exporter:v0.15.0'
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - 'DATA_SOURCE_URI=${POSTGRES_EXPORTER_URI}'
+      - 'DATA_SOURCE_USER=${POSTGRES_EXPORTER_USER}'
+      - 'DATA_SOURCE_PASS=${POSTGRES_EXPORTER_PASS}'
+  pushgateway:
+    image: 'prom/pushgateway:v1.6.2'
+    restart: unless-stopped
+  grafana:
+    image: 'grafana/grafana:latest'
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=gaqno2026
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - 'GF_SERVER_ROOT_URL=https://grafana.gaqno.com.br/'
+      - GF_SERVER_DOMAIN=grafana.gaqno.com.br
+      - GF_AUTH_BASIC_ENABLED=true
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+    volumes:
+      - 'grafana-data-v3:/var/lib/grafana'
+    restart: unless-stopped
+    ports:
+      - '5678:3000'
+    depends_on:
+      - prometheus
+    configs:
+      -
+        source: grafana_datasource
+        target: /etc/grafana/provisioning/datasources/prometheus.yml
+      -
+        source: grafana_dashboards_yml
+        target: /etc/grafana/provisioning/dashboards/dashboards.yml
+configs:
+  prometheus_config:
+    content: "global:\n  scrape_interval: 15s\n  evaluation_interval: 15s\nscrape_configs:\n  - job_name: prometheus\n    static_configs:\n      - targets: [\"localhost:9090\"]\n  - job_name: node-exporter\n    static_configs:\n      - targets: [\"node-exporter:9100\"]\n  - job_name: cadvisor\n    static_configs:\n      - targets: [\"cadvisor:8080\"]\n  - job_name: postgres-exporter\n    static_configs:\n      - targets: [\"postgres-exporter:9187\"]\n  - job_name: pushgateway\n    honor_labels: true\n    static_configs:\n      - targets: [\"pushgateway:9091\"]\n"
+  grafana_datasource:
+    content: "apiVersion: 1\ndatasources:\n  - name: Prometheus\n    type: prometheus\n    access: proxy\n    url: http://prometheus:9090\n    isDefault: true\n    editable: true\n"
+  grafana_dashboards_yml:
+    content: |
+      ---
+      apiVersion: 1
+      providers:
+        - name: Gaqno Monitoring
+          orgId: 1
+          folder: Gaqno
+          folderUid: gaqno
+          type: file
+          disableDeletion: false
+          updateIntervalSeconds: 30
+          allowUiUpdates: true
+          options:
+            path: /etc/grafana/dashboards
+      ---
+volumes:
+  prometheus-data: {  }
+  grafana-data-v3: {  }

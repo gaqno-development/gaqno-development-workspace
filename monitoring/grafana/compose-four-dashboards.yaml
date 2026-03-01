@@ -1,0 +1,1881 @@
+services:
+  node-exporter:
+    image: 'prom/node-exporter:latest'
+    volumes:
+      - '/proc:/host/proc:ro'
+      - '/sys:/host/sys:ro'
+      - '/:/rootfs:ro'
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    restart: unless-stopped
+  cadvisor:
+    image: 'gcr.io/cadvisor/cadvisor:v0.49.1'
+    volumes:
+      - '/:/rootfs:ro'
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+      - '/sys:/sys:ro'
+      - '/var/lib/docker/:/var/lib/docker:ro'
+      - '/dev/disk/:/dev/disk:ro'
+      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+    privileged: true
+    devices:
+      - /dev/kmsg
+    restart: unless-stopped
+  container-name-mapper:
+    image: 'docker:cli'
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+    entrypoint: /bin/sh
+    command:
+      - '-c'
+      - "apk add --no-cache curl jq > /dev/null 2>&1\nwhile true; do\n  metrics=\"\"\n  for cid in $$(docker ps -q --no-trunc); do\n    info=$$(docker inspect \"$$cid\" 2>/dev/null)\n    name=$$(echo \"$$info\" | jq -r '.[0].Name' | sed 's|^/||')\n    image=$$(echo \"$$info\" | jq -r '.[0].Config.Image')\n    short=$$(echo \"$$cid\" | head -c 12)\n    svc=$$(echo \"$$info\" | jq -r '.[0].Config.Labels[\"coolify.resourceName\"] // empty')\n    comp=$$(echo \"$$info\" | jq -r '.[0].Config.Labels[\"coolify.serviceName\"] // empty')\n    if [ -z \"$$svc\" ]; then svc=\"$$name\"; fi\n    if [ -z \"$$comp\" ]; then comp=\"$$name\"; fi\n    metrics=\"$${metrics}container_info{container_id=\\\"$$cid\\\",short_id=\\\"$$short\\\",name=\\\"$$name\\\",service=\\\"$$svc\\\",component=\\\"$$comp\\\",image=\\\"$$image\\\"} 1\n\"\n  done\n  printf \"$$metrics\" | curl -s --data-binary @- \"http://pushgateway:9091/metrics/job/container_info\" 2>/dev/null\n  sleep 30\ndone\n"
+    restart: unless-stopped
+  prometheus:
+    image: 'prom/prometheus:latest'
+    volumes:
+      - 'prometheus-data:/prometheus'
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-lifecycle'
+    configs:
+      -
+        source: prometheus_config
+        target: /etc/prometheus/prometheus.yml
+    restart: unless-stopped
+    ports:
+      - '9090:9090'
+  postgres-exporter:
+    image: 'quay.io/prometheuscommunity/postgres-exporter:v0.15.0'
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - 'DATA_SOURCE_URI=${POSTGRES_EXPORTER_URI}'
+      - 'DATA_SOURCE_USER=${POSTGRES_EXPORTER_USER}'
+      - 'DATA_SOURCE_PASS=${POSTGRES_EXPORTER_PASS}'
+  pushgateway:
+    image: 'prom/pushgateway:v1.6.2'
+    restart: unless-stopped
+  grafana:
+    image: 'grafana/grafana:latest'
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=gaqno2026
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - 'GF_SERVER_ROOT_URL=https://grafana.gaqno.com.br/'
+      - GF_SERVER_DOMAIN=grafana.gaqno.com.br
+      - GF_AUTH_BASIC_ENABLED=true
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+    volumes:
+      - 'grafana-data-v3:/var/lib/grafana'
+    restart: unless-stopped
+    ports:
+      - '5678:3000'
+    depends_on:
+      - prometheus
+    configs:
+      -
+        source: grafana_datasource
+        target: /etc/grafana/provisioning/datasources/prometheus.yml
+      -
+        source: grafana_dashboards_yml
+        target: /etc/grafana/provisioning/dashboards/dashboards.yml
+      -
+        source: grafana_dashboard_gaqno_dashboard_front
+        target: /etc/grafana/dashboards/gaqno-dashboard-front.json
+      -
+        source: grafana_dashboard_gaqno_dashboard_backend
+        target: /etc/grafana/dashboards/gaqno-dashboard-backend.json
+      -
+        source: grafana_dashboard_gaqno_dashboard_devops
+        target: /etc/grafana/dashboards/gaqno-dashboard-devops.json
+      -
+        source: grafana_dashboard_gaqno_dashboard_dns_droppage
+        target: /etc/grafana/dashboards/gaqno-dashboard-dns-droppage.json
+configs:
+  prometheus_config:
+    content: "global:\n  scrape_interval: 15s\n  evaluation_interval: 15s\nscrape_configs:\n  - job_name: prometheus\n    static_configs:\n      - targets: [\"localhost:9090\"]\n  - job_name: node-exporter\n    static_configs:\n      - targets: [\"node-exporter:9100\"]\n  - job_name: cadvisor\n    static_configs:\n      - targets: [\"cadvisor:8080\"]\n  - job_name: postgres-exporter\n    static_configs:\n      - targets: [\"postgres-exporter:9187\"]\n  - job_name: pushgateway\n    honor_labels: true\n    static_configs:\n      - targets: [\"pushgateway:9091\"]\n"
+  grafana_datasource:
+    content: "apiVersion: 1\ndatasources:\n  - name: Prometheus\n    type: prometheus\n    access: proxy\n    url: http://prometheus:9090\n    isDefault: true\n    editable: true\n"
+  grafana_dashboards_yml:
+    content: |
+      ---
+      apiVersion: 1
+      providers:
+        - name: Gaqno Monitoring
+          orgId: 1
+          folder: Gaqno
+          folderUid: gaqno
+          type: file
+          disableDeletion: false
+          updateIntervalSeconds: 30
+          allowUiUpdates: true
+          options:
+            path: /etc/grafana/dashboards
+      ---
+  grafana_dashboard_gaqno_dashboard_front:
+    content: |
+      {
+        "annotations": { "list": [] },
+        "editable": true,
+        "fiscalYearStartMonth": 0,
+        "graphTooltip": 0,
+        "id": null,
+        "links": [
+          { "title": "Services overview", "url": "/d/services-overview", "type": "dashboard" },
+          { "title": "Backend", "url": "/d/gaqno-dashboard-backend", "type": "dashboard" },
+          { "title": "DevOps", "url": "/d/gaqno-dashboard-devops", "type": "dashboard" },
+          { "title": "DNS droppage", "url": "/d/gaqno-dns-droppage", "type": "dashboard" }
+        ],
+        "liveNow": false,
+        "panels": [
+          {
+            "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
+            "id": 0,
+            "options": {
+              "content": "**Front** — UX, Core Web Vitals, erros e negócio. Dados atuais: Prometheus (4xx/5xx). LCP, RUM e negócio exigem Sentry/OpenTelemetry/analytics.",
+              "mode": "markdown"
+            },
+            "title": "",
+            "type": "text"
+          },
+          {
+            "collapsed": false,
+            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 2 },
+            "id": 10,
+            "panels": [],
+            "title": "Linha 1 — Saúde geral",
+            "type": "row"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "description": "Meta: baixo. 4xx+5xx em *-ui.",
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "thresholds" },
+                "mappings": [],
+                "max": 100,
+                "min": 0,
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 1}, {"color": "red", "value": 5}] },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 5, "w": 4, "x": 0, "y": 3 },
+            "id": 11,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+              "textMode": "auto"
+            },
+            "pluginVersion": "10.2.0",
+            "targets": [
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "100 * (sum(rate(http_requests_total{job=~\".*-ui\",status=~\"[45]..\"}[5m])) / sum(rate(http_requests_total{job=~\".*-ui\"}[5m])))",
+                "legendFormat": "Error %",
+                "refId": "A"
+              }
+            ],
+            "title": "Error rate %",
+            "type": "stat"
+          },
+          {
+            "gridPos": { "h": 5, "w": 4, "x": 4, "y": 3 },
+            "id": 12,
+            "options": {
+              "content": "**LCP P75**\n\nMeta: **< 2.5s**\n\nRequer: **RUM** (Sentry, OpenTelemetry browser, Datadog RUM). Envie `largest-contentful-paint` e agregue P75 no backend.",
+              "mode": "markdown"
+            },
+            "title": "LCP P75 (placeholder)",
+            "type": "text"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "description": "Quando existir http_request_duration_seconds_bucket nos jobs *-ui ou *-service.",
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "thresholds" },
+                "mappings": [],
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 500}, {"color": "red", "value": 2000}] },
+                "unit": "ms"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 5, "w": 4, "x": 8, "y": 3 },
+            "id": 13,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+              "textMode": "auto"
+            },
+            "pluginVersion": "10.2.0",
+            "targets": [
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=~\".*-ui\"}[5m])) by (le)) * 1000",
+                "legendFormat": "P95",
+                "refId": "A"
+              }
+            ],
+            "title": "API latência P95 (ms)",
+            "type": "stat"
+          },
+          {
+            "gridPos": { "h": 5, "w": 4, "x": 12, "y": 3 },
+            "id": 14,
+            "options": {
+              "content": "**Usuários ativos**\n\nDAU / MAU.\n\nRequer: **analytics** (GA, Mixpanel, PostHog) ou backend de sessões exportando para Prometheus/Loki.",
+              "mode": "markdown"
+            },
+            "title": "Usuários ativos (placeholder)",
+            "type": "text"
+          },
+          {
+            "gridPos": { "h": 5, "w": 4, "x": 16, "y": 3 },
+            "id": 15,
+            "options": {
+              "content": "**Sessões com erro %**\n\nMeta: baixo.\n\nRequer: **RUM** (Sentry, Datadog RUM, OpenTelemetry) contando sessões com ≥1 erro / total de sessões.",
+              "mode": "markdown"
+            },
+            "title": "Sessões com erro % (placeholder)",
+            "type": "text"
+          },
+          {
+            "collapsed": false,
+            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 8 },
+            "id": 20,
+            "panels": [],
+            "title": "Linha 2 — Performance",
+            "type": "row"
+          },
+          {
+            "gridPos": { "h": 5, "w": 8, "x": 0, "y": 9 },
+            "id": 21,
+            "options": {
+              "content": "**Core Web Vitals**\n\n- **LCP** < 2.5s\n- **INP/FID** < 200ms\n- **CLS** < 0.1\n\nRequer: RUM (Sentry, OpenTelemetry). Visualize P50/P75/P95 e evolução no tempo.",
+              "mode": "markdown"
+            },
+            "title": "CWV (placeholder)",
+            "type": "text"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                "mappings": [],
+                "unit": "ms"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 8, "w": 8, "x": 8, "y": 9 },
+            "id": 22,
+            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+            "targets": [
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket{job=~\".*-ui\"}[5m])) by (le, job)) * 1000",
+                "legendFormat": "P50 {{job}}",
+                "refId": "A"
+              },
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=~\".*-ui\"}[5m])) by (le, job)) * 1000",
+                "legendFormat": "P95 {{job}}",
+                "refId": "B"
+              }
+            ],
+            "title": "Latência API (P50 / P95) por app",
+            "type": "timeseries"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "description": "Bundle size: total dos dist/ dos *-ui (Vite), enviado no CI para Pushgateway. Tempo de download: requer RUM (resource timing); exporte para Prometheus ou Loki.",
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "thresholds" },
+                "mappings": [],
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 50}, {"color": "red", "value": 100}] },
+                "unit": "megabytes"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 5, "w": 8, "x": 16, "y": 9 },
+            "id": 23,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+              "textMode": "auto"
+            },
+            "pluginVersion": "10.2.0",
+            "targets": [
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "sum(frontend_bundle_size_bytes{job=\"frontend-bundle\"}) / 1024 / 1024",
+                "legendFormat": "Total MB",
+                "refId": "A"
+              }
+            ],
+            "title": "Bundle size (Vite total)",
+            "type": "stat"
+          },
+          {
+            "collapsed": false,
+            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 17 },
+            "id": 30,
+            "panels": [],
+            "title": "Linha 3 — Erros",
+            "type": "row"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                "mappings": []
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 8, "w": 12, "x": 0, "y": 18 },
+            "id": 31,
+            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+            "targets": [
+              { "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{job=~\".*-ui\",status=~\"4..\"}[5m])) by (job)", "legendFormat": "4xx {{job}}", "refId": "A" },
+              { "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{job=~\".*-ui\",status=~\"5..\"}[5m])) by (job)", "legendFormat": "5xx {{job}}", "refId": "B" }
+            ],
+            "title": "4xx / 5xx por app (frontend)",
+            "type": "timeseries"
+          },
+          {
+            "gridPos": { "h": 5, "w": 6, "x": 12, "y": 18 },
+            "id": 32,
+            "options": {
+              "content": "**Top erros JS**\n\nRequer: **Sentry** ou RUM. Agrupe por stack trace e exiba no Grafana via Sentry data source ou Loki.",
+              "mode": "markdown"
+            },
+            "title": "Erros JS (placeholder)",
+            "type": "text"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "description": "5xx nos backends que o front chama.",
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                "mappings": []
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 8, "w": 6, "x": 18, "y": 18 },
+            "id": 33,
+            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+            "targets": [
+              { "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{job=~\".*-service\",status=~\"5..\"}[5m])) by (job)", "legendFormat": "{{job}}", "refId": "A" }
+            ],
+            "title": "5xx backend",
+            "type": "timeseries"
+          },
+          {
+            "gridPos": { "h": 4, "w": 12, "x": 12, "y": 23 },
+            "id": 34,
+            "options": {
+              "content": "**Erros por navegador / dispositivo** — Sentry ou RUM. **Sessões com erro %** — RUM.",
+              "mode": "markdown"
+            },
+            "title": "Erros por browser (placeholder)",
+            "type": "text"
+          },
+          {
+            "collapsed": false,
+            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 27 },
+            "id": 40,
+            "panels": [],
+            "title": "Linha 4 — Negócio",
+            "type": "row"
+          },
+          {
+            "gridPos": { "h": 6, "w": 8, "x": 0, "y": 28 },
+            "id": 41,
+            "options": {
+              "content": "**Conversão principal**\n\nRequer: analytics (GA, PostHog, Mixpanel) ou eventos no backend exportados para Grafana.",
+              "mode": "markdown"
+            },
+            "title": "Conversão (placeholder)",
+            "type": "text"
+          },
+          {
+            "gridPos": { "h": 6, "w": 8, "x": 8, "y": 28 },
+            "id": 42,
+            "options": {
+              "content": "**Checkout / carrinho**\n\nAbandono, taxa de erro no checkout. Fonte: analytics ou backend.",
+              "mode": "markdown"
+            },
+            "title": "Checkout (placeholder)",
+            "type": "text"
+          },
+          {
+            "gridPos": { "h": 6, "w": 8, "x": 16, "y": 28 },
+            "id": 43,
+            "options": {
+              "content": "**Funil de navegação**\n\nPassos até conversão. Fonte: analytics ou eventos.",
+              "mode": "markdown"
+            },
+            "title": "Funil (placeholder)",
+            "type": "text"
+          }
+        ],
+        "refresh": "30s",
+        "schemaVersion": 38,
+        "style": "dark",
+        "tags": ["gaqno", "front"],
+        "templating": { "list": [] },
+        "time": { "from": "now-1h", "to": "now" },
+        "timepicker": {},
+        "timezone": "",
+        "title": "Gaqno — Front",
+        "uid": "gaqno-dashboard-front",
+        "meta": { "grafana.app/saved-from-ui": false },
+        "version": 2,
+        "weekStart": ""
+      }
+  grafana_dashboard_gaqno_dashboard_backend:
+    content: |
+      {
+        "annotations": { "list": [] },
+        "editable": true,
+        "fiscalYearStartMonth": 0,
+        "graphTooltip": 0,
+        "id": null,
+        "links": [
+          { "title": "Services overview", "url": "/d/services-overview", "type": "dashboard" },
+          { "title": "Front", "url": "/d/gaqno-dashboard-front", "type": "dashboard" },
+          { "title": "DevOps", "url": "/d/gaqno-dashboard-devops", "type": "dashboard" },
+          { "title": "DNS droppage", "url": "/d/gaqno-dns-droppage", "type": "dashboard" }
+        ],
+        "liveNow": false,
+        "panels": [
+          {
+            "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
+            "id": 0,
+            "options": {
+              "content": "**Backend** — Golden Signals (latência, tráfego, erros, saturação) + Banco + Infra + Deploy. Dados atuais: Prometheus (*-service). Latência por endpoint/versão, DB e K8s exigem métricas adicionais.",
+              "mode": "markdown"
+            },
+            "title": "",
+            "type": "text"
+          },
+          {
+            "collapsed": false,
+            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 2 },
+            "id": 10,
+            "panels": [],
+            "title": "Linha 1 — Saúde geral",
+            "type": "row"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "description": "5xx > 1% = alerta. 4xx+5xx em *-service.",
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "thresholds" },
+                "mappings": [],
+                "max": 100,
+                "min": 0,
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 1}, {"color": "red", "value": 5}] },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 5, "w": 4, "x": 0, "y": 3 },
+            "id": 11,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+              "textMode": "auto"
+            },
+            "pluginVersion": "10.2.0",
+            "targets": [
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "100 * (sum(rate(http_requests_total{job=~\".*-service\",status=~\"[45]..\"}[5m])) / sum(rate(http_requests_total{job=~\".*-service\"}[5m])))",
+                "legendFormat": "Error %",
+                "refId": "A"
+              }
+            ],
+            "title": "Error rate %",
+            "type": "stat"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "description": "Quando existir http_request_duration_seconds_bucket nos *-service.",
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "thresholds" },
+                "mappings": [],
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 500}, {"color": "red", "value": 2000}] },
+                "unit": "ms"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 5, "w": 4, "x": 4, "y": 3 },
+            "id": 12,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+              "textMode": "auto"
+            },
+            "pluginVersion": "10.2.0",
+            "targets": [
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=~\".*-service\"}[5m])) by (le)) * 1000",
+                "legendFormat": "P95",
+                "refId": "A"
+              }
+            ],
+            "title": "Latência P95 (ms)",
+            "type": "stat"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "thresholds" },
+                "mappings": [],
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}] }
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 5, "w": 4, "x": 8, "y": 3 },
+            "id": 13,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+              "textMode": "auto"
+            },
+            "pluginVersion": "10.2.0",
+            "targets": [
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "sum(rate(http_requests_total{job=~\".*-service\"}[5m]))",
+                "legendFormat": "RPS",
+                "refId": "A"
+              }
+            ],
+            "title": "RPS",
+            "type": "stat"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "description": "Containers (cAdvisor). Filtro por nome; ajuste name=~ para seus serviços.",
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "thresholds" },
+                "mappings": [],
+                "max": 100,
+                "min": 0,
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 70}, {"color": "red", "value": 90}] },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 5, "w": 4, "x": 12, "y": 3 },
+            "id": 14,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+              "textMode": "auto"
+            },
+            "pluginVersion": "10.2.0",
+            "targets": [
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "avg(rate(container_cpu_usage_seconds_total{name=~\".+\"}[5m])) by () * 100",
+                "legendFormat": "CPU",
+                "refId": "A"
+              }
+            ],
+            "title": "CPU (containers avg)",
+            "type": "stat"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "thresholds" },
+                "mappings": [],
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}] },
+                "unit": "bytes"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 5, "w": 4, "x": 16, "y": 3 },
+            "id": 15,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+              "textMode": "auto"
+            },
+            "pluginVersion": "10.2.0",
+            "targets": [
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "sum(container_memory_usage_bytes{name=~\".+\"})",
+                "legendFormat": "Mem",
+                "refId": "A"
+              }
+            ],
+            "title": "Memória (containers)",
+            "type": "stat"
+          },
+          {
+            "collapsed": false,
+            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 8 },
+            "id": 20,
+            "panels": [],
+            "title": "Linha 2 — Latência detalhada",
+            "type": "row"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                "mappings": [],
+                "unit": "ms"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 8, "w": 12, "x": 0, "y": 9 },
+            "id": 21,
+            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+            "targets": [
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket{job=~\".*-service\"}[5m])) by (le, job)) * 1000",
+                "legendFormat": "P50 {{job}}",
+                "refId": "A"
+              },
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=~\".*-service\"}[5m])) by (le, job)) * 1000",
+                "legendFormat": "P95 {{job}}",
+                "refId": "B"
+              }
+            ],
+            "title": "Latência por serviço (P50 / P95)",
+            "type": "timeseries"
+          },
+          {
+            "gridPos": { "h": 5, "w": 6, "x": 12, "y": 9 },
+            "id": 22,
+            "options": {
+              "content": "**Latência por endpoint**\n\nTop endpoints lentos. Requer: métricas com label `path` ou `route` (ex.: NestJS Prometheus com path).",
+              "mode": "markdown"
+            },
+            "title": "Por endpoint (placeholder)",
+            "type": "text"
+          },
+          {
+            "gridPos": { "h": 5, "w": 6, "x": 18, "y": 9 },
+            "id": 23,
+            "options": {
+              "content": "**Latência por versão**\n\nCorrelacionar release com latência. Requer: label `version` no histogram ou em http_requests_total.",
+              "mode": "markdown"
+            },
+            "title": "Por versão (placeholder)",
+            "type": "text"
+          },
+          {
+            "collapsed": false,
+            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 17 },
+            "id": 30,
+            "panels": [],
+            "title": "Linha 3 — Erros",
+            "type": "row"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                "mappings": []
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 8, "w": 12, "x": 0, "y": 18 },
+            "id": 31,
+            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+            "targets": [
+              { "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{job=~\".*-service\",status=~\"5..\"}[5m])) by (job)", "legendFormat": "{{job}}", "refId": "A" }
+            ],
+            "title": "5xx por serviço",
+            "type": "timeseries"
+          },
+          {
+            "gridPos": { "h": 5, "w": 6, "x": 12, "y": 18 },
+            "id": 32,
+            "options": {
+              "content": "**Exceptions por tipo**\n\nRequer: métricas de exceção (ex.: NestJS exception filter exportando contador por tipo) ou logs em Loki.",
+              "mode": "markdown"
+            },
+            "title": "Exceptions (placeholder)",
+            "type": "text"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "description": "Por job. Com label path/route: agrupe por path para top endpoints.",
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                "mappings": []
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 8, "w": 6, "x": 18, "y": 18 },
+            "id": 33,
+            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+            "targets": [
+              { "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{job=~\".*-service\",status=~\"[45]..\"}[5m])) by (job)", "legendFormat": "{{job}}", "refId": "A" }
+            ],
+            "title": "Top serviços com erro",
+            "type": "timeseries"
+          },
+          {
+            "collapsed": false,
+            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 26 },
+            "id": 40,
+            "panels": [],
+            "title": "Linha 4 — Banco",
+            "type": "row"
+          },
+          {
+            "gridPos": { "h": 6, "w": 8, "x": 0, "y": 27 },
+            "id": 41,
+            "datasource": { "type": "prometheus" },
+            "description": "Maior duração de transação ativa (proxy para slow queries). Requer pg_stat_statements no Postgres para métricas por query.",
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                "mappings": [],
+                "unit": "s"
+              },
+              "overrides": []
+            },
+            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+            "targets": [
+              { "datasource": { "type": "prometheus" }, "expr": "pg_stat_activity_max_tx_duration_seconds{job=\"postgres-exporter\"}", "legendFormat": "{{datname}}", "refId": "A" }
+            ],
+            "title": "Longest running tx (s)",
+            "type": "timeseries"
+          },
+          {
+            "gridPos": { "h": 6, "w": 8, "x": 8, "y": 27 },
+            "id": 42,
+            "datasource": { "type": "prometheus" },
+            "description": "Conexões ativas por database. Fonte: postgres_exporter.",
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                "mappings": []
+              },
+              "overrides": []
+            },
+            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+            "targets": [
+              { "datasource": { "type": "prometheus" }, "expr": "pg_stat_database_numbackends{job=\"postgres-exporter\"}", "legendFormat": "{{datname}}", "refId": "A" }
+            ],
+            "title": "Conexões por database",
+            "type": "timeseries"
+          },
+          {
+            "gridPos": { "h": 6, "w": 8, "x": 16, "y": 27 },
+            "id": 43,
+            "datasource": { "type": "prometheus" },
+            "description": "Só existe se houver réplicas. Fonte: postgres_exporter.",
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                "mappings": [],
+                "unit": "s"
+              },
+              "overrides": []
+            },
+            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+            "targets": [
+              { "datasource": { "type": "prometheus" }, "expr": "pg_replication_lag_in_seconds{job=\"postgres-exporter\"}", "legendFormat": "lag", "refId": "A" }
+            ],
+            "title": "Replication lag (s)",
+            "type": "timeseries"
+          },
+          {
+            "collapsed": false,
+            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 33 },
+            "id": 50,
+            "panels": [],
+            "title": "Linha 5 — Infra",
+            "type": "row"
+          },
+          {
+            "gridPos": { "h": 5, "w": 6, "x": 0, "y": 34 },
+            "id": 51,
+            "options": {
+              "content": "**Pods running**\n\nRequer: Kubernetes + kube-state-metrics ou Prometheus Operator. Métricas: kube_pod_status_ready.",
+              "mode": "markdown"
+            },
+            "title": "Pods (placeholder)",
+            "type": "text"
+          },
+          {
+            "gridPos": { "h": 5, "w": 6, "x": 6, "y": 34 },
+            "id": 52,
+            "options": {
+              "content": "**Restarts / OOMKills**\n\nRequer: kube-state-metrics (kube_pod_container_status_restarts_total) e eventos OOMKilled.",
+              "mode": "markdown"
+            },
+            "title": "Restart (placeholder)",
+            "type": "text"
+          },
+          {
+            "gridPos": { "h": 5, "w": 6, "x": 12, "y": 34 },
+            "id": 53,
+            "options": {
+              "content": "**HPA scaling**\n\nRequer: K8s HPA + kube-state-metrics (horizontalpodautoscaler_status_*).",
+              "mode": "markdown"
+            },
+            "title": "HPA (placeholder)",
+            "type": "text"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                "mappings": [],
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 8, "w": 6, "x": 18, "y": 34 },
+            "id": 54,
+            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+            "targets": [
+              { "datasource": { "type": "prometheus" }, "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\".+\"}[5m])) by (name) * 100", "legendFormat": "{{name}}", "refId": "A" }
+            ],
+            "title": "CPU por container (cAdvisor)",
+            "type": "timeseries"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                "mappings": [],
+                "unit": "bytes"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 8, "w": 12, "x": 0, "y": 39 },
+            "id": 55,
+            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+            "targets": [
+              { "datasource": { "type": "prometheus" }, "expr": "container_memory_usage_bytes{name=~\".+\"}", "legendFormat": "{{name}}", "refId": "A" }
+            ],
+            "title": "Memória por container (cAdvisor)",
+            "type": "timeseries"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                "mappings": []
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 8, "w": 12, "x": 12, "y": 39 },
+            "id": 56,
+            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+            "targets": [
+              { "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{job=~\".*-service\"}[5m])) by (job)", "legendFormat": "{{job}}", "refId": "A" }
+            ],
+            "title": "RPS por serviço",
+            "type": "timeseries"
+          }
+        ],
+        "refresh": "30s",
+        "schemaVersion": 38,
+        "style": "dark",
+        "tags": ["gaqno", "backend"],
+        "templating": { "list": [] },
+        "time": { "from": "now-1h", "to": "now" },
+        "timepicker": {},
+        "timezone": "",
+        "title": "Gaqno — Backend",
+        "uid": "gaqno-dashboard-backend",
+        "meta": { "grafana.app/saved-from-ui": false },
+        "version": 2,
+        "weekStart": ""
+      }
+  grafana_dashboard_gaqno_dashboard_devops:
+    content: |
+      {
+        "annotations": { "list": [] },
+        "editable": true,
+        "fiscalYearStartMonth": 0,
+        "graphTooltip": 0,
+        "id": null,
+        "links": [
+          { "title": "Services overview", "url": "/d/services-overview", "type": "dashboard" },
+          { "title": "Front", "url": "/d/gaqno-dashboard-front", "type": "dashboard" },
+          { "title": "Backend", "url": "/d/gaqno-dashboard-backend", "type": "dashboard" },
+          { "title": "DNS droppage", "url": "/d/gaqno-dns-droppage", "type": "dashboard" }
+        ],
+        "liveNow": false,
+        "panels": [
+          {
+            "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
+            "id": 0,
+            "options": {
+              "content": "**DevOps** — DORA, CI/CD, Infra, Segurança, Custo. Dados atuais: Prometheus (node-exporter, cAdvisor). DORA/CI/CD/Segurança/Custo exigem integrações (GitHub API, Coolify, scanners).",
+              "mode": "markdown"
+            },
+            "title": "",
+            "type": "text"
+          },
+          {
+            "collapsed": false,
+            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 2 },
+            "id": 10,
+            "panels": [],
+            "title": "Linha 1 — DORA",
+            "type": "row"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "description": "Deploys via CD workflow (GitHub Actions) nos últimos 7 dias. Requer secret PROMETHEUS_PUSHGATEWAY_URL e Pushgateway no stack.",
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "thresholds" },
+                "mappings": [],
+                "thresholds": { "mode": "absolute", "steps": [{"color": "blue", "value": null}] },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 5, "w": 4, "x": 0, "y": 3 },
+            "id": 11,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+              "textMode": "auto"
+            },
+            "pluginVersion": "10.2.0",
+            "targets": [
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "cicd_deployments_last_7d{job=\"cd\"}",
+                "legendFormat": "Deployments (7d)",
+                "refId": "A"
+              }
+            ],
+            "title": "Deployment frequency (7d)",
+            "type": "stat"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "description": "Tempo do último commit até o deploy (CD). Requer Pushgateway e secret PROMETHEUS_PUSHGATEWAY_URL.",
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "thresholds" },
+                "mappings": [],
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 1}, {"color": "red", "value": 24}] },
+                "unit": "h"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 5, "w": 4, "x": 4, "y": 3 },
+            "id": 12,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+              "textMode": "auto"
+            },
+            "pluginVersion": "10.2.0",
+            "targets": [
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "cicd_deployment_lead_time_seconds{job=\"cd\"} / 3600",
+                "legendFormat": "Lead time (h)",
+                "refId": "A"
+              }
+            ],
+            "title": "Lead time (commit → deploy)",
+            "type": "stat"
+          },
+          {
+            "gridPos": { "h": 5, "w": 4, "x": 8, "y": 3 },
+            "id": 13,
+            "options": {
+              "content": "**Change failure rate**\n\n% deploys que causaram incidente; % com rollback.\n\nRequer: correlação deploy ↔ incidentes (PagerDuty, custom metrics).",
+              "mode": "markdown"
+            },
+            "title": "Change failure rate (placeholder)",
+            "type": "text"
+          },
+          {
+            "gridPos": { "h": 5, "w": 4, "x": 12, "y": 3 },
+            "id": 14,
+            "options": {
+              "content": "**MTTR**\n\nTempo médio para resolver incidentes; tempo para rollback.\n\nRequer: dados de incidentes (PagerDuty, Opsgenie, Jira) + timestamps de resolução.",
+              "mode": "markdown"
+            },
+            "title": "MTTR (placeholder)",
+            "type": "text"
+          },
+          {
+            "gridPos": { "h": 5, "w": 8, "x": 16, "y": 3 },
+            "id": 15,
+            "options": {
+              "content": "Visual ideal DORA: gráficos semanais + comparação mensal. Exporte métricas para Prometheus ou use data source Grafana (ex.: GitHub).",
+              "mode": "markdown"
+            },
+            "title": "DORA — fontes",
+            "type": "text"
+          },
+          {
+            "collapsed": false,
+            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 8 },
+            "id": 20,
+            "panels": [],
+            "title": "Linha 2 — CI/CD",
+            "type": "row"
+          },
+          {
+            "gridPos": { "h": 5, "w": 6, "x": 0, "y": 9 },
+            "id": 21,
+            "options": {
+              "content": "**Taxa de sucesso pipeline**\n\n% jobs concluídos com sucesso.\n\nRequer: GitHub Actions / GitLab CI / Jenkins API ou exporter (ex.: prometheus-github-actions-exporter).",
+              "mode": "markdown"
+            },
+            "title": "Sucesso pipeline (placeholder)",
+            "type": "text"
+          },
+          {
+            "gridPos": { "h": 5, "w": 6, "x": 6, "y": 9 },
+            "id": 22,
+            "options": {
+              "content": "**Tempo médio de build**\n\nDuração média dos jobs de build.\n\nRequer: métricas do CI (duração por workflow/job) exportadas para Prometheus.",
+              "mode": "markdown"
+            },
+            "title": "Tempo de build (placeholder)",
+            "type": "text"
+          },
+          {
+            "gridPos": { "h": 5, "w": 6, "x": 12, "y": 9 },
+            "id": 23,
+            "options": {
+              "content": "**Tempo médio de deploy**\n\nDo trigger até produção.\n\nRequer: Coolify/GitHub Deployments API ou pipeline exporter.",
+              "mode": "markdown"
+            },
+            "title": "Tempo de deploy (placeholder)",
+            "type": "text"
+          },
+          {
+            "gridPos": { "h": 5, "w": 6, "x": 18, "y": 9 },
+            "id": 24,
+            "options": {
+              "content": "**Qualidade:** cobertura, testes falhando, análise estática. Requer: relatórios do CI (coverage, lint) em artefatos ou Prometheus.",
+              "mode": "markdown"
+            },
+            "title": "Qualidade CI (placeholder)",
+            "type": "text"
+          },
+          {
+            "collapsed": false,
+            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 },
+            "id": 30,
+            "panels": [],
+            "title": "Linha 3 — Infra",
+            "type": "row"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "thresholds" },
+                "mappings": [],
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "red", "value": 1}] },
+                "decimals": 0,
+                "unit": "none"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 4, "w": 3, "x": 0, "y": 15 },
+            "id": 31,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+              "textMode": "auto"
+            },
+            "pluginVersion": "10.2.0",
+            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "count(up == 0)", "legendFormat": "Down", "refId": "A" }],
+            "title": "Targets down",
+            "type": "stat"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "thresholds" },
+                "mappings": [],
+                "max": 100,
+                "min": 0,
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 70}, {"color": "red", "value": 90}] },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 4, "w": 3, "x": 3, "y": 15 },
+            "id": 32,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+              "textMode": "auto"
+            },
+            "pluginVersion": "10.2.0",
+            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "100 * (1 - avg(irate(node_cpu_seconds_total{job=\"node-exporter\",mode=\"idle\"}[5m])) by (instance))", "legendFormat": "CPU", "refId": "A" }],
+            "title": "Host CPU %",
+            "type": "stat"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "thresholds" },
+                "mappings": [],
+                "max": 100,
+                "min": 0,
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 70}, {"color": "red", "value": 90}] },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 4, "w": 3, "x": 6, "y": 15 },
+            "id": 33,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+              "textMode": "auto"
+            },
+            "pluginVersion": "10.2.0",
+            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "100 * (1 - (node_memory_MemAvailable_bytes{job=\"node-exporter\"} / node_memory_MemTotal_bytes{job=\"node-exporter\"}))", "legendFormat": "Mem", "refId": "A" }],
+            "title": "Host Memory %",
+            "type": "stat"
+          },
+          {
+            "gridPos": { "h": 4, "w": 3, "x": 9, "y": 15 },
+            "id": 34,
+            "options": {
+              "content": "**Pods restart**\n\nRequer: K8s + kube-state-metrics (`kube_pod_container_status_restarts_total`).",
+              "mode": "markdown"
+            },
+            "title": "Pods restart (placeholder)",
+            "type": "text"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "thresholds" },
+                "mappings": [],
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}] },
+                "decimals": 0,
+                "unit": "none"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 4, "w": 3, "x": 12, "y": 15 },
+            "id": 35,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+              "textMode": "auto"
+            },
+            "pluginVersion": "10.2.0",
+            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "count(up == 1)", "legendFormat": "Up", "refId": "A" }],
+            "title": "Targets up",
+            "type": "stat"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "thresholds" },
+                "mappings": [],
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}] }
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 4, "w": 3, "x": 15, "y": 15 },
+            "id": 36,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+              "textMode": "auto"
+            },
+            "pluginVersion": "10.2.0",
+            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "sum(increase(prometheus_tsdb_head_samples_appended_total[1h]))", "legendFormat": "Samples", "refId": "A" }],
+            "title": "Prometheus samples (1h)",
+            "type": "stat"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                "mappings": [],
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 6, "w": 8, "x": 18, "y": 15 },
+            "id": 37,
+            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "100 * (1 - avg(irate(node_cpu_seconds_total{job=\"node-exporter\",mode=\"idle\"}[5m])) by (instance))", "legendFormat": "{{instance}}", "refId": "A" }],
+            "title": "Host CPU %",
+            "type": "timeseries"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                "mappings": [],
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 6, "w": 8, "x": 0, "y": 19 },
+            "id": 38,
+            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "100 * (1 - (node_memory_MemAvailable_bytes{job=\"node-exporter\"} / node_memory_MemTotal_bytes{job=\"node-exporter\"}))", "legendFormat": "{{instance}}", "refId": "A" }],
+            "title": "Host Memory %",
+            "type": "timeseries"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                "mappings": []
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 6, "w": 8, "x": 8, "y": 19 },
+            "id": 39,
+            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+            "targets": [
+              { "datasource": { "type": "prometheus" }, "expr": "node_load1{job=\"node-exporter\"}", "legendFormat": "1m", "refId": "A" },
+              { "datasource": { "type": "prometheus" }, "expr": "node_load5{job=\"node-exporter\"}", "legendFormat": "5m", "refId": "B" },
+              { "datasource": { "type": "prometheus" }, "expr": "node_load15{job=\"node-exporter\"}", "legendFormat": "15m", "refId": "C" }
+            ],
+            "title": "Host Load average",
+            "type": "timeseries"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                "mappings": []
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 6, "w": 8, "x": 16, "y": 19 },
+            "id": 40,
+            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "up", "legendFormat": "{{job}}", "refId": "A" }],
+            "title": "Scrape targets (1 = up)",
+            "type": "timeseries"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                "mappings": [],
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 8, "w": 12, "x": 0, "y": 25 },
+            "id": 41,
+            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\".+\"}[5m])) by (name) * 100", "legendFormat": "{{name}}", "refId": "A" }],
+            "title": "Containers — CPU % by name",
+            "type": "timeseries"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                "mappings": [],
+                "unit": "bytes"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 8, "w": 12, "x": 12, "y": 25 },
+            "id": 42,
+            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "container_memory_usage_bytes{name=~\".+\"}", "legendFormat": "{{name}}", "refId": "A" }],
+            "title": "Containers — Memory by name",
+            "type": "timeseries"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                "mappings": []
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 6, "w": 12, "x": 0, "y": 33 },
+            "id": 43,
+            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "scrape_duration_seconds", "legendFormat": "{{job}}", "refId": "A" }],
+            "title": "Scrape duration",
+            "type": "timeseries"
+          },
+          {
+            "collapsed": false,
+            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 39 },
+            "id": 44,
+            "panels": [],
+            "title": "Cloudflare Tunnel",
+            "type": "row"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "description": "Requires cloudflared run with --metrics <host>:60123 and Prometheus scrape job 'cloudflared'. See https://developers.cloudflare.com/cloudflare-one/tutorials/grafana/",
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "thresholds" },
+                "mappings": [],
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}] },
+                "unit": "reqps"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 4, "w": 6, "x": 0, "y": 40 },
+            "id": 45,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+              "textMode": "auto"
+            },
+            "pluginVersion": "10.2.0",
+            "targets": [
+              { "datasource": { "type": "prometheus" }, "expr": "sum(rate(cloudflared_tunnel_total_requests{job=\"cloudflared\"}[5m]))", "legendFormat": "req/s", "refId": "A" }
+            ],
+            "title": "Tunnel requests/s",
+            "type": "stat"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "thresholds" },
+                "mappings": [],
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "red", "value": 0.01}] },
+                "unit": "reqps"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 4, "w": 6, "x": 6, "y": 40 },
+            "id": 46,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+              "textMode": "auto"
+            },
+            "pluginVersion": "10.2.0",
+            "targets": [
+              { "datasource": { "type": "prometheus" }, "expr": "sum(rate(cloudflared_tunnel_request_errors{job=\"cloudflared\"}[5m]))", "legendFormat": "errors/s", "refId": "A" }
+            ],
+            "title": "Tunnel errors/s",
+            "type": "stat"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "thresholds" },
+                "mappings": [],
+                "thresholds": { "mode": "absolute", "steps": [{"color": "blue", "value": null}] },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 4, "w": 6, "x": 12, "y": 40 },
+            "id": 47,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+              "textMode": "auto"
+            },
+            "pluginVersion": "10.2.0",
+            "targets": [
+              { "datasource": { "type": "prometheus" }, "expr": "sum(cloudflared_tunnel_active_streams{job=\"cloudflared\"})", "legendFormat": "streams", "refId": "A" }
+            ],
+            "title": "Tunnel active streams",
+            "type": "stat"
+          },
+          {
+            "collapsed": false,
+            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 44 },
+            "id": 50,
+            "panels": [],
+            "title": "Linha 4 — Segurança",
+            "type": "row"
+          },
+          {
+            "gridPos": { "h": 5, "w": 8, "x": 0, "y": 45 },
+            "id": 51,
+            "options": {
+              "content": "**Vulnerabilidades**\n\nCríticas/altas abertas; por imagem. Requer: Trivy, Snyk, Dependabot ou similar exportando para Prometheus/Loki/Dashboard.",
+              "mode": "markdown"
+            },
+            "title": "Vulnerabilidades (placeholder)",
+            "type": "text"
+          },
+          {
+            "gridPos": { "h": 5, "w": 8, "x": 8, "y": 45 },
+            "id": 52,
+            "options": {
+              "content": "**Certificados**\n\nExpiração; renovação. Requer: cert-exporter, cron check ou alerting (ex.: Prometheus Blackbox + cert expiry).",
+              "mode": "markdown"
+            },
+            "title": "Certificados (placeholder)",
+            "type": "text"
+          },
+          {
+            "gridPos": { "h": 5, "w": 8, "x": 16, "y": 45 },
+            "id": 53,
+            "options": {
+              "content": "**Secrets / auth**\n\nSecrets expostos (scan); falhas de autenticação; tentativas negadas. Requer: auditoria logs ou scanners integrados.",
+              "mode": "markdown"
+            },
+            "title": "Secrets / auth (placeholder)",
+            "type": "text"
+          },
+          {
+            "collapsed": false,
+            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 50 },
+            "id": 60,
+            "panels": [],
+            "title": "Linha 5 — Custo",
+            "type": "row"
+          },
+          {
+            "gridPos": { "h": 5, "w": 12, "x": 0, "y": 51 },
+            "id": 61,
+            "options": {
+              "content": "**Gasto por ambiente**\n\nDev / staging / prod. Requer: cloud billing (AWS Cost Explorer, GCP Billing) ou FinOps tool (Kubecost, Infracost) com export para Grafana.",
+              "mode": "markdown"
+            },
+            "title": "Custo por ambiente (placeholder)",
+            "type": "text"
+          },
+          {
+            "gridPos": { "h": 5, "w": 12, "x": 12, "y": 51 },
+            "id": 62,
+            "options": {
+              "content": "**Custo por namespace / serviço / deploy** — Kubecost (K8s), tags de billing na cloud ou métricas custom (custo por deploy a partir do CI).",
+              "mode": "markdown"
+            },
+            "title": "Custo por namespace/serviço (placeholder)",
+            "type": "text"
+          }
+        ],
+        "refresh": "30s",
+        "schemaVersion": 38,
+        "style": "dark",
+        "tags": ["gaqno", "devops"],
+        "templating": { "list": [] },
+        "time": { "from": "now-1h", "to": "now" },
+        "timepicker": {},
+        "timezone": "",
+        "title": "Gaqno — DevOps",
+        "uid": "gaqno-dashboard-devops",
+        "meta": { "grafana.app/saved-from-ui": false },
+        "version": 2,
+        "weekStart": ""
+      }
+  grafana_dashboard_gaqno_dashboard_dns_droppage:
+    content: |
+      {
+        "__requires": [
+          { "type": "panel", "id": "stat", "name": "Stat", "version": "" },
+          { "type": "panel", "id": "table", "name": "Table", "version": "" },
+          { "type": "panel", "id": "timeseries", "name": "Time series", "version": "" },
+          { "type": "panel", "id": "text", "name": "Text", "version": "" },
+          { "type": "datasource", "id": "yesoreyeram-infinity-datasource", "name": "Infinity", "version": "" }
+        ],
+        "annotations": { "list": [] },
+        "editable": true,
+        "fiscalYearStartMonth": 0,
+        "graphTooltip": 1,
+        "id": null,
+        "links": [
+          { "title": "Services overview", "url": "/d/services-overview", "type": "dashboard" },
+          { "title": "Front", "url": "/d/gaqno-dashboard-front", "type": "dashboard" },
+          { "title": "Backend", "url": "/d/gaqno-dashboard-backend", "type": "dashboard" },
+          { "title": "DevOps", "url": "/d/gaqno-dashboard-devops", "type": "dashboard" }
+        ],
+        "liveNow": false,
+        "panels": [
+          {
+            "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
+            "id": 1,
+            "options": {
+              "content": "**DNS droppage** — Queries that did not return **NOERROR** (e.g. NXDOMAIN, SERVFAIL, REFUSED). Data from Cloudflare DNS Analytics via GraphQL.\n\n**Setup:** 1) Install plugin **Infinity**. 2) Add datasource: URL allowed host `https://api.cloudflare.com/client/v4/graphql`, Auth = Bearer token (Cloudflare API token with Zone > Analytics Read). 3) Set variable **zone_id** to your Zone ID (Cloudflare Dashboard → zone → Overview, right sidebar).",
+              "mode": "markdown"
+            },
+            "title": "",
+            "type": "text"
+          },
+          {
+            "collapsed": false,
+            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 2 },
+            "id": 2,
+            "panels": [],
+            "title": "DNS droppage (Cloudflare)",
+            "type": "row"
+          },
+          {
+            "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${infinity_datasource}" },
+            "description": "Total DNS queries with response code other than NOERROR (errors, NXDOMAIN, SERVFAIL, etc.).",
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "thresholds" },
+                "mappings": [],
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 1}, {"color": "red", "value": 100}] },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 6, "w": 6, "x": 0, "y": 3 },
+            "id": 3,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "reduceOptions": { "calcs": ["sum"], "fields": "", "values": true },
+              "textMode": "auto"
+            },
+            "pluginVersion": "10.2.0",
+            "targets": [
+              {
+                "columns": [
+                  { "selector": "dimensions.responseCode", "text": "responseCode", "type": "string" },
+                  { "selector": "count", "text": "count", "type": "number" }
+                ],
+                "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${infinity_datasource}" },
+                "format": "table",
+                "refId": "A",
+                "root_selector": "data.viewer.zones[0].dnsAnalyticsAdaptiveGroups",
+                "source": "url",
+                "type": "graphql",
+                "url": "https://api.cloudflare.com/client/v4/graphql",
+                "url_options": {
+                  "body_content_type": "application/json",
+                  "body_graphql_query": "query Viewer {\n  viewer {\n    zones(filter: { zoneTag: \"${zone_id}\" }) {\n      zoneTag\n      dnsAnalyticsAdaptiveGroups(\n        filter: {\n          datetimeMinute_geq: \"${__from:date:YYYY-MM-DDTHH:mm:ssZ}\",\n          datetimeMinute_leq: \"${__to:date:YYYY-MM-DDTHH:mm:ssZ}\"\n        }\n        limit: 100\n        orderBy: [count_DESC]\n      ) {\n        count\n        dimensions { responseCode }\n      }\n    }\n  }\n}\n",
+                  "body_type": "graphql",
+                  "method": "POST"
+                }
+              }
+            ],
+            "title": "DNS droppage (non-NOERROR count)",
+            "transformations": [
+              { "id": "filterByValue", "options": { "filters": [{ "fieldName": "dimensions.responseCode", "config": { "id": "exclude", "options": { "value": "NOERROR" } }, "operator": "!=" }], "match": "all" } },
+              { "id": "reduce", "options": { "reducers": ["sum"], "fields": "count" } }
+            ],
+            "type": "stat"
+          },
+          {
+            "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${infinity_datasource}" },
+            "description": "All DNS queries in the selected time range.",
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "thresholds" },
+                "mappings": [],
+                "thresholds": { "mode": "absolute", "steps": [{"color": "blue", "value": null}] },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 6, "w": 6, "x": 6, "y": 3 },
+            "id": 4,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "reduceOptions": { "calcs": ["sum"], "fields": "", "values": true },
+              "textMode": "auto"
+            },
+            "pluginVersion": "10.2.0",
+            "targets": [
+              {
+                "columns": [
+                  { "selector": "count", "text": "Total", "type": "number" }
+                ],
+                "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${infinity_datasource}" },
+                "format": "table",
+                "refId": "A",
+                "root_selector": "data.viewer.zones[0].dnsAnalyticsAdaptiveGroups",
+                "source": "url",
+                "type": "graphql",
+                "url": "https://api.cloudflare.com/client/v4/graphql",
+                "url_options": {
+                  "body_content_type": "application/json",
+                  "body_graphql_query": "query Viewer {\n  viewer {\n    zones(filter: { zoneTag: \"${zone_id}\" }) {\n      zoneTag\n      dnsAnalyticsAdaptiveGroups(\n        filter: {\n          datetimeHour_geq: \"${__from:date:YYYY-MM-DDTHH:mm:ssZ}\",\n          datetimeHour_leq: \"${__to:date:YYYY-MM-DDTHH:mm:ssZ}\"\n        }\n        limit: 5000\n      ) {\n        count\n      }\n    }\n  }\n}\n",
+                  "body_type": "graphql",
+                  "method": "POST"
+                }
+              }
+            ],
+            "title": "Total DNS queries",
+            "transformations": [
+              { "id": "reduce", "options": { "reducers": ["sum"], "fields": "count" } }
+            ],
+            "type": "stat"
+          },
+          {
+            "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${infinity_datasource}" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "align": "auto", "cellOptions": { "type": "auto" }, "inspect": false },
+                "mappings": [],
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}] },
+                "unit": "short"
+              },
+              "overrides": [
+                { "matcher": { "id": "byName", "options": "count" }, "properties": [{ "id": "custom.width", "value": 120 }] }
+              ]
+            },
+            "gridPos": { "h": 8, "w": 12, "x": 12, "y": 3 },
+            "id": 5,
+            "options": { "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": true }, "showHeader": true },
+            "pluginVersion": "10.2.0",
+            "targets": [
+              {
+                "columns": [
+                  { "selector": "dimensions.responseCode", "text": "Response code", "type": "string" },
+                  { "selector": "count", "text": "Count", "type": "number" }
+                ],
+                "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${infinity_datasource}" },
+                "format": "table",
+                "refId": "A",
+                "root_selector": "data.viewer.zones[0].dnsAnalyticsAdaptiveGroups",
+                "source": "url",
+                "type": "graphql",
+                "url": "https://api.cloudflare.com/client/v4/graphql",
+                "url_options": {
+                  "body_content_type": "application/json",
+                  "body_graphql_query": "query Viewer {\n  viewer {\n    zones(filter: { zoneTag: \"${zone_id}\" }) {\n      zoneTag\n      dnsAnalyticsAdaptiveGroups(\n        filter: {\n          datetimeMinute_geq: \"${__from:date:YYYY-MM-DDTHH:mm:ssZ}\",\n          datetimeMinute_leq: \"${__to:date:YYYY-MM-DDTHH:mm:ssZ}\"\n        }\n        limit: 20\n        orderBy: [count_DESC]\n      ) {\n        count\n        dimensions { responseCode }\n      }\n    }\n  }\n}\n",
+                  "body_type": "graphql",
+                  "method": "POST"
+                }
+              }
+            ],
+            "title": "Queries by response code",
+            "type": "table"
+          },
+          {
+            "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${infinity_datasource}" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisPlacement": "auto",
+                  "drawStyle": "line",
+                  "fillOpacity": 10,
+                  "gradientMode": "none",
+                  "lineInterpolation": "smooth",
+                  "lineWidth": 2,
+                  "pointSize": 5,
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": { "group": "A", "mode": "none" },
+                  "thresholdsStyle": { "mode": "off" }
+                },
+                "mappings": [],
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}] },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 8, "w": 24, "x": 0, "y": 11 },
+            "id": 6,
+            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+            "pluginVersion": "10.2.0",
+            "targets": [
+              {
+                "columns": [
+                  { "selector": "count", "text": "Queries", "type": "number" },
+                  { "selector": "dimensions.datetimeFifteenMinutes", "text": "Time", "type": "timestamp" },
+                  { "selector": "dimensions.responseCode", "text": "response_code", "type": "string" }
+                ],
+                "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${infinity_datasource}" },
+                "format": "table",
+                "refId": "A",
+                "root_selector": "data.viewer.zones[0].dnsAnalyticsAdaptiveGroups",
+                "source": "url",
+                "type": "graphql",
+                "url": "https://api.cloudflare.com/client/v4/graphql",
+                "url_options": {
+                  "body_content_type": "application/json",
+                  "body_graphql_query": "query Viewer {\n  viewer {\n    zones(filter: { zoneTag: \"${zone_id}\" }) {\n      zoneTag\n      dnsAnalyticsAdaptiveGroups(\n        filter: {\n          datetimeMinute_geq: \"${__from:date:YYYY-MM-DDTHH:mm:ssZ}\",\n          datetimeMinute_leq: \"${__to:date:YYYY-MM-DDTHH:mm:ssZ}\"\n        }\n        limit: 5000\n      ) {\n        count\n        avg { sampleInterval }\n        dimensions { responseCode datetimeFifteenMinutes }\n      }\n    }\n  }\n}\n",
+                  "body_type": "graphql",
+                  "method": "POST"
+                }
+              }
+            ],
+            "title": "DNS queries by response code over time",
+            "transformations": [
+              { "id": "prepareTimeSeries", "options": { "format": "multi" } }
+            ],
+            "type": "timeseries"
+          }
+        ],
+        "refresh": "30s",
+        "schemaVersion": 38,
+        "style": "dark",
+        "tags": ["dns", "cloudflare", "gaqno"],
+        "templating": {
+          "list": [
+            {
+              "current": {},
+              "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "" },
+              "definition": "",
+              "hide": 0,
+              "includeAll": false,
+              "label": "Infinity (Cloudflare)",
+              "multi": false,
+              "name": "infinity_datasource",
+              "options": [],
+              "query": "yesoreyeram-infinity-datasource",
+              "refresh": 1,
+              "skipUrlSync": false,
+              "type": "datasource"
+            },
+            {
+              "current": { "selected": false, "text": "", "value": "" },
+              "hide": 0,
+              "label": "Zone ID",
+              "name": "zone_id",
+              "options": [],
+              "query": "",
+              "skipUrlSync": false,
+              "type": "text"
+            }
+          ]
+        },
+        "time": { "from": "now-24h", "to": "now" },
+        "timepicker": {},
+        "timezone": "browser",
+        "title": "Gaqno — DNS droppage (Cloudflare)",
+        "uid": "gaqno-dns-droppage",
+        "version": 1,
+        "weekStart": ""
+      }
+volumes:
+  prometheus-data: {  }
+  grafana-data-v3: {  }
+

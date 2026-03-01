@@ -126,6 +126,19 @@ scrape_configs:
 
 After that, the “HTTP 5xx error rate by service” and “HTTP 4xx error rate by frontend” panels will populate.
 
+#### Portal (MFE) observability: 5xx and latency by path
+
+To diagnose portal stalling or "Host Error" (e.g. which MFE returns 502/503):
+
+1. **Per-app 5xx (existing panels)**  
+   Ensure each frontend (shell-ui, admin-ui, crm-ui, erp-ui, ai-ui, finance-ui, pdv-ui, rpg-ui, omnichannel-ui, sso-ui, saas-ui) is scraped by Prometheus with a **distinct job name** (e.g. `gaqno-shell-ui`, `gaqno-admin-ui`). Then **Gaqno — Front** → "4xx / 5xx por app (frontend)" and **Gaqno — Errors by frontend** (`/d/gaqno-errors-by-frontend`) show which app has 5xx. A spike on one job (e.g. `gaqno-admin-ui`) indicates that MFE or its route is failing.
+
+2. **Response time (P95/P99) per frontend**  
+   If each *-ui exposes `http_request_duration_seconds` on `/metrics`, the Front dashboard "API P95 (frontend)" and latency-by-job panels show which app is slow. Use **Last 1 hour** to correlate with stalls.
+
+3. **Proxy (Traefik) metrics by path**  
+   If Traefik exposes Prometheus metrics with path/service labels (e.g. `traefik_service_requests_total`), add a panel: **5xx by path** (e.g. `sum(rate(traefik_service_requests_total{code=~"5.."}[5m])) by (service)`) and **latency by path** to see which path prefix (/admin, /crm, …) returns 502/503 or high latency at the proxy.
+
 ## Front dashboard: métricas avançadas (LCP, RUM, negócio)
 
 O **Gaqno — Front** segue o layout: **Linha 1 — Saúde geral** (Error rate %, LCP P75, API P95, Usuários ativos, Sessões com erro %), **Linha 2 — Performance** (Core Web Vitals, latência API, bundle), **Linha 3 — Erros** (4xx/5xx por app, top erros JS, 5xx backend), **Linha 4 — Negócio** (conversão, checkout, funil). Hoje só 4xx/5xx e 5xx backend vêm do Prometheus; o resto são placeholders.

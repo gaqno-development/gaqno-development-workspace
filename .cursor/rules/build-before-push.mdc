@@ -1,5 +1,5 @@
 ---
-description: Run project build before commit/push to avoid pipeline crashes
+description: Run project build and Docker build before commit/push to avoid pipeline crashes
 alwaysApply: true
 ---
 
@@ -8,9 +8,9 @@ alwaysApply: true
 After making code changes in this workspace:
 
 1. **Verify**: Run the project build (and type check if applicable). For monorepos or submodules, run build in the repo(s) you changed.
-2. **Use Docker for deployment validation**: When checking that a service will build on Coolify/CI, build with Docker (e.g. `docker build -f <service>/Dockerfile <service>`) so the same Dockerfile and runtime as production is used; local `npm run build` can pass while the Docker build fails.
-4. **If build passes and there are no type errors**: Stage, commit, and push the changes. Use a short, conventional commit message (e.g. `feat(scope): description` or `fix(scope): description`). Respect the no-Co-authored-by rule; use `git commit -m "..."` and `--no-verify` only if the commit hook would add an unwanted trailer or block a valid message.
-5. **If you changed a publishable package** (@gaqno-frontcore, @gaqno-backcore, @gaqno-types, @gaqno-agent): Bump its version in that package’s `package.json` (semver: patch for fixes, minor for new features, major for breaking changes), then from the workspace root run `npm run release:packages` so other apps can upgrade. See the rule *package-version-and-publish* for details.
-6. **If build or type check fails**: Fix the errors before committing or pushing. Do not push failing code.
+2. **Always validate with Docker**: For every changed app or service that has a `Dockerfile`, run a Docker build from the workspace root (e.g. `docker build -f <path>/Dockerfile <path>`). Use `NPM_TOKEN` from the project root `.env` as build-arg when the Dockerfile requires it. This ensures the same Dockerfile and runtime as production/CI; local `npm run build` can pass while the Docker build fails.
+3. **If build and Docker build pass and there are no type errors**: Stage, commit, and push the changes. Use a short, conventional commit message (e.g. `feat(scope): description` or `fix(scope): description`). Respect the no-Co-authored-by rule; use `git commit -m "..."` and `--no-verify` only if the commit hook would add an unwanted trailer or block a valid message.
+4. **If you changed a publishable package** (@gaqno-frontcore, @gaqno-backcore, @gaqno-types, @gaqno-agent): Bump its version in that package’s `package.json` (semver: patch for fixes, minor for new features, major for breaking changes), then from the workspace root run `npm run release:packages` so other apps can upgrade. See the rule *package-version-and-publish* for details.
+5. **If build, type check, or Docker build fails**: Fix the errors before committing or pushing. Do not push failing code.
 
 Apply this after completing a coding task that modifies files, unless the user explicitly asks not to push.
