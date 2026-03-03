@@ -8,20 +8,28 @@ set -e
 LM_STUDIO_HOST="${LM_STUDIO_HOST:-http://localhost:1234/v1}"
 LM_STUDIO_MODEL="${LM_STUDIO_MODEL:-google/gemma-3-1b}"
 CUSTOM_MESSAGE="$1"
+TEST_TIMEOUT_SEC="${TEST_TIMEOUT_SEC:-300}"
+
+# Fallback compatível com commitlint (type(scope): subject)
+fallback_commit_message() {
+  local scope="${1:-update}"
+  echo "chore($scope): update"
+}
 
 generate_semantic_commit() {
   local repo_path="$1"
+  local repo_name="$2"
   local diff
   diff=$(cd "$repo_path" && git diff --cached --stat 2>/dev/null; git diff --stat 2>/dev/null | head -30)
   diff=$(echo "$diff" | head -c 2000)
 
   if [ -z "$diff" ]; then
-    echo "Update changes"
+    fallback_commit_message "$repo_name"
     return
   fi
 
   if ! command -v jq &>/dev/null || ! command -v curl &>/dev/null; then
-    echo "Update changes"
+    fallback_commit_message "$repo_name"
     return
   fi
 
@@ -47,8 +55,34 @@ $diff"
   if [ -n "$msg" ] && [ "$msg" != "null" ]; then
     echo "$msg"
   else
-    echo "Update changes"
+    fallback_commit_message "$repo_name"
   fi
+}
+
+run_repo_tests() {
+  local repo_path="$1"
+  if [ ! -f "$repo_path/package.json" ]; then
+    return 0
+  fi
+  if ! grep -qE '"test"\s*:' "$repo_path/package.json" 2>/dev/null; then
+    return 0
+  fi
+  if command -v timeout &>/dev/null; then
+    (cd "$repo_path" && timeout "$TEST_TIMEOUT_SEC" npm run test 2>/dev/null) || return 1
+  else
+    (cd "$repo_path" && npm run test 2>/dev/null) & local pid=$!
+    (sleep "$TEST_TIMEOUT_SEC"; kill -9 "$pid" 2>/dev/null; exit 0) & local killer=$!
+    if wait "$pid" 2>/dev/null; then
+      kill "$killer" 2>/dev/null
+      wait "$killer" 2>/dev/null
+      return 0
+    fi
+    kill "$killer" 2>/dev/null
+    wait "$killer" 2>/dev/null
+    echo "   ⏱️  Tests timed out after ${TEST_TIMEOUT_SEC}s" >&2
+    return 1
+  fi
+  return 0
 }
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -104,7 +138,15 @@ for repo in "${REPOS[@]}"; do
     echo "   ✓ No changes to commit"
     continue
   fi
-  
+
+  echo "   🧪 Running tests (husky rodará no commit)..."
+  if ! run_repo_tests "$REPO_PATH"; then
+    echo "   ❌ Tests failed — skipping commit/push for $repo"
+    echo ""
+    continue
+  fi
+  echo "   ✓ Tests passed"
+
   echo "   ➕ Adding all changes..."
   git add .
 
@@ -112,21 +154,23 @@ for repo in "${REPOS[@]}"; do
     COMMIT_MESSAGE="$CUSTOM_MESSAGE"
   else
     echo "   🤖 Generating semantic commit message..."
-    COMMIT_MESSAGE=$(generate_semantic_commit "$REPO_PATH")
+    COMMIT_MESSAGE=$(generate_semantic_commit "$REPO_PATH" "$repo")
     echo "   💬 Generated: $COMMIT_MESSAGE"
   fi
   COMMIT_MESSAGE="${COMMIT_MESSAGE%.}"
 
   echo "   💾 Committing with message: '$COMMIT_MESSAGE'"
-  git commit -m "$COMMIT_MESSAGE" || {
-    echo "   ⚠️  Commit failed (might be empty or already committed)"
-  }
-  
+  if ! git commit -m "$COMMIT_MESSAGE"; then
+    echo "   ⚠️  Commit failed (husky/commitlint may have rejected; fix and retry)"
+    echo ""
+    continue
+  fi
+
   echo "   🚀 Pushing to remote..."
-  git push -u origin HEAD || {
+  if ! git push -u origin HEAD; then
     echo "   ⚠️  Push failed (check if remote is configured)"
-  }
-  
+  fi
+
   echo "   ✅ Done with $repo"
   echo ""
 done
