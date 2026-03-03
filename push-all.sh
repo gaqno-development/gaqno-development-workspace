@@ -120,6 +120,7 @@ else
   )
 fi
 
+PUSHED_PACKAGE=0
 for repo in "${REPOS[@]}"; do
   REPO_PATH="$BASE_DIR/$repo"
   
@@ -171,6 +172,10 @@ for repo in "${REPOS[@]}"; do
   echo "   🚀 Pushing to remote..."
   if ! git push -u origin HEAD; then
     echo "   ⚠️  Push failed (check if remote is configured)"
+  else
+    case "$repo" in
+      @gaqno-types|@gaqno-backcore|@gaqno-frontcore|@gaqno-agent) PUSHED_PACKAGE=1 ;;
+    esac
   fi
 
   echo "   ✅ Done with $repo"
@@ -196,6 +201,18 @@ if [ -n "$(git status --porcelain)" ]; then
   echo "   ✅ Parent repo updated"
 else
   echo "   ✓ No submodule reference changes"
+fi
+
+echo ""
+if [ "$PUSHED_PACKAGE" = "1" ]; then
+  echo "📦 Publishing packages (@gaqno-types, @gaqno-backcore, @gaqno-frontcore, @gaqno-agent)..."
+  if [ -f "$BASE_DIR/publish-packages.sh" ]; then
+    "$BASE_DIR/publish-packages.sh" || echo "   ⚠️  Publish failed (check npm auth and versions)"
+  else
+    (cd "$BASE_DIR" && npm run release:packages) || echo "   ⚠️  Publish failed (check npm auth and versions)"
+  fi
+else
+  echo "📦 No publishable package had changes — skipping publish"
 fi
 
 echo ""
