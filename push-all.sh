@@ -1,6 +1,8 @@
 #!/bin/bash
 #
 # Push all submodules from the workspace.
+# Para cada repo com alterações: roda testes, depois add/commit/push.
+# Repos sem alterações são ignorados (não roda testes).
 # Cada repo tem seus próprios workflows em .github/workflows/ — CI dispara no repo individual.
 #
 set -e
@@ -139,7 +141,7 @@ for repo in "${REPOS[@]}"; do
     continue
   fi
 
-  echo "   🧪 Running tests (husky rodará no commit)..."
+  echo "   🧪 Running tests (há alterações; testes obrigatórios antes de commit/push)..."
   if ! run_repo_tests "$REPO_PATH"; then
     echo "   ❌ Tests failed — skipping commit/push for $repo"
     echo ""

@@ -37,3 +37,7 @@ flowchart LR
 - **MFE**: Expose the new page in that MFE’s `vite.config.ts` under `exposes` (e.g. `"./NewPage": "./src/pages/NewPage.tsx"`).
 
 So: routes are defined and “handled” in the shell; MFEs only export the page components that the shell links to.
+
+## Related
+
+- [MFE provider pattern](MFE_PROVIDER_PATTERN.md) – how to set up Auth, Tenant, I18n, and MFE-specific providers so remotes work when loaded as layout+pages or as full App.

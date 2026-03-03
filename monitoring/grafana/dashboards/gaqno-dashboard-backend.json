@@ -16,7 +16,7 @@
       "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
       "id": 0,
       "options": {
-        "content": "**Backend** — Golden Signals (latência, tráfego, erros, saturação) + Banco + Infra + Deploy. Dados atuais: Prometheus (*-service). Latência por endpoint/versão, DB e K8s exigem métricas adicionais.",
+        "content": "**Backend** — Golden Signals (latência, tráfego, erros, saturação) + Banco + Infra + Deploy. Dados atuais: Prometheus (*-service). Cloudflare 503/504 (Gateway timeout): [Services Overview](/d/services-overview). Latência por endpoint/versão, DB e K8s exigem métricas adicionais.",
         "mode": "markdown"
       },
       "title": "",

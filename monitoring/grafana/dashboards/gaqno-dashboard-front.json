@@ -16,7 +16,7 @@
       "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
       "id": 0,
       "options": {
-        "content": "**Front** — UX, Core Web Vitals, erros e negócio. Dados: Prometheus (4xx/5xx quando jobs `*-ui` são scraped). Abaixo: containers no host (sempre); HTTP/LCP quando configurado.",
+        "content": "**Front** — UX, Core Web Vitals, erros e negócio. Dados: Prometheus (4xx/5xx quando jobs `*-ui` são scraped). Cloudflare 503/504 (Gateway timeout): [Services Overview](/d/services-overview). Abaixo: containers no host (sempre); HTTP/LCP quando configurado.",
         "mode": "markdown"
       },
       "title": "",

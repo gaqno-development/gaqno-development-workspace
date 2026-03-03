@@ -128,6 +128,10 @@ You still need to apply the Cloudflare Dashboard steps below; the repo cannot ch
 
 ---
 
+## Coolify 504 fix (origin timeouts)
+
+If you see **504** or **524** and the message points to "the server", the origin (Coolify + Traefik) is not responding in time. Follow **docs/COOLIFY_504_FIX_CHECKLIST.md**: increase Traefik read/write timeouts to 120s, fix gaqno-shell-ui health and FQDN, then restart the shell.
+
 ## Checklist: apply these in Cloudflare Dashboard
 
 Do these in [Cloudflare Dashboard](https://dash.cloudflare.com) → select zone **gaqno.com.br**.

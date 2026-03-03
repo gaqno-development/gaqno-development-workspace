@@ -167,9 +167,25 @@ MFE_ADMIN_URL=https://portal.gaqno.com.br/admin
 
 ### Proxy timeouts
 
-Large `remoteEntry.js` or chunk responses can be cut off if proxy timeouts are too short. For routes serving **portal.gaqno.com.br** (static/asset paths):
+Large `remoteEntry.js` or chunk responses can be cut off if proxy timeouts are too short. **Traefik default read timeout is 60s**; Cloudflare Free allows 120s. If the origin does not respond within 60s, you get **504 Gateway Timeout**.
 
-- Set **response/read timeout** to at least **60–120 seconds** for asset paths (e.g. `/admin/assets/`, `/crm/assets/`), or for the whole portal host if your proxy does not support per-path timeouts.
+For routes serving **portal.gaqno.com.br** (and api.gaqno.com.br):
+
+- Set **response/read timeout** to at least **90–120 seconds** (match Cloudflare’s 120s).
+
+**Coolify (Traefik):** Server → Proxy → Configuration. Add to the proxy command:
+
+```yaml
+command:
+  - "--entrypoints.https.transport.respondingTimeouts.readTimeout=120s"
+  - "--entrypoints.https.transport.respondingTimeouts.writeTimeout=120s"
+  - "--entrypoints.https.transport.respondingTimeouts.idleTimeout=120s"
+  - "--entrypoints.http.transport.respondingTimeouts.readTimeout=120s"
+  - "--entrypoints.http.transport.respondingTimeouts.writeTimeout=120s"
+  - "--entrypoints.http.transport.respondingTimeouts.idleTimeout=120s"
+```
+
+See **docs/COOLIFY_504_FIX_CHECKLIST.md** for the full 504 fix checklist (shell health, networks, Cloudflare).
 
 ### Health checks for MFEs
 
