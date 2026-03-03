@@ -102,6 +102,7 @@ services:
       - GF_DATASOURCES_DEFAULT_ACCESS=proxy
       - GF_DATASOURCES_DEFAULT_URL=http://prometheus:9090
       - GF_DATASOURCES_DEFAULT_IS_DEFAULT=true
+      - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN}
     volumes:
       - grafana-data:/var/lib/grafana
     restart: unless-stopped

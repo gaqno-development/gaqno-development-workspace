@@ -62,6 +62,17 @@ O compose usado no Coolify está em `monitoring/docker-compose.coolify.yml`. Inc
 
 No Coolify, use o **Docker Compose** com o arquivo `monitoring/docker-compose.coolify.yml` e **raiz do repositório** como contexto (ou raiz = `monitoring`); o build do serviço `grafana` usa `context: ./grafana` em relação ao diretório do compose. Para **atualizar** os dashboards após mudanças no repositório: **Redeploy** do aplicativo (rebuild da imagem Grafana e novo deploy).
 
+### Grafana setup checklist (incl. Grafana MCP)
+
+Você pode usar o **Grafana MCP** (Cursor) para inspecionar o estado: `list_datasources`, `get_datasource`, `search_dashboards`, `query_prometheus` (com `datasourceUid` do Prometheus), etc.
+
+| Passo | O quê |
+|-------|--------|
+| 1 | **Prometheus** — Deve existir como datasource padrão com URL `http://prometheus:9090`. Save & test em verde. |
+| 2 | **Infinity (Cloudflare)** — Provisionado em `infinity-cloudflare.yml`; o Bearer token vem da variável **`CLOUDFLARE_API_TOKEN`** no serviço gaqno-grafana (Coolify). Defina em Coolify → gaqno-grafana → Environment: `CLOUDFLARE_API_TOKEN` = seu Cloudflare API token (Zone → Analytics → Read). Redeploy para aplicar. |
+| 3 | **DNS droppage** — Abra o dashboard **Gaqno — DNS droppage**. No topo, na variável **Infinity (Cloudflare)**, selecione **Infinity (Cloudflare)**. Preencha a variável **zone_id** com o Zone ID do Cloudflare (Dashboard → sua zona → Overview, coluna direita). |
+| 4 | **Alerting (opcional)** — Nenhuma contact point nem alert rule está configurado por padrão. Use **Alerting** no Grafana para criar contact points e regras conforme necessário. |
+
 ## Troubleshooting: no data on dashboards
 
 Se **todos** os painéis mostram "No data":
@@ -94,12 +105,10 @@ O dashboard **Gaqno — DNS droppage** mostra “droppage” de DNS no Cloudflar
 
 **Requisitos:**
 
-1. **Plugin Infinity** — Em Grafana: **Connections** → **Add new connection** → procure **Infinity** e instale.
-2. **Datasource Infinity** — Crie um data source do tipo **Infinity**:
-   - Em **Security** → **Allowed Hosts**, adicione: `https://api.cloudflare.com/client/v4/graphql` e `https://api.cloudflare.com/client/v4/user/tokens/verify`.
-   - Em **Authentication**, use **Bearer Token** e cole um **Cloudflare API token** com permissão **Zone** → **Analytics** → **Read** ([criar token](https://dash.cloudflare.com/profile/api-tokens)).
-3. **Importar o dashboard** — **Dashboards** → **Import** → upload de `monitoring/grafana/dashboards/gaqno-dashboard-dns-droppage.json`. Na tela de import, selecione o datasource Infinity que você criou.
-4. **Variável Zone ID** — No dashboard, preencha a variável **Zone ID** com o ID da zona do Cloudflare (ex.: gaqno.com.br). O ID aparece em **Cloudflare Dashboard** → sua zona → **Overview** → coluna direita.
+1. **Plugin Infinity** — Incluído na imagem via `monitoring/grafana/Dockerfile` (`grafana-cli plugins install yesoreyeram-infinity-datasource`). Se estiver usando a imagem custom do repositório, não é preciso instalar manualmente.
+2. **Datasource Infinity (Cloudflare)** — Provisionado em `monitoring/grafana/provisioning/datasources/infinity-cloudflare.yml` com Allowed hosts e Auth type Bearer. Após o deploy, em **Connections → Data sources → Infinity (Cloudflare)** basta definir o **Bearer Token** (Cloudflare API token com **Zone** → **Analytics** → **Read** — [criar token](https://dash.cloudflare.com/profile/api-tokens)) e salvar.
+3. **Dashboard** — Já provisionado na pasta **Gaqno** (ou importado via compose). Se não aparecer, importe `monitoring/grafana/dashboards/gaqno-dashboard-dns-droppage.json` e selecione o datasource **Infinity (Cloudflare)**.
+4. **Variável Zone ID** — No dashboard **Gaqno — DNS droppage**, preencha a variável **zone_id** com o ID da zona do Cloudflare (Dashboard → sua zona → **Overview** → coluna direita).
 
 O dashboard exibe: **DNS droppage (non-NOERROR count)**, **Total DNS queries**, **Tabela por response code** e **Gráfico no tempo**. Para uma réplica completa do DNS Analytics do Cloudflare, use também o [dashboard 22568](https://grafana.com/grafana/dashboards/22568-cloudflare-dns-analytics/) (mesmo datasource Infinity + zone_id).
 
