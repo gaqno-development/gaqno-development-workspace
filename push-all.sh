@@ -101,9 +101,12 @@ else
     gaqno-ai-service
     gaqno-ai-ui
     gaqno-crm-ui
+    gaqno-customer-service
     gaqno-erp-ui
     gaqno-finance-service
     gaqno-finance-ui
+    gaqno-intelligence-service
+    gaqno-intelligence-ui
     gaqno-landing-ui
     gaqno-lenin-ui
     gaqno-omnichannel-service
