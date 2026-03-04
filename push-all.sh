@@ -182,6 +182,16 @@ for repo in "${REPOS[@]}"; do
   echo ""
 done
 
+if [ "$PUSHED_PACKAGE" = "1" ]; then
+  echo "📦 Publishing packages first (so Coolify/deploy gets the new version on npm)..."
+  if [ -f "$BASE_DIR/publish-packages.sh" ]; then
+    "$BASE_DIR/publish-packages.sh" || echo "   ⚠️  Publish failed (check npm auth and versions)"
+  else
+    (cd "$BASE_DIR" && npm run release:packages) || echo "   ⚠️  Publish failed (check npm auth and versions)"
+  fi
+  echo ""
+fi
+
 echo "📦 Updating parent repo with submodule references..."
 cd "$BASE_DIR"
 if [ -n "$(git status --porcelain)" ]; then
@@ -203,16 +213,9 @@ else
   echo "   ✓ No submodule reference changes"
 fi
 
-echo ""
 if [ "$PUSHED_PACKAGE" = "1" ]; then
-  echo "📦 Publishing packages (@gaqno-types, @gaqno-backcore, @gaqno-frontcore, @gaqno-agent)..."
-  if [ -f "$BASE_DIR/publish-packages.sh" ]; then
-    "$BASE_DIR/publish-packages.sh" || echo "   ⚠️  Publish failed (check npm auth and versions)"
-  else
-    (cd "$BASE_DIR" && npm run release:packages) || echo "   ⚠️  Publish failed (check npm auth and versions)"
-  fi
-else
-  echo "📦 No publishable package had changes — skipping publish"
+  echo ""
+  echo "   ℹ️  Packages were already published above (before parent push)."
 fi
 
 echo ""
