@@ -181,6 +181,31 @@ services:
       ai-service:
         condition: service_started
 
+  crm-service:
+    build:
+      context: ./gaqno-crm-service
+      dockerfile: Dockerfile
+    container_name: gaqno-crm-service
+    ports:
+      - "4003:4003"
+    environment:
+      - NODE_ENV=production
+      - PORT=4003
+      - DATABASE_URL=${DATABASE_URL}
+      - KAFKA_BROKERS=kafka:29092
+      - JWT_SECRET=${JWT_SECRET}
+      - CORS_ORIGIN=${CORS_ORIGIN:-*}
+    env_file:
+      - .env
+    restart: unless-stopped
+    networks:
+      - gaqno-network
+    depends_on:
+      sso-service:
+        condition: service_started
+      kafka:
+        condition: service_healthy
+
   crm:
     build:
       context: ./gaqno-crm
@@ -228,6 +253,8 @@ services:
       - DATABASE_URL=${FINANCE_DATABASE_URL:-${DATABASE_URL}}
       - JWT_SECRET=${JWT_SECRET}
       - CORS_ORIGIN=${CORS_ORIGIN:-*}
+      - KAFKA_BROKERS=kafka:29092
+      - FINANCE_SYSTEM_USER_ID=${FINANCE_SYSTEM_USER_ID:-}
     env_file:
       - .env
     restart: unless-stopped
@@ -236,6 +263,8 @@ services:
     depends_on:
       sso-service:
         condition: service_started
+      kafka:
+        condition: service_healthy
 
   finance:
     build:
@@ -332,6 +361,42 @@ services:
     networks:
       - gaqno-network
 
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: gaqno-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    restart: unless-stopped
+    networks:
+      - gaqno-network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: gaqno-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    healthcheck:
+      test: ["CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - gaqno-network
+
   omnichannel-service:
     build:
       context: ./gaqno-omnichannel-service
@@ -344,6 +409,7 @@ services:
       - PORT=4008
       - DATABASE_URL=${OMNICHANNEL_DATABASE_URL:-${DATABASE_URL}}
       - REDIS_URL=redis://redis:6379/0
+      - KAFKA_BROKERS=kafka:29092
       - JWT_SECRET=${JWT_SECRET}
       - SSO_SERVICE_URL=http://sso-service:4001
       - CORS_ORIGIN=${CORS_ORIGIN:-*}
@@ -357,6 +423,8 @@ services:
         condition: service_started
       redis:
         condition: service_started
+      kafka:
+        condition: service_healthy
 
   omnichannel:
     build:

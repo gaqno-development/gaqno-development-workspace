@@ -465,6 +465,7 @@ function createUI({ name, uiPort, servicePort }) {
         },
         dependencies: {
           "@gaqno-development/frontcore": "^1.0.35",
+          "@gaqno-development/types": "^1.4.0",
           "@tanstack/react-query": "^5.90.12",
           "lucide-react": "^0.468.0",
           react: "^18",
@@ -702,7 +703,6 @@ declare module "*.svg" {
 `,
     "src/lib/.gitkeep": "",
     "src/pages/.gitkeep": "",
-    "src/types/.gitkeep": "",
     "src/utils/.gitkeep": "",
     ".npmrc": "@gaqno-development:registry=https://npm.pkg.github.com\n",
     Dockerfile: `FROM node:20-alpine AS base
