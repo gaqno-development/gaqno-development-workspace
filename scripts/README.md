@@ -155,3 +155,23 @@ Ao verificar DNS no Cloudflare para serviços expostos via Coolify:
 | ------------------------ | ------------------------------------------------------------------------------------------------------------- |
 | **lenin.gaqno.com.br**   | Registro A ou CNAME apontando para o destino correto (Coolify/túnel); proxy (orange cloud) conforme desejado. |
 | **grafana.gaqno.com.br** | Registro existe e aponta para o serviço Grafana (Coolify/túnel).                                              |
+| **docs.gaqno.com.br**    | CNAME para gaqno.com.br (ou mesmo destino do portal). Use `npm run add-cloudflare-dns-docs` com token setado. |
+
+---
+
+## add-cloudflare-dns.mjs
+
+Cria um registro DNS na zona **gaqno.com.br**. Útil para adicionar subdomínios (ex.: docs).
+
+### Uso
+
+```bash
+export CLOUDFLARE_API_TOKEN=seu_token
+npm run add-cloudflare-dns-docs
+```
+
+Ou manualmente (nome, tipo, conteúdo, proxied):
+
+```bash
+CLOUDFLARE_API_TOKEN=xxx node scripts/add-cloudflare-dns.mjs docs CNAME gaqno.com.br true
+```

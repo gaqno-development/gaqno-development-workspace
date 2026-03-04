@@ -97,3 +97,6 @@
 [submodule "gaqno-intelligence-ui"]
 	path = gaqno-intelligence-ui
 	url = git@github.com:gaqno-development/gaqno-intelligence-ui.git
+[submodule "gaqno-docs-ui"]
+	path = gaqno-docs-ui
+	url = git@github.com:gaqno-development/gaqno-docs-ui.git

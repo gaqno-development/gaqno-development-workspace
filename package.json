@@ -42,6 +42,7 @@
   "scripts": {
     "create-project": "node scripts/create-project.js",
     "list-cloudflare-dns": "node scripts/list-cloudflare-dns.mjs",
+    "add-cloudflare-dns-docs": "node scripts/add-cloudflare-dns.mjs docs CNAME gaqno.com.br true",
     "cloudflare-tunnel-add-grafana": "node scripts/cloudflare-tunnel-add-grafana-route.mjs",
     "secret-scan": "gitleaks protect --config .gitleaks.toml --no-git --verbose",
     "prepare": "husky",
