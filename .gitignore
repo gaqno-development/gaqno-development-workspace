@@ -1,7 +1,11 @@
 logs/
 *.log
 .pm2/
+
+# Dependencies (all packages)
 node_modules/
+**/node_modules/
+
 dist/
 build/
 .turbo/
