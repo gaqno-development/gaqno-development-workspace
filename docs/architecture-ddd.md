@@ -71,15 +71,16 @@ This document captures the bounded context map, event flows, responsibility matr
 | Atendimento (Omnichannel) | `atendimento.message_received` | Inteligência | Active |
 | Atendimento (Omnichannel) | `omnichannel.message.*` | CRM (sync contacts/interactions) | Active |
 | Lead Enrichment | `crm.lead.enriched` | CRM | Active |
-| PDV | `pdv.sale_completed` | Financeiro, Operações, Inteligência | Cataloged |
+| Operações (ERP) | `operacoes.product_created` | PDV, Inteligência | Active |
+| Operações (ERP) | `operacoes.product_updated` | PDV, Inteligência | Active |
+| Operações (ERP) | `operacoes.product_deleted` | PDV, Inteligência | Active |
+| PDV | `pdv.sale_completed` | Financeiro, Operações, Inteligência | Active |
 | Operações (ERP) | `operacoes.order_created` | Financeiro, Inteligência | Cataloged |
 
 ### Planned (per migration strategy)
 
 | Producer | Event | Consumers | Phase |
 |----------|-------|-----------|-------|
-| Operações | `operacoes.product_created` | PDV (cache/sync) | Phase 2 |
-| PDV | `pdv.sale_completed` | Financeiro Empresarial | Phase 2 |
 | Customer (new) | `customer.created/updated` | CRM, Omnichannel, PDV | Phase 3 |
 | Inteligência | `inteligencia.insight_generated` | (dashboard) | Phase 4 |
 | Wellness | `wellness.daily_log_created` | — | Active (cataloged) |
@@ -140,10 +141,10 @@ This document captures the bounded context map, event flows, responsibility matr
 
 ### Phase 2 — PDV as Channel + Product Ownership
 
-- [ ] Publish `operacoes.product_created` events from ERP
-- [ ] PDV reads product catalog from Operações (API or event sync)
-- [ ] PDV publishes `pdv.sale_completed` to Financeiro Empresarial / Operações
-- [ ] Remove product duplication in PDV (migrate to references)
+- [x] Publish `operacoes.product_created/updated/deleted` events from ERP
+- [x] PDV reads product catalog from Operações (event sync via Kafka consumer)
+- [x] PDV publishes `pdv.sale_completed` to Financeiro Empresarial / Operações
+- [x] Remove product duplication in PDV (migrated to `erpProductId` references + soft-delete)
 
 ### Phase 3 — Customer Context
 
