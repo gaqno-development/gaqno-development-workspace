@@ -78,7 +78,8 @@
     "publish:confluence": "echo 'Docs no Confluence DDS. Edite em https://gaqno-development.atlassian.net/wiki/spaces/DDS'",
     "test": "turbo run test",
     "test:coverage": "turbo run test:coverage",
-    "codemap": "node scripts/generate-codemap.js"
+    "codemap": "node scripts/generate-codemap.js",
+    "verify:local": "npm run verify:production -w gaqno-shell-ui"
   },
   "devDependencies": {
     "husky": "^9.1.7",
