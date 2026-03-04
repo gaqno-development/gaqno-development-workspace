@@ -19,6 +19,9 @@ logs/
 *.log
 .pm2/
 
+# External repos (not submodules; see docs/external-repos.md)
+gaqno-consumer-ui/
+
 # IDE / tools
 .cursor/mcp.json
 .npmrc
