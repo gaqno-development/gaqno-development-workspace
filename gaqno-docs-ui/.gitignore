@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build
+dist/
+.turbo/
+dist-ssr
+build/
+*.local
+
+# Environment
+.env
+.env.*
+!.env.example
+!.env.template
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# NPM (secrets)
+.npmrc
+
+# Testing
+coverage/
+.nyc_output
+
+# Coverage
+*.lcov
+lcov.info
+junit.xml
+clover.xml
+coverage-summary.json
+coverage-final.json
+coverage-report/
+test-results/
+.nyc_output/
