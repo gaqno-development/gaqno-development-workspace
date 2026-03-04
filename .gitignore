@@ -1,24 +1,30 @@
-logs/
-*.log
-.pm2/
-
 # Dependencies (all packages)
 node_modules/
 **/node_modules/
 
+# Build
 dist/
 build/
 .turbo/
+
+# Environment
 .env
 .env.local
 .env.monitoring
 .env.*.local
 .env.jira
+
+# Logs
+logs/
+*.log
+.pm2/
+
+# IDE / tools
 .cursor/mcp.json
 .npmrc
 .grepai/
 
-# Coverage reports
+# Coverage
 coverage/
 *.lcov
 .nyc_output/

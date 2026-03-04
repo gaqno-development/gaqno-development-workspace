@@ -33,6 +33,87 @@ const TYPE_BACKEND = "backend";
 const TYPE_BOTH = "both";
 const VALID_TYPES = [TYPE_FRONTEND, TYPE_BACKEND, TYPE_BOTH];
 
+const GITIGNORE_SERVICE = `# Dependencies
+node_modules/
+**/node_modules/
+
+# Build
+dist/
+.turbo/
+
+# Environment
+.env
+.env.*
+!.env.example
+!.env.template
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+
+# Coverage
+coverage/
+*.lcov
+lcov.info
+junit.xml
+clover.xml
+coverage-summary.json
+coverage-final.json
+coverage-report/
+test-results/
+.nyc_output/
+`;
+
+const GITIGNORE_UI = `# Dependencies
+node_modules/
+**/node_modules/
+
+# Build
+dist/
+.turbo/
+dist-ssr
+build/
+*.local
+
+# Environment
+.env
+.env.*
+!.env.example
+!.env.template
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# NPM (secrets)
+.npmrc
+
+# Testing
+coverage/
+.nyc_output
+
+# Coverage
+*.lcov
+lcov.info
+junit.xml
+clover.xml
+coverage-summary.json
+coverage-final.json
+coverage-report/
+test-results/
+.nyc_output/
+`;
+
 function parseArgs() {
   const args = process.argv.slice(2);
   const name = args.find((a) => !a.startsWith("--"));
@@ -176,7 +257,8 @@ function createService({ name, servicePort }) {
       null,
       2
     ),
-    ".gitignore": "/dist\n/node_modules\n.env\n*.log\n",
+    ".gitignore": GITIGNORE_SERVICE,
+    ".gitattributes": "* text=auto eol=lf\n*.{png,jpg,jpeg,gif,ico,webp} binary\n",
     "commitlint.config.js": `/** @type {import('@commitlint/types').UserConfig} */
 module.exports = {
   extends: ['@commitlint/config-conventional'],
@@ -419,6 +501,7 @@ import react from "@vitejs/plugin-react";
 import federation from "@originjs/vite-plugin-federation";
 import path from "path";
 
+// MFE: exposes App for gaqno-shell-ui (Module Federation). Shell loads this via remote App export.
 export default defineConfig(async () => {
   const tailwindcss = (await import("@tailwindcss/vite")).default;
 
@@ -445,6 +528,7 @@ export default defineConfig(async () => {
         exposes: {
           "./App": "./src/App.tsx",
         },
+        // Shell loads this MFE via remote \`${name}/App\`
         shared: {
           react: {
             singleton: true,
@@ -528,7 +612,8 @@ export default defineConfig(async () => {
       null,
       2
     ),
-    ".gitignore": "/dist\n/node_modules\n.env\n*.log\n",
+    ".gitignore": GITIGNORE_UI,
+    ".gitattributes": "* text=auto eol=lf\n*.{png,jpg,jpeg,gif,ico,webp} binary\n",
     "commitlint.config.js": `/** @type {import('@commitlint/types').UserConfig} */
 module.exports = {
   extends: ['@commitlint/config-conventional'],
@@ -635,7 +720,7 @@ RUN if [ -z "$NPM_TOKEN" ] || [ "$NPM_TOKEN" = "REPLACE_WITH_GITHUB_PAT_IN_COOLI
     echo "ERROR: NPM_TOKEN must be set in Coolify Build Arguments (GitHub PAT with read:packages)."; exit 1; \\
     fi && \\
     printf '%s\\\\n' "@gaqno-development:registry=https://npm.pkg.github.com" "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" > .npmrc
-ENV NODE_ENV=development
+ENV NODE_ENV=production
 RUN --mount=type=cache,target=/root/.npm \\
     npm config set fetch-timeout 1200000 && \\
     npm config set fetch-retries 10 && \\
@@ -653,9 +738,11 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 COPY --from=builder /app/public /usr/share/nginx/html/public
 
 RUN echo 'server { listen ${uiPort}; server_name _; root /usr/share/nginx/html; index index.html; absolute_redirect off; \\
+    location = ${basePath}assets/remoteEntry.js { alias /usr/share/nginx/html/assets/remoteEntry.js; add_header Content-Type "application/javascript"; add_header Cache-Control "no-cache"; add_header Access-Control-Allow-Origin "*"; } \\
+    location = /assets/remoteEntry.js { alias /usr/share/nginx/html/assets/remoteEntry.js; add_header Content-Type "application/javascript"; add_header Cache-Control "no-cache"; add_header Access-Control-Allow-Origin "*"; } \\
     location ${basePath}assets/ { alias /usr/share/nginx/html/assets/; add_header Cache-Control "public, immutable"; add_header Access-Control-Allow-Origin "*"; } \\
     location /assets/ { alias /usr/share/nginx/html/assets/; add_header Cache-Control "public, immutable"; add_header Access-Control-Allow-Origin "*"; } \\
-    location / { try_files \$uri \$uri/ /index.html; } }' > /etc/nginx/conf.d/default.conf
+    location / { return 302 /; } }' > /etc/nginx/conf.d/default.conf
 
 EXPOSE ${uiPort}
 CMD ["nginx", "-g", "daemon off;"]
@@ -781,6 +868,9 @@ function run(options) {
   console.log(
     `\n${COLORS.green}${COLORS.bold}Done!${COLORS.reset} Next steps:\n`
   );
+  console.log(
+    `  ${COLORS.dim}Packages:${COLORS.reset} Root package.json workspaces were updated with the new package(s).\n`
+  );
   let step = 1;
   if (!install) {
     console.log(
@@ -790,7 +880,7 @@ function run(options) {
   }
   if (creatingUI) {
     console.log(
-      `  ${COLORS.dim}${step}.${COLORS.reset} Add MFE_${name.toUpperCase()}_URL to gaqno-shell-ui vite.config.ts`
+      `  ${COLORS.dim}${step}.${COLORS.reset} Add MFE_${name.toUpperCase()}_URL to gaqno-shell-ui vite.config.ts (frontend exposes App for Module Federation)`
     );
     step++;
     console.log(
@@ -809,7 +899,11 @@ function run(options) {
     console.log(
       `  ${COLORS.dim}${step}.${COLORS.reset} Add ${scripts.join(" and ")} to root package.json scripts`
     );
+    step++;
   }
+  console.log(
+    `  ${COLORS.dim}Git:${COLORS.reset} If this module has its own repo, run \`git init\` and add remote; .gitignore is already set.`
+  );
   console.log("");
 }
 
