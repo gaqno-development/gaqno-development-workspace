@@ -19,6 +19,8 @@
     "gaqno-erp-ui",
     "gaqno-finance-service",
     "gaqno-finance-ui",
+    "gaqno-intelligence-service",
+    "gaqno-intelligence-ui",
     "gaqno-landing-ui",
     "gaqno-lead-enrichment-service",
     "gaqno-lenin-ui",

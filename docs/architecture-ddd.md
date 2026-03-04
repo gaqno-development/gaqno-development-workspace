@@ -165,14 +165,20 @@ This document captures the bounded context map, event flows, responsibility matr
 
 ### Phase 4 — Intelligence Service
 
-- [ ] Create `gaqno-intelligence-service` as event-driven consumer
-- [ ] Create Intelligence MFE with analytics, forecasts, insights
-- [ ] Wire consumers for inteligência events from the catalog
+- [x] Create `gaqno-intelligence-service` as event-driven consumer (port 4014)
+- [x] Kafka consumers for comercial, atendimento, operacoes, financeiro, pdv, ai_studio, customer events
+- [x] Insights API: dashboard metrics, event log, event counts by type/source
+- [x] Create `gaqno-intelligence-ui` MFE (port 3013) with analytics, forecasts, insights, event log pages
+- [x] Wire intelligence MFE in shell vite.config + replace placeholder routes
 
 ### Phase 5 — Operações Expansion
 
-- [ ] Add inventory, purchasing, suppliers, logistics tables to ERP
-- [ ] Align ERP menu with actual capabilities
+- [x] Add inventory tables (`erp_warehouses`, `erp_stock_movements`) + InventoryModule
+- [x] Add suppliers table (`erp_suppliers`) + SuppliersModule
+- [x] Add purchasing tables (`erp_purchase_orders`, `erp_purchase_order_items`) + PurchasingModule
+- [x] Add logistics tables (`erp_carriers`, `erp_shipments`) + LogisticsModule
+- [x] Create OrdersModule for existing `erp_orders`/`erp_order_items` tables
+- [x] All modules: CRUD controllers, services, DTOs with tenant scoping
 
 ## Topic Registry
 
@@ -211,4 +217,5 @@ All Kafka topics follow the `{bounded_context}.events` convention:
 | `gaqno-saas-service` | SaaS (Platform) | Own DB |
 | `gaqno-admin-service` | Admin (thin shell) | — |
 | `gaqno-customer-service` | Customer (master identity) | Own DB |
+| `gaqno-intelligence-service` | Inteligência (analytics/insights) | Own DB |
 | `gaqno-lead-enrichment-service` | Cross-cutting (Comercial ↔ Atendimento) | Own DB |
