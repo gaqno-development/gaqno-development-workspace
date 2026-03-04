@@ -102,6 +102,7 @@ else
     gaqno-ai-ui
     gaqno-crm-ui
     gaqno-customer-service
+    gaqno-consumer-ui
     gaqno-erp-ui
     gaqno-finance-service
     gaqno-finance-ui
