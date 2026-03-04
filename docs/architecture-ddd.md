@@ -55,7 +55,14 @@ This document captures the bounded context map, event flows, responsibility matr
 │  │  └─────────────────────┘  └──────────────────────────┘      │              │
 │  └──────────────────────────────────────────────────────────────┘              │
 │                                                                                 │
-│  * Customers in Atendimento = messaging identity only                          │
+│  ┌──────────────┐                                                              │
+│  │  Customer     │  Master customer identity (gaqno-customer-service)          │
+│  │  (master)     │  → HTTP create from CRM/Omnichannel/PDV                    │
+│  │  master_      │  → Publishes customer.created/updated via Kafka            │
+│  │  customers    │  → CRM, Omnichannel, PDV store masterCustomerId            │
+│  └──────────────┘                                                              │
+│                                                                                 │
+│  * Customers in Atendimento = messaging identity + masterCustomerId ref        │
 │  * ref: = reference to another context's entity (no local copy)                │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -81,7 +88,8 @@ This document captures the bounded context map, event flows, responsibility matr
 
 | Producer | Event | Consumers | Phase |
 |----------|-------|-----------|-------|
-| Customer (new) | `customer.created/updated` | CRM, Omnichannel, PDV | Phase 3 |
+| Customer | `customer.created` | CRM, Omnichannel, PDV | Active |
+| Customer | `customer.updated` | CRM, Omnichannel, PDV | Active |
 | Inteligência | `inteligencia.insight_generated` | (dashboard) | Phase 4 |
 | Wellness | `wellness.daily_log_created` | — | Active (cataloged) |
 | SaaS | `saas.tenant_plan_changed` | Admin | Active (cataloged) |
@@ -102,7 +110,7 @@ This document captures the bounded context map, event flows, responsibility matr
 | **RPG** | Campaigns, sessions, characters | — | rpg.* | RPG MFE |
 | **Platform (SaaS)** | Tenants (billing), usage, costing, codemap | — | saas.* | Admin/SaaS MFE |
 | **Wellness** | Habits, daily logs, stats, AI insights (user-scoped) | — | wellness.* | Wellness MFE |
-| **Customer (new — future)** | Master customer identity, 360 view | atendimento, comercial, pdv (optional) | customer.* | — or CRM/Admin |
+| **Customer** | Master customer identity, 360 view | — | customer.created, customer.updated | — (API consumed by CRM/Omnichannel/PDV) |
 
 ## Data Isolation Model
 
@@ -118,13 +126,14 @@ This document captures the bounded context map, event flows, responsibility matr
 | PDV | Tenant | `tenantId` |
 | RPG | Tenant | `tenantId` |
 | Wellness | **User** | `userId` (no tenant) |
+| Customer | Tenant | `tenantId` |
 | SaaS | Platform-wide | `tenantId` for billing |
 
 ## Known Duplications
 
 | Concept | Where duplicated | Resolution |
 |---------|-----------------|------------|
-| **Customer** | Omnichannel (`omni_customers`), CRM (`crm_contacts` + `customerId`), PDV (`pdv_customers`), ERP (denormalized on order) | Phase 3: introduce Customer context or designate Omnichannel as master, sync via events |
+| **Customer** | Omnichannel (`omni_customers`), CRM (`crm_contacts`), PDV (`pdv_customers`), ERP (denormalized on order) | **Resolved (Phase 3)**: `gaqno-customer-service` is master; all services reference `masterCustomerId`; updates sync via `customer.events` |
 | **Product** | ERP (`erp_products`), PDV (`pdv_products`) | Phase 2: ERP as source of truth; PDV consumes via API/events |
 
 ## Migration Phases
@@ -148,9 +157,11 @@ This document captures the bounded context map, event flows, responsibility matr
 
 ### Phase 3 — Customer Context
 
-- [ ] Introduce Customer bounded context (new service or module)
-- [ ] Migrate Omnichannel/CRM/PDV to reference customer ID
-- [ ] Sync via domain events (`customer.created`, `customer.updated`)
+- [x] Introduce Customer bounded context (new `gaqno-customer-service`, port 4013)
+- [x] Migrate Omnichannel/CRM/PDV to reference `masterCustomerId`
+- [x] Sync via domain events (`customer.created`, `customer.updated`)
+- [x] HTTP for creation (synchronous), Kafka for update propagation
+- [x] Graceful degradation — services work without Customer service
 
 ### Phase 4 — Intelligence Service
 
@@ -181,6 +192,7 @@ All Kafka topics follow the `{bounded_context}.events` convention:
 | `sso.events` | SSO |
 | `wellness.events` | Wellness |
 | `saas.events` | SaaS (Platform) |
+| `customer.events` | Customer |
 | `dlq.events` | Dead-letter queue |
 
 ## Service ↔ Bounded Context Map
@@ -198,4 +210,5 @@ All Kafka topics follow the `{bounded_context}.events` convention:
 | `gaqno-wellness-service` | Wellness | Own DB |
 | `gaqno-saas-service` | SaaS (Platform) | Own DB |
 | `gaqno-admin-service` | Admin (thin shell) | — |
+| `gaqno-customer-service` | Customer (master identity) | Own DB |
 | `gaqno-lead-enrichment-service` | Cross-cutting (Comercial ↔ Atendimento) | Own DB |
