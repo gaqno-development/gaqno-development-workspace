@@ -457,10 +457,10 @@ services:
       dockerfile: Dockerfile
     container_name: gaqno-wellness-service
     ports:
-      - "4009:4009"
+      - "4011:4011"
     environment:
       - NODE_ENV=production
-      - PORT=4009
+      - PORT=4011
       - DATABASE_URL=${WELLNESS_DATABASE_URL:-${DATABASE_URL}}
       - AI_SERVICE_URL=http://ai-service:4002
       - CORS_ORIGIN=${CORS_ORIGIN:-*}
@@ -475,14 +475,14 @@ services:
       context: ./gaqno-wellness-ui
       dockerfile: Dockerfile
       args:
-        - VITE_SERVICE_WELLNESS_URL=http://localhost:4009
+        - VITE_SERVICE_WELLNESS_URL=http://localhost:4011
     container_name: gaqno-wellness
     ports:
       - "3012:3012"
     environment:
       - NODE_ENV=production
       - PORT=3012
-      - VITE_SERVICE_WELLNESS_URL=http://wellness-service:4009
+      - VITE_SERVICE_WELLNESS_URL=http://wellness-service:4011
     env_file:
       - .env
     restart: unless-stopped
