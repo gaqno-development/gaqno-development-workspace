@@ -105,9 +105,10 @@ services:
       - GF_DATASOURCES_DEFAULT_URL=http://prometheus:9090
       - GF_DATASOURCES_DEFAULT_IS_DEFAULT=true
       - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN}
+      - CLOUDFLARE_ZONE_ID=${CLOUDFLARE_ZONE_ID:-d628a8ac60069acccbc154d173b88717}
     volumes:
       - grafana-data:/var/lib/grafana
-      - ./grafana/dashboards:/etc/grafana/dashboards:ro
+      - ./grafana/dashboards:/etc/grafana/dashboards
     restart: unless-stopped
     ports:
       - "5678:3000"

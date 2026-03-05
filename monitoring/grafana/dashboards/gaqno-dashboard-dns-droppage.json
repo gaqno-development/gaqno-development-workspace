@@ -1,37 +1,30 @@
 {
-  "__requires": [
-    { "type": "panel", "id": "stat", "name": "Stat", "version": "" },
-    { "type": "panel", "id": "table", "name": "Table", "version": "" },
-    { "type": "panel", "id": "timeseries", "name": "Time series", "version": "" },
-    { "type": "panel", "id": "text", "name": "Text", "version": "" },
-    { "type": "datasource", "id": "yesoreyeram-infinity-datasource", "name": "Infinity", "version": "" }
-  ],
-  "annotations": { "list": [] },
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": { "type": "grafana", "uid": "-- Grafana --" },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": null,
   "links": [
-    { "title": "Services overview", "url": "/d/services-overview", "type": "dashboard" },
-    { "title": "Front", "url": "/d/gaqno-dashboard-front", "type": "dashboard" },
-    { "title": "Backend", "url": "/d/gaqno-dashboard-backend", "type": "dashboard" },
-    { "title": "DevOps", "url": "/d/gaqno-dashboard-devops", "type": "dashboard" }
+    { "title": "Services overview", "type": "dashboard", "url": "/d/services-overview" },
+    { "title": "Front", "type": "dashboard", "url": "/d/gaqno-dashboard-front" },
+    { "title": "Backend", "type": "dashboard", "url": "/d/gaqno-dashboard-backend" },
+    { "title": "DevOps", "type": "dashboard", "url": "/d/gaqno-dashboard-devops" }
   ],
-  "liveNow": false,
   "panels": [
     {
-      "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
-      "id": 1,
-      "options": {
-        "content": "**DNS droppage** — Queries that did not return **NOERROR** (e.g. NXDOMAIN, SERVFAIL, REFUSED). Data from Cloudflare DNS Analytics via GraphQL.\n\n**If you see \"Datasource was not found\":** In the variable **Infinity (Cloudflare)** above, select an Infinity datasource. If none exists: **Connections → Data sources → Add data source → Infinity**. Add allowed host `https://api.cloudflare.com/client/v4/graphql`, Auth = Bearer token (Cloudflare API token with Zone → Analytics Read). Then come back and select it in the variable.\n\n**Then:** Set **zone_id** to your Zone ID (Cloudflare Dashboard → your zone → Overview, right sidebar).",
-        "mode": "markdown"
-      },
-      "title": "",
-      "type": "text"
-    },
-    {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 2 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
       "id": 2,
       "panels": [],
       "title": "DNS droppage (Cloudflare)",
@@ -39,27 +32,30 @@
     },
     {
       "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${infinity_datasource}" },
-      "description": "Total DNS queries with response code other than NOERROR (errors, NXDOMAIN, SERVFAIL, etc.).",
+      "description": "Total DNS queries with response code other than NOERROR (errors, NXDOMAIN, SERVFAIL, etc.). Filter applied in API.",
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
           "mappings": [],
-          "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 1}, {"color": "red", "value": 100}] },
+          "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": 0}, {"color": "yellow", "value": 1}, {"color": "red", "value": 100}] },
           "unit": "short"
         },
         "overrides": []
       },
-      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 3 },
+      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 1 },
       "id": 3,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": true },
-        "textMode": "auto"
+        "percentChangeColorMode": "standard",
+        "reduceOptions": { "calcs": ["sum"], "fields": "count", "values": true },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "10.2.0",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
           "columns": [
@@ -75,17 +71,14 @@
           "url": "https://api.cloudflare.com/client/v4/graphql",
           "url_options": {
             "body_content_type": "application/json",
-            "body_graphql_query": "query Viewer {\n  viewer {\n    zones(filter: { zoneTag: \"${zone_id}\" }) {\n      zoneTag\n      dnsAnalyticsAdaptiveGroups(\n        filter: {\n          datetimeMinute_geq: \"${__from:date:YYYY-MM-DDTHH:mm:ssZ}\",\n          datetimeMinute_leq: \"${__to:date:YYYY-MM-DDTHH:mm:ssZ}\"\n        }\n        limit: 100\n        orderBy: [count_DESC]\n      ) {\n        count\n        dimensions { responseCode }\n      }\n    }\n  }\n}\n",
+            "body_graphql_query": "query Viewer {\n  viewer {\n    zones(filter: { zoneTag: \"${zone_id}\" }) {\n      zoneTag\n      dnsAnalyticsAdaptiveGroups(\n        filter: {\n          datetimeMinute_geq: \"${__from:date:YYYY-MM-DDTHH:mm:ssZ}\",\n          datetimeMinute_leq: \"${__to:date:YYYY-MM-DDTHH:mm:ssZ}\",\n          dimensions_responseCode_neq: \"NOERROR\"\n        }\n        limit: 100\n        orderBy: [count_DESC]\n      ) {\n        count\n        dimensions { responseCode }\n      }\n    }\n  }\n}\n",
             "body_type": "graphql",
             "method": "POST"
           }
         }
       ],
       "title": "DNS droppage (non-NOERROR count)",
-      "transformations": [
-        { "id": "filterByValue", "options": { "filters": [{ "fieldName": "dimensions.responseCode", "config": { "id": "exclude", "options": { "value": "NOERROR" } }, "operator": "!=" }], "match": "all" } },
-        { "id": "reduce", "options": { "reducers": ["sum"], "fields": "count" } }
-      ],
+      "transformations": [],
       "type": "stat"
     },
     {
@@ -95,27 +88,28 @@
         "defaults": {
           "color": { "mode": "thresholds" },
           "mappings": [],
-          "thresholds": { "mode": "absolute", "steps": [{"color": "blue", "value": null}] },
+          "thresholds": { "mode": "absolute", "steps": [{"color": "blue", "value": 0}] },
           "unit": "short"
         },
         "overrides": []
       },
-      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 3 },
+      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 1 },
       "id": 4,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": { "calcs": ["sum"], "fields": "", "values": true },
-        "textMode": "auto"
+        "percentChangeColorMode": "standard",
+        "reduceOptions": { "calcs": ["sum"], "fields": "count", "values": true },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "10.2.0",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
-          "columns": [
-            { "selector": "count", "text": "Total", "type": "number" }
-          ],
+          "columns": [{ "selector": "count", "text": "Total", "type": "number" }],
           "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${infinity_datasource}" },
           "format": "table",
           "refId": "A",
@@ -132,9 +126,7 @@
         }
       ],
       "title": "Total DNS queries",
-      "transformations": [
-        { "id": "reduce", "options": { "reducers": ["sum"], "fields": "count" } }
-      ],
+      "transformations": [],
       "type": "stat"
     },
     {
@@ -142,19 +134,17 @@
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },
-          "custom": { "align": "auto", "cellOptions": { "type": "auto" }, "inspect": false },
+          "custom": { "align": "auto", "cellOptions": { "type": "auto" }, "footer": { "reducers": ["sum"] }, "inspect": false },
           "mappings": [],
-          "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}] },
+          "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": 0}] },
           "unit": "short"
         },
-        "overrides": [
-          { "matcher": { "id": "byName", "options": "count" }, "properties": [{ "id": "custom.width", "value": 120 }] }
-        ]
+        "overrides": [{ "matcher": { "id": "byName", "options": "count" }, "properties": [{ "id": "custom.width", "value": 120 }] }]
       },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 3 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 1 },
       "id": 5,
-      "options": { "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": true }, "showHeader": true },
-      "pluginVersion": "10.2.0",
+      "options": { "cellHeight": "sm", "showHeader": true },
+      "pluginVersion": "12.4.0",
       "targets": [
         {
           "columns": [
@@ -187,28 +177,39 @@
           "custom": {
             "axisBorderShow": false,
             "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
             "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "insertNulls": false,
             "lineInterpolation": "smooth",
             "lineWidth": 2,
             "pointSize": 5,
+            "scaleDistribution": { "type": "linear" },
             "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": { "group": "A", "mode": "none" },
             "thresholdsStyle": { "mode": "off" }
           },
           "mappings": [],
-          "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}] },
+          "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": 0}] },
           "unit": "short"
         },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 11 },
+      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 9 },
       "id": 6,
-      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-      "pluginVersion": "10.2.0",
+      "options": {
+        "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "hideZeros": false, "mode": "single", "sort": "none" }
+      },
+      "pluginVersion": "12.4.0",
       "targets": [
         {
           "columns": [
@@ -232,42 +233,35 @@
         }
       ],
       "title": "DNS queries by response code over time",
-      "transformations": [
-        { "id": "prepareTimeSeries", "options": { "format": "multi" } }
-      ],
+      "transformations": [{ "id": "prepareTimeSeries", "options": { "format": "multi" } }],
       "type": "timeseries"
     }
   ],
-  "refresh": "10s",
-  "schemaVersion": 38,
-  "style": "dark",
+  "preload": false,
+  "refresh": "30s",
+  "schemaVersion": 42,
   "tags": ["dns", "cloudflare", "gaqno"],
   "templating": {
     "list": [
       {
-        "current": {},
-        "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "" },
-        "definition": "",
-        "hide": 0,
+        "current": { "text": "yesoreyeram-infinity-datasource", "value": "efewzwo46j0n4c" },
         "includeAll": false,
         "label": "Infinity (Cloudflare)",
-        "multi": false,
         "name": "infinity_datasource",
         "options": [],
         "query": "yesoreyeram-infinity-datasource",
         "refresh": 1,
-        "skipUrlSync": false,
         "type": "datasource"
       },
       {
-        "current": { "selected": false, "text": "d628a8ac60069acccbc154d173b88717", "value": "d628a8ac60069acccbc154d173b88717" },
+        "current": { "selected": true, "text": "__CLOUDFLARE_ZONE_ID__", "value": "__CLOUDFLARE_ZONE_ID__" },
         "hide": 0,
         "label": "Zone ID",
         "name": "zone_id",
-        "options": [],
-        "query": "",
-        "skipUrlSync": false,
-        "type": "text"
+        "options": [{ "selected": true, "text": "__CLOUDFLARE_ZONE_ID__", "value": "__CLOUDFLARE_ZONE_ID__" }],
+        "query": "__CLOUDFLARE_ZONE_ID__",
+        "skipUrlSync": true,
+        "type": "constant"
       }
     ]
   },

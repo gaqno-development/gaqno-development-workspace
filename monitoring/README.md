@@ -112,6 +112,19 @@ If panels show data but values appear stale or do not change:
 2. **Immediate relief** — Free disk (remove old logs, clear caches, trim Docker: `docker system prune -a` with care), scale or restart heavy services, increase Cloudflare **Origin Response Timeout** (only if the app legitimately needs longer; default 100 s).
 3. **Medium term** — Add or resize the host, optimize heavy endpoints, add caching, move static assets to CDN. Fix 524 (Cloudflare timeout) by reducing origin load or increasing timeout as above.
 
+### 504 even with “resources on Cloudflare” — check Coolify for failing / retry
+
+If you still get **504** despite having capacity on Cloudflare (e.g. no plan limits), the bottleneck is the **origin** (Coolify host or a specific app).
+
+1. **Coolify: failing or unhealthy resources**  
+   Use the Coolify MCP **find_issues** (or Coolify UI) to list unhealthy apps and services. **Unhealthy or exited** apps can cause timeouts if traffic is routed to them (e.g. via a shared proxy). Fix or stop unhealthy apps so the proxy and healthy apps are not blocked.
+2. **Coolify: no automatic retry for 504**  
+   Cloudflare does not retry a request when the origin returns 504; the client sees 504. Retries are on the **client** or **application** side. On the origin, ensure the app responds within Cloudflare’s origin timeout (often **100 s** on non-Enterprise plans; Enterprise can raise it).
+3. **What to do**  
+   - **Restart** unhealthy Coolify apps/services or **stop** ones you don’t need (e.g. consumer, customer, intelligence if unused) so they don’t consume resources or confuse routing.  
+   - **Identify slow routes**: use Grafana (Services Overview, Cloudflare panels with Zone ID set) or Cloudflare Analytics to see which hostnames or status codes get 504.  
+   - **Reduce origin load**: optimize slow endpoints, add caching, or move long-running work to async jobs so the HTTP response returns quickly.
+
 ### Cloudflare panels (503 / 504 / Requests by HTTP status) show 0 or "No data"
 
 If you see real 504s when opening your domain but the dashboard shows 0 for 503/504/5xx:
@@ -125,10 +138,13 @@ If you see real 504s when opening your domain but the dashboard shows 0 for 503/
 3. **Bearer token in the datasource**  
    The datasource you use (e.g. the one with UID `efewzwo46j0n4c`) must have a valid **Bearer token**. In Grafana: **Connections → Data sources** → open that Infinity datasource → under **Secure JSON Data** set **Bearer Token** to a Cloudflare API token with **Zone → Analytics → Read** (create at [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens)). Save & test. If you use the **provisioned** datasource (UID `infinity-cloudflare`), the token comes from the **`CLOUDFLARE_API_TOKEN`** env var in Coolify (gaqno-grafana service); ensure it is set and redeploy.
 
-4. **Token permissions**  
+4. **"Datasource is missing allowed hosts/URLs"**  
+   When using **Bearer token** (or any auth), the Infinity datasource **must** have **Allowed hosts/URLs** set. In Grafana: **Connections → Data sources** → your Infinity datasource → open **URL, Headers & Params** (or **Security** / **Authentication**) and add to **Allowed hosts** at least: `https://api.cloudflare.com`. You can also add `https://api.cloudflare.com/client/v4/graphql`. Save & test. The provisioned datasource **Infinity (Cloudflare)** (UID `infinity-cloudflare`) already has these in `provisioning/datasources/infinity-cloudflare.yml`; if you use a different Infinity datasource (e.g. created manually), add the allowed hosts there.
+
+5. **Token permissions**  
    The token must have **Zone** → **Analytics** → **Read** (or **Account** → **Account Analytics** → **Read**). Without that, the GraphQL API returns empty or errors.
 
-5. **Test the API from your machine**  
+6. **Test the API from your machine**  
    If the token and zone work, this curl should return JSON with `data.viewer.zones` (not an error):
    ```bash
    curl -s -X POST https://api.cloudflare.com/client/v4/graphql \
@@ -152,7 +168,9 @@ O dashboard **Gaqno — DNS droppage** mostra “droppage” de DNS no Cloudflar
 1. **Plugin Infinity** — Incluído na imagem via `monitoring/grafana/Dockerfile` (`grafana-cli plugins install yesoreyeram-infinity-datasource`). Se estiver usando a imagem custom do repositório, não é preciso instalar manualmente.
 2. **Datasource Infinity (Cloudflare)** — Provisionado em `monitoring/grafana/provisioning/datasources/infinity-cloudflare.yml` com Allowed hosts e Auth type Bearer. Após o deploy, em **Connections → Data sources → Infinity (Cloudflare)** basta definir o **Bearer Token** (Cloudflare API token com **Zone** → **Analytics** → **Read** — [criar token](https://dash.cloudflare.com/profile/api-tokens)) e salvar.
 3. **Dashboard** — Já provisionado na pasta **Gaqno** (ou importado via compose). Se não aparecer, importe `monitoring/grafana/dashboards/gaqno-dashboard-dns-droppage.json` e selecione o datasource **Infinity (Cloudflare)**.
-4. **Variável Zone ID** — No dashboard **Gaqno — DNS droppage**, preencha a variável **zone_id** com o ID da zona do Cloudflare (Dashboard → sua zona → **Overview** → coluna direita).
+4. **Variável Zone ID (env)** — O dashboard **Gaqno — DNS droppage** usa a variável **zone_id** preenchida a partir do env **`CLOUDFLARE_ZONE_ID`**. No Coolify, em gaqno-grafana → Environment, defina **`CLOUDFLARE_ZONE_ID`** com o Zone ID do Cloudflare (Dashboard → sua zona → **Overview** → coluna direita). Se não estiver definido, o padrão é `d628a8ac60069acccbc154d173b88717` (gaqno.com.br). O container substitui o placeholder no JSON ao iniciar; o volume de dashboards precisa ser gravável (sem `:ro`).
+
+5. **Cursor: Cloudflare DNS Analytics MCP** — O workspace tem o MCP **cloudflare-dns-analytics** (server `project-0-gaqno-development-workspace-cloudflare-dns-analytics`). Use **zones_list** para listar zonas, **zone_details** com `zoneId` para detalhes, e **dns_report** para relatório DNS (no plano Free o período máximo é 6 horas). Útil para conferir Zone ID e nomes de zona ao configurar o dashboard DNS droppage.
 
 O dashboard exibe: **DNS droppage (non-NOERROR count)**, **Total DNS queries**, **Tabela por response code** e **Gráfico no tempo**. Para uma réplica completa do DNS Analytics do Cloudflare, use também o [dashboard 22568](https://grafana.com/grafana/dashboards/22568-cloudflare-dns-analytics/) (mesmo datasource Infinity + zone_id).
 
