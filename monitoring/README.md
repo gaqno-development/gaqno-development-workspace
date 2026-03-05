@@ -94,6 +94,42 @@ Se **todos** os painéis mostram "No data":
 
 **Resumo:** Se só os painéis de **host** (node_*) têm dados e os de **containers** não, confira se **cAdvisor** e **container-name-mapper** estão no mesmo compose e com targets UP no Prometheus. Se **nada** tem dados, confira o datasource (URL do Prometheus) e os targets em `/targets`. Em hosts com **cgroups v2**, o cAdvisor pode expor `id` com path diferente de `/system.slice/docker.*`; nesse caso os painéis que usam esse filtro podem continuar vazios até ajuste das queries.
 
+**Disk panels (Top 10 Disk / Disk per Service) show “No data”:** They use **`container_disk_usage_bytes`** from the **container-name-mapper** (Docker writable layer size, `SizeRw`) for per-service/container disk. **Redeploy** the stack so the mapper pushes this metric. Fallback: cAdvisor’s `container_fs_usage_bytes` (often not exposed). In Prometheus, check `container_disk_usage_bytes` or `container_fs_usage_bytes`.
+
+### Cloudflare 504 (Gateway Timeout) and high host usage
+
+**504** usually means the origin (your server behind Cloudflare) did not respond in time. High **CPU**, **RAM** or **Disk** on the host can cause slow responses and timeouts.
+
+1. **Services Overview** — Use the top gauges (Server CPU, RAM, Disk) and the **Top 10** / **per Service** panels (CPU, Memory, **Disk**) to see which services use the most resources. **Disk Usage per Service** and **Top 10 Disk Consumers** help identify services filling disk (logs, caches, uploads).
+2. **Immediate relief** — Free disk (remove old logs, clear caches, trim Docker: `docker system prune -a` with care), scale or restart heavy services, increase Cloudflare **Origin Response Timeout** (only if the app legitimately needs longer; default 100 s).
+3. **Medium term** — Add or resize the host, optimize heavy endpoints, add caching, move static assets to CDN. Fix 524 (Cloudflare timeout) by reducing origin load or increasing timeout as above.
+
+### Cloudflare panels (503 / 504 / Requests by HTTP status) show 0 or "No data"
+
+If you see real 504s when opening your domain but the dashboard shows 0 for 503/504/5xx:
+
+1. **Set the Zone ID variable**  
+   On **Services Overview** (`/d/services-overview`), at the top you must have **two** variables: **Infinity (Cloudflare)** (datasource) and **Zone ID**. The Cloudflare panels query the API with `zoneTag: "${zone_id}"`; if **Zone ID** is missing or empty, no zone is matched and all counts are 0. Fill **Zone ID** with your Cloudflare Zone ID (Cloudflare Dashboard → your zone → **Overview** → right sidebar). Save the dashboard or change the variable and refresh.
+
+2. **Data delay**  
+   Cloudflare Analytics can lag by a few minutes. If you just got a 504, try widening the time range to **Last 6 hours** or **Last 24 hours** and refresh.
+
+3. **Bearer token in the datasource**  
+   The datasource you use (e.g. the one with UID `efewzwo46j0n4c`) must have a valid **Bearer token**. In Grafana: **Connections → Data sources** → open that Infinity datasource → under **Secure JSON Data** set **Bearer Token** to a Cloudflare API token with **Zone → Analytics → Read** (create at [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens)). Save & test. If you use the **provisioned** datasource (UID `infinity-cloudflare`), the token comes from the **`CLOUDFLARE_API_TOKEN`** env var in Coolify (gaqno-grafana service); ensure it is set and redeploy.
+
+4. **Token permissions**  
+   The token must have **Zone** → **Analytics** → **Read** (or **Account** → **Account Analytics** → **Read**). Without that, the GraphQL API returns empty or errors.
+
+5. **Test the API from your machine**  
+   If the token and zone work, this curl should return JSON with `data.viewer.zones` (not an error):
+   ```bash
+   curl -s -X POST https://api.cloudflare.com/client/v4/graphql \
+     -H "Authorization: Bearer YOUR_CLOUDFLARE_API_TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"query":"query { viewer { zones(filter: { zoneTag: \"d628a8ac60069acccbc154d173b88717\" }) { zoneTag httpRequestsAdaptiveGroups(limit: 5 filter: { datetime_geq: \"2025-03-01T00:00:00Z\" datetime_leq: \"2025-03-05T00:00:00Z\" }) { count dimensions { edgeResponseStatus } } } } }"}''
+   ```
+   Replace `YOUR_CLOUDFLARE_API_TOKEN`. If you get `"errors"` or empty `zones`, the token or zone is wrong. If you get `count` and `dimensions`, the same token in Grafana should work.
+
 ### "Datasource was not found" / "Error transforming data: 'undefined'"
 
 - **Em painéis que usam Prometheus (Services Overview, Front, Backend, DevOps):** Grafana precisa de um datasource **Prometheus** definido e, de preferência, como **padrão**. Em **Connections → Data sources**, confira se existe **Prometheus** com URL correta (ex.: `http://prometheus:9090`) e clique em **Save & test**. Se não houver nenhum datasource padrão, marque o Prometheus como **Default**.

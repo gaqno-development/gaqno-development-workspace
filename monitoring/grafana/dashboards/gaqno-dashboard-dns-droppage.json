@@ -260,7 +260,7 @@
         "type": "datasource"
       },
       {
-        "current": { "selected": false, "text": "", "value": "" },
+        "current": { "selected": false, "text": "d628a8ac60069acccbc154d173b88717", "value": "d628a8ac60069acccbc154d173b88717" },
         "hide": 0,
         "label": "Zone ID",
         "name": "zone_id",

@@ -70,7 +70,9 @@ services:
             comp=$$(echo "$$info" | jq -r '.[0].Config.Labels["coolify.serviceName"] // empty')
             if [ -z "$$svc" ]; then svc="$$name"; fi
             if [ -z "$$comp" ]; then comp="$$name"; fi
+            size=$$(echo "$$info" | jq -r '.[0].SizeRw // 0')
             metrics="$${metrics}container_info{container_id=\"$$cid\",short_id=\"$$short\",name=\"$$name\",service=\"$$svc\",component=\"$$comp\",image=\"$$image\"} 1\n"
+            metrics="$${metrics}container_disk_usage_bytes{container_id=\"$$cid\",short_id=\"$$short\",name=\"$$name\",service=\"$$svc\",component=\"$$comp\"} $$size\n"
           done
           printf "$$metrics" | curl -s --data-binary @- "http://pushgateway:9091/metrics/job/container_info" 2>/dev/null
           sleep 30
