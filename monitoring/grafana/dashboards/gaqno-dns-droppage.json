@@ -52,15 +52,30 @@
       },
       "id": 2,
       "panels": [],
-      "title": "DNS droppage (Cloudflare)",
+      "title": "Saúde DNS — DevOps, Tunnel, Cloudflare",
       "type": "row"
+    },
+    {
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 7,
+      "options": {
+        "content": "**O que é NOERROR?** — Em DNS, **NOERROR** (código 0) significa que a resolução foi **bem-sucedida**. Qualquer outro código indica falha ou condição anômala.\n\n| Código | Significado | Relevância para DevOps/Tunnel |\n|--------|-------------|-------------------------------|\n| **NOERROR** | Resolução OK | Tráfego normal. |\n| **SERVFAIL** | Falha no servidor DNS | Pode indicar problema no upstream, Tunnel ou recursor. |\n| **REFUSED** | Servidor recusou a consulta | Política ou servidor indisponível. |\n| **NXDOMAIN** | Nome não existe | Esperado para domínios inexistentes; picos podem indicar typos ou ataques. |\n| **Outros** | Timeout, etc. | Instabilidade de rede ou timeout no Tunnel. |\n\nEste dashboard monitora as consultas DNS da zona no Cloudflare para ajudar a detectar problemas no servidor DevOps, Tunnel e resolução de nomes.",
+        "mode": "markdown"
+      },
+      "title": "Códigos DNS e saúde DevOps/Tunnel",
+      "type": "text"
     },
     {
       "datasource": {
         "type": "yesoreyeram-infinity-datasource",
         "uid": "${infinity_datasource}"
       },
-      "description": "Total DNS queries with response code other than NOERROR (errors, NXDOMAIN, SERVFAIL, etc.).",
+      "description": "Consultas DNS com código diferente de NOERROR (SERVFAIL, REFUSED, NXDOMAIN, etc.). Alto valor pode indicar falha no Tunnel, upstream ou servidor DNS.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -92,7 +107,7 @@
         "h": 8,
         "w": 6,
         "x": 0,
-        "y": 1
+        "y": 5
       },
       "id": 3,
       "options": {
@@ -145,7 +160,7 @@
           }
         }
       ],
-      "title": "DNS droppage (non-NOERROR count)",
+      "title": "Falhas DNS (não-NOERROR)",
       "type": "stat"
     },
     {
@@ -153,7 +168,7 @@
         "type": "yesoreyeram-infinity-datasource",
         "uid": "${infinity_datasource}"
       },
-      "description": "All DNS queries in the selected time range.",
+      "description": "Total de consultas DNS no período. Base para comparar com falhas e estimar taxa de erro.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -177,7 +192,7 @@
         "h": 8,
         "w": 6,
         "x": 6,
-        "y": 1
+        "y": 5
       },
       "id": 4,
       "options": {
@@ -225,7 +240,7 @@
           }
         }
       ],
-      "title": "Total DNS queries",
+      "title": "Total de consultas DNS",
       "type": "stat"
     },
     {
@@ -274,6 +289,23 @@
                 "value": 120
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Response code"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  { "type": "value", "options": { "NOERROR": { "color": "green", "index": 0, "text": "OK" } } },
+                  { "type": "value", "options": { "SERVFAIL": { "color": "red", "index": 1, "text": "Falha servidor" } } },
+                  { "type": "value", "options": { "REFUSED": { "color": "red", "index": 2, "text": "Recusado" } } },
+                  { "type": "value", "options": { "NXDOMAIN": { "color": "orange", "index": 3, "text": "Nome inexistente" } } }
+                ]
+              }
+            ]
           }
         ]
       },
@@ -281,7 +313,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 1
+        "y": 5
       },
       "id": 5,
       "options": {
@@ -321,7 +353,8 @@
           }
         }
       ],
-      "title": "Queries by response code",
+      "description": "Distribuição por código de resposta. SERVFAIL/REFUSED indicam problemas de infraestrutura (Tunnel, servidor).",
+      "title": "Consultas por código de resposta",
       "type": "table"
     },
     {
@@ -386,7 +419,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 9
+        "y": 13
       },
       "id": 6,
       "options": {
@@ -440,7 +473,8 @@
           }
         }
       ],
-      "title": "DNS queries by response code over time",
+      "description": "Evolução das consultas por código. Picos de SERVFAIL/REFUSED coincidem com indisponibilidade do Tunnel ou do servidor.",
+      "title": "Consultas por código ao longo do tempo",
       "transformations": [
         {
           "id": "prepareTimeSeries",
@@ -491,7 +525,7 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Gaqno — DNS droppage (Cloudflare)",
+  "title": "Gaqno — Saúde DNS (DevOps, Tunnel, Cloudflare)",
   "uid": "gaqno-dns-droppage",
   "version": 13,
   "weekStart": ""

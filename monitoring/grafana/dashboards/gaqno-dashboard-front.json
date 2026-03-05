@@ -59,12 +59,94 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "**Front** — Containers de frontend (gaqno-*-ui). CPU e memória por app via cAdvisor + container-info. Cloudflare 503/504: [Services Overview](/d/services-overview).",
+        "content": "**Front** — Containers de frontend (gaqno-*-ui). **Most accessed** por tráfego de rede (cAdvisor). CPU e memória por app. Cloudflare 503/504: [Services Overview](/d/services-overview).",
         "mode": "markdown"
       },
       "pluginVersion": "12.4.0",
       "title": "",
       "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "prometheus"
+      },
+      "description": "Frontends com mais tráfego de rede (recebido + enviado) — proxy para \"mais acessados\". Suporta id /system.slice/docker.* e /docker/.*. Sem dados? Confira no Prometheus se container_network_receive_bytes_total existe; senão use o painel \"Top CPU consumers\" como proxy.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "Bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 2
+      },
+      "id": 34,
+      "options": {
+        "displayMode": "gradient",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "maxVizHeight": 300,
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "12.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "expr": "topk(10, sum by (component) ((label_replace(rate(container_network_receive_bytes_total{id=~\"/system.slice/docker.*\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") or label_replace(rate(container_network_receive_bytes_total{id=~\"/docker/.*\"}[5m]),\"container_id\",\"$1\",\"id\",\"/docker/(.*)\")) * on(container_id) group_left(component) container_info{component=~\"gaqno-.*-ui\"}) + sum by (component) ((label_replace(rate(container_network_transmit_bytes_total{id=~\"/system.slice/docker.*\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") or label_replace(rate(container_network_transmit_bytes_total{id=~\"/docker/.*\"}[5m]),\"container_id\",\"$1\",\"id\",\"/docker/(.*)\")) * on(container_id) group_left(component) container_info{component=~\"gaqno-.*-ui\"}))",
+          "legendFormat": "{{component}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Most accessed frontends (by traffic)",
+      "transformations": [
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "field": "Value",
+                "desc": true
+              }
+            ]
+          }
+        }
+      ],
+      "type": "bargauge"
     },
     {
       "datasource": {
@@ -93,7 +175,7 @@
         "h": 3,
         "w": 3,
         "x": 0,
-        "y": 2
+        "y": 8
       },
       "id": 11,
       "options": {
@@ -164,7 +246,7 @@
         "h": 9,
         "w": 10,
         "x": 3,
-        "y": 2
+        "y": 8
       },
       "id": 21,
       "options": {
@@ -203,6 +285,19 @@
         }
       ],
       "title": "Top CPU consumers (frontend)",
+      "transformations": [
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "field": "Value",
+                "desc": true
+              }
+            ]
+          }
+        }
+      ],
       "type": "bargauge"
     },
     {
@@ -270,7 +365,7 @@
         "h": 9,
         "w": 11,
         "x": 13,
-        "y": 2
+        "y": 8
       },
       "id": 22,
       "options": {
@@ -337,7 +432,7 @@
         "h": 3,
         "w": 3,
         "x": 0,
-        "y": 5
+        "y": 11
       },
       "id": 12,
       "options": {
@@ -398,7 +493,7 @@
         "h": 3,
         "w": 3,
         "x": 0,
-        "y": 8
+        "y": 14
       },
       "id": 13,
       "options": {
@@ -459,7 +554,7 @@
         "h": 9,
         "w": 10,
         "x": 3,
-        "y": 11
+        "y": 17
       },
       "id": 31,
       "options": {
@@ -498,6 +593,19 @@
         }
       ],
       "title": "Top memory consumers (frontend)",
+      "transformations": [
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "field": "Value",
+                "desc": true
+              }
+            ]
+          }
+        }
+      ],
       "type": "bargauge"
     },
     {
@@ -565,7 +673,7 @@
         "h": 9,
         "w": 11,
         "x": 13,
-        "y": 11
+        "y": 17
       },
       "id": 32,
       "options": {
