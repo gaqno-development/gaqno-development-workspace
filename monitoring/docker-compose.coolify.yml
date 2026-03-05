@@ -107,6 +107,7 @@ services:
       - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN}
     volumes:
       - grafana-data:/var/lib/grafana
+      - ./grafana/dashboards:/etc/grafana/dashboards:ro
     restart: unless-stopped
     ports:
       - "5678:3000"
