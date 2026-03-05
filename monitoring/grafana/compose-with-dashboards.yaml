@@ -143,7 +143,7 @@ configs:
             "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
             "id": 0,
             "options": {
-              "content": "**Front** — UX, Core Web Vitals, erros e negócio. Dados atuais: Prometheus (4xx/5xx). LCP, RUM e negócio exigem Sentry/OpenTelemetry/analytics.",
+              "content": "**Front** — Containers de frontend (gaqno-*-ui). CPU e memória por app via cAdvisor + container-info. Cloudflare 503/504: [Services Overview](/d/services-overview).",
               "mode": "markdown"
             },
             "title": "",
@@ -159,15 +159,12 @@ configs:
           },
           {
             "datasource": { "type": "prometheus" },
-            "description": "Meta: baixo. 4xx+5xx em *-ui.",
             "fieldConfig": {
               "defaults": {
                 "color": { "mode": "thresholds" },
                 "mappings": [],
-                "max": 100,
-                "min": 0,
-                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 1}, {"color": "red", "value": 5}] },
-                "unit": "percent"
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}] },
+                "unit": "short"
               },
               "overrides": []
             },
@@ -175,7 +172,7 @@ configs:
             "id": 11,
             "options": {
               "colorMode": "value",
-              "graphMode": "area",
+              "graphMode": "none",
               "justifyMode": "auto",
               "orientation": "auto",
               "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
@@ -185,33 +182,57 @@ configs:
             "targets": [
               {
                 "datasource": { "type": "prometheus" },
-                "expr": "100 * (sum(rate(http_requests_total{job=~\".*-ui\",status=~\"[45]..\"}[5m])) / sum(rate(http_requests_total{job=~\".*-ui\"}[5m])))",
-                "legendFormat": "Error %",
+                "expr": "count(container_info{component=~\"gaqno-.*-ui\"})",
+                "legendFormat": "Containers",
                 "refId": "A"
               }
             ],
-            "title": "Error rate %",
+            "title": "Frontend containers",
             "type": "stat"
           },
           {
-            "gridPos": { "h": 5, "w": 4, "x": 4, "y": 3 },
-            "id": 12,
-            "options": {
-              "content": "**LCP P75**\n\nMeta: **< 2.5s**\n\nRequer: **RUM** (Sentry, OpenTelemetry browser, Datadog RUM). Envie `largest-contentful-paint` e agregue P75 no backend.",
-              "mode": "markdown"
-            },
-            "title": "LCP P75 (placeholder)",
-            "type": "text"
-          },
-          {
             "datasource": { "type": "prometheus" },
-            "description": "Quando existir http_request_duration_seconds_bucket nos jobs *-ui ou *-service.",
             "fieldConfig": {
               "defaults": {
                 "color": { "mode": "thresholds" },
                 "mappings": [],
-                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 500}, {"color": "red", "value": 2000}] },
-                "unit": "ms"
+                "max": 100,
+                "min": 0,
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 50}, {"color": "red", "value": 80}] },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 5, "w": 4, "x": 4, "y": 3 },
+            "id": 12,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+              "textMode": "auto"
+            },
+            "pluginVersion": "10.2.0",
+            "targets": [
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "sum(sum by (component) (label_replace(rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker.*\",cpu=\"total\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{component=~\"gaqno-.*-ui\"}) * 100)",
+                "legendFormat": "CPU %",
+                "refId": "A"
+              }
+            ],
+            "title": "Total CPU % (frontend)",
+            "type": "stat"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "thresholds" },
+                "mappings": [],
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}] },
+                "unit": "bytes"
               },
               "overrides": []
             },
@@ -219,7 +240,7 @@ configs:
             "id": 13,
             "options": {
               "colorMode": "value",
-              "graphMode": "area",
+              "graphMode": "none",
               "justifyMode": "auto",
               "orientation": "auto",
               "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
@@ -229,51 +250,54 @@ configs:
             "targets": [
               {
                 "datasource": { "type": "prometheus" },
-                "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=~\".*-ui\"}[5m])) by (le)) * 1000",
-                "legendFormat": "P95",
+                "expr": "sum(sum by (component) (label_replace(container_memory_usage_bytes{id=~\"/system.slice/docker.*\"},\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{component=~\"gaqno-.*-ui\"}))",
+                "legendFormat": "Memory",
                 "refId": "A"
               }
             ],
-            "title": "API latência P95 (ms)",
+            "title": "Total memory (frontend)",
             "type": "stat"
-          },
-          {
-            "gridPos": { "h": 5, "w": 4, "x": 12, "y": 3 },
-            "id": 14,
-            "options": {
-              "content": "**Usuários ativos**\n\nDAU / MAU.\n\nRequer: **analytics** (GA, Mixpanel, PostHog) ou backend de sessões exportando para Prometheus/Loki.",
-              "mode": "markdown"
-            },
-            "title": "Usuários ativos (placeholder)",
-            "type": "text"
-          },
-          {
-            "gridPos": { "h": 5, "w": 4, "x": 16, "y": 3 },
-            "id": 15,
-            "options": {
-              "content": "**Sessões com erro %**\n\nMeta: baixo.\n\nRequer: **RUM** (Sentry, Datadog RUM, OpenTelemetry) contando sessões com ≥1 erro / total de sessões.",
-              "mode": "markdown"
-            },
-            "title": "Sessões com erro % (placeholder)",
-            "type": "text"
           },
           {
             "collapsed": false,
             "gridPos": { "h": 1, "w": 24, "x": 0, "y": 8 },
             "id": 20,
             "panels": [],
-            "title": "Linha 2 — Performance",
+            "title": "Linha 2 — CPU",
             "type": "row"
           },
           {
-            "gridPos": { "h": 5, "w": 8, "x": 0, "y": 9 },
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "mappings": [],
+                "max": 100,
+                "min": 0,
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 50}, {"color": "red", "value": 80}] },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 8, "w": 12, "x": 0, "y": 9 },
             "id": 21,
             "options": {
-              "content": "**Core Web Vitals**\n\n- **LCP** < 2.5s\n- **INP/FID** < 200ms\n- **CLS** < 0.1\n\nRequer: RUM (Sentry, OpenTelemetry). Visualize P50/P75/P95 e evolução no tempo.",
-              "mode": "markdown"
+              "displayMode": "gradient",
+              "minVizHeight": 10,
+              "minVizWidth": 0,
+              "orientation": "horizontal",
+              "showUnfilled": true
             },
-            "title": "CWV (placeholder)",
-            "type": "text"
+            "targets": [
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "topk(10, sum by (component) (label_replace(rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker.*\",cpu=\"total\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{component=~\"gaqno-.*-ui\"}) * 100)",
+                "legendFormat": "{{component}}",
+                "refId": "A"
+              }
+            ],
+            "title": "Top CPU consumers (frontend)",
+            "type": "bargauge"
           },
           {
             "datasource": { "type": "prometheus" },
@@ -282,70 +306,30 @@ configs:
                 "color": { "mode": "palette-classic" },
                 "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
                 "mappings": [],
-                "unit": "ms"
+                "unit": "percent"
               },
               "overrides": []
             },
-            "gridPos": { "h": 8, "w": 8, "x": 8, "y": 9 },
+            "gridPos": { "h": 8, "w": 12, "x": 12, "y": 9 },
             "id": 22,
             "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
             "targets": [
               {
                 "datasource": { "type": "prometheus" },
-                "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket{job=~\".*-ui\"}[5m])) by (le, job)) * 1000",
-                "legendFormat": "P50 {{job}}",
+                "expr": "sum by (component) (label_replace(rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker.*\",cpu=\"total\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{component=~\"gaqno-.*-ui\"}) * 100",
+                "legendFormat": "{{component}}",
                 "refId": "A"
-              },
-              {
-                "datasource": { "type": "prometheus" },
-                "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=~\".*-ui\"}[5m])) by (le, job)) * 1000",
-                "legendFormat": "P95 {{job}}",
-                "refId": "B"
               }
             ],
-            "title": "Latência API (P50 / P95) por app",
+            "title": "CPU % per frontend",
             "type": "timeseries"
-          },
-          {
-            "datasource": { "type": "prometheus" },
-            "description": "Bundle size: total dos dist/ dos *-ui (Vite), enviado no CI para Pushgateway. Tempo de download: requer RUM (resource timing); exporte para Prometheus ou Loki.",
-            "fieldConfig": {
-              "defaults": {
-                "color": { "mode": "thresholds" },
-                "mappings": [],
-                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 50}, {"color": "red", "value": 100}] },
-                "unit": "megabytes"
-              },
-              "overrides": []
-            },
-            "gridPos": { "h": 5, "w": 8, "x": 16, "y": 9 },
-            "id": 23,
-            "options": {
-              "colorMode": "value",
-              "graphMode": "area",
-              "justifyMode": "auto",
-              "orientation": "auto",
-              "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-              "textMode": "auto"
-            },
-            "pluginVersion": "10.2.0",
-            "targets": [
-              {
-                "datasource": { "type": "prometheus" },
-                "expr": "sum(frontend_bundle_size_bytes{job=\"frontend-bundle\"}) / 1024 / 1024",
-                "legendFormat": "Total MB",
-                "refId": "A"
-              }
-            ],
-            "title": "Bundle size (Vite total)",
-            "type": "stat"
           },
           {
             "collapsed": false,
             "gridPos": { "h": 1, "w": 24, "x": 0, "y": 17 },
             "id": 30,
             "panels": [],
-            "title": "Linha 3 — Erros",
+            "title": "Linha 3 — Memória",
             "type": "row"
           },
           {
@@ -353,98 +337,56 @@ configs:
             "fieldConfig": {
               "defaults": {
                 "color": { "mode": "palette-classic" },
-                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
-                "mappings": []
+                "mappings": [],
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}] },
+                "unit": "bytes"
               },
               "overrides": []
             },
             "gridPos": { "h": 8, "w": 12, "x": 0, "y": 18 },
             "id": 31,
-            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-            "targets": [
-              { "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{job=~\".*-ui\",status=~\"4..\"}[5m])) by (job)", "legendFormat": "4xx {{job}}", "refId": "A" },
-              { "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{job=~\".*-ui\",status=~\"5..\"}[5m])) by (job)", "legendFormat": "5xx {{job}}", "refId": "B" }
-            ],
-            "title": "4xx / 5xx por app (frontend)",
-            "type": "timeseries"
-          },
-          {
-            "gridPos": { "h": 5, "w": 6, "x": 12, "y": 18 },
-            "id": 32,
             "options": {
-              "content": "**Top erros JS**\n\nRequer: **Sentry** ou RUM. Agrupe por stack trace e exiba no Grafana via Sentry data source ou Loki.",
-              "mode": "markdown"
+              "displayMode": "gradient",
+              "minVizHeight": 10,
+              "minVizWidth": 0,
+              "orientation": "horizontal",
+              "showUnfilled": true
             },
-            "title": "Erros JS (placeholder)",
-            "type": "text"
+            "targets": [
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "topk(10, sum by (component) (label_replace(container_memory_usage_bytes{id=~\"/system.slice/docker.*\"},\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{component=~\"gaqno-.*-ui\"}))",
+                "legendFormat": "{{component}}",
+                "refId": "A"
+              }
+            ],
+            "title": "Top memory consumers (frontend)",
+            "type": "bargauge"
           },
           {
             "datasource": { "type": "prometheus" },
-            "description": "5xx nos backends que o front chama.",
             "fieldConfig": {
               "defaults": {
                 "color": { "mode": "palette-classic" },
                 "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
-                "mappings": []
+                "mappings": [],
+                "unit": "bytes"
               },
               "overrides": []
             },
-            "gridPos": { "h": 8, "w": 6, "x": 18, "y": 18 },
-            "id": 33,
+            "gridPos": { "h": 8, "w": 12, "x": 12, "y": 18 },
+            "id": 32,
             "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
             "targets": [
-              { "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{job=~\".*-service\",status=~\"5..\"}[5m])) by (job)", "legendFormat": "{{job}}", "refId": "A" }
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "sum by (component) (label_replace(container_memory_usage_bytes{id=~\"/system.slice/docker.*\"},\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{component=~\"gaqno-.*-ui\"})",
+                "legendFormat": "{{component}}",
+                "refId": "A"
+              }
             ],
-            "title": "5xx backend",
+            "title": "Memory per frontend",
             "type": "timeseries"
-          },
-          {
-            "gridPos": { "h": 4, "w": 12, "x": 12, "y": 23 },
-            "id": 34,
-            "options": {
-              "content": "**Erros por navegador / dispositivo** — Sentry ou RUM. **Sessões com erro %** — RUM.",
-              "mode": "markdown"
-            },
-            "title": "Erros por browser (placeholder)",
-            "type": "text"
-          },
-          {
-            "collapsed": false,
-            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 27 },
-            "id": 40,
-            "panels": [],
-            "title": "Linha 4 — Negócio",
-            "type": "row"
-          },
-          {
-            "gridPos": { "h": 6, "w": 8, "x": 0, "y": 28 },
-            "id": 41,
-            "options": {
-              "content": "**Conversão principal**\n\nRequer: analytics (GA, PostHog, Mixpanel) ou eventos no backend exportados para Grafana.",
-              "mode": "markdown"
-            },
-            "title": "Conversão (placeholder)",
-            "type": "text"
-          },
-          {
-            "gridPos": { "h": 6, "w": 8, "x": 8, "y": 28 },
-            "id": 42,
-            "options": {
-              "content": "**Checkout / carrinho**\n\nAbandono, taxa de erro no checkout. Fonte: analytics ou backend.",
-              "mode": "markdown"
-            },
-            "title": "Checkout (placeholder)",
-            "type": "text"
-          },
-          {
-            "gridPos": { "h": 6, "w": 8, "x": 16, "y": 28 },
-            "id": 43,
-            "options": {
-              "content": "**Funil de navegação**\n\nPassos até conversão. Fonte: analytics ou eventos.",
-              "mode": "markdown"
-            },
-            "title": "Funil (placeholder)",
-            "type": "text"
           }
         ],
         "refresh": "10s",
@@ -481,7 +423,7 @@ configs:
             "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
             "id": 0,
             "options": {
-              "content": "**Backend** — Golden Signals (latência, tráfego, erros, saturação) + Banco + Infra + Deploy. Dados atuais: Prometheus (*-service). Latência por endpoint/versão, DB e K8s exigem métricas adicionais.",
+              "content": "**Backend** — Containers de serviço (gaqno-*-service). CPU e memória por serviço via cAdvisor + container-info. Banco: postgres-exporter. Cloudflare 503/504: [Services Overview](/d/services-overview).",
               "mode": "markdown"
             },
             "title": "",
@@ -497,15 +439,12 @@ configs:
           },
           {
             "datasource": { "type": "prometheus" },
-            "description": "5xx > 1% = alerta. 4xx+5xx em *-service.",
             "fieldConfig": {
               "defaults": {
                 "color": { "mode": "thresholds" },
                 "mappings": [],
-                "max": 100,
-                "min": 0,
-                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 1}, {"color": "red", "value": 5}] },
-                "unit": "percent"
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}] },
+                "unit": "short"
               },
               "overrides": []
             },
@@ -513,7 +452,7 @@ configs:
             "id": 11,
             "options": {
               "colorMode": "value",
-              "graphMode": "area",
+              "graphMode": "none",
               "justifyMode": "auto",
               "orientation": "auto",
               "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
@@ -523,23 +462,24 @@ configs:
             "targets": [
               {
                 "datasource": { "type": "prometheus" },
-                "expr": "100 * (sum(rate(http_requests_total{job=~\".*-service\",status=~\"[45]..\"}[5m])) / sum(rate(http_requests_total{job=~\".*-service\"}[5m])))",
-                "legendFormat": "Error %",
+                "expr": "count(container_info{component=~\"gaqno-.*-service\"})",
+                "legendFormat": "Containers",
                 "refId": "A"
               }
             ],
-            "title": "Error rate %",
+            "title": "Backend containers",
             "type": "stat"
           },
           {
             "datasource": { "type": "prometheus" },
-            "description": "Quando existir http_request_duration_seconds_bucket nos *-service.",
             "fieldConfig": {
               "defaults": {
                 "color": { "mode": "thresholds" },
                 "mappings": [],
-                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 500}, {"color": "red", "value": 2000}] },
-                "unit": "ms"
+                "max": 100,
+                "min": 0,
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 50}, {"color": "red", "value": 80}] },
+                "unit": "percent"
               },
               "overrides": []
             },
@@ -547,7 +487,7 @@ configs:
             "id": 12,
             "options": {
               "colorMode": "value",
-              "graphMode": "area",
+              "graphMode": "none",
               "justifyMode": "auto",
               "orientation": "auto",
               "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
@@ -557,80 +497,12 @@ configs:
             "targets": [
               {
                 "datasource": { "type": "prometheus" },
-                "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=~\".*-service\"}[5m])) by (le)) * 1000",
-                "legendFormat": "P95",
+                "expr": "sum(sum by (component) (label_replace(rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker.*\",cpu=\"total\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{component=~\"gaqno-.*-service\"}) * 100)",
+                "legendFormat": "CPU %",
                 "refId": "A"
               }
             ],
-            "title": "Latência P95 (ms)",
-            "type": "stat"
-          },
-          {
-            "datasource": { "type": "prometheus" },
-            "fieldConfig": {
-              "defaults": {
-                "color": { "mode": "thresholds" },
-                "mappings": [],
-                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}] }
-              },
-              "overrides": []
-            },
-            "gridPos": { "h": 5, "w": 4, "x": 8, "y": 3 },
-            "id": 13,
-            "options": {
-              "colorMode": "value",
-              "graphMode": "area",
-              "justifyMode": "auto",
-              "orientation": "auto",
-              "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-              "textMode": "auto"
-            },
-            "pluginVersion": "10.2.0",
-            "targets": [
-              {
-                "datasource": { "type": "prometheus" },
-                "expr": "sum(rate(http_requests_total{job=~\".*-service\"}[5m]))",
-                "legendFormat": "RPS",
-                "refId": "A"
-              }
-            ],
-            "title": "RPS",
-            "type": "stat"
-          },
-          {
-            "datasource": { "type": "prometheus" },
-            "description": "Containers (cAdvisor). Filtro por nome; ajuste name=~ para seus serviços.",
-            "fieldConfig": {
-              "defaults": {
-                "color": { "mode": "thresholds" },
-                "mappings": [],
-                "max": 100,
-                "min": 0,
-                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 70}, {"color": "red", "value": 90}] },
-                "unit": "percent"
-              },
-              "overrides": []
-            },
-            "gridPos": { "h": 5, "w": 4, "x": 12, "y": 3 },
-            "id": 14,
-            "options": {
-              "colorMode": "value",
-              "graphMode": "area",
-              "justifyMode": "auto",
-              "orientation": "auto",
-              "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-              "textMode": "auto"
-            },
-            "pluginVersion": "10.2.0",
-            "targets": [
-              {
-                "datasource": { "type": "prometheus" },
-                "expr": "avg(rate(container_cpu_usage_seconds_total{name=~\".+\"}[5m])) by () * 100",
-                "legendFormat": "CPU",
-                "refId": "A"
-              }
-            ],
-            "title": "CPU (containers avg)",
+            "title": "Total CPU % (backend)",
             "type": "stat"
           },
           {
@@ -644,11 +516,11 @@ configs:
               },
               "overrides": []
             },
-            "gridPos": { "h": 5, "w": 4, "x": 16, "y": 3 },
-            "id": 15,
+            "gridPos": { "h": 5, "w": 4, "x": 8, "y": 3 },
+            "id": 13,
             "options": {
               "colorMode": "value",
-              "graphMode": "area",
+              "graphMode": "none",
               "justifyMode": "auto",
               "orientation": "auto",
               "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
@@ -658,12 +530,12 @@ configs:
             "targets": [
               {
                 "datasource": { "type": "prometheus" },
-                "expr": "sum(container_memory_usage_bytes{name=~\".+\"})",
-                "legendFormat": "Mem",
+                "expr": "sum(sum by (component) (label_replace(container_memory_usage_bytes{id=~\"/system.slice/docker.*\"},\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{component=~\"gaqno-.*-service\"}))",
+                "legendFormat": "Memory",
                 "refId": "A"
               }
             ],
-            "title": "Memória (containers)",
+            "title": "Total memory (backend)",
             "type": "stat"
           },
           {
@@ -671,7 +543,7 @@ configs:
             "gridPos": { "h": 1, "w": 24, "x": 0, "y": 8 },
             "id": 20,
             "panels": [],
-            "title": "Linha 2 — Latência detalhada",
+            "title": "Linha 2 — CPU",
             "type": "row"
           },
           {
@@ -679,216 +551,33 @@ configs:
             "fieldConfig": {
               "defaults": {
                 "color": { "mode": "palette-classic" },
-                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
                 "mappings": [],
-                "unit": "ms"
+                "max": 100,
+                "min": 0,
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 50}, {"color": "red", "value": 80}] },
+                "unit": "percent"
               },
               "overrides": []
             },
             "gridPos": { "h": 8, "w": 12, "x": 0, "y": 9 },
             "id": 21,
-            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+            "options": {
+              "displayMode": "gradient",
+              "minVizHeight": 10,
+              "minVizWidth": 0,
+              "orientation": "horizontal",
+              "showUnfilled": true
+            },
             "targets": [
               {
                 "datasource": { "type": "prometheus" },
-                "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket{job=~\".*-service\"}[5m])) by (le, job)) * 1000",
-                "legendFormat": "P50 {{job}}",
+                "expr": "topk(10, sum by (component) (label_replace(rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker.*\",cpu=\"total\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{component=~\"gaqno-.*-service\"}) * 100)",
+                "legendFormat": "{{component}}",
                 "refId": "A"
-              },
-              {
-                "datasource": { "type": "prometheus" },
-                "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=~\".*-service\"}[5m])) by (le, job)) * 1000",
-                "legendFormat": "P95 {{job}}",
-                "refId": "B"
               }
             ],
-            "title": "Latência por serviço (P50 / P95)",
-            "type": "timeseries"
-          },
-          {
-            "gridPos": { "h": 5, "w": 6, "x": 12, "y": 9 },
-            "id": 22,
-            "options": {
-              "content": "**Latência por endpoint**\n\nTop endpoints lentos. Requer: métricas com label `path` ou `route` (ex.: NestJS Prometheus com path).",
-              "mode": "markdown"
-            },
-            "title": "Por endpoint (placeholder)",
-            "type": "text"
-          },
-          {
-            "gridPos": { "h": 5, "w": 6, "x": 18, "y": 9 },
-            "id": 23,
-            "options": {
-              "content": "**Latência por versão**\n\nCorrelacionar release com latência. Requer: label `version` no histogram ou em http_requests_total.",
-              "mode": "markdown"
-            },
-            "title": "Por versão (placeholder)",
-            "type": "text"
-          },
-          {
-            "collapsed": false,
-            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 17 },
-            "id": 30,
-            "panels": [],
-            "title": "Linha 3 — Erros",
-            "type": "row"
-          },
-          {
-            "datasource": { "type": "prometheus" },
-            "fieldConfig": {
-              "defaults": {
-                "color": { "mode": "palette-classic" },
-                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
-                "mappings": []
-              },
-              "overrides": []
-            },
-            "gridPos": { "h": 8, "w": 12, "x": 0, "y": 18 },
-            "id": 31,
-            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-            "targets": [
-              { "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{job=~\".*-service\",status=~\"5..\"}[5m])) by (job)", "legendFormat": "{{job}}", "refId": "A" }
-            ],
-            "title": "5xx por serviço",
-            "type": "timeseries"
-          },
-          {
-            "gridPos": { "h": 5, "w": 6, "x": 12, "y": 18 },
-            "id": 32,
-            "options": {
-              "content": "**Exceptions por tipo**\n\nRequer: métricas de exceção (ex.: NestJS exception filter exportando contador por tipo) ou logs em Loki.",
-              "mode": "markdown"
-            },
-            "title": "Exceptions (placeholder)",
-            "type": "text"
-          },
-          {
-            "datasource": { "type": "prometheus" },
-            "description": "Por job. Com label path/route: agrupe por path para top endpoints.",
-            "fieldConfig": {
-              "defaults": {
-                "color": { "mode": "palette-classic" },
-                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
-                "mappings": []
-              },
-              "overrides": []
-            },
-            "gridPos": { "h": 8, "w": 6, "x": 18, "y": 18 },
-            "id": 33,
-            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-            "targets": [
-              { "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{job=~\".*-service\",status=~\"[45]..\"}[5m])) by (job)", "legendFormat": "{{job}}", "refId": "A" }
-            ],
-            "title": "Top serviços com erro",
-            "type": "timeseries"
-          },
-          {
-            "collapsed": false,
-            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 26 },
-            "id": 40,
-            "panels": [],
-            "title": "Linha 4 — Banco",
-            "type": "row"
-          },
-          {
-            "gridPos": { "h": 6, "w": 8, "x": 0, "y": 27 },
-            "id": 41,
-            "datasource": { "type": "prometheus" },
-            "description": "Maior duração de transação ativa (proxy para slow queries). Requer pg_stat_statements no Postgres para métricas por query.",
-            "fieldConfig": {
-              "defaults": {
-                "color": { "mode": "palette-classic" },
-                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
-                "mappings": [],
-                "unit": "s"
-              },
-              "overrides": []
-            },
-            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-            "targets": [
-              { "datasource": { "type": "prometheus" }, "expr": "pg_stat_activity_max_tx_duration_seconds{job=\"postgres-exporter\"}", "legendFormat": "{{datname}}", "refId": "A" }
-            ],
-            "title": "Longest running tx (s)",
-            "type": "timeseries"
-          },
-          {
-            "gridPos": { "h": 6, "w": 8, "x": 8, "y": 27 },
-            "id": 42,
-            "datasource": { "type": "prometheus" },
-            "description": "Conexões ativas por database. Fonte: postgres_exporter.",
-            "fieldConfig": {
-              "defaults": {
-                "color": { "mode": "palette-classic" },
-                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
-                "mappings": []
-              },
-              "overrides": []
-            },
-            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-            "targets": [
-              { "datasource": { "type": "prometheus" }, "expr": "pg_stat_database_numbackends{job=\"postgres-exporter\"}", "legendFormat": "{{datname}}", "refId": "A" }
-            ],
-            "title": "Conexões por database",
-            "type": "timeseries"
-          },
-          {
-            "gridPos": { "h": 6, "w": 8, "x": 16, "y": 27 },
-            "id": 43,
-            "datasource": { "type": "prometheus" },
-            "description": "Só existe se houver réplicas. Fonte: postgres_exporter.",
-            "fieldConfig": {
-              "defaults": {
-                "color": { "mode": "palette-classic" },
-                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
-                "mappings": [],
-                "unit": "s"
-              },
-              "overrides": []
-            },
-            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-            "targets": [
-              { "datasource": { "type": "prometheus" }, "expr": "pg_replication_lag_in_seconds{job=\"postgres-exporter\"}", "legendFormat": "lag", "refId": "A" }
-            ],
-            "title": "Replication lag (s)",
-            "type": "timeseries"
-          },
-          {
-            "collapsed": false,
-            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 33 },
-            "id": 50,
-            "panels": [],
-            "title": "Linha 5 — Infra",
-            "type": "row"
-          },
-          {
-            "gridPos": { "h": 5, "w": 6, "x": 0, "y": 34 },
-            "id": 51,
-            "options": {
-              "content": "**Pods running**\n\nRequer: Kubernetes + kube-state-metrics ou Prometheus Operator. Métricas: kube_pod_status_ready.",
-              "mode": "markdown"
-            },
-            "title": "Pods (placeholder)",
-            "type": "text"
-          },
-          {
-            "gridPos": { "h": 5, "w": 6, "x": 6, "y": 34 },
-            "id": 52,
-            "options": {
-              "content": "**Restarts / OOMKills**\n\nRequer: kube-state-metrics (kube_pod_container_status_restarts_total) e eventos OOMKilled.",
-              "mode": "markdown"
-            },
-            "title": "Restart (placeholder)",
-            "type": "text"
-          },
-          {
-            "gridPos": { "h": 5, "w": 6, "x": 12, "y": 34 },
-            "id": 53,
-            "options": {
-              "content": "**HPA scaling**\n\nRequer: K8s HPA + kube-state-metrics (horizontalpodautoscaler_status_*).",
-              "mode": "markdown"
-            },
-            "title": "HPA (placeholder)",
-            "type": "text"
+            "title": "Top CPU consumers (backend)",
+            "type": "bargauge"
           },
           {
             "datasource": { "type": "prometheus" },
@@ -901,13 +590,114 @@ configs:
               },
               "overrides": []
             },
-            "gridPos": { "h": 8, "w": 6, "x": 18, "y": 34 },
-            "id": 54,
+            "gridPos": { "h": 8, "w": 12, "x": 12, "y": 9 },
+            "id": 22,
             "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
             "targets": [
-              { "datasource": { "type": "prometheus" }, "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\".+\"}[5m])) by (name) * 100", "legendFormat": "{{name}}", "refId": "A" }
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "sum by (component) (label_replace(rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker.*\",cpu=\"total\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{component=~\"gaqno-.*-service\"}) * 100",
+                "legendFormat": "{{component}}",
+                "refId": "A"
+              }
             ],
-            "title": "CPU por container (cAdvisor)",
+            "title": "CPU % per service",
+            "type": "timeseries"
+          },
+          {
+            "collapsed": false,
+            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 17 },
+            "id": 30,
+            "panels": [],
+            "title": "Linha 3 — Memória",
+            "type": "row"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "mappings": [],
+                "thresholds": { "mode": "absolute", "steps": [{"color": "green", "value": null}] },
+                "unit": "bytes"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 8, "w": 12, "x": 0, "y": 18 },
+            "id": 31,
+            "options": {
+              "displayMode": "gradient",
+              "minVizHeight": 10,
+              "minVizWidth": 0,
+              "orientation": "horizontal",
+              "showUnfilled": true
+            },
+            "targets": [
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "topk(10, sum by (component) (label_replace(container_memory_usage_bytes{id=~\"/system.slice/docker.*\"},\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{component=~\"gaqno-.*-service\"}))",
+                "legendFormat": "{{component}}",
+                "refId": "A"
+              }
+            ],
+            "title": "Top memory consumers (backend)",
+            "type": "bargauge"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                "mappings": [],
+                "unit": "bytes"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 8, "w": 12, "x": 12, "y": 18 },
+            "id": 32,
+            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+            "targets": [
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "sum by (component) (label_replace(container_memory_usage_bytes{id=~\"/system.slice/docker.*\"},\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{component=~\"gaqno-.*-service\"})",
+                "legendFormat": "{{component}}",
+                "refId": "A"
+              }
+            ],
+            "title": "Memory per service",
+            "type": "timeseries"
+          },
+          {
+            "collapsed": false,
+            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 26 },
+            "id": 40,
+            "panels": [],
+            "title": "Linha 4 — Banco",
+            "type": "row"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                "mappings": []
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 6, "w": 6, "x": 0, "y": 27 },
+            "id": 41,
+            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+            "targets": [
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "pg_stat_database_numbackends{job=\"postgres-exporter\"}",
+                "legendFormat": "{{datname}}",
+                "refId": "A"
+              }
+            ],
+            "title": "Conexões por database",
             "type": "timeseries"
           },
           {
@@ -921,13 +711,43 @@ configs:
               },
               "overrides": []
             },
-            "gridPos": { "h": 8, "w": 12, "x": 0, "y": 39 },
-            "id": 55,
+            "gridPos": { "h": 6, "w": 6, "x": 6, "y": 27 },
+            "id": 42,
             "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
             "targets": [
-              { "datasource": { "type": "prometheus" }, "expr": "container_memory_usage_bytes{name=~\".+\"}", "legendFormat": "{{name}}", "refId": "A" }
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "pg_database_size_bytes{job=\"postgres-exporter\"}",
+                "legendFormat": "{{datname}}",
+                "refId": "A"
+              }
             ],
-            "title": "Memória por container (cAdvisor)",
+            "title": "Database size",
+            "type": "timeseries"
+          },
+          {
+            "datasource": { "type": "prometheus" },
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                "mappings": [],
+                "unit": "s"
+              },
+              "overrides": []
+            },
+            "gridPos": { "h": 6, "w": 6, "x": 12, "y": 27 },
+            "id": 43,
+            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+            "targets": [
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "pg_replication_lag_seconds{job=\"postgres-exporter\"}",
+                "legendFormat": "lag",
+                "refId": "A"
+              }
+            ],
+            "title": "Replication lag (s)",
             "type": "timeseries"
           },
           {
@@ -940,13 +760,18 @@ configs:
               },
               "overrides": []
             },
-            "gridPos": { "h": 8, "w": 12, "x": 12, "y": 39 },
-            "id": 56,
+            "gridPos": { "h": 6, "w": 6, "x": 18, "y": 27 },
+            "id": 44,
             "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
             "targets": [
-              { "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{job=~\".*-service\"}[5m])) by (job)", "legendFormat": "{{job}}", "refId": "A" }
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "pg_locks_count{job=\"postgres-exporter\"}",
+                "legendFormat": "{{mode}}",
+                "refId": "A"
+              }
             ],
-            "title": "RPS por serviço",
+            "title": "Locks count",
             "type": "timeseries"
           }
         ],
@@ -992,11 +817,12 @@ configs:
           },
           {
             "collapsed": false,
-            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 2 },
+            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 34 },
             "id": 10,
             "panels": [],
-            "title": "Linha 1 — DORA",
-            "type": "row"
+            "title": "Linha 2 — DORA",
+            "type": "row",
+            "collapsed": true
           },
           {
             "datasource": { "type": "prometheus" },
@@ -1010,7 +836,7 @@ configs:
               },
               "overrides": []
             },
-            "gridPos": { "h": 5, "w": 4, "x": 0, "y": 3 },
+            "gridPos": { "h": 5, "w": 4, "x": 0, "y": 35 },
             "id": 11,
             "options": {
               "colorMode": "value",
@@ -1044,7 +870,7 @@ configs:
               },
               "overrides": []
             },
-            "gridPos": { "h": 5, "w": 4, "x": 4, "y": 3 },
+            "gridPos": { "h": 5, "w": 4, "x": 4, "y": 35 },
             "id": 12,
             "options": {
               "colorMode": "value",
@@ -1067,7 +893,7 @@ configs:
             "type": "stat"
           },
           {
-            "gridPos": { "h": 5, "w": 4, "x": 8, "y": 3 },
+            "gridPos": { "h": 5, "w": 4, "x": 8, "y": 35 },
             "id": 13,
             "options": {
               "content": "**Change failure rate**\n\n% deploys que causaram incidente; % com rollback.\n\nRequer: correlação deploy ↔ incidentes (PagerDuty, custom metrics).",
@@ -1077,7 +903,7 @@ configs:
             "type": "text"
           },
           {
-            "gridPos": { "h": 5, "w": 4, "x": 12, "y": 3 },
+            "gridPos": { "h": 5, "w": 4, "x": 12, "y": 35 },
             "id": 14,
             "options": {
               "content": "**MTTR**\n\nTempo médio para resolver incidentes; tempo para rollback.\n\nRequer: dados de incidentes (PagerDuty, Opsgenie, Jira) + timestamps de resolução.",
@@ -1087,7 +913,7 @@ configs:
             "type": "text"
           },
           {
-            "gridPos": { "h": 5, "w": 8, "x": 16, "y": 3 },
+            "gridPos": { "h": 5, "w": 8, "x": 16, "y": 35 },
             "id": 15,
             "options": {
               "content": "Visual ideal DORA: gráficos semanais + comparação mensal. Exporte métricas para Prometheus ou use data source Grafana (ex.: GitHub).",
@@ -1098,14 +924,15 @@ configs:
           },
           {
             "collapsed": false,
-            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 8 },
+            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 40 },
             "id": 20,
             "panels": [],
-            "title": "Linha 2 — CI/CD",
-            "type": "row"
+            "title": "Linha 3 — CI/CD",
+            "type": "row",
+            "collapsed": true
           },
           {
-            "gridPos": { "h": 5, "w": 6, "x": 0, "y": 9 },
+            "gridPos": { "h": 5, "w": 6, "x": 0, "y": 41 },
             "id": 21,
             "options": {
               "content": "**Taxa de sucesso pipeline**\n\n% jobs concluídos com sucesso.\n\nRequer: GitHub Actions / GitLab CI / Jenkins API ou exporter (ex.: prometheus-github-actions-exporter).",
@@ -1115,7 +942,7 @@ configs:
             "type": "text"
           },
           {
-            "gridPos": { "h": 5, "w": 6, "x": 6, "y": 9 },
+            "gridPos": { "h": 5, "w": 6, "x": 6, "y": 41 },
             "id": 22,
             "options": {
               "content": "**Tempo médio de build**\n\nDuração média dos jobs de build.\n\nRequer: métricas do CI (duração por workflow/job) exportadas para Prometheus.",
@@ -1125,7 +952,7 @@ configs:
             "type": "text"
           },
           {
-            "gridPos": { "h": 5, "w": 6, "x": 12, "y": 9 },
+            "gridPos": { "h": 5, "w": 6, "x": 12, "y": 41 },
             "id": 23,
             "options": {
               "content": "**Tempo médio de deploy**\n\nDo trigger até produção.\n\nRequer: Coolify/GitHub Deployments API ou pipeline exporter.",
@@ -1135,7 +962,7 @@ configs:
             "type": "text"
           },
           {
-            "gridPos": { "h": 5, "w": 6, "x": 18, "y": 9 },
+            "gridPos": { "h": 5, "w": 6, "x": 18, "y": 41 },
             "id": 24,
             "options": {
               "content": "**Qualidade:** cobertura, testes falhando, análise estática. Requer: relatórios do CI (coverage, lint) em artefatos ou Prometheus.",
@@ -1146,10 +973,10 @@ configs:
           },
           {
             "collapsed": false,
-            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 },
+            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 2 },
             "id": 30,
             "panels": [],
-            "title": "Linha 3 — Infra",
+            "title": "Linha 1 — Infra",
             "type": "row"
           },
           {
@@ -1164,7 +991,7 @@ configs:
               },
               "overrides": []
             },
-            "gridPos": { "h": 4, "w": 3, "x": 0, "y": 15 },
+            "gridPos": { "h": 4, "w": 3, "x": 0, "y": 3 },
             "id": 31,
             "options": {
               "colorMode": "value",
@@ -1192,7 +1019,7 @@ configs:
               },
               "overrides": []
             },
-            "gridPos": { "h": 4, "w": 3, "x": 3, "y": 15 },
+            "gridPos": { "h": 4, "w": 3, "x": 3, "y": 3 },
             "id": 32,
             "options": {
               "colorMode": "value",
@@ -1203,7 +1030,7 @@ configs:
               "textMode": "auto"
             },
             "pluginVersion": "10.2.0",
-            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "100 * (1 - avg(irate(node_cpu_seconds_total{job=\"node-exporter\",mode=\"idle\"}[5m])) by (instance))", "legendFormat": "CPU", "refId": "A" }],
+            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "100 * (1 - avg(irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) by (instance))", "legendFormat": "CPU", "refId": "A" }],
             "title": "Host CPU %",
             "type": "stat"
           },
@@ -1220,7 +1047,7 @@ configs:
               },
               "overrides": []
             },
-            "gridPos": { "h": 4, "w": 3, "x": 6, "y": 15 },
+            "gridPos": { "h": 4, "w": 3, "x": 6, "y": 3 },
             "id": 33,
             "options": {
               "colorMode": "value",
@@ -1231,12 +1058,12 @@ configs:
               "textMode": "auto"
             },
             "pluginVersion": "10.2.0",
-            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "100 * (1 - (node_memory_MemAvailable_bytes{job=\"node-exporter\"} / node_memory_MemTotal_bytes{job=\"node-exporter\"}))", "legendFormat": "Mem", "refId": "A" }],
+            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "100 * (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes))", "legendFormat": "Mem", "refId": "A" }],
             "title": "Host Memory %",
             "type": "stat"
           },
           {
-            "gridPos": { "h": 4, "w": 3, "x": 9, "y": 15 },
+            "gridPos": { "h": 4, "w": 3, "x": 9, "y": 3 },
             "id": 34,
             "options": {
               "content": "**Pods restart**\n\nRequer: K8s + kube-state-metrics (`kube_pod_container_status_restarts_total`).",
@@ -1257,7 +1084,7 @@ configs:
               },
               "overrides": []
             },
-            "gridPos": { "h": 4, "w": 3, "x": 12, "y": 15 },
+            "gridPos": { "h": 4, "w": 3, "x": 12, "y": 3 },
             "id": 35,
             "options": {
               "colorMode": "value",
@@ -1282,7 +1109,7 @@ configs:
               },
               "overrides": []
             },
-            "gridPos": { "h": 4, "w": 3, "x": 15, "y": 15 },
+            "gridPos": { "h": 4, "w": 3, "x": 15, "y": 3 },
             "id": 36,
             "options": {
               "colorMode": "value",
@@ -1308,10 +1135,10 @@ configs:
               },
               "overrides": []
             },
-            "gridPos": { "h": 6, "w": 8, "x": 18, "y": 15 },
+            "gridPos": { "h": 6, "w": 8, "x": 18, "y": 3 },
             "id": 37,
             "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "100 * (1 - avg(irate(node_cpu_seconds_total{job=\"node-exporter\",mode=\"idle\"}[5m])) by (instance))", "legendFormat": "{{instance}}", "refId": "A" }],
+            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "100 * (1 - avg(irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) by (instance))", "legendFormat": "{{instance}}", "refId": "A" }],
             "title": "Host CPU %",
             "type": "timeseries"
           },
@@ -1326,10 +1153,10 @@ configs:
               },
               "overrides": []
             },
-            "gridPos": { "h": 6, "w": 8, "x": 0, "y": 19 },
+            "gridPos": { "h": 6, "w": 8, "x": 0, "y": 9 },
             "id": 38,
             "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "100 * (1 - (node_memory_MemAvailable_bytes{job=\"node-exporter\"} / node_memory_MemTotal_bytes{job=\"node-exporter\"}))", "legendFormat": "{{instance}}", "refId": "A" }],
+            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "100 * (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes))", "legendFormat": "{{instance}}", "refId": "A" }],
             "title": "Host Memory %",
             "type": "timeseries"
           },
@@ -1343,13 +1170,13 @@ configs:
               },
               "overrides": []
             },
-            "gridPos": { "h": 6, "w": 8, "x": 8, "y": 19 },
+            "gridPos": { "h": 6, "w": 8, "x": 8, "y": 9 },
             "id": 39,
             "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
             "targets": [
-              { "datasource": { "type": "prometheus" }, "expr": "node_load1{job=\"node-exporter\"}", "legendFormat": "1m", "refId": "A" },
-              { "datasource": { "type": "prometheus" }, "expr": "node_load5{job=\"node-exporter\"}", "legendFormat": "5m", "refId": "B" },
-              { "datasource": { "type": "prometheus" }, "expr": "node_load15{job=\"node-exporter\"}", "legendFormat": "15m", "refId": "C" }
+              { "datasource": { "type": "prometheus" }, "expr": "node_load1", "legendFormat": "1m", "refId": "A" },
+              { "datasource": { "type": "prometheus" }, "expr": "node_load5", "legendFormat": "5m", "refId": "B" },
+              { "datasource": { "type": "prometheus" }, "expr": "node_load15", "legendFormat": "15m", "refId": "C" }
             ],
             "title": "Host Load average",
             "type": "timeseries"
@@ -1364,7 +1191,7 @@ configs:
               },
               "overrides": []
             },
-            "gridPos": { "h": 6, "w": 8, "x": 16, "y": 19 },
+            "gridPos": { "h": 6, "w": 8, "x": 16, "y": 9 },
             "id": 40,
             "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
             "targets": [{ "datasource": { "type": "prometheus" }, "expr": "up", "legendFormat": "{{job}}", "refId": "A" }],
@@ -1382,11 +1209,11 @@ configs:
               },
               "overrides": []
             },
-            "gridPos": { "h": 8, "w": 12, "x": 0, "y": 25 },
+            "gridPos": { "h": 8, "w": 12, "x": 0, "y": 15 },
             "id": 41,
             "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\".+\"}[5m])) by (name) * 100", "legendFormat": "{{name}}", "refId": "A" }],
-            "title": "Containers — CPU % by name",
+            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "sum by (component) (label_replace(rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker.*\",cpu=\"total\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\.scope\") * on(container_id) group_left(component) container_info{component!~\"gaqno-.*-ui|gaqno-.*-service\"}) * 100", "legendFormat": "{{component}}", "refId": "A" }],
+            "title": "Containers — CPU % by name (infra only)",
             "type": "timeseries"
           },
           {
@@ -1400,11 +1227,11 @@ configs:
               },
               "overrides": []
             },
-            "gridPos": { "h": 8, "w": 12, "x": 12, "y": 25 },
+            "gridPos": { "h": 8, "w": 12, "x": 12, "y": 15 },
             "id": 42,
             "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "container_memory_usage_bytes{name=~\".+\"}", "legendFormat": "{{name}}", "refId": "A" }],
-            "title": "Containers — Memory by name",
+            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "sum by (component) (label_replace(container_memory_usage_bytes{id=~\"/system.slice/docker.*\"},\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\.scope\") * on(container_id) group_left(component) container_info{component!~\"gaqno-.*-ui|gaqno-.*-service\"})", "legendFormat": "{{component}}", "refId": "A" }],
+            "title": "Containers — Memory by name (infra only)",
             "type": "timeseries"
           },
           {
@@ -1417,7 +1244,7 @@ configs:
               },
               "overrides": []
             },
-            "gridPos": { "h": 6, "w": 12, "x": 0, "y": 33 },
+            "gridPos": { "h": 6, "w": 12, "x": 0, "y": 23 },
             "id": 43,
             "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
             "targets": [{ "datasource": { "type": "prometheus" }, "expr": "scrape_duration_seconds", "legendFormat": "{{job}}", "refId": "A" }],
@@ -1426,7 +1253,7 @@ configs:
           },
           {
             "collapsed": false,
-            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 39 },
+            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 29 },
             "id": 44,
             "panels": [],
             "title": "Cloudflare Tunnel",
@@ -1444,7 +1271,7 @@ configs:
               },
               "overrides": []
             },
-            "gridPos": { "h": 4, "w": 6, "x": 0, "y": 40 },
+            "gridPos": { "h": 4, "w": 6, "x": 0, "y": 30 },
             "id": 45,
             "options": {
               "colorMode": "value",
@@ -1472,7 +1299,7 @@ configs:
               },
               "overrides": []
             },
-            "gridPos": { "h": 4, "w": 6, "x": 6, "y": 40 },
+            "gridPos": { "h": 4, "w": 6, "x": 6, "y": 30 },
             "id": 46,
             "options": {
               "colorMode": "value",
@@ -1500,7 +1327,7 @@ configs:
               },
               "overrides": []
             },
-            "gridPos": { "h": 4, "w": 6, "x": 12, "y": 40 },
+            "gridPos": { "h": 4, "w": 6, "x": 12, "y": 30 },
             "id": 47,
             "options": {
               "colorMode": "value",
@@ -1519,14 +1346,15 @@ configs:
           },
           {
             "collapsed": false,
-            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 44 },
+            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 46 },
             "id": 50,
             "panels": [],
             "title": "Linha 4 — Segurança",
-            "type": "row"
+            "type": "row",
+            "collapsed": true
           },
           {
-            "gridPos": { "h": 5, "w": 8, "x": 0, "y": 45 },
+            "gridPos": { "h": 5, "w": 8, "x": 0, "y": 47 },
             "id": 51,
             "options": {
               "content": "**Vulnerabilidades**\n\nCríticas/altas abertas; por imagem. Requer: Trivy, Snyk, Dependabot ou similar exportando para Prometheus/Loki/Dashboard.",
@@ -1536,7 +1364,7 @@ configs:
             "type": "text"
           },
           {
-            "gridPos": { "h": 5, "w": 8, "x": 8, "y": 45 },
+            "gridPos": { "h": 5, "w": 8, "x": 8, "y": 47 },
             "id": 52,
             "options": {
               "content": "**Certificados**\n\nExpiração; renovação. Requer: cert-exporter, cron check ou alerting (ex.: Prometheus Blackbox + cert expiry).",
@@ -1546,7 +1374,7 @@ configs:
             "type": "text"
           },
           {
-            "gridPos": { "h": 5, "w": 8, "x": 16, "y": 45 },
+            "gridPos": { "h": 5, "w": 8, "x": 16, "y": 47 },
             "id": 53,
             "options": {
               "content": "**Secrets / auth**\n\nSecrets expostos (scan); falhas de autenticação; tentativas negadas. Requer: auditoria logs ou scanners integrados.",
@@ -1557,14 +1385,15 @@ configs:
           },
           {
             "collapsed": false,
-            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 50 },
+            "gridPos": { "h": 1, "w": 24, "x": 0, "y": 52 },
             "id": 60,
             "panels": [],
             "title": "Linha 5 — Custo",
-            "type": "row"
+            "type": "row",
+            "collapsed": true
           },
           {
-            "gridPos": { "h": 5, "w": 12, "x": 0, "y": 51 },
+            "gridPos": { "h": 5, "w": 12, "x": 0, "y": 53 },
             "id": 61,
             "options": {
               "content": "**Gasto por ambiente**\n\nDev / staging / prod. Requer: cloud billing (AWS Cost Explorer, GCP Billing) ou FinOps tool (Kubecost, Infracost) com export para Grafana.",
@@ -1574,7 +1403,7 @@ configs:
             "type": "text"
           },
           {
-            "gridPos": { "h": 5, "w": 12, "x": 12, "y": 51 },
+            "gridPos": { "h": 5, "w": 12, "x": 12, "y": 53 },
             "id": 62,
             "options": {
               "content": "**Custo por namespace / serviço / deploy** — Kubecost (K8s), tags de billing na cloud ou métricas custom (custo por deploy a partir do CI).",
@@ -1625,7 +1454,7 @@ configs:
             "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
             "id": 1,
             "options": {
-              "content": "**DNS droppage** — Queries that did not return **NOERROR** (e.g. NXDOMAIN, SERVFAIL, REFUSED). Data from Cloudflare DNS Analytics via GraphQL.\n\n**Setup:** 1) Install plugin **Infinity**. 2) Add datasource: URL allowed host `https://api.cloudflare.com/client/v4/graphql`, Auth = Bearer token (Cloudflare API token with Zone > Analytics Read). 3) Set variable **zone_id** to your Zone ID (Cloudflare Dashboard → zone → Overview, right sidebar).",
+              "content": "**DNS droppage** — Queries that did not return **NOERROR** (e.g. NXDOMAIN, SERVFAIL, REFUSED). Data from Cloudflare DNS Analytics via GraphQL.\n\n**If you see \"Datasource was not found\":** In the variable **Infinity (Cloudflare)** above, select an Infinity datasource. If none exists: **Connections → Data sources → Add data source → Infinity**. Add allowed host `https://api.cloudflare.com/client/v4/graphql`, Auth = Bearer token (Cloudflare API token with Zone → Analytics Read). Then come back and select it in the variable.\n\n**Then:** Set **zone_id** to your Zone ID (Cloudflare Dashboard → your zone → Overview, right sidebar).",
               "mode": "markdown"
             },
             "title": "",
@@ -1862,7 +1691,7 @@ configs:
               "type": "datasource"
             },
             {
-              "current": { "selected": false, "text": "", "value": "" },
+              "current": { "selected": false, "text": "d628a8ac60069acccbc154d173b88717", "value": "d628a8ac60069acccbc154d173b88717" },
               "hide": 0,
               "label": "Zone ID",
               "name": "zone_id",
@@ -1883,7 +1712,7 @@ configs:
       }
   grafana_dashboard_gaqno_errors_by_service:
     content: |
-      {"annotations":{"list":[{"builtIn":1,"datasource":{"type":"grafana","uid":"-- Grafana --"},"enable":true,"hide":true,"iconColor":"rgba(0, 211, 255, 1)","name":"Annotations & Alerts","type":"dashboard"}]},"editable":true,"fiscalYearStartMonth":0,"graphTooltip":0,"id":null,"links":[{"title":"Front","url":"/d/gaqno-dashboard-front","type":"dashboard"},{"title":"Backend","url":"/d/gaqno-dashboard-backend","type":"dashboard"},{"title":"DevOps","url":"/d/gaqno-dashboard-devops","type":"dashboard"},{"title":"DNS droppage","url":"/d/gaqno-dns-droppage","type":"dashboard"}],"liveNow":false,"panels":[{"fieldConfig":{"defaults":{"mappings":[],"max":1,"min":0,"thresholds":{"mode":"absolute","steps":[{"color":"green","value":0},{"color":"yellow","value":0.7},{"color":"red","value":0.9}]},"unit":"percentunit"},"overrides":[]},"gridPos":{"h":6,"w":4,"x":0,"y":0},"id":10,"options":{"minVizHeight":75,"minVizWidth":75,"orientation":"auto","reduceOptions":{"calcs":["lastNotNull"],"fields":"","values":false},"showThresholdLabels":false,"showThresholdMarkers":true,"sizing":"auto"},"pluginVersion":"12.4.0","targets":[{"expr":"1 - avg(rate(node_cpu_seconds_total{mode=\"idle\"}[5m]))","instant":true,"legendFormat":"CPU Usage","refId":"A"}],"title":"Server CPU Usage","type":"gauge"},{"fieldConfig":{"defaults":{"mappings":[],"max":1,"min":0,"thresholds":{"mode":"absolute","steps":[{"color":"green","value":0},{"color":"yellow","value":0.7},{"color":"red","value":0.9}]},"unit":"percentunit"},"overrides":[]},"gridPos":{"h":6,"w":4,"x":4,"y":0},"id":11,"options":{"minVizHeight":75,"minVizWidth":75,"orientation":"auto","reduceOptions":{"calcs":["lastNotNull"],"fields":"","values":false},"showThresholdLabels":false,"showThresholdMarkers":true,"sizing":"auto"},"pluginVersion":"12.4.0","targets":[{"expr":"1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)","instant":true,"legendFormat":"RAM Usage","refId":"A"}],"title":"Server RAM Usage","type":"gauge"},{"fieldConfig":{"defaults":{"mappings":[],"max":1,"min":0,"thresholds":{"mode":"absolute","steps":[{"color":"green","value":0},{"color":"yellow","value":0.7},{"color":"red","value":0.9}]},"unit":"percentunit"},"overrides":[]},"gridPos":{"h":6,"w":4,"x":8,"y":0},"id":12,"options":{"minVizHeight":75,"minVizWidth":75,"orientation":"auto","reduceOptions":{"calcs":["lastNotNull"],"fields":"","values":false},"showThresholdLabels":false,"showThresholdMarkers":true,"sizing":"auto"},"pluginVersion":"12.4.0","targets":[{"expr":"1 - (node_filesystem_avail_bytes{mountpoint=\"/\"} / node_filesystem_size_bytes{mountpoint=\"/\"})","instant":true,"legendFormat":"Disk Usage","refId":"A"}],"title":"Disk Usage","type":"gauge"},{"datasource":{"type":"prometheus"},"fieldConfig":{"defaults":{"mappings":[],"thresholds":{"mode":"absolute","steps":[{"color":"green","value":0}]}},"overrides":[]},"gridPos":{"h":6,"w":6,"x":12,"y":0},"id":13,"options":{"colorMode":"value","graphMode":"area","justifyMode":"auto","orientation":"auto","percentChangeColorMode":"standard","reduceOptions":{"calcs":["lastNotNull"],"fields":"","values":false},"showPercentChange":false,"textMode":"auto","wideLayout":true},"pluginVersion":"12.4.0","targets":[{"expr":"count(container_info{service!=\"\"})","instant":true,"legendFormat":"Containers","refId":"A"}],"title":"Running Containers","type":"stat"},{"fieldConfig":{"defaults":{"mappings":[],"thresholds":{"mode":"absolute","steps":[{"color":"green","value":0}]},"unit":"dtdurations"},"overrides":[]},"gridPos":{"h":6,"w":6,"x":18,"y":0},"id":14,"options":{"colorMode":"value","graphMode":"area","justifyMode":"auto","orientation":"auto","percentChangeColorMode":"standard","reduceOptions":{"calcs":["lastNotNull"],"fields":"","values":false},"showPercentChange":false,"textMode":"auto","wideLayout":true},"pluginVersion":"12.4.0","targets":[{"expr":"time() - node_boot_time_seconds","instant":true,"legendFormat":"Uptime","refId":"A"}],"title":"Server Uptime","type":"stat"},{"fieldConfig":{"defaults":{"mappings":[],"max":1,"min":0,"thresholds":{"mode":"absolute","steps":[{"color":"green","value":0},{"color":"yellow","value":0.25},{"color":"red","value":0.5}]},"unit":"percentunit"},"overrides":[]},"gridPos":{"h":10,"w":12,"x":0,"y":6},"id":3,"options":{"displayMode":"gradient","legend":{"calcs":[],"displayMode":"list","placement":"bottom","showLegend":false},"maxVizHeight":300,"minVizHeight":16,"minVizWidth":8,"namePlacement":"auto","orientation":"horizontal","reduceOptions":{"calcs":["last"],"fields":"","values":false},"showUnfilled":true,"sizing":"auto","valueMode":"color"},"pluginVersion":"12.4.0","targets":[{"expr":"topk(10, sum by (component) (label_replace(rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker.*\",cpu=\"total\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{service!=\"\"}))","instant":true,"legendFormat":"{{component}}","refId":"A"}],"title":"Top 10 CPU Consumers","type":"bargauge"},{"fieldConfig":{"defaults":{"color":{"mode":"palette-classic"},"custom":{"axisBorderShow":false,"axisCenteredZero":false,"axisColorMode":"text","axisLabel":"","axisPlacement":"auto","barAlignment":0,"barWidthFactor":0.6,"drawStyle":"line","fillOpacity":10,"gradientMode":"none","hideFrom":{"legend":false,"tooltip":false,"viz":false},"insertNulls":false,"lineInterpolation":"linear","lineWidth":2,"pointSize":5,"scaleDistribution":{"type":"linear"},"showPoints":"auto","showValues":false,"spanNulls":false,"stacking":{"group":"A","mode":"none"},"thresholdsStyle":{"mode":"off"}},"mappings":[],"min":0,"thresholds":{"mode":"absolute","steps":[{"color":"green","value":0},{"color":"red","value":80}]},"unit":"percentunit"},"overrides":[]},"gridPos":{"h":10,"w":12,"x":12,"y":6},"id":1,"options":{"legend":{"calcs":["mean","max","last"],"displayMode":"table","placement":"right","showLegend":true,"sortBy":"Mean","sortDesc":true},"tooltip":{"hideZeros":false,"mode":"multi","sort":"none"}},"pluginVersion":"12.4.0","targets":[{"expr":"sum by (component) (label_replace(rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker.*\",cpu=\"total\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{service!=\"\"})","legendFormat":"{{component}}","refId":"A"}],"title":"CPU Usage per Service","type":"timeseries"},{"fieldConfig":{"defaults":{"mappings":[],"min":0,"thresholds":{"mode":"absolute","steps":[{"color":"green","value":0},{"color":"yellow","value":536870912},{"color":"red","value":1073741824}]},"unit":"bytes"},"overrides":[]},"gridPos":{"h":10,"w":12,"x":0,"y":16},"id":4,"options":{"displayMode":"gradient","legend":{"calcs":[],"displayMode":"list","placement":"bottom","showLegend":false},"maxVizHeight":300,"minVizHeight":16,"minVizWidth":8,"namePlacement":"auto","orientation":"horizontal","reduceOptions":{"calcs":["last"],"fields":"","values":false},"showUnfilled":true,"sizing":"auto","valueMode":"color"},"pluginVersion":"12.4.0","targets":[{"expr":"topk(10, sum by (component) (label_replace(container_memory_usage_bytes{id=~\"/system.slice/docker.*\"},\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{service!=\"\"}))","instant":true,"legendFormat":"{{component}}","refId":"A"}],"title":"Top 10 Memory Consumers","type":"bargauge"},{"fieldConfig":{"defaults":{"color":{"mode":"palette-classic"},"custom":{"axisBorderShow":false,"axisCenteredZero":false,"axisColorMode":"text","axisLabel":"","axisPlacement":"auto","barAlignment":0,"barWidthFactor":0.6,"drawStyle":"line","fillOpacity":10,"gradientMode":"none","hideFrom":{"legend":false,"tooltip":false,"viz":false},"insertNulls":false,"lineInterpolation":"linear","lineWidth":2,"pointSize":5,"scaleDistribution":{"type":"linear"},"showPoints":"auto","showValues":false,"spanNulls":false,"stacking":{"group":"A","mode":"none"},"thresholdsStyle":{"mode":"off"}},"mappings":[],"min":0,"thresholds":{"mode":"absolute","steps":[{"color":"green","value":0},{"color":"red","value":80}]},"unit":"bytes"},"overrides":[]},"gridPos":{"h":10,"w":12,"x":12,"y":16},"id":2,"options":{"legend":{"calcs":["mean","max","last"],"displayMode":"table","placement":"right","showLegend":true,"sortBy":"Mean","sortDesc":true},"tooltip":{"hideZeros":false,"mode":"multi","sort":"none"}},"pluginVersion":"12.4.0","targets":[{"expr":"sum by (component) (label_replace(container_memory_usage_bytes{id=~\"/system.slice/docker.*\"},\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{service!=\"\"})","legendFormat":"{{component}}","refId":"A"}],"title":"Memory Usage per Service","type":"timeseries"},{"fieldConfig":{"defaults":{"color":{"mode":"palette-classic"},"custom":{"axisBorderShow":false,"axisCenteredZero":false,"axisColorMode":"text","axisLabel":"","axisPlacement":"auto","barAlignment":0,"barWidthFactor":0.6,"drawStyle":"line","fillOpacity":10,"gradientMode":"none","hideFrom":{"legend":false,"tooltip":false,"viz":false},"insertNulls":false,"lineInterpolation":"linear","lineWidth":2,"pointSize":5,"scaleDistribution":{"type":"linear"},"showPoints":"auto","showValues":false,"spanNulls":false,"stacking":{"group":"A","mode":"none"},"thresholdsStyle":{"mode":"off"}},"mappings":[],"min":0,"thresholds":{"mode":"absolute","steps":[{"color":"green","value":0},{"color":"red","value":80}]},"unit":"Bps"},"overrides":[]},"gridPos":{"h":8,"w":12,"x":0,"y":26},"id":5,"options":{"legend":{"calcs":["mean","max"],"displayMode":"table","placement":"right","showLegend":true},"tooltip":{"hideZeros":false,"mode":"multi","sort":"none"}},"pluginVersion":"12.4.0","targets":[{"expr":"sum by (component) (label_replace(rate(container_network_receive_bytes_total{id=~\"/system.slice/docker.*\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{service!=\"\"})","legendFormat":"{{component}}","refId":"A"}],"title":"Network I/O per Service (Receive)","type":"timeseries"},{"fieldConfig":{"defaults":{"color":{"mode":"palette-classic"},"custom":{"axisBorderShow":false,"axisCenteredZero":false,"axisColorMode":"text","axisLabel":"","axisPlacement":"auto","barAlignment":0,"barWidthFactor":0.6,"drawStyle":"line","fillOpacity":10,"gradientMode":"none","hideFrom":{"legend":false,"tooltip":false,"viz":false},"insertNulls":false,"lineInterpolation":"linear","lineWidth":2,"pointSize":5,"scaleDistribution":{"type":"linear"},"showPoints":"auto","showValues":false,"spanNulls":false,"stacking":{"group":"A","mode":"none"},"thresholdsStyle":{"mode":"off"}},"mappings":[],"min":0,"thresholds":{"mode":"absolute","steps":[{"color":"green","value":0},{"color":"red","value":80}]},"unit":"Bps"},"overrides":[]},"gridPos":{"h":8,"w":12,"x":12,"y":26},"id":6,"options":{"legend":{"calcs":["mean","max"],"displayMode":"table","placement":"right","showLegend":true},"tooltip":{"hideZeros":false,"mode":"multi","sort":"none"}},"pluginVersion":"12.4.0","targets":[{"expr":"sum by (component) (label_replace(rate(container_network_transmit_bytes_total{id=~\"/system.slice/docker.*\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{service!=\"\"})","legendFormat":"{{component}}","refId":"A"}],"title":"Network I/O per Service (Transmit)","type":"timeseries"},{"collapsed":false,"gridPos":{"h":1,"w":24,"x":0,"y":34},"id":30,"panels":[],"title":"Quick links — Dashboards","type":"row"},{"gridPos":{"h":4,"w":24,"x":0,"y":35},"id":31,"options":{"content":"| Dashboard | Description |\n|-----------|-------------|\n| [**Services Overview**](/d/services-overview) | This page |\n| [**Front**](/d/gaqno-dashboard-front) | UIs, 4xx/5xx by app |\n| [**Backend**](/d/gaqno-dashboard-backend) | Services, 4xx/5xx by service |\n| [**DevOps**](/d/gaqno-dashboard-devops) | Host, containers, Prometheus |\n| [**DNS droppage**](/d/gaqno-dns-droppage) | Cloudflare DNS non-NOERROR |","mode":"markdown"},"title":"","type":"text"},{"collapsed":false,"gridPos":{"h":1,"w":24,"x":0,"y":39},"id":20,"panels":[],"title":"Cloudflare status — 503 / 5xx","type":"row"},{"gridPos":{"h":4,"w":24,"x":0,"y":40},"id":21,"options":{"content":"**[Open Cloudflare Status →](https://www.cloudflarestatus.com/)** — Live incidents. Panels below: 503/5xx from your zone (Infinity + Zone ID required).","mode":"markdown"},"title":"","type":"text"},{"datasource":{"type":"yesoreyeram-infinity-datasource","uid":"${infinity_datasource}"},"description":"HTTP 503 in selected period. Requires Infinity + Zone ID.","fieldConfig":{"defaults":{"color":{"mode":"thresholds"},"mappings":[],"thresholds":{"mode":"absolute","steps":[{"color":"green","value":null},{"color":"yellow","value":1},{"color":"red","value":10}]},"unit":"short"},"overrides":[]},"gridPos":{"h":5,"w":6,"x":0,"y":44},"id":22,"options":{"colorMode":"value","graphMode":"none","justifyMode":"auto","orientation":"auto","reduceOptions":{"calcs":["sum"],"fields":"","values":true},"textMode":"auto"},"pluginVersion":"12.4.0","targets":[{"columns":[{"selector":"dimensions.edgeResponseStatus","text":"status","type":"string"},{"selector":"count","text":"count","type":"number"}],"datasource":{"type":"yesoreyeram-infinity-datasource","uid":"${infinity_datasource}"},"format":"table","refId":"A","root_selector":"data.viewer.zones[0].httpRequestsAdaptiveGroups","source":"url","type":"graphql","url":"https://api.cloudflare.com/client/v4/graphql","url_options":{"body_content_type":"application/json","body_graphql_query":"query Viewer { viewer { zones(filter: { zoneTag: \"${zone_id}\" }) { zoneTag httpRequestsAdaptiveGroups(limit: 100 filter: { datetime_geq: \"${__from:date:YYYY-MM-DDTHH:mm:ssZ}\" datetime_leq: \"${__to:date:YYYY-MM-DDTHH:mm:ssZ}\" }) { count dimensions { edgeResponseStatus } } } } }","body_type":"graphql","method":"POST"}}],"title":"503 count (selected period)","transformations":[{"id":"filterByValue","options":{"match":"all","filters":[{"fieldName":"dimensions.edgeResponseStatus","config":{"id":"string","options":{"value":"503"}},"operator":"equals"}]}},{"id":"reduce","options":{"reducers":["sum"]}}],"type":"stat"},{"datasource":{"type":"yesoreyeram-infinity-datasource","uid":"${infinity_datasource}"},"fieldConfig":{"defaults":{"color":{"mode":"palette-classic"},"custom":{"align":"auto","cellOptions":{"type":"auto"},"inspect":false},"mappings":[],"thresholds":{"mode":"absolute","steps":[{"color":"green","value":null}]},"unit":"short"},"overrides":[{"matcher":{"id":"byName","options":"count"},"properties":[{"id":"custom.width","value":100}]}]},"gridPos":{"h":5,"w":9,"x":6,"y":44},"id":23,"options":{"footer":{"countRows":false,"fields":"","reducer":["sum"],"show":true},"showHeader":true},"pluginVersion":"12.4.0","targets":[{"columns":[{"selector":"dimensions.edgeResponseStatus","text":"HTTP status","type":"string"},{"selector":"count","text":"Count","type":"number"}],"datasource":{"type":"yesoreyeram-infinity-datasource","uid":"${infinity_datasource}"},"format":"table","refId":"A","root_selector":"data.viewer.zones[0].httpRequestsAdaptiveGroups","source":"url","type":"graphql","url":"https://api.cloudflare.com/client/v4/graphql","url_options":{"body_content_type":"application/json","body_graphql_query":"query Viewer { viewer { zones(filter: { zoneTag: \"${zone_id}\" }) { zoneTag httpRequestsAdaptiveGroups(limit: 100 filter: { datetime_geq: \"${__from:date:YYYY-MM-DDTHH:mm:ssZ}\" datetime_leq: \"${__to:date:YYYY-MM-DDTHH:mm:ssZ}\" }) { count dimensions { edgeResponseStatus } } } } }","body_type":"graphql","method":"POST"}}],"title":"Requests by HTTP status","type":"table"},{"datasource":{"type":"yesoreyeram-infinity-datasource","uid":"${infinity_datasource}"},"fieldConfig":{"defaults":{"color":{"mode":"palette-classic"},"custom":{"axisBorderShow":false,"axisCenteredZero":false,"axisPlacement":"auto","drawStyle":"line","fillOpacity":10,"gradientMode":"none","lineInterpolation":"smooth","lineWidth":2,"pointSize":5,"showPoints":"auto","spanNulls":false,"stacking":{"group":"A","mode":"none"},"thresholdsStyle":{"mode":"off"}},"mappings":[],"thresholds":{"mode":"absolute","steps":[{"color":"green","value":null}]},"unit":"short"},"overrides":[]},"gridPos":{"h":6,"w":24,"x":0,"y":49},"id":24,"options":{"legend":{"displayMode":"list","placement":"bottom","showLegend":true}},"pluginVersion":"12.4.0","targets":[{"columns":[{"selector":"count","text":"Requests","type":"number"},{"selector":"dimensions.datetimeMinute","text":"Time","type":"timestamp"},{"selector":"dimensions.edgeResponseStatus","text":"status","type":"string"}],"datasource":{"type":"yesoreyeram-infinity-datasource","uid":"${infinity_datasource}"},"format":"table","refId":"A","root_selector":"data.viewer.zones[0].httpRequestsAdaptiveGroups","source":"url","type":"graphql","url":"https://api.cloudflare.com/client/v4/graphql","url_options":{"body_content_type":"application/json","body_graphql_query":"query Viewer { viewer { zones(filter: { zoneTag: \"${zone_id}\" }) { zoneTag httpRequestsAdaptiveGroups(limit: 5000 filter: { datetime_geq: \"${__from:date:YYYY-MM-DDTHH:mm:ssZ}\" datetime_leq: \"${__to:date:YYYY-MM-DDTHH:mm:ssZ}\" }) { count dimensions { edgeResponseStatus datetimeMinute } } } } }","body_type":"graphql","method":"POST"}}],"title":"Requests by HTTP status over time","transformations":[{"id":"prepareTimeSeries","options":{"format":"multi"}}],"type":"timeseries"}],"preload":false,"refresh":"30s","schemaVersion":42,"style":"dark","tags":["gaqno"],"templating":{"list":[{"current":{},"datasource":{"type":"yesoreyeram-infinity-datasource","uid":""},"definition":"","hide":0,"includeAll":false,"label":"Infinity (Cloudflare)","multi":false,"name":"infinity_datasource","options":[],"query":"yesoreyeram-infinity-datasource","refresh":1,"skipUrlSync":false,"type":"datasource"},{"current":{"selected":false,"text":"","value":""},"hide":0,"label":"Zone ID","name":"zone_id","options":[],"query":"","skipUrlSync":false,"type":"text"}]},"time":{"from":"now-1h","to":"now"},"timepicker":{},"timezone":"browser","title":"Services Overview","uid":"services-overview","version":11,"weekStart":"","__requires":[{"type":"panel","id":"gauge","name":"Gauge","version":""},{"type":"panel","id":"stat","name":"Stat","version":""},{"type":"panel","id":"bargauge","name":"Bar gauge","version":""},{"type":"panel","id":"timeseries","name":"Time series","version":""},{"type":"panel","id":"text","name":"Text","version":""},{"type":"datasource","id":"yesoreyeram-infinity-datasource","name":"Infinity","version":""}],"meta":{"grafana.app/saved-from-ui":false}}
+      {"annotations":{"list":[{"builtIn":1,"datasource":{"type":"grafana","uid":"-- Grafana --"},"enable":true,"hide":true,"iconColor":"rgba(0, 211, 255, 1)","name":"Annotations & Alerts","type":"dashboard"}]},"editable":true,"fiscalYearStartMonth":0,"graphTooltip":0,"id":null,"links":[{"title":"Front","url":"/d/gaqno-dashboard-front","type":"dashboard"},{"title":"Backend","url":"/d/gaqno-dashboard-backend","type":"dashboard"},{"title":"DevOps","url":"/d/gaqno-dashboard-devops","type":"dashboard"},{"title":"DNS droppage","url":"/d/gaqno-dns-droppage","type":"dashboard"}],"liveNow":false,"panels":[{"fieldConfig":{"defaults":{"mappings":[],"max":1,"min":0,"thresholds":{"mode":"absolute","steps":[{"color":"green","value":0},{"color":"yellow","value":0.7},{"color":"red","value":0.9}]},"unit":"percentunit"},"overrides":[]},"gridPos":{"h":6,"w":4,"x":0,"y":0},"id":10,"options":{"minVizHeight":75,"minVizWidth":75,"orientation":"auto","reduceOptions":{"calcs":["lastNotNull"],"fields":"","values":false},"showThresholdLabels":false,"showThresholdMarkers":true,"sizing":"auto"},"pluginVersion":"12.4.0","targets":[{"expr":"1 - avg(rate(node_cpu_seconds_total{mode=\"idle\"}[5m]))","instant":true,"legendFormat":"CPU Usage","refId":"A"}],"title":"Server CPU Usage","type":"gauge"},{"fieldConfig":{"defaults":{"mappings":[],"max":1,"min":0,"thresholds":{"mode":"absolute","steps":[{"color":"green","value":0},{"color":"yellow","value":0.7},{"color":"red","value":0.9}]},"unit":"percentunit"},"overrides":[]},"gridPos":{"h":6,"w":4,"x":4,"y":0},"id":11,"options":{"minVizHeight":75,"minVizWidth":75,"orientation":"auto","reduceOptions":{"calcs":["lastNotNull"],"fields":"","values":false},"showThresholdLabels":false,"showThresholdMarkers":true,"sizing":"auto"},"pluginVersion":"12.4.0","targets":[{"expr":"1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)","instant":true,"legendFormat":"RAM Usage","refId":"A"}],"title":"Server RAM Usage","type":"gauge"},{"fieldConfig":{"defaults":{"mappings":[],"max":1,"min":0,"thresholds":{"mode":"absolute","steps":[{"color":"green","value":0},{"color":"yellow","value":0.7},{"color":"red","value":0.9}]},"unit":"percentunit"},"overrides":[]},"gridPos":{"h":6,"w":4,"x":8,"y":0},"id":12,"options":{"minVizHeight":75,"minVizWidth":75,"orientation":"auto","reduceOptions":{"calcs":["lastNotNull"],"fields":"","values":false},"showThresholdLabels":false,"showThresholdMarkers":true,"sizing":"auto"},"pluginVersion":"12.4.0","targets":[{"expr":"1 - (node_filesystem_avail_bytes{mountpoint=\"/\"} / node_filesystem_size_bytes{mountpoint=\"/\"})","instant":true,"legendFormat":"Disk Usage","refId":"A"}],"title":"Disk Usage","type":"gauge"},{"datasource":{"type":"prometheus"},"fieldConfig":{"defaults":{"mappings":[],"thresholds":{"mode":"absolute","steps":[{"color":"green","value":0}]}},"overrides":[]},"gridPos":{"h":6,"w":6,"x":12,"y":0},"id":13,"options":{"colorMode":"value","graphMode":"area","justifyMode":"auto","orientation":"auto","percentChangeColorMode":"standard","reduceOptions":{"calcs":["lastNotNull"],"fields":"","values":false},"showPercentChange":false,"textMode":"auto","wideLayout":true},"pluginVersion":"12.4.0","targets":[{"expr":"count(container_info{service!=\"\"})","instant":true,"legendFormat":"Containers","refId":"A"}],"title":"Running Containers","type":"stat"},{"fieldConfig":{"defaults":{"mappings":[],"thresholds":{"mode":"absolute","steps":[{"color":"green","value":0}]},"unit":"dtdurations"},"overrides":[]},"gridPos":{"h":6,"w":6,"x":18,"y":0},"id":14,"options":{"colorMode":"value","graphMode":"area","justifyMode":"auto","orientation":"auto","percentChangeColorMode":"standard","reduceOptions":{"calcs":["lastNotNull"],"fields":"","values":false},"showPercentChange":false,"textMode":"auto","wideLayout":true},"pluginVersion":"12.4.0","targets":[{"expr":"time() - node_boot_time_seconds","instant":true,"legendFormat":"Uptime","refId":"A"}],"title":"Server Uptime","type":"stat"},{"fieldConfig":{"defaults":{"mappings":[],"max":1,"min":0,"thresholds":{"mode":"absolute","steps":[{"color":"green","value":0},{"color":"yellow","value":0.25},{"color":"red","value":0.5}]},"unit":"percentunit"},"overrides":[]},"gridPos":{"h":10,"w":12,"x":0,"y":6},"id":3,"options":{"displayMode":"gradient","legend":{"calcs":[],"displayMode":"list","placement":"bottom","showLegend":false},"maxVizHeight":300,"minVizHeight":16,"minVizWidth":8,"namePlacement":"auto","orientation":"horizontal","reduceOptions":{"calcs":["last"],"fields":"","values":false},"showUnfilled":true,"sizing":"auto","valueMode":"color"},"pluginVersion":"12.4.0","targets":[{"expr":"topk(10, sum by (component) (label_replace(rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker.*\",cpu=\"total\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{service!=\"\"}))","instant":true,"legendFormat":"{{component}}","refId":"A"}],"title":"Top 10 CPU Consumers","type":"bargauge"},{"fieldConfig":{"defaults":{"color":{"mode":"palette-classic"},"custom":{"axisBorderShow":false,"axisCenteredZero":false,"axisColorMode":"text","axisLabel":"","axisPlacement":"auto","barAlignment":0,"barWidthFactor":0.6,"drawStyle":"line","fillOpacity":10,"gradientMode":"none","hideFrom":{"legend":false,"tooltip":false,"viz":false},"insertNulls":false,"lineInterpolation":"linear","lineWidth":2,"pointSize":5,"scaleDistribution":{"type":"linear"},"showPoints":"auto","showValues":false,"spanNulls":false,"stacking":{"group":"A","mode":"none"},"thresholdsStyle":{"mode":"off"}},"mappings":[],"min":0,"thresholds":{"mode":"absolute","steps":[{"color":"green","value":0},{"color":"red","value":80}]},"unit":"percentunit"},"overrides":[]},"gridPos":{"h":10,"w":12,"x":12,"y":6},"id":1,"options":{"legend":{"calcs":["mean","max","last"],"displayMode":"table","placement":"right","showLegend":true,"sortBy":"Mean","sortDesc":true},"tooltip":{"hideZeros":false,"mode":"multi","sort":"none"}},"pluginVersion":"12.4.0","targets":[{"expr":"sum by (component) (label_replace(rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker.*\",cpu=\"total\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{service!=\"\"})","legendFormat":"{{component}}","refId":"A"}],"title":"CPU Usage per Service","type":"timeseries"},{"fieldConfig":{"defaults":{"mappings":[],"min":0,"thresholds":{"mode":"absolute","steps":[{"color":"green","value":0},{"color":"yellow","value":536870912},{"color":"red","value":1073741824}]},"unit":"bytes"},"overrides":[]},"gridPos":{"h":10,"w":12,"x":0,"y":16},"id":4,"options":{"displayMode":"gradient","legend":{"calcs":[],"displayMode":"list","placement":"bottom","showLegend":false},"maxVizHeight":300,"minVizHeight":16,"minVizWidth":8,"namePlacement":"auto","orientation":"horizontal","reduceOptions":{"calcs":["last"],"fields":"","values":false},"showUnfilled":true,"sizing":"auto","valueMode":"color"},"pluginVersion":"12.4.0","targets":[{"expr":"topk(10, sum by (component) (label_replace(container_memory_usage_bytes{id=~\"/system.slice/docker.*\"},\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{service!=\"\"}))","instant":true,"legendFormat":"{{component}}","refId":"A"}],"title":"Top 10 Memory Consumers","type":"bargauge"},{"fieldConfig":{"defaults":{"color":{"mode":"palette-classic"},"custom":{"axisBorderShow":false,"axisCenteredZero":false,"axisColorMode":"text","axisLabel":"","axisPlacement":"auto","barAlignment":0,"barWidthFactor":0.6,"drawStyle":"line","fillOpacity":10,"gradientMode":"none","hideFrom":{"legend":false,"tooltip":false,"viz":false},"insertNulls":false,"lineInterpolation":"linear","lineWidth":2,"pointSize":5,"scaleDistribution":{"type":"linear"},"showPoints":"auto","showValues":false,"spanNulls":false,"stacking":{"group":"A","mode":"none"},"thresholdsStyle":{"mode":"off"}},"mappings":[],"min":0,"thresholds":{"mode":"absolute","steps":[{"color":"green","value":0},{"color":"red","value":80}]},"unit":"bytes"},"overrides":[]},"gridPos":{"h":10,"w":12,"x":12,"y":16},"id":2,"options":{"legend":{"calcs":["mean","max","last"],"displayMode":"table","placement":"right","showLegend":true,"sortBy":"Mean","sortDesc":true},"tooltip":{"hideZeros":false,"mode":"multi","sort":"none"}},"pluginVersion":"12.4.0","targets":[{"expr":"sum by (component) (label_replace(container_memory_usage_bytes{id=~\"/system.slice/docker.*\"},\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{service!=\"\"})","legendFormat":"{{component}}","refId":"A"}],"title":"Memory Usage per Service","type":"timeseries"},{"fieldConfig":{"defaults":{"mappings":[],"min":0,"thresholds":{"mode":"absolute","steps":[{"color":"green","value":0},{"color":"yellow","value":536870912},{"color":"red","value":1073741824}]},"unit":"bytes"},"overrides":[]},"gridPos":{"h":10,"w":12,"x":0,"y":26},"id":15,"options":{"displayMode":"gradient","legend":{"calcs":[],"displayMode":"list","placement":"bottom","showLegend":false},"maxVizHeight":300,"minVizHeight":16,"minVizWidth":8,"namePlacement":"auto","orientation":"horizontal","reduceOptions":{"calcs":["last"],"fields":"","values":false},"showUnfilled":true,"sizing":"auto","valueMode":"color"},"pluginVersion":"12.4.0","targets":[{"expr":"topk(10, sum by (component) (container_disk_usage_bytes{service!=\"\"})) or topk(10, sum by (component) ((label_replace(container_fs_usage_bytes{id=~\"/system.slice/docker.*\"},\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") or label_replace(container_fs_usage_bytes{id=~\"/docker/.*\"},\"container_id\",\"$1\",\"id\",\"/docker/(.*)\")) * on(container_id) group_left(component) container_info{service!=\"\"}))","instant":true,"legendFormat":"{{component}}","refId":"A"}],"title":"Top 10 Disk Consumers","description":"Uses container_disk_usage_bytes from container-name-mapper (Docker SizeRw) or container_fs_usage_bytes from cAdvisor if available. Redeploy the stack so the mapper pushes disk metrics.","type":"bargauge"},{"fieldConfig":{"defaults":{"color":{"mode":"palette-classic"},"custom":{"axisBorderShow":false,"axisCenteredZero":false,"axisColorMode":"text","axisLabel":"","axisPlacement":"auto","barAlignment":0,"barWidthFactor":0.6,"drawStyle":"line","fillOpacity":10,"gradientMode":"none","hideFrom":{"legend":false,"tooltip":false,"viz":false},"insertNulls":false,"lineInterpolation":"linear","lineWidth":2,"pointSize":5,"scaleDistribution":{"type":"linear"},"showPoints":"auto","showValues":false,"spanNulls":false,"stacking":{"group":"A","mode":"none"},"thresholdsStyle":{"mode":"off"}},"mappings":[],"min":0,"thresholds":{"mode":"absolute","steps":[{"color":"green","value":0},{"color":"red","value":80}]},"unit":"bytes"},"overrides":[]},"gridPos":{"h":10,"w":12,"x":12,"y":26},"id":16,"options":{"legend":{"calcs":["mean","max","last"],"displayMode":"table","placement":"right","showLegend":true,"sortBy":"Mean","sortDesc":true},"tooltip":{"hideZeros":false,"mode":"multi","sort":"none"}},"pluginVersion":"12.4.0","targets":[{"expr":"sum by (component) (container_disk_usage_bytes{service!=\"\"}) or sum by (component) ((label_replace(container_fs_usage_bytes{id=~\"/system.slice/docker.*\"},\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") or label_replace(container_fs_usage_bytes{id=~\"/docker/.*\"},\"container_id\",\"$1\",\"id\",\"/docker/(.*)\")) * on(container_id) group_left(component) container_info{service!=\"\"})","legendFormat":"{{component}}","refId":"A"}],"title":"Disk Usage per Service","description":"Uses container_disk_usage_bytes from container-name-mapper (Docker SizeRw) or container_fs_usage_bytes from cAdvisor. Redeploy so the mapper pushes disk metrics.","type":"timeseries"},{"fieldConfig":{"defaults":{"color":{"mode":"palette-classic"},"custom":{"axisBorderShow":false,"axisCenteredZero":false,"axisColorMode":"text","axisLabel":"","axisPlacement":"auto","barAlignment":0,"barWidthFactor":0.6,"drawStyle":"line","fillOpacity":10,"gradientMode":"none","hideFrom":{"legend":false,"tooltip":false,"viz":false},"insertNulls":false,"lineInterpolation":"linear","lineWidth":2,"pointSize":5,"scaleDistribution":{"type":"linear"},"showPoints":"auto","showValues":false,"spanNulls":false,"stacking":{"group":"A","mode":"none"},"thresholdsStyle":{"mode":"off"}},"mappings":[],"min":0,"thresholds":{"mode":"absolute","steps":[{"color":"green","value":0},{"color":"red","value":80}]},"unit":"Bps"},"overrides":[]},"gridPos":{"h":8,"w":12,"x":0,"y":36},"id":5,"options":{"legend":{"calcs":["mean","max"],"displayMode":"table","placement":"right","showLegend":true},"tooltip":{"hideZeros":false,"mode":"multi","sort":"none"}},"pluginVersion":"12.4.0","targets":[{"expr":"sum by (component) ((label_replace(rate(container_network_receive_bytes_total{id=~\"/system.slice/docker.*\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") or label_replace(rate(container_network_receive_bytes_total{id=~\"/docker/.*\"}[5m]),\"container_id\",\"$1\",\"id\",\"/docker/(.*)\")) * on(container_id) group_left(component) container_info{service!=\"\"})","legendFormat":"{{component}}","refId":"A"}],"title":"Network I/O per Service (Receive)","description":"Uses container_network_receive_bytes_total from cAdvisor. No data? Check in Prometheus if this metric exists.","type":"timeseries"},{"fieldConfig":{"defaults":{"color":{"mode":"palette-classic"},"custom":{"axisBorderShow":false,"axisCenteredZero":false,"axisColorMode":"text","axisLabel":"","axisPlacement":"auto","barAlignment":0,"barWidthFactor":0.6,"drawStyle":"line","fillOpacity":10,"gradientMode":"none","hideFrom":{"legend":false,"tooltip":false,"viz":false},"insertNulls":false,"lineInterpolation":"linear","lineWidth":2,"pointSize":5,"scaleDistribution":{"type":"linear"},"showPoints":"auto","showValues":false,"spanNulls":false,"stacking":{"group":"A","mode":"none"},"thresholdsStyle":{"mode":"off"}},"mappings":[],"min":0,"thresholds":{"mode":"absolute","steps":[{"color":"green","value":0},{"color":"red","value":80}]},"unit":"Bps"},"overrides":[]},"gridPos":{"h":8,"w":12,"x":12,"y":36},"id":6,"options":{"legend":{"calcs":["mean","max"],"displayMode":"table","placement":"right","showLegend":true},"tooltip":{"hideZeros":false,"mode":"multi","sort":"none"}},"pluginVersion":"12.4.0","targets":[{"expr":"sum by (component) ((label_replace(rate(container_network_transmit_bytes_total{id=~\"/system.slice/docker.*\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") or label_replace(rate(container_network_transmit_bytes_total{id=~\"/docker/.*\"}[5m]),\"container_id\",\"$1\",\"id\",\"/docker/(.*)\")) * on(container_id) group_left(component) container_info{service!=\"\"})","legendFormat":"{{component}}","refId":"A"}],"title":"Network I/O per Service (Transmit)","description":"Uses container_network_transmit_bytes_total from cAdvisor. No data? Check in Prometheus if this metric exists.","type":"timeseries"},{"collapsed":false,"gridPos":{"h":1,"w":24,"x":0,"y":44},"id":30,"panels":[],"title":"Quick links — Dashboards","type":"row"},{"gridPos":{"h":4,"w":24,"x":0,"y":45},"id":31,"options":{"content":"| Dashboard | Description |\n|-----------|-------------|\n| [**Services Overview**](/d/services-overview) | This page |\n| [**Front**](/d/gaqno-dashboard-front) | UIs, 4xx/5xx by app |\n| [**Backend**](/d/gaqno-dashboard-backend) | Services, 4xx/5xx by service |\n| [**DevOps**](/d/gaqno-dashboard-devops) | Host, containers, Prometheus |\n| [**DNS droppage**](/d/gaqno-dns-droppage) | Cloudflare DNS non-NOERROR |","mode":"markdown"},"title":"","type":"text"},{"collapsed":false,"gridPos":{"h":1,"w":24,"x":0,"y":49},"id":20,"panels":[],"title":"Cloudflare status — 503 / 504 / 5xx","type":"row"},{"gridPos":{"h":4,"w":24,"x":0,"y":50},"id":21,"options":{"content":"**[Open Cloudflare Status →](https://www.cloudflarestatus.com/)** — Live incidents. Panels below: 503, 504 (Gateway timeout), 524 (Cloudflare origin timeout) and other 5xx from your zone.\n\n**To get data:** Set **zone_id** (top of dashboard) to your Cloudflare Zone ID (Dashboard → your zone → Overview, right column). Ensure the Infinity datasource has a valid Bearer token (API token with Zone → Analytics → Read). **Datasource was not found?** Select **Infinity (Cloudflare)** in the dropdown (UID `infinity-cloudflare`).","mode":"markdown"},"title":"","type":"text"},{"datasource":{"type":"yesoreyeram-infinity-datasource","uid":"${infinity_datasource}"},"description":"HTTP 503 in selected period. Requires Infinity + Zone ID.","fieldConfig":{"defaults":{"color":{"mode":"thresholds"},"mappings":[],"thresholds":{"mode":"absolute","steps":[{"color":"green","value":null},{"color":"yellow","value":1},{"color":"red","value":10}]},"unit":"short"},"overrides":[]},"gridPos":{"h":5,"w":6,"x":0,"y":54},"id":22,"options":{"colorMode":"value","graphMode":"none","justifyMode":"auto","orientation":"auto","reduceOptions":{"calcs":["sum"],"fields":"","values":true},"textMode":"auto"},"pluginVersion":"12.4.0","targets":[{"columns":[{"selector":"dimensions.edgeResponseStatus","text":"status","type":"string"},{"selector":"count","text":"count","type":"number"}],"datasource":{"type":"yesoreyeram-infinity-datasource","uid":"${infinity_datasource}"},"format":"table","refId":"A","root_selector":"data.viewer.zones[0].httpRequestsAdaptiveGroups","source":"url","type":"graphql","url":"https://api.cloudflare.com/client/v4/graphql","url_options":{"body_content_type":"application/json","body_graphql_query":"query Viewer { viewer { zones(filter: { zoneTag: \"${zone_id}\" }) { zoneTag httpRequestsAdaptiveGroups(limit: 100 filter: { datetime_geq: \"${__from:date:YYYY-MM-DDTHH:mm:ssZ}\" datetime_leq: \"${__to:date:YYYY-MM-DDTHH:mm:ssZ}\" }) { count dimensions { edgeResponseStatus } } } } }","body_type":"graphql","method":"POST"}}],"title":"503 count (selected period)","transformations":[{"id":"filterByValue","options":{"match":"all","filters":[{"fieldName":"dimensions.edgeResponseStatus","config":{"id":"string","options":{"value":"503"}},"operator":"equals"}]}},{"id":"reduce","options":{"reducers":["sum"]}}],"type":"stat"},{"datasource":{"type":"yesoreyeram-infinity-datasource","uid":"${infinity_datasource}"},"description":"HTTP 504 Gateway Timeout in selected period. Requires Infinity + Zone ID.","fieldConfig":{"defaults":{"color":{"mode":"thresholds"},"mappings":[],"thresholds":{"mode":"absolute","steps":[{"color":"green","value":null},{"color":"yellow","value":1},{"color":"red","value":10}]},"unit":"short"},"overrides":[]},"gridPos":{"h":5,"w":6,"x":6,"y":54},"id":25,"options":{"colorMode":"value","graphMode":"none","justifyMode":"auto","orientation":"auto","reduceOptions":{"calcs":["sum"],"fields":"","values":true},"textMode":"auto"},"pluginVersion":"12.4.0","targets":[{"columns":[{"selector":"dimensions.edgeResponseStatus","text":"status","type":"string"},{"selector":"count","text":"count","type":"number"}],"datasource":{"type":"yesoreyeram-infinity-datasource","uid":"${infinity_datasource}"},"format":"table","refId":"A","root_selector":"data.viewer.zones[0].httpRequestsAdaptiveGroups","source":"url","type":"graphql","url":"https://api.cloudflare.com/client/v4/graphql","url_options":{"body_content_type":"application/json","body_graphql_query":"query Viewer { viewer { zones(filter: { zoneTag: \"${zone_id}\" }) { zoneTag httpRequestsAdaptiveGroups(limit: 100 filter: { datetime_geq: \"${__from:date:YYYY-MM-DDTHH:mm:ssZ}\" datetime_leq: \"${__to:date:YYYY-MM-DDTHH:mm:ssZ}\" }) { count dimensions { edgeResponseStatus } } } } }","body_type":"graphql","method":"POST"}}],"title":"504 count (selected period)","transformations":[{"id":"filterByValue","options":{"match":"all","filters":[{"fieldName":"dimensions.edgeResponseStatus","config":{"id":"string","options":{"value":"504"}},"operator":"equals"}]}},{"id":"reduce","options":{"reducers":["sum"]}}],"type":"stat"},{"datasource":{"type":"yesoreyeram-infinity-datasource","uid":"${infinity_datasource}"},"description":"Cloudflare timeout (origin did not respond in time). Requires Infinity + Zone ID.","fieldConfig":{"defaults":{"color":{"mode":"thresholds"},"mappings":[],"thresholds":{"mode":"absolute","steps":[{"color":"green","value":null},{"color":"yellow","value":1},{"color":"red","value":10}]},"unit":"short"},"overrides":[]},"gridPos":{"h":5,"w":6,"x":12,"y":54},"id":26,"options":{"colorMode":"value","graphMode":"none","justifyMode":"auto","orientation":"auto","reduceOptions":{"calcs":["sum"],"fields":"","values":true},"textMode":"auto"},"pluginVersion":"12.4.0","targets":[{"columns":[{"selector":"dimensions.edgeResponseStatus","text":"status","type":"string"},{"selector":"count","text":"count","type":"number"}],"datasource":{"type":"yesoreyeram-infinity-datasource","uid":"${infinity_datasource}"},"format":"table","refId":"A","root_selector":"data.viewer.zones[0].httpRequestsAdaptiveGroups","source":"url","type":"graphql","url":"https://api.cloudflare.com/client/v4/graphql","url_options":{"body_content_type":"application/json","body_graphql_query":"query Viewer { viewer { zones(filter: { zoneTag: \"${zone_id}\" }) { zoneTag httpRequestsAdaptiveGroups(limit: 100 filter: { datetime_geq: \"${__from:date:YYYY-MM-DDTHH:mm:ssZ}\" datetime_leq: \"${__to:date:YYYY-MM-DDTHH:mm:ssZ}\" }) { count dimensions { edgeResponseStatus } } } } }","body_type":"graphql","method":"POST"}}],"title":"524 count (selected period)","transformations":[{"id":"filterByValue","options":{"match":"all","filters":[{"fieldName":"dimensions.edgeResponseStatus","config":{"id":"string","options":{"value":"524"}},"operator":"equals"}]}},{"id":"reduce","options":{"reducers":["sum"]}}],"type":"stat"},{"datasource":{"type":"yesoreyeram-infinity-datasource","uid":"${infinity_datasource}"},"fieldConfig":{"defaults":{"color":{"mode":"palette-classic"},"custom":{"align":"auto","cellOptions":{"type":"auto"},"inspect":false},"mappings":[],"thresholds":{"mode":"absolute","steps":[{"color":"green","value":null}]},"unit":"short"},"overrides":[{"matcher":{"id":"byName","options":"count"},"properties":[{"id":"custom.width","value":100}]}]},"gridPos":{"h":5,"w":24,"x":0,"y":59},"id":23,"options":{"footer":{"countRows":false,"fields":"","reducer":["sum"],"show":true},"showHeader":true},"pluginVersion":"12.4.0","targets":[{"columns":[{"selector":"dimensions.edgeResponseStatus","text":"HTTP status","type":"string"},{"selector":"count","text":"Count","type":"number"}],"datasource":{"type":"yesoreyeram-infinity-datasource","uid":"${infinity_datasource}"},"format":"table","refId":"A","root_selector":"data.viewer.zones[0].httpRequestsAdaptiveGroups","source":"url","type":"graphql","url":"https://api.cloudflare.com/client/v4/graphql","url_options":{"body_content_type":"application/json","body_graphql_query":"query Viewer { viewer { zones(filter: { zoneTag: \"${zone_id}\" }) { zoneTag httpRequestsAdaptiveGroups(limit: 100 filter: { datetime_geq: \"${__from:date:YYYY-MM-DDTHH:mm:ssZ}\" datetime_leq: \"${__to:date:YYYY-MM-DDTHH:mm:ssZ}\" }) { count dimensions { edgeResponseStatus } } } } }","body_type":"graphql","method":"POST"}}],"title":"Requests by HTTP status","type":"table"},{"datasource":{"type":"yesoreyeram-infinity-datasource","uid":"${infinity_datasource}"},"fieldConfig":{"defaults":{"color":{"mode":"palette-classic"},"custom":{"axisBorderShow":false,"axisCenteredZero":false,"axisPlacement":"auto","drawStyle":"line","fillOpacity":10,"gradientMode":"none","lineInterpolation":"smooth","lineWidth":2,"pointSize":5,"showPoints":"auto","spanNulls":false,"stacking":{"group":"A","mode":"none"},"thresholdsStyle":{"mode":"off"}},"mappings":[],"thresholds":{"mode":"absolute","steps":[{"color":"green","value":null}]},"unit":"short"},"overrides":[]},"gridPos":{"h":6,"w":24,"x":0,"y":64},"id":24,"options":{"legend":{"displayMode":"list","placement":"bottom","showLegend":true}},"pluginVersion":"12.4.0","targets":[{"columns":[{"selector":"count","text":"Requests","type":"number"},{"selector":"dimensions.datetimeMinute","text":"Time","type":"timestamp"},{"selector":"dimensions.edgeResponseStatus","text":"status","type":"string"}],"datasource":{"type":"yesoreyeram-infinity-datasource","uid":"${infinity_datasource}"},"format":"table","refId":"A","root_selector":"data.viewer.zones[0].httpRequestsAdaptiveGroups","source":"url","type":"graphql","url":"https://api.cloudflare.com/client/v4/graphql","url_options":{"body_content_type":"application/json","body_graphql_query":"query Viewer { viewer { zones(filter: { zoneTag: \"${zone_id}\" }) { zoneTag httpRequestsAdaptiveGroups(limit: 5000 filter: { datetime_geq: \"${__from:date:YYYY-MM-DDTHH:mm:ssZ}\" datetime_leq: \"${__to:date:YYYY-MM-DDTHH:mm:ssZ}\" }) { count dimensions { edgeResponseStatus datetimeMinute } } } } }","body_type":"graphql","method":"POST"}}],"title":"Requests by HTTP status over time","transformations":[{"id":"prepareTimeSeries","options":{"format":"multi"}}],"type":"timeseries"}],"preload":false,"refresh":"10s","schemaVersion":42,"style":"dark","tags":["gaqno"],"templating":{"list":[{"current":{"text":"Infinity (Cloudflare)","value":"efewzwo46j0n4c"},"datasource":{"type":"yesoreyeram-infinity-datasource","uid":"efewzwo46j0n4c"},"definition":"","hide":0,"includeAll":false,"label":"Infinity (Cloudflare)","multi":false,"name":"infinity_datasource","options":[],"query":"yesoreyeram-infinity-datasource","refresh":1,"skipUrlSync":false,"type":"datasource"},{"current":{"selected":false,"text":"d628a8ac60069acccbc154d173b88717","value":"d628a8ac60069acccbc154d173b88717"},"hide":0,"label":"Zone ID","name":"zone_id","options":[],"query":"","skipUrlSync":false,"type":"text"}]},"time":{"from":"now-1h","to":"now"},"timepicker":{},"timezone":"browser","title":"Services Overview","uid":"services-overview","version":12,"weekStart":"","__requires":[{"type":"panel","id":"gauge","name":"Gauge","version":""},{"type":"panel","id":"stat","name":"Stat","version":""},{"type":"panel","id":"bargauge","name":"Bar gauge","version":""},{"type":"panel","id":"timeseries","name":"Time series","version":""},{"type":"panel","id":"text","name":"Text","version":""},{"type":"datasource","id":"yesoreyeram-infinity-datasource","name":"Infinity","version":""}],"meta":{"grafana.app/saved-from-ui":false}}
   grafana_dashboard_gaqno_errors_by_frontend:
     content: |
       {
@@ -1892,61 +1721,97 @@ configs:
         "fiscalYearStartMonth": 0,
         "graphTooltip": 0,
         "id": null,
-        "links": [],
+        "links": [
+          { "title": "Services overview", "url": "/d/services-overview", "type": "dashboard" },
+          { "title": "Front", "url": "/d/gaqno-dashboard-front", "type": "dashboard" },
+          { "title": "Backend", "url": "/d/gaqno-dashboard-backend", "type": "dashboard" },
+          { "title": "DevOps", "url": "/d/gaqno-dashboard-devops", "type": "dashboard" }
+        ],
         "liveNow": false,
         "panels": [
           {
+            "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
+            "id": 0,
+            "options": {
+              "content": "**Errors by Frontend** — CPU, memória e filesystem por app frontend (gaqno-*-ui). Para 4xx/5xx por app, configure scrape dos *-ui em Prometheus e métricas HTTP.",
+              "mode": "markdown"
+            },
+            "title": "",
+            "type": "text"
+          },
+          {
             "datasource": { "type": "prometheus" },
             "fieldConfig": {
-              "defaults": { "color": { "mode": "palette-classic" }, "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } }, "mappings": [] },
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                "mappings": [],
+                "unit": "percent"
+              },
               "overrides": []
             },
-            "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 },
+            "gridPos": { "h": 8, "w": 12, "x": 0, "y": 2 },
             "id": 1,
             "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "up{job=~\"shell|sso|ai|crm|erp|finance|pdv|rpg|omnichannel|wellness\"}", "legendFormat": "{{job}}", "refId": "A" }],
-            "title": "Frontend targets health (1 = up, 0 = down)",
+            "targets": [
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "sum by (component) (label_replace(rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker.*\",cpu=\"total\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{component=~\"gaqno-.*-ui\"}) * 100",
+                "legendFormat": "{{component}}",
+                "refId": "A"
+              }
+            ],
+            "title": "CPU % by frontend",
             "type": "timeseries"
           },
           {
             "datasource": { "type": "prometheus" },
-            "description": "When frontends expose HTTP metrics (e.g. /metrics), 5xx rate per app will appear here.",
             "fieldConfig": {
-              "defaults": { "color": { "mode": "palette-classic" }, "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } }, "mappings": [] },
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                "mappings": [],
+                "unit": "bytes"
+              },
               "overrides": []
             },
-            "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+            "gridPos": { "h": 8, "w": 12, "x": 12, "y": 2 },
             "id": 2,
             "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{job=~\"shell|sso|ai|crm|erp|finance|pdv|rpg|omnichannel|wellness\", status=~\"5..\"}[5m])) by (job)", "legendFormat": "{{job}}", "refId": "A" }],
-            "title": "HTTP 5xx error rate by frontend",
+            "targets": [
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "sum by (component) (label_replace(container_memory_usage_bytes{id=~\"/system.slice/docker.*\"},\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{component=~\"gaqno-.*-ui\"})",
+                "legendFormat": "{{component}}",
+                "refId": "A"
+              }
+            ],
+            "title": "Memory by frontend",
             "type": "timeseries"
           },
           {
             "datasource": { "type": "prometheus" },
-            "description": "When frontends expose HTTP metrics, 4xx rate per app will appear here.",
             "fieldConfig": {
-              "defaults": { "color": { "mode": "palette-classic" }, "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } }, "mappings": [] },
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                "mappings": [],
+                "unit": "bytes"
+              },
               "overrides": []
             },
-            "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+            "gridPos": { "h": 8, "w": 24, "x": 0, "y": 10 },
             "id": 3,
             "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{job=~\"shell|sso|ai|crm|erp|finance|pdv|rpg|omnichannel|wellness\", status=~\"4..\"}[5m])) by (job)", "legendFormat": "{{job}}", "refId": "A" }],
-            "title": "HTTP 4xx error rate by frontend",
-            "type": "timeseries"
-          },
-          {
-            "datasource": { "type": "prometheus" },
-            "fieldConfig": {
-              "defaults": { "color": { "mode": "palette-classic" }, "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } }, "mappings": [] },
-              "overrides": []
-            },
-            "gridPos": { "h": 8, "w": 24, "x": 0, "y": 16 },
-            "id": 4,
-            "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-            "targets": [{ "datasource": { "type": "prometheus" }, "expr": "scrape_duration_seconds{job=~\"shell|sso|ai|crm|erp|finance|pdv|rpg|omnichannel|wellness\"}", "legendFormat": "{{job}}", "refId": "A" }],
-            "title": "Frontend scrape duration (high = slow or failing)",
+            "targets": [
+              {
+                "datasource": { "type": "prometheus" },
+                "expr": "sum by (component) (label_replace(container_fs_usage_bytes{id=~\"/system.slice/docker.*\"},\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{component=~\"gaqno-.*-ui\"})",
+                "legendFormat": "{{component}}",
+                "refId": "A"
+              }
+            ],
+            "title": "Filesystem usage by frontend",
             "type": "timeseries"
           }
         ],
@@ -1961,7 +1826,7 @@ configs:
         "title": "Gaqno — Errors by Frontend",
         "uid": "gaqno-errors-by-frontend",
         "meta": { "grafana.app/saved-from-ui": false },
-        "version": 1,
+        "version": 2,
         "weekStart": ""
       }
 volumes:

@@ -4,61 +4,97 @@
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": null,
-  "links": [],
+  "links": [
+    { "title": "Services overview", "url": "/d/services-overview", "type": "dashboard" },
+    { "title": "Front", "url": "/d/gaqno-dashboard-front", "type": "dashboard" },
+    { "title": "Backend", "url": "/d/gaqno-dashboard-backend", "type": "dashboard" },
+    { "title": "DevOps", "url": "/d/gaqno-dashboard-devops", "type": "dashboard" }
+  ],
   "liveNow": false,
   "panels": [
     {
+      "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
+      "id": 0,
+      "options": {
+        "content": "**Errors by Frontend** — CPU, memória e filesystem por app frontend (gaqno-*-ui). Para 4xx/5xx por app, configure scrape dos *-ui em Prometheus e métricas HTTP.",
+        "mode": "markdown"
+      },
+      "title": "",
+      "type": "text"
+    },
+    {
       "datasource": { "type": "prometheus" },
       "fieldConfig": {
-        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } }, "mappings": [] },
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+          "mappings": [],
+          "unit": "percent"
+        },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 2 },
       "id": 1,
       "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "up{job=~\"shell|sso|ai|crm|erp|finance|pdv|rpg|omnichannel|wellness\"}", "legendFormat": "{{job}}", "refId": "A" }],
-      "title": "Frontend targets health (1 = up, 0 = down)",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus" },
+          "expr": "sum by (component) (label_replace(rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker.*\",cpu=\"total\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{component=~\"gaqno-.*-ui\"}) * 100",
+          "legendFormat": "{{component}}",
+          "refId": "A"
+        }
+      ],
+      "title": "CPU % by frontend",
       "type": "timeseries"
     },
     {
       "datasource": { "type": "prometheus" },
-      "description": "When frontends expose HTTP metrics (e.g. /metrics), 5xx rate per app will appear here.",
       "fieldConfig": {
-        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } }, "mappings": [] },
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+          "mappings": [],
+          "unit": "bytes"
+        },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 2 },
       "id": 2,
       "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{job=~\"shell|sso|ai|crm|erp|finance|pdv|rpg|omnichannel|wellness\", status=~\"5..\"}[5m])) by (job)", "legendFormat": "{{job}}", "refId": "A" }],
-      "title": "HTTP 5xx error rate by frontend",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus" },
+          "expr": "sum by (component) (label_replace(container_memory_usage_bytes{id=~\"/system.slice/docker.*\"},\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{component=~\"gaqno-.*-ui\"})",
+          "legendFormat": "{{component}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Memory by frontend",
       "type": "timeseries"
     },
     {
       "datasource": { "type": "prometheus" },
-      "description": "When frontends expose HTTP metrics, 4xx rate per app will appear here.",
       "fieldConfig": {
-        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } }, "mappings": [] },
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+          "mappings": [],
+          "unit": "bytes"
+        },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 10 },
       "id": 3,
       "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "sum(rate(http_requests_total{job=~\"shell|sso|ai|crm|erp|finance|pdv|rpg|omnichannel|wellness\", status=~\"4..\"}[5m])) by (job)", "legendFormat": "{{job}}", "refId": "A" }],
-      "title": "HTTP 4xx error rate by frontend",
-      "type": "timeseries"
-    },
-    {
-      "datasource": { "type": "prometheus" },
-      "fieldConfig": {
-        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } }, "mappings": [] },
-        "overrides": []
-      },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 16 },
-      "id": 4,
-      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "scrape_duration_seconds{job=~\"shell|sso|ai|crm|erp|finance|pdv|rpg|omnichannel|wellness\"}", "legendFormat": "{{job}}", "refId": "A" }],
-      "title": "Frontend scrape duration (high = slow or failing)",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus" },
+          "expr": "sum by (component) (label_replace(container_fs_usage_bytes{id=~\"/system.slice/docker.*\"},\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{component=~\"gaqno-.*-ui\"})",
+          "legendFormat": "{{component}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Filesystem usage by frontend",
       "type": "timeseries"
     }
   ],
@@ -73,6 +109,6 @@
   "title": "Gaqno — Errors by Frontend",
   "uid": "gaqno-errors-by-frontend",
   "meta": { "grafana.app/saved-from-ui": false },
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }

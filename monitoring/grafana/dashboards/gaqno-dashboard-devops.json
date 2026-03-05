@@ -24,11 +24,12 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 2 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 34 },
       "id": 10,
       "panels": [],
-      "title": "Linha 1 — DORA",
-      "type": "row"
+      "title": "Linha 2 — DORA",
+      "type": "row",
+      "collapsed": true
     },
     {
       "datasource": { "type": "prometheus" },
@@ -42,7 +43,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 5, "w": 4, "x": 0, "y": 3 },
+      "gridPos": { "h": 5, "w": 4, "x": 0, "y": 35 },
       "id": 11,
       "options": {
         "colorMode": "value",
@@ -76,7 +77,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 5, "w": 4, "x": 4, "y": 3 },
+      "gridPos": { "h": 5, "w": 4, "x": 4, "y": 35 },
       "id": 12,
       "options": {
         "colorMode": "value",
@@ -99,7 +100,7 @@
       "type": "stat"
     },
     {
-      "gridPos": { "h": 5, "w": 4, "x": 8, "y": 3 },
+      "gridPos": { "h": 5, "w": 4, "x": 8, "y": 35 },
       "id": 13,
       "options": {
         "content": "**Change failure rate**\n\n% deploys que causaram incidente; % com rollback.\n\nRequer: correlação deploy ↔ incidentes (PagerDuty, custom metrics).",
@@ -109,7 +110,7 @@
       "type": "text"
     },
     {
-      "gridPos": { "h": 5, "w": 4, "x": 12, "y": 3 },
+      "gridPos": { "h": 5, "w": 4, "x": 12, "y": 35 },
       "id": 14,
       "options": {
         "content": "**MTTR**\n\nTempo médio para resolver incidentes; tempo para rollback.\n\nRequer: dados de incidentes (PagerDuty, Opsgenie, Jira) + timestamps de resolução.",
@@ -119,7 +120,7 @@
       "type": "text"
     },
     {
-      "gridPos": { "h": 5, "w": 8, "x": 16, "y": 3 },
+      "gridPos": { "h": 5, "w": 8, "x": 16, "y": 35 },
       "id": 15,
       "options": {
         "content": "Visual ideal DORA: gráficos semanais + comparação mensal. Exporte métricas para Prometheus ou use data source Grafana (ex.: GitHub).",
@@ -130,14 +131,15 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 8 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 40 },
       "id": 20,
       "panels": [],
-      "title": "Linha 2 — CI/CD",
-      "type": "row"
+      "title": "Linha 3 — CI/CD",
+      "type": "row",
+      "collapsed": true
     },
     {
-      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 9 },
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 41 },
       "id": 21,
       "options": {
         "content": "**Taxa de sucesso pipeline**\n\n% jobs concluídos com sucesso.\n\nRequer: GitHub Actions / GitLab CI / Jenkins API ou exporter (ex.: prometheus-github-actions-exporter).",
@@ -147,7 +149,7 @@
       "type": "text"
     },
     {
-      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 9 },
+      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 41 },
       "id": 22,
       "options": {
         "content": "**Tempo médio de build**\n\nDuração média dos jobs de build.\n\nRequer: métricas do CI (duração por workflow/job) exportadas para Prometheus.",
@@ -157,7 +159,7 @@
       "type": "text"
     },
     {
-      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 9 },
+      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 41 },
       "id": 23,
       "options": {
         "content": "**Tempo médio de deploy**\n\nDo trigger até produção.\n\nRequer: Coolify/GitHub Deployments API ou pipeline exporter.",
@@ -167,7 +169,7 @@
       "type": "text"
     },
     {
-      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 9 },
+      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 41 },
       "id": 24,
       "options": {
         "content": "**Qualidade:** cobertura, testes falhando, análise estática. Requer: relatórios do CI (coverage, lint) em artefatos ou Prometheus.",
@@ -178,10 +180,10 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 2 },
       "id": 30,
       "panels": [],
-      "title": "Linha 3 — Infra",
+      "title": "Linha 1 — Infra",
       "type": "row"
     },
     {
@@ -196,7 +198,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 4, "w": 3, "x": 0, "y": 15 },
+      "gridPos": { "h": 4, "w": 3, "x": 0, "y": 3 },
       "id": 31,
       "options": {
         "colorMode": "value",
@@ -224,7 +226,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 4, "w": 3, "x": 3, "y": 15 },
+      "gridPos": { "h": 4, "w": 3, "x": 3, "y": 3 },
       "id": 32,
       "options": {
         "colorMode": "value",
@@ -252,7 +254,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 4, "w": 3, "x": 6, "y": 15 },
+      "gridPos": { "h": 4, "w": 3, "x": 6, "y": 3 },
       "id": 33,
       "options": {
         "colorMode": "value",
@@ -268,7 +270,7 @@
       "type": "stat"
     },
     {
-      "gridPos": { "h": 4, "w": 3, "x": 9, "y": 15 },
+      "gridPos": { "h": 4, "w": 3, "x": 9, "y": 3 },
       "id": 34,
       "options": {
         "content": "**Pods restart**\n\nRequer: K8s + kube-state-metrics (`kube_pod_container_status_restarts_total`).",
@@ -289,7 +291,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 4, "w": 3, "x": 12, "y": 15 },
+      "gridPos": { "h": 4, "w": 3, "x": 12, "y": 3 },
       "id": 35,
       "options": {
         "colorMode": "value",
@@ -314,7 +316,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 4, "w": 3, "x": 15, "y": 15 },
+      "gridPos": { "h": 4, "w": 3, "x": 15, "y": 3 },
       "id": 36,
       "options": {
         "colorMode": "value",
@@ -340,7 +342,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 6, "w": 8, "x": 18, "y": 15 },
+      "gridPos": { "h": 6, "w": 8, "x": 18, "y": 3 },
       "id": 37,
       "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
       "targets": [{ "datasource": { "type": "prometheus" }, "expr": "100 * (1 - avg(irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) by (instance))", "legendFormat": "{{instance}}", "refId": "A" }],
@@ -358,7 +360,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 19 },
+      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 9 },
       "id": 38,
       "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
       "targets": [{ "datasource": { "type": "prometheus" }, "expr": "100 * (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes))", "legendFormat": "{{instance}}", "refId": "A" }],
@@ -375,7 +377,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 19 },
+      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 9 },
       "id": 39,
       "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
       "targets": [
@@ -396,7 +398,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 6, "w": 8, "x": 16, "y": 19 },
+      "gridPos": { "h": 6, "w": 8, "x": 16, "y": 9 },
       "id": 40,
       "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
       "targets": [{ "datasource": { "type": "prometheus" }, "expr": "up", "legendFormat": "{{job}}", "refId": "A" }],
@@ -414,11 +416,11 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 25 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 15 },
       "id": 41,
       "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "sum by (component) (label_replace(rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker.*\",cpu=\"total\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\.scope\") * on(container_id) group_left(component) container_info{service!=\"\"}) * 100", "legendFormat": "{{component}}", "refId": "A" }],
-      "title": "Containers — CPU % by name",
+      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "sum by (component) (label_replace(rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker.*\",cpu=\"total\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\.scope\") * on(container_id) group_left(component) container_info{component!~\"gaqno-.*-ui|gaqno-.*-service\"}) * 100", "legendFormat": "{{component}}", "refId": "A" }],
+      "title": "Containers — CPU % by name (infra only)",
       "type": "timeseries"
     },
     {
@@ -432,11 +434,11 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 25 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 15 },
       "id": 42,
       "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
-      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "sum by (component) (label_replace(container_memory_usage_bytes{id=~\"/system.slice/docker.*\"},\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\.scope\") * on(container_id) group_left(component) container_info{service!=\"\"})", "legendFormat": "{{component}}", "refId": "A" }],
-      "title": "Containers — Memory by name",
+      "targets": [{ "datasource": { "type": "prometheus" }, "expr": "sum by (component) (label_replace(container_memory_usage_bytes{id=~\"/system.slice/docker.*\"},\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\.scope\") * on(container_id) group_left(component) container_info{component!~\"gaqno-.*-ui|gaqno-.*-service\"})", "legendFormat": "{{component}}", "refId": "A" }],
+      "title": "Containers — Memory by name (infra only)",
       "type": "timeseries"
     },
     {
@@ -449,7 +451,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 33 },
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 23 },
       "id": 43,
       "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
       "targets": [{ "datasource": { "type": "prometheus" }, "expr": "scrape_duration_seconds", "legendFormat": "{{job}}", "refId": "A" }],
@@ -458,7 +460,7 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 39 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 29 },
       "id": 44,
       "panels": [],
       "title": "Cloudflare Tunnel",
@@ -476,7 +478,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 40 },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 30 },
       "id": 45,
       "options": {
         "colorMode": "value",
@@ -504,7 +506,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 40 },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 30 },
       "id": 46,
       "options": {
         "colorMode": "value",
@@ -532,7 +534,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 40 },
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 30 },
       "id": 47,
       "options": {
         "colorMode": "value",
@@ -551,14 +553,15 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 44 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 46 },
       "id": 50,
       "panels": [],
       "title": "Linha 4 — Segurança",
-      "type": "row"
+      "type": "row",
+      "collapsed": true
     },
     {
-      "gridPos": { "h": 5, "w": 8, "x": 0, "y": 45 },
+      "gridPos": { "h": 5, "w": 8, "x": 0, "y": 47 },
       "id": 51,
       "options": {
         "content": "**Vulnerabilidades**\n\nCríticas/altas abertas; por imagem. Requer: Trivy, Snyk, Dependabot ou similar exportando para Prometheus/Loki/Dashboard.",
@@ -568,7 +571,7 @@
       "type": "text"
     },
     {
-      "gridPos": { "h": 5, "w": 8, "x": 8, "y": 45 },
+      "gridPos": { "h": 5, "w": 8, "x": 8, "y": 47 },
       "id": 52,
       "options": {
         "content": "**Certificados**\n\nExpiração; renovação. Requer: cert-exporter, cron check ou alerting (ex.: Prometheus Blackbox + cert expiry).",
@@ -578,7 +581,7 @@
       "type": "text"
     },
     {
-      "gridPos": { "h": 5, "w": 8, "x": 16, "y": 45 },
+      "gridPos": { "h": 5, "w": 8, "x": 16, "y": 47 },
       "id": 53,
       "options": {
         "content": "**Secrets / auth**\n\nSecrets expostos (scan); falhas de autenticação; tentativas negadas. Requer: auditoria logs ou scanners integrados.",
@@ -589,14 +592,15 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 50 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 52 },
       "id": 60,
       "panels": [],
       "title": "Linha 5 — Custo",
-      "type": "row"
+      "type": "row",
+      "collapsed": true
     },
     {
-      "gridPos": { "h": 5, "w": 12, "x": 0, "y": 51 },
+      "gridPos": { "h": 5, "w": 12, "x": 0, "y": 53 },
       "id": 61,
       "options": {
         "content": "**Gasto por ambiente**\n\nDev / staging / prod. Requer: cloud billing (AWS Cost Explorer, GCP Billing) ou FinOps tool (Kubecost, Infracost) com export para Grafana.",
@@ -606,7 +610,7 @@
       "type": "text"
     },
     {
-      "gridPos": { "h": 5, "w": 12, "x": 12, "y": 51 },
+      "gridPos": { "h": 5, "w": 12, "x": 12, "y": 53 },
       "id": 62,
       "options": {
         "content": "**Custo por namespace / serviço / deploy** — Kubecost (K8s), tags de billing na cloud ou métricas custom (custo por deploy a partir do CI).",
