@@ -121,6 +121,8 @@ else
     gaqno-shell-ui
     gaqno-sso-service
     gaqno-sso-ui
+    gaqno-wellness-service
+    gaqno-wellness-ui
   )
 fi
 
