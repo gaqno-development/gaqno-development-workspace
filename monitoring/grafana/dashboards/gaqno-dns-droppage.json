@@ -1,3 +1,4 @@
+
 {
   "annotations": {
     "list": [
@@ -473,6 +474,14 @@
         "query": "yesoreyeram-infinity-datasource",
         "refresh": 1,
         "type": "datasource"
+      },
+      {
+        "hide": 0,
+        "label": "Zone ID",
+        "name": "zone_id",
+        "query": "d628a8ac60069acccbc154d173b88717",
+        "skipUrlSync": true,
+        "type": "constant"
       }
     ]
   },
