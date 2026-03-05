@@ -96,6 +96,14 @@ Se **todos** os painéis mostram "No data":
 
 **Disk panels (Top 10 Disk / Disk per Service) show “No data”:** They use **`container_disk_usage_bytes`** from the **container-name-mapper** (Docker writable layer size, `SizeRw`) for per-service/container disk. **Redeploy** the stack so the mapper pushes this metric. Fallback: cAdvisor’s `container_fs_usage_bytes` (often not exposed). In Prometheus, check `container_disk_usage_bytes` or `container_fs_usage_bytes`.
 
+### Values not updating
+
+If panels show data but values appear stale or do not change:
+
+1. **Time range** — Use a **relative** range (e.g. **Last 5 minutes** or **Last 15 minutes**) so the right edge of the time window moves with "now". A fixed range (e.g. "2025-03-01 to 2025-03-05") will not advance.
+2. **Auto-refresh** — Ensure the dashboard **refresh** is enabled (top-right, e.g. **10s** or **30s**). Dashboards are provisioned with 10s refresh; if you changed it to "Off", turn it back on.
+3. **Prometheus and targets** — Confirm **Connections → Data sources → Prometheus → Save & test** is green, and that **http://&lt;prometheus&gt;:9090/targets** shows **node-exporter**, **cadvisor**, **pushgateway** (and **postgres-exporter**, **cloudflared** if used) as **UP**. Stale or missing data can be caused by scrape failures or Grafana unable to reach Prometheus.
+
 ### Cloudflare 504 (Gateway Timeout) and high host usage
 
 **504** usually means the origin (your server behind Cloudflare) did not respond in time. High **CPU**, **RAM** or **Disk** on the host can cause slow responses and timeouts.

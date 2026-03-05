@@ -75,7 +75,7 @@ services:
             metrics="$${metrics}container_disk_usage_bytes{container_id=\"$$cid\",short_id=\"$$short\",name=\"$$name\",service=\"$$svc\",component=\"$$comp\"} $$size\n"
           done
           printf "$$metrics" | curl -s --data-binary @- "http://pushgateway:9091/metrics/job/container_info" 2>/dev/null
-          sleep 30
+          sleep 15
         done
     restart: unless-stopped
   cloudflared:

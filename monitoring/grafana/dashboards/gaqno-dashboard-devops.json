@@ -10,7 +10,7 @@
     { "title": "Backend", "url": "/d/gaqno-dashboard-backend", "type": "dashboard" },
     { "title": "DNS droppage", "url": "/d/gaqno-dns-droppage", "type": "dashboard" }
   ],
-  "liveNow": false,
+  "liveNow": true,
   "panels": [
     {
       "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
@@ -616,7 +616,7 @@
       "type": "text"
     }
   ],
-  "refresh": "30s",
+  "refresh": "10s",
   "schemaVersion": 38,
   "style": "dark",
   "tags": ["gaqno", "devops"],

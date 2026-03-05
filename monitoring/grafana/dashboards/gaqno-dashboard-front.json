@@ -354,7 +354,7 @@
       "type": "text"
     }
   ],
-  "refresh": "30s",
+  "refresh": "10s",
   "schemaVersion": 38,
   "style": "dark",
   "tags": ["gaqno", "front"],
