@@ -1,0 +1,149 @@
+{
+  "name": "Gaqno – Message received (seller)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "gaqno-message-received",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "b8c9d0e1-0009-4000-8000-000000000001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "gaqno-message-received"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "" },
+          "conditions": [
+            {
+              "id": "cond-message-received",
+              "leftValue": "={{ $json.body?.eventType ?? $json.eventType }}",
+              "rightValue": "atendimento.message_received",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b8c9d0e1-0009-4000-8000-000000000002",
+      "name": "Only message received",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json;\nconst body = raw?.body ?? raw;\nconst data = body?.data ?? {};\nreturn [{\n  json: {\n    eventType: body?.eventType,\n    tenantId: body?.tenantId ?? data?.tenantId,\n    conversationId: data?.conversationId,\n    messageId: data?.messageId,\n    occurredAt: data?.occurredAt,\n    waId: data?.waId,\n    correlationId: body?.metadata?.correlationId\n  }\n}];"
+      },
+      "id": "b8c9d0e1-0009-4000-8000-000000000003",
+      "name": "Prepare payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=http://localhost:4008/v1/conversations/{{ $json.conversationId }}",
+        "options": {}
+      },
+      "id": "b8c9d0e1-0009-4000-8000-000000000004",
+      "name": "Get conversation (assignee/seller)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 200],
+      "credentials": {
+        "httpHeaderAuth": { "name": "Gaqno JWT" }
+      },
+      "continueOnFail": true,
+      "notes": "Optional: use assigneeId to notify only when conversation has a seller"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "" },
+          "conditions": [
+            {
+              "id": "cond-has-assignee",
+              "leftValue": "={{ $json.assigneeId ?? $json.body?.assigneeId }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "notEmpty" }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b8c9d0e1-0009-4000-8000-000000000005",
+      "name": "Has seller (assignee)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "a1", "name": "summary", "value": "=Nova mensagem (vendedor atribuído): conv {{ $('Prepare payload').item.json.conversationId }}", "type": "string" },
+            { "id": "a2", "name": "assigneeId", "value": "={{ $json.assigneeId ?? $json.body?.assigneeId }}", "type": "string" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b8c9d0e1-0009-4000-8000-000000000006",
+      "name": "Notify seller (placeholder)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1340, 100],
+      "notes": "Replace with Telegram/Slack/CRM task or leave as-is to inspect output"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"processed\": true, \"eventType\": $('Prepare payload').item.json.eventType } }}"
+      },
+      "id": "b8c9d0e1-0009-4000-8000-000000000007",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1560, 200]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Only message received", "type": "main", "index": 0 }]]
+    },
+    "Only message received": {
+      "main": [
+        [{ "node": "Prepare payload", "type": "main", "index": 0 }],
+        [{ "node": "Respond to Webhook", "type": "main", "index": 0 }]
+      ]
+    },
+    "Prepare payload": {
+      "main": [[{ "node": "Get conversation (assignee/seller)", "type": "main", "index": 0 }]]
+    },
+    "Get conversation (assignee/seller)": {
+      "main": [[{ "node": "Has seller (assignee)", "type": "main", "index": 0 }]]
+    },
+    "Has seller (assignee)": {
+      "main": [
+        [{ "node": "Notify seller (placeholder)", "type": "main", "index": 0 }],
+        [{ "node": "Respond to Webhook", "type": "main", "index": 0 }]
+      ]
+    },
+    "Notify seller (placeholder)": {
+      "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]]
+    }
+  },
+  "pinData": {},
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-03-06T00:00:00.000Z",
+  "versionId": "1"
+}

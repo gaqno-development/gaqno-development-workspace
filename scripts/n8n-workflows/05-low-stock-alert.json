@@ -1,0 +1,176 @@
+{
+  "name": "Gaqno – Low Stock Alert",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 2
+            }
+          ]
+        }
+      },
+      "id": "e5f6a7b8-0005-4000-8000-000000000001",
+      "name": "Every 2 hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://localhost:4004/v1/products?limit=100"
+      },
+      "id": "e5f6a7b8-0005-4000-8000-000000000002",
+      "name": "Fetch products",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "Gaqno JWT"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst list = Array.isArray(data) ? data : (data?.data ?? data?.items ?? []);\nreturn list.filter(p => p && p.id).map(p => ({ json: { id: p.id, name: p.name || p.id } }));"
+      },
+      "id": "e5f6a7b8-0005-4000-8000-000000000003",
+      "name": "Product list",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "url": "=http://localhost:4004/v1/inventory/stock/{{ $json.id }}"
+      },
+      "id": "e5f6a7b8-0005-4000-8000-000000000004",
+      "name": "Get product stock",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "Gaqno JWT"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "mergeByPosition",
+        "options": {}
+      },
+      "id": "e5f6a7b8-0005-4000-8000-000000000005",
+      "name": "Merge product and stock",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const LOW_THRESHOLD = 5;\nconst items = $input.all();\nconst low = [];\nfor (const item of items) {\n  const d = item.json?.body ?? item.json;\n  const stock = d?.stock ?? d?.quantity ?? 0;\n  const productId = d?.productId ?? item.json?.productId;\n  if (Number(stock) < LOW_THRESHOLD) {\n    low.push({ productId, stock, name: item.json?.name || productId });\n  }\n}\nif (low.length === 0) return [];\nconst message = `Estoque baixo (${low.length} produto(s)): ` + low.map(l => `${l.name} (${l.stock})`).join(', ');\nreturn [{ json: { message, low, count: low.length } }];"
+      },
+      "id": "e5f6a7b8-0005-4000-8000-000000000006",
+      "name": "Filter low stock",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-count",
+              "leftValue": "={{ $json.count }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "e5f6a7b8-0005-4000-8000-000000000007",
+      "name": "Any low stock?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1560, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/botYOUR_BOT_TOKEN/sendMessage",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"chat_id\": \"YOUR_CHAT_ID\",\n  \"text\": {{ JSON.stringify($json.message) }}\n}"
+      },
+      "id": "e5f6a7b8-0005-4000-8000-000000000008",
+      "name": "Telegram alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1780, 220]
+    }
+  ],
+  "connections": {
+    "Every 2 hours": {
+      "main": [
+        [{ "node": "Fetch products", "type": "main", "index": 0 }]
+      ]
+    },
+    "Fetch products": {
+      "main": [
+        [{ "node": "Product list", "type": "main", "index": 0 }]
+      ]
+    },
+    "Product list": {
+      "main": [
+        [
+          { "node": "Merge product and stock", "type": "main", "index": 0 },
+          { "node": "Get product stock", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Get product stock": {
+      "main": [
+        [{ "node": "Merge product and stock", "type": "main", "index": 1 }]
+      ]
+    },
+    "Merge product and stock": {
+      "main": [
+        [{ "node": "Filter low stock", "type": "main", "index": 0 }]
+      ]
+    },
+    "Filter low stock": {
+      "main": [
+        [{ "node": "Any low stock?", "type": "main", "index": 0 }]
+      ]
+    },
+    "Any low stock?": {
+      "main": [
+        [{ "node": "Telegram alert", "type": "main", "index": 0 }],
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

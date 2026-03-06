@@ -1,0 +1,146 @@
+{
+  "name": "Gaqno – Service Health Monitor",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 5
+            }
+          ]
+        }
+      },
+      "id": "a1b2c3d4-0001-4000-8000-000000000001",
+      "name": "Every 5 minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = 'http://localhost';\nconst services = [\n  { service: 'sso', url: base + ':4001/v1/health' },\n  { service: 'ai', url: base + ':4002/v1/health' },\n  { service: 'crm', url: base + ':4003/v1/health' },\n  { service: 'erp', url: base + ':4004/v1/health' },\n  { service: 'finance', url: base + ':4005/v1/health' },\n  { service: 'pdv', url: base + ':4006/v1/health' },\n  { service: 'rpg', url: base + ':4007/v1/health' },\n  { service: 'omnichannel', url: base + ':4008/v1/health' },\n  { service: 'saas', url: base + ':4009/v1/health' },\n  { service: 'admin', url: base + ':4010/v1/health' },\n  { service: 'wellness', url: base + ':4011/v1/health' },\n  { service: 'lead-enrichment', url: base + ':4012/v1/health' },\n  { service: 'customer', url: base + ':4013/v1/health' },\n  { service: 'intelligence', url: base + ':4014/v1/health' }\n];\nreturn services.map(s => ({ json: s }));"
+      },
+      "id": "a1b2c3d4-0001-4000-8000-000000000002",
+      "name": "Service list",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {
+          "timeout": 5000
+        }
+      },
+      "id": "a1b2c3d4-0001-4000-8000-000000000003",
+      "name": "Check health",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const serviceOrder = ['sso','ai','crm','erp','finance','pdv','rpg','omnichannel','saas','admin','wellness','lead-enrichment','customer','intelligence'];\nconst items = $input.all();\nconst failed = [];\nitems.forEach((item, i) => {\n  const statusCode = item.json?.statusCode ?? item.json?.code ?? 0;\n  const body = item.json?.body ?? item.json;\n  const ok = statusCode === 200 && (body?.status === 'ok' || body?.status === undefined);\n  if (!ok) {\n    failed.push({\n      service: serviceOrder[i] ?? ('service-' + i),\n      statusCode: statusCode || 'error',\n      body: typeof body === 'object' ? JSON.stringify(body) : body\n    });\n  }\n});\nconst message = failed.length > 0\n  ? `Gaqno Health Alert: ${failed.length} service(s) down: ${failed.map(f => f.service).join(', ')}`\n  : null;\nreturn [{ json: { failed, message, totalChecked: items.length } }];"
+      },
+      "id": "a1b2c3d4-0001-4000-8000-000000000004",
+      "name": "Aggregate failures",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-failures",
+              "leftValue": "={{ $json.failed.length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a1b2c3d4-0001-4000-8000-000000000005",
+      "name": "Any failures?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "content": "Configure this node to send the alert (e.g. Telegram, Slack, or HTTP webhook). Use {{ $json.message }} for the alert text.",
+        "height": 120,
+        "width": 200
+      },
+      "id": "a1b2c3d4-0001-4000-8000-000000000006",
+      "name": "Send alert",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [1360, 180]
+    },
+    {
+      "parameters": {
+        "url": "https://api.telegram.org/botYOUR_BOT_TOKEN/sendMessage",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"chat_id\": \"YOUR_CHAT_ID\",\n  \"text\": {{ JSON.stringify($json.message) }}\n}"
+      },
+      "id": "a1b2c3d4-0001-4000-8000-000000000007",
+      "name": "Telegram alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1360, 320]
+    }
+  ],
+  "connections": {
+    "Every 5 minutes": {
+      "main": [
+        [{ "node": "Service list", "type": "main", "index": 0 }]
+      ]
+    },
+    "Service list": {
+      "main": [
+        [{ "node": "Check health", "type": "main", "index": 0 }]
+      ]
+    },
+    "Check health": {
+      "main": [
+        [{ "node": "Aggregate failures", "type": "main", "index": 0 }]
+      ]
+    },
+    "Aggregate failures": {
+      "main": [
+        [{ "node": "Any failures?", "type": "main", "index": 0 }]
+      ]
+    },
+    "Any failures?": {
+      "main": [
+        [{ "node": "Telegram alert", "type": "main", "index": 0 }],
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

@@ -1,0 +1,242 @@
+{
+  "name": "Gaqno – Salesforce to CRM Sync",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "gaqno-salesforce-sync",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "d0e1f2a3-0011-4000-8000-000000000001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "gaqno-salesforce-sync"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json?.body ?? $input.first().json;\nreturn [{\n  json: {\n    tenantId: body.tenantId,\n    provider: body.provider,\n    accessToken: body.accessToken,\n    instanceUrl: body.instanceUrl || 'https://login.salesforce.com',\n    crmAuthToken: body.crmAuthToken,\n    crmBaseUrl: body.crmBaseUrl || 'http://localhost:4003'\n  }\n}];"
+      },
+      "id": "d0e1f2a3-0011-4000-8000-000000000002",
+      "name": "Extract params",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.instanceUrl }}/services/data/v59.0/query?q=SELECT+Id,Name,Email,Phone,Account.Name+FROM+Contact+LIMIT+200",
+        "options": {},
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $json.accessToken }}" }
+          ]
+        }
+      },
+      "id": "d0e1f2a3-0011-4000-8000-000000000003",
+      "name": "Fetch SF Contacts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 150],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $('Extract params').item.json.instanceUrl }}/services/data/v59.0/query?q=SELECT+Id,FirstName,LastName,Email,Company,Status+FROM+Lead+LIMIT+200",
+        "options": {},
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $('Extract params').item.json.accessToken }}" }
+          ]
+        }
+      },
+      "id": "d0e1f2a3-0011-4000-8000-000000000004",
+      "name": "Fetch SF Leads",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $('Extract params').item.json.instanceUrl }}/services/data/v59.0/query?q=SELECT+Id,Name,Amount,StageName,Account.Name+FROM+Opportunity+LIMIT+200",
+        "options": {},
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $('Extract params').item.json.accessToken }}" }
+          ]
+        }
+      },
+      "id": "d0e1f2a3-0011-4000-8000-000000000005",
+      "name": "Fetch SF Opportunities",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 450],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const params = $('Extract params').first().json;\nconst raw = $('Fetch SF Contacts').first().json;\nconst records = raw?.records ?? raw ?? [];\n\nconst contacts = (Array.isArray(records) ? records : []).map(c => ({\n  name: c.Name || 'Unknown',\n  email: c.Email || '',\n  phone: c.Phone || '',\n  company: c.Account?.Name || '',\n  salesforceId: c.Id\n}));\n\nreturn contacts.map(c => ({ json: { ...c, crmAuthToken: params.crmAuthToken, crmBaseUrl: params.crmBaseUrl } }));"
+      },
+      "id": "d0e1f2a3-0011-4000-8000-000000000006",
+      "name": "Map SF contacts",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [920, 150]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.crmBaseUrl }}/v1/contacts",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"name\": {{ JSON.stringify($json.name) }},\n  \"email\": {{ JSON.stringify($json.email) }},\n  \"phone\": {{ JSON.stringify($json.phone) }},\n  \"company\": {{ JSON.stringify($json.company) }}\n}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $json.crmAuthToken }}" }
+          ]
+        }
+      },
+      "id": "d0e1f2a3-0011-4000-8000-000000000007",
+      "name": "Create CRM contacts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1140, 150],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const params = $('Extract params').first().json;\nconst raw = $('Fetch SF Leads').first().json;\nconst records = raw?.records ?? raw ?? [];\n\nconst statusMap = {\n  'Open - Not Contacted': 'new',\n  'Working - Contacted': 'contacted',\n  'Closed - Converted': 'qualified',\n  'Closed - Not Converted': 'lost'\n};\n\nconst leads = (Array.isArray(records) ? records : []).map(l => ({\n  name: `${l.FirstName || ''} ${l.LastName || ''}`.trim() || 'Unknown',\n  email: l.Email || '',\n  company: l.Company || '',\n  status: statusMap[l.Status] || 'new',\n  source: 'other',\n  salesforceId: l.Id\n}));\n\nreturn leads.map(l => ({ json: { ...l, crmAuthToken: params.crmAuthToken, crmBaseUrl: params.crmBaseUrl } }));"
+      },
+      "id": "d0e1f2a3-0011-4000-8000-000000000008",
+      "name": "Map SF leads",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [920, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.crmBaseUrl }}/v1/leads",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"name\": {{ JSON.stringify($json.name) }},\n  \"email\": {{ JSON.stringify($json.email) }},\n  \"company\": {{ JSON.stringify($json.company) }},\n  \"status\": {{ JSON.stringify($json.status) }},\n  \"source\": {{ JSON.stringify($json.source) }}\n}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $json.crmAuthToken }}" }
+          ]
+        }
+      },
+      "id": "d0e1f2a3-0011-4000-8000-000000000009",
+      "name": "Create CRM leads",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1140, 300],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const params = $('Extract params').first().json;\nconst raw = $('Fetch SF Opportunities').first().json;\nconst records = raw?.records ?? raw ?? [];\n\nconst contactResults = $('Create CRM contacts').all().map(i => i.json);\n\nconst stageMap = {\n  'Prospecting': 'prospecting',\n  'Qualification': 'qualification',\n  'Proposal/Price Quote': 'proposal',\n  'Negotiation/Review': 'negotiation',\n  'Closed Won': 'won',\n  'Closed Lost': 'lost'\n};\n\nconst opps = (Array.isArray(records) ? records : []).map(o => {\n  const firstContact = contactResults[0];\n  const contactId = firstContact?.id || firstContact?.body?.id || '';\n  return {\n    name: o.Name || 'Untitled',\n    contactId,\n    value: o.Amount || 0,\n    stage: stageMap[o.StageName] || 'prospecting',\n    company: o.Account?.Name || '',\n    salesforceId: o.Id\n  };\n});\n\nreturn opps.map(d => ({ json: { ...d, crmAuthToken: params.crmAuthToken, crmBaseUrl: params.crmBaseUrl } }));"
+      },
+      "id": "d0e1f2a3-0011-4000-8000-000000000010",
+      "name": "Map SF opportunities",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [920, 450]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.crmBaseUrl }}/v1/deals",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"name\": {{ JSON.stringify($json.name) }},\n  \"contactId\": {{ JSON.stringify($json.contactId) }},\n  \"value\": {{ $json.value }},\n  \"stage\": {{ JSON.stringify($json.stage) }},\n  \"company\": {{ JSON.stringify($json.company) }}\n}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $json.crmAuthToken }}" }
+          ]
+        }
+      },
+      "id": "d0e1f2a3-0011-4000-8000-000000000011",
+      "name": "Create CRM deals",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1140, 450],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const contacts = $('Create CRM contacts').all();\nconst leads = $('Create CRM leads').all();\nconst deals = $('Create CRM deals').all();\nreturn [{\n  json: {\n    synced: true,\n    contactsProcessed: contacts.length,\n    leadsProcessed: leads.length,\n    dealsProcessed: deals.length\n  }\n}];"
+      },
+      "id": "d0e1f2a3-0011-4000-8000-000000000012",
+      "name": "Summary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1380, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Extract params", "type": "main", "index": 0 }]]
+    },
+    "Extract params": {
+      "main": [
+        [
+          { "node": "Fetch SF Contacts", "type": "main", "index": 0 },
+          { "node": "Fetch SF Leads", "type": "main", "index": 0 },
+          { "node": "Fetch SF Opportunities", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Fetch SF Contacts": {
+      "main": [[{ "node": "Map SF contacts", "type": "main", "index": 0 }]]
+    },
+    "Map SF contacts": {
+      "main": [[{ "node": "Create CRM contacts", "type": "main", "index": 0 }]]
+    },
+    "Create CRM contacts": {
+      "main": [
+        [
+          { "node": "Map SF opportunities", "type": "main", "index": 0 },
+          { "node": "Summary", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Fetch SF Leads": {
+      "main": [[{ "node": "Map SF leads", "type": "main", "index": 0 }]]
+    },
+    "Map SF leads": {
+      "main": [[{ "node": "Create CRM leads", "type": "main", "index": 0 }]]
+    },
+    "Create CRM leads": {
+      "main": [[{ "node": "Summary", "type": "main", "index": 0 }]]
+    },
+    "Fetch SF Opportunities": {
+      "main": [[{ "node": "Map SF opportunities", "type": "main", "index": 0 }]]
+    },
+    "Map SF opportunities": {
+      "main": [[{ "node": "Create CRM deals", "type": "main", "index": 0 }]]
+    },
+    "Create CRM deals": {
+      "main": [[{ "node": "Summary", "type": "main", "index": 0 }]]
+    }
+  },
+  "pinData": {},
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-03-06T00:00:00.000Z",
+  "versionId": "1"
+}

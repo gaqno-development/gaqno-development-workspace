@@ -1,0 +1,203 @@
+{
+  "name": "Gaqno – Daily Business Summary Report",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 19 * * *"
+            }
+          ]
+        }
+      },
+      "id": "f6a7b8c9-0006-4000-8000-000000000001",
+      "name": "Daily at 19:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 400]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://localhost:4003/v1/leads"
+      },
+      "id": "f6a7b8c9-0006-4000-8000-000000000002",
+      "name": "CRM leads",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 240],
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "Gaqno JWT"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=http://localhost:4005/v1/transactions?startDate={{ $now.toFormat('yyyy-MM-dd') }}&endDate={{ $now.toFormat('yyyy-MM-dd') }}"
+      },
+      "id": "f6a7b8c9-0006-4000-8000-000000000003",
+      "name": "Finance today",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 360],
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "Gaqno JWT"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://localhost:4004/v1/orders"
+      },
+      "id": "f6a7b8c9-0006-4000-8000-000000000004",
+      "name": "ERP orders",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 480],
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "Gaqno JWT"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://localhost:4006/v1/dashboard/metrics"
+      },
+      "id": "f6a7b8c9-0006-4000-8000-000000000005",
+      "name": "PDV metrics",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 600],
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "Gaqno JWT"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "append"
+      },
+      "id": "f6a7b8c9-0006-4000-8000-000000000006",
+      "name": "Merge CRM Finance",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "append"
+      },
+      "id": "f6a7b8c9-0006-4000-8000-000000000007",
+      "name": "Merge ERP PDV",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [680, 540]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "append"
+      },
+      "id": "f6a7b8c9-0006-4000-8000-000000000008",
+      "name": "Merge all",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [900, 420]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst bySource = { crmLeads: null, finance: null, erpOrders: null, pdvMetrics: null };\nconst keys = ['crmLeads', 'finance', 'erpOrders', 'pdvMetrics'];\nitems.forEach((item, i) => { bySource[keys[i]] = item.json?.body ?? item.json; });\nconst leads = Array.isArray(bySource.crmLeads) ? bySource.crmLeads : (bySource.crmLeads?.data ?? bySource.crmLeads?.items ?? []);\nconst transactions = Array.isArray(bySource.finance) ? bySource.finance : (bySource.finance?.data ?? bySource.finance?.items ?? []);\nconst orders = Array.isArray(bySource.erpOrders) ? bySource.erpOrders : (bySource.erpOrders?.data ?? bySource.erpOrders?.items ?? []);\nconst pdv = bySource.pdvMetrics || {};\nconst totalIncome = transactions.filter(t => t.type === 'income').reduce((s, t) => s + (Number(t.amount) || 0), 0);\nconst totalExpense = transactions.filter(t => t.type === 'expense').reduce((s, t) => s + (Number(t.amount) || 0), 0);\nconst report = `Resumo diário Gaqno\\n\\nCRM: ${leads.length} leads\\nFinanceiro: ${transactions.length} transações (Receitas: R$ ${totalIncome.toFixed(2)} | Despesas: R$ ${totalExpense.toFixed(2)})\\nERP: ${orders.length} pedidos\\nPDV: ${JSON.stringify(pdv)}`;\nreturn [{ json: { report, leadsCount: leads.length, ordersCount: orders.length, transactionsCount: transactions.length } }];"
+      },
+      "id": "f6a7b8c9-0006-4000-8000-000000000009",
+      "name": "Build report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 420]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/botYOUR_BOT_TOKEN/sendMessage",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"chat_id\": \"YOUR_CHAT_ID\",\n  \"text\": {{ JSON.stringify($json.report) }}\n}"
+      },
+      "id": "f6a7b8c9-0006-4000-8000-00000000000a",
+      "name": "Send report",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 420]
+    }
+  ],
+  "connections": {
+    "Daily at 19:00": {
+      "main": [
+        [
+          { "node": "CRM leads", "type": "main", "index": 0 },
+          { "node": "Finance today", "type": "main", "index": 0 },
+          { "node": "ERP orders", "type": "main", "index": 0 },
+          { "node": "PDV metrics", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "CRM leads": {
+      "main": [
+        [{ "node": "Merge CRM Finance", "type": "main", "index": 0 }]
+      ]
+    },
+    "Finance today": {
+      "main": [
+        [{ "node": "Merge CRM Finance", "type": "main", "index": 1 }]
+      ]
+    },
+    "ERP orders": {
+      "main": [
+        [{ "node": "Merge ERP PDV", "type": "main", "index": 0 }]
+      ]
+    },
+    "PDV metrics": {
+      "main": [
+        [{ "node": "Merge ERP PDV", "type": "main", "index": 1 }]
+      ]
+    },
+    "Merge CRM Finance": {
+      "main": [
+        [{ "node": "Merge all", "type": "main", "index": 0 }]
+      ]
+    },
+    "Merge ERP PDV": {
+      "main": [
+        [{ "node": "Merge all", "type": "main", "index": 1 }]
+      ]
+    },
+    "Merge all": {
+      "main": [
+        [{ "node": "Build report", "type": "main", "index": 0 }]
+      ]
+    },
+    "Build report": {
+      "main": [
+        [{ "node": "Send report", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

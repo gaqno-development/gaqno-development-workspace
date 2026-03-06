@@ -1,0 +1,352 @@
+{
+  "name": "Gaqno – AI Viral Video Pipeline (AI Studio)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "gaqno-ai-video-pipeline",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "e1f2a3b4-0012-4000-8000-000000000001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "gaqno-ai-video-pipeline"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json?.body ?? $input.first().json;\nreturn [{\n  json: {\n    tenantId: body.tenantId,\n    topic: body.topic || 'before/after transformation',\n    style: body.style || 'cinematic',\n    aspectRatio: body.aspectRatio || '9:16',\n    model: body.model || 'st-ai/super-seed2',\n    crmAuthToken: body.crmAuthToken,\n    aiBaseUrl: body.aiBaseUrl || 'http://localhost:4002',\n    publishToTiktok: body.publishToTiktok || false,\n    socialAccountIds: body.socialAccountIds || [],\n    tiktokPrivacy: body.tiktokPrivacy || 'PUBLIC_TO_EVERYONE'\n  }\n}];"
+      },
+      "id": "e1f2a3b4-0012-4000-8000-000000000002",
+      "name": "Extract params",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.aiBaseUrl }}/v1/ai/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"system_prompt\": \"You are an AI designed to generate one original BEFORE/AFTER transformation video concept optimized for TikTok vertical video. Return ONLY a valid JSON object with these keys: Caption (short viral title with 1 emoji + 12 hashtags), Idea (max 15 words describing the transformation), Environment (max 20 words: setting, lighting, style), Sound (max 15 words: sound design description). Do NOT wrap in an array.\",\n  \"user_prompt\": \"Generate a creative BEFORE/AFTER transformation concept about: {{ $json.topic }}. Style: {{ $json.style }}. The concept must show a striking visual contrast. Specify BEFORE state, AFTER state, TRANSITION style, CAMERA movement, LIGHTING, and COLOR PALETTE. Avoid humans, brands, and clichés. Ensure novelty and visual clarity for vertical 9:16 format.\",\n  \"temperature\": 0.9,\n  \"max_tokens\": 1000\n}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $json.crmAuthToken }}" },
+            { "name": "x-tenant-id", "value": "={{ $json.tenantId }}" }
+          ]
+        }
+      },
+      "id": "e1f2a3b4-0012-4000-8000-000000000003",
+      "name": "Generate creative idea (AI)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const params = $('Extract params').first().json;\nconst aiResponse = $input.first().json;\n\nlet text = aiResponse?.text ?? aiResponse?.content ?? aiResponse?.response ?? '';\nif (typeof text === 'object') text = JSON.stringify(text);\n\nlet idea, caption, environment, sound;\ntry {\n  const jsonMatch = text.match(/\\{[\\s\\S]*\\}/);\n  if (jsonMatch) {\n    const parsed = JSON.parse(jsonMatch[0]);\n    idea = parsed.Idea || parsed.idea || 'Stunning before/after transformation';\n    caption = parsed.Caption || parsed.caption || idea;\n    environment = parsed.Environment || parsed.environment || 'cinematic setting, dramatic lighting';\n    sound = parsed.Sound || parsed.sound || 'dramatic music with beat drop at transition';\n  } else {\n    idea = text.substring(0, 100) || 'Stunning before/after transformation';\n    caption = idea;\n    environment = 'cinematic setting, dramatic lighting';\n    sound = 'dramatic music with beat drop at transition';\n  }\n} catch {\n  idea = 'Stunning before/after transformation';\n  caption = idea;\n  environment = 'cinematic setting, dramatic lighting';\n  sound = 'dramatic music with beat drop at transition';\n}\n\nreturn [{ json: {\n  idea, caption, environment, sound,\n  tenantId: params.tenantId,\n  model: params.model,\n  aspectRatio: params.aspectRatio,\n  aiBaseUrl: params.aiBaseUrl,\n  crmAuthToken: params.crmAuthToken,\n  publishToTiktok: params.publishToTiktok,\n  socialAccountIds: params.socialAccountIds,\n  tiktokPrivacy: params.tiktokPrivacy\n}}];"
+      },
+      "id": "e1f2a3b4-0012-4000-8000-000000000004",
+      "name": "Parse creative idea",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.aiBaseUrl }}/v1/ai/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"system_prompt\": \"You are a cinematic video prompt engineer for AI video generation (VEO/Seedance). Given an idea, environment, and sound description, produce a single detailed video generation prompt. The prompt must describe: scene composition, camera movement, lighting, color palette, textures, transition style, and mood. Output ONLY the prompt text, no JSON, no markdown. Max 300 words. Optimize for vertical 9:16 format.\",\n  \"user_prompt\": \"Create a video generation prompt for:\\n- Idea: {{ $json.idea }}\\n- Environment: {{ $json.environment }}\\n- Sound: {{ $json.sound }}\\n- Aspect ratio: {{ $json.aspectRatio }}\\n- Style: cinematic, photorealistic\\n\\nThe prompt should describe BEFORE and AFTER states with a clear visual transition.\",\n  \"temperature\": 0.7,\n  \"max_tokens\": 800\n}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $json.crmAuthToken }}" },
+            { "name": "x-tenant-id", "value": "={{ $json.tenantId }}" }
+          ]
+        }
+      },
+      "id": "e1f2a3b4-0012-4000-8000-000000000005",
+      "name": "Generate video prompt (AI)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 300],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const params = $('Parse creative idea').first().json;\nconst aiResponse = $input.first().json;\n\nlet videoPrompt = aiResponse?.text ?? aiResponse?.content ?? aiResponse?.response ?? '';\nif (typeof videoPrompt === 'object') videoPrompt = JSON.stringify(videoPrompt);\nvideoPrompt = videoPrompt.trim() || params.idea + '. ' + params.environment;\n\nreturn [{ json: {\n  videoPrompt,\n  idea: params.idea,\n  caption: params.caption,\n  model: params.model,\n  aspectRatio: params.aspectRatio,\n  tenantId: params.tenantId,\n  aiBaseUrl: params.aiBaseUrl,\n  crmAuthToken: params.crmAuthToken,\n  publishToTiktok: params.publishToTiktok,\n  socialAccountIds: params.socialAccountIds,\n  tiktokPrivacy: params.tiktokPrivacy\n}}];"
+      },
+      "id": "e1f2a3b4-0012-4000-8000-000000000006",
+      "name": "Prepare video generation",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.aiBaseUrl }}/v1/videos/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"prompt\": {{ JSON.stringify($json.videoPrompt) }},\n  \"model\": {{ JSON.stringify($json.model) }},\n  \"settings\": {\n    \"duration\": 15,\n    \"aspect_ratio\": {{ JSON.stringify($json.aspectRatio) }}\n  },\n  \"tenant_id\": {{ JSON.stringify($json.tenantId) }}\n}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $json.crmAuthToken }}" },
+            { "name": "x-tenant-id", "value": "={{ $json.tenantId }}" }
+          ]
+        }
+      },
+      "id": "e1f2a3b4-0012-4000-8000-000000000007",
+      "name": "Generate video (AI Studio)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1560, 300],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const genResult = $input.first().json;\nconst params = $('Prepare video generation').first().json;\n\nconst taskId = genResult?.id ?? genResult?.taskId ?? genResult?.data?.taskId ?? '';\n\nreturn [{ json: {\n  taskId,\n  idea: params.idea,\n  caption: params.caption,\n  tenantId: params.tenantId,\n  aiBaseUrl: params.aiBaseUrl,\n  crmAuthToken: params.crmAuthToken,\n  publishToTiktok: params.publishToTiktok,\n  socialAccountIds: params.socialAccountIds,\n  tiktokPrivacy: params.tiktokPrivacy,\n  pollAttempt: 0\n}}];"
+      },
+      "id": "e1f2a3b4-0012-4000-8000-000000000008",
+      "name": "Extract task ID",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1780, 300]
+    },
+    {
+      "parameters": {
+        "unit": "minutes",
+        "amount": 2
+      },
+      "id": "e1f2a3b4-0012-4000-8000-000000000009",
+      "name": "Wait for rendering",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [2000, 300],
+      "webhookId": "gaqno-video-wait-1"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.aiBaseUrl }}/v1/videos/{{ $json.taskId }}/status",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $json.crmAuthToken }}" },
+            { "name": "x-tenant-id", "value": "={{ $json.tenantId }}" }
+          ]
+        }
+      },
+      "id": "e1f2a3b4-0012-4000-8000-000000000010",
+      "name": "Poll video status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2220, 300],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "" },
+          "conditions": [
+            {
+              "id": "cond-completed",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "completed",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e1f2a3b4-0012-4000-8000-000000000011",
+      "name": "Video ready?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [2440, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const statusResponse = $input.first().json;\nconst params = $('Extract task ID').first().json;\nconst attempt = (params.pollAttempt || 0) + 1;\n\nif (attempt >= 5) {\n  return [{ json: {\n    success: false,\n    error: 'Video generation timed out after 5 poll attempts',\n    taskId: params.taskId,\n    status: statusResponse?.status || 'unknown',\n    idea: params.idea,\n    caption: params.caption\n  }}];\n}\n\nreturn [{ json: {\n  ...params,\n  pollAttempt: attempt\n}}];"
+      },
+      "id": "e1f2a3b4-0012-4000-8000-000000000012",
+      "name": "Retry or timeout",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2660, 450]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "" },
+          "conditions": [
+            {
+              "id": "cond-has-taskid",
+              "leftValue": "={{ $json.taskId }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "notEmpty" }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e1f2a3b4-0012-4000-8000-000000000013",
+      "name": "Can retry?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [2880, 450]
+    },
+    {
+      "parameters": {
+        "unit": "minutes",
+        "amount": 2
+      },
+      "id": "e1f2a3b4-0012-4000-8000-000000000014",
+      "name": "Wait more",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [3100, 350],
+      "webhookId": "gaqno-video-wait-2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const statusResponse = $('Poll video status').first().json;\nconst params = $('Extract task ID').first().json;\nconst videoUrl = statusResponse?.video_url ?? statusResponse?.thumbnail_url ?? '';\n\nconst result = {\n  success: true,\n  taskId: params.taskId,\n  videoUrl,\n  idea: params.idea,\n  caption: params.caption,\n  tenantId: params.tenantId,\n  aiBaseUrl: params.aiBaseUrl,\n  crmAuthToken: params.crmAuthToken,\n  publishToTiktok: params.publishToTiktok,\n  socialAccountIds: params.socialAccountIds,\n  tiktokPrivacy: params.tiktokPrivacy\n};\n\nreturn [{ json: result }];"
+      },
+      "id": "e1f2a3b4-0012-4000-8000-000000000015",
+      "name": "Video completed",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2660, 200]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "" },
+          "conditions": [
+            {
+              "id": "cond-publish",
+              "leftValue": "={{ $json.publishToTiktok }}",
+              "rightValue": "true",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e1f2a3b4-0012-4000-8000-000000000016",
+      "name": "Publish to TikTok?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [2880, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.aiBaseUrl }}/v1/videos/{{ $json.taskId }}/publish/tiktok",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"title\": {{ JSON.stringify($json.caption) }},\n  \"privacyLevel\": {{ JSON.stringify($json.tiktokPrivacy) }},\n  \"socialAccountIds\": {{ JSON.stringify($json.socialAccountIds) }}\n}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $json.crmAuthToken }}" },
+            { "name": "x-tenant-id", "value": "={{ $json.tenantId }}" }
+          ]
+        }
+      },
+      "id": "e1f2a3b4-0012-4000-8000-000000000017",
+      "name": "Publish to TikTok (AI Studio)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3100, 100],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const videoResult = $('Video completed').first().json;\nconst tiktokResult = $('Publish to TikTok (AI Studio)').first()?.json;\nconst skipTiktok = !videoResult.publishToTiktok;\n\nreturn [{ json: {\n  success: true,\n  pipeline: 'ai-viral-video',\n  idea: videoResult.idea,\n  caption: videoResult.caption,\n  videoUrl: videoResult.videoUrl,\n  taskId: videoResult.taskId,\n  tiktokPublished: !skipTiktok,\n  tiktokResult: tiktokResult || null\n}}];"
+      },
+      "id": "e1f2a3b4-0012-4000-8000-000000000018",
+      "name": "Summary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [3320, 200]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Extract params", "type": "main", "index": 0 }]]
+    },
+    "Extract params": {
+      "main": [[{ "node": "Generate creative idea (AI)", "type": "main", "index": 0 }]]
+    },
+    "Generate creative idea (AI)": {
+      "main": [[{ "node": "Parse creative idea", "type": "main", "index": 0 }]]
+    },
+    "Parse creative idea": {
+      "main": [[{ "node": "Generate video prompt (AI)", "type": "main", "index": 0 }]]
+    },
+    "Generate video prompt (AI)": {
+      "main": [[{ "node": "Prepare video generation", "type": "main", "index": 0 }]]
+    },
+    "Prepare video generation": {
+      "main": [[{ "node": "Generate video (AI Studio)", "type": "main", "index": 0 }]]
+    },
+    "Generate video (AI Studio)": {
+      "main": [[{ "node": "Extract task ID", "type": "main", "index": 0 }]]
+    },
+    "Extract task ID": {
+      "main": [[{ "node": "Wait for rendering", "type": "main", "index": 0 }]]
+    },
+    "Wait for rendering": {
+      "main": [[{ "node": "Poll video status", "type": "main", "index": 0 }]]
+    },
+    "Poll video status": {
+      "main": [[{ "node": "Video ready?", "type": "main", "index": 0 }]]
+    },
+    "Video ready?": {
+      "main": [
+        [{ "node": "Video completed", "type": "main", "index": 0 }],
+        [{ "node": "Retry or timeout", "type": "main", "index": 0 }]
+      ]
+    },
+    "Video completed": {
+      "main": [[{ "node": "Publish to TikTok?", "type": "main", "index": 0 }]]
+    },
+    "Publish to TikTok?": {
+      "main": [
+        [{ "node": "Publish to TikTok (AI Studio)", "type": "main", "index": 0 }],
+        [{ "node": "Summary", "type": "main", "index": 0 }]
+      ]
+    },
+    "Publish to TikTok (AI Studio)": {
+      "main": [[{ "node": "Summary", "type": "main", "index": 0 }]]
+    },
+    "Retry or timeout": {
+      "main": [[{ "node": "Can retry?", "type": "main", "index": 0 }]]
+    },
+    "Can retry?": {
+      "main": [
+        [{ "node": "Wait more", "type": "main", "index": 0 }],
+        [{ "node": "Summary", "type": "main", "index": 0 }]
+      ]
+    },
+    "Wait more": {
+      "main": [[{ "node": "Poll video status", "type": "main", "index": 0 }]]
+    }
+  },
+  "pinData": {},
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-03-06T00:00:00.000Z",
+  "versionId": "1"
+}

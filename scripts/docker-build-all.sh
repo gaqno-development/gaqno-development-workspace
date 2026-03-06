@@ -1,62 +1,33 @@
 #!/usr/bin/env bash
-ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-cd "$ROOT"
-[ -f .env ] && set -a && . ./.env && set +a
-[ -f gaqno-shell-ui/.env.local ] && set -a && . ./gaqno-shell-ui/.env.local && set +a
+set -e
+cd "$(dirname "$0")/.."
+ROOT="$PWD"
 
-NPM_TOKEN="${NPM_TOKEN:-}"
-BUILD_ARG=""
-[ -n "$NPM_TOKEN" ] && BUILD_ARG="--build-arg NPM_TOKEN=$NPM_TOKEN"
+if [ -f .npmrc ]; then
+  NPM_TOKEN=$(grep "_authToken" .npmrc | cut -d'=' -f2)
+else
+  NPM_TOKEN=""
+fi
 
-PROJECTS=(
-  gaqno-shell-ui
-  gaqno-sso-ui
-  gaqno-ai-ui
-  gaqno-crm-ui
-  gaqno-erp-ui
-  gaqno-finance-ui
-  gaqno-pdv-ui
-  gaqno-rpg-ui
-  gaqno-omnichannel-ui
-  gaqno-admin-ui
-  gaqno-saas-ui
-  gaqno-landing-ui
-  gaqno-lenin-ui
-  gaqno-sso-service
-  gaqno-ai-service
-  gaqno-admin-service
-  gaqno-finance-service
-  gaqno-omnichannel-service
-  gaqno-pdv-service
-  gaqno-rpg-service
-  gaqno-saas-service
-  gaqno-lead-enrichment-service
-)
+# Auto-discover all Dockerfiles so new services are always included
+DOCKERFILES=()
+while IFS= read -r -d '' f; do
+  DOCKERFILES+=( "$f" )
+done < <(find . -name Dockerfile -not -path './node_modules/*' -print0 | sort -z)
 
-FAILED=()
-PASSED=()
+TAG="${1:-test}"
 
-for dir in "${PROJECTS[@]}"; do
-  if [ ! -f "$dir/Dockerfile" ]; then
-    continue
-  fi
-  echo "=========================================="
-  echo "Building $dir ..."
-  echo "=========================================="
-  if (cd "$dir" && docker build $BUILD_ARG -t "gaqno-${dir}:local" .); then
-    PASSED+=("$dir")
-    echo "OK $dir"
+for DF in "${DOCKERFILES[@]}"; do
+  DF="${DF#./}"
+  [ -f "$ROOT/$DF" ] || { echo "Skip (missing): $DF"; continue; }
+  DIR="${DF%/Dockerfile}"
+  NAME="${DIR//\//-}"
+  echo "Building $NAME:$TAG (context: $DIR)"
+  if [ -n "$NPM_TOKEN" ]; then
+    docker build -f "$ROOT/$DF" --build-arg NPM_TOKEN="$NPM_TOKEN" -t "${NAME}:${TAG}" "$ROOT/$DIR"
   else
-    FAILED+=("$dir")
-    echo "FAILED $dir"
+    docker build -f "$ROOT/$DF" -t "${NAME}:${TAG}" "$ROOT/$DIR"
   fi
-  echo ""
 done
 
-echo "=========================================="
-echo "Summary"
-echo "=========================================="
-echo "Passed: ${#PASSED[@]} - ${PASSED[*]}"
-echo "Failed: ${#FAILED[@]} - ${FAILED[*]}"
-[ ${#FAILED[@]} -gt 0 ] && exit 1
-exit 0
+echo "Done. All images tagged with :$TAG"
