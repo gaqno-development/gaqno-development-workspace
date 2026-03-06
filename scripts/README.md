@@ -147,6 +147,38 @@ npm run list-cloudflare-dns -- grafana lenin
 - **CLOUDFLARE_API_TOKEN** (obrigatório) — Token da API Cloudflare com permissão de leitura DNS.
 - **CLOUDFLARE_ZONE_ID** (opcional) — ID da zona; padrão é a zona gaqno.com.br.
 
+---
+
+## Coolify scripts
+
+### coolify-failed-deployments.mjs
+
+Lista deployments que falharam nas últimas N horas.
+
+```bash
+COOLIFY_BASE_URL=... COOLIFY_ACCESS_TOKEN=... node scripts/coolify-failed-deployments.mjs [hours]
+```
+
+Variáveis em `.env`: **COOLIFY_BASE_URL**, **COOLIFY_ACCESS_TOKEN** (ou **COOLIFY_TOKEN**).
+
+### coolify-restart-apps.mjs
+
+Reinicia aplicações no Coolify por UUID ou por nome (substring).
+
+```bash
+# Listar todas as aplicações (nomes e UUIDs)
+node scripts/coolify-restart-apps.mjs --list
+
+# Reiniciar por nome (substring)
+node scripts/coolify-restart-apps.mjs rpg-service
+node scripts/coolify-restart-apps.mjs gaqno-rpg-service gaqno-erp-service
+
+# Reiniciar por UUID
+node scripts/coolify-restart-apps.mjs <uuid>
+```
+
+Variáveis em `.env`: **COOLIFY_BASE_URL**, **COOLIFY_ACCESS_TOKEN** (ou **COOLIFY_TOKEN**). O Coolify enfileira o restart e retorna um `deployment_uuid`; o container é reiniciado em seguida.
+
 ### DNS checklist (Coolify)
 
 Ao verificar DNS no Cloudflare para serviços expostos via Coolify:
