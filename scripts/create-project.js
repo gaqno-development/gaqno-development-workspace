@@ -778,7 +778,11 @@ function updateWorkspaces(name, type) {
 }
 
 const HUSKY_COMMIT_MSG = 'npx --no -- commitlint --edit "$1"';
-const HUSKY_PRE_COMMIT = "npm run test";
+const HUSKY_PRE_COMMIT = `# Skip test if push-all.sh already ran it (avoids double run)
+if [ -z "$GAQNO_TESTS_ALREADY_RAN" ]; then
+  npm run test
+fi
+`;
 
 function createHuskyHooksInDir(projectDir) {
   const huskyDir = path.join(projectDir, ".husky");
@@ -786,7 +790,7 @@ function createHuskyHooksInDir(projectDir) {
   const commitMsgPath = path.join(huskyDir, "commit-msg");
   const preCommitPath = path.join(huskyDir, "pre-commit");
   fs.writeFileSync(commitMsgPath, HUSKY_COMMIT_MSG + "\n", "utf8");
-  fs.writeFileSync(preCommitPath, HUSKY_PRE_COMMIT + "\n", "utf8");
+  fs.writeFileSync(preCommitPath, HUSKY_PRE_COMMIT, "utf8");
   try {
     fs.chmodSync(commitMsgPath, 0o755);
     fs.chmodSync(preCommitPath, 0o755);

@@ -169,6 +169,7 @@ for repo in "${REPOS[@]}"; do
   COMMIT_MESSAGE="${COMMIT_MESSAGE%.}"
 
   echo "   💾 Committing with message: '$COMMIT_MESSAGE'"
+  export GAQNO_TESTS_ALREADY_RAN=1
   if ! git commit -m "$COMMIT_MESSAGE"; then
     echo "   ⚠️  Commit failed (husky/commitlint may have rejected; fix and retry)"
     echo ""

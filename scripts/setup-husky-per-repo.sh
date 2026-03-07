@@ -67,7 +67,12 @@ COMMITLINT_EOF
   mkdir -p "$REPO_PATH/.husky"
   echo 'npx --no -- commitlint --edit "$1"' > "$REPO_PATH/.husky/commit-msg"
   chmod +x "$REPO_PATH/.husky/commit-msg"
-  echo 'npm run test' > "$REPO_PATH/.husky/pre-commit"
+  cat > "$REPO_PATH/.husky/pre-commit" << 'PRE_COMMIT_EOF'
+# Skip test if push-all.sh already ran it (avoids double run)
+if [ -z "$GAQNO_TESTS_ALREADY_RAN" ]; then
+  npm run test
+fi
+PRE_COMMIT_EOF
   chmod +x "$REPO_PATH/.husky/pre-commit"
 
   # Adiciona prepare e devDependencies via node
