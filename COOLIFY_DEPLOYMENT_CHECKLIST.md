@@ -236,6 +236,30 @@ The shell loads MFEs only when the user navigates to the corresponding route (e.
    - Review resource usage metrics
 ```
 
+#### "Failed to fetch dynamically imported module" (e.g. `/finance/assets/remoteEntry.js`)
+
+The browser is requesting the MFE’s `remoteEntry.js` from the portal origin (e.g. `https://portal.gaqno.com.br/finance/assets/remoteEntry.js`) and the request is failing.
+
+**Checks:**
+
+1. **MFE deployed and running**  
+   In Coolify, confirm the corresponding UI app is deployed and the container is running (e.g. **gaqno-finance-ui** for `/finance`).
+
+2. **Proxy route**  
+   The portal’s proxy must route the path prefix to the MFE container **without stripping the path**:
+   - Request: `GET https://portal.gaqno.com.br/finance/assets/remoteEntry.js`
+   - Must be forwarded to the finance container with path `/finance/assets/remoteEntry.js` (the container’s nginx serves that path).
+
+3. **Quick test**  
+   From a machine that can reach the portal:
+   ```bash
+   curl -I https://portal.gaqno.com.br/finance/assets/remoteEntry.js
+   ```
+   Expect `200 OK` and `Content-Type: application/javascript`. If you get 404, 502, or 504, fix the route or the MFE deployment.
+
+4. **Same host, path-based**  
+   All MFEs are served from the same host (e.g. `portal.gaqno.com.br`) with path prefixes. There must be a rule for each prefix (e.g. `PathPrefix(\`/finance\`)` → gaqno-finance-ui). See the table in [Portal and Module Federation (MFE)](#-portal-and-module-federation-mfe).
+
 ### Coolify Commands
 ```bash
 # View service logs

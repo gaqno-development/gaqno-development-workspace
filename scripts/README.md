@@ -153,13 +153,25 @@ npm run list-cloudflare-dns -- grafana lenin
 
 ### coolify-failed-deployments.mjs
 
-Lista deployments que falharam nas últimas N horas.
+Lista deployments que falharam ou tiveram muitos retries e **exibe os logs**. Considera a janela de N horas **e** pelo menos os **últimos 3 deployments** (por data). Para cada falha, indica quando existe um deploy mais recente com sucesso no mesmo app: **→ [PASSADO] Existe deploy mais recente com sucesso em ...**.
 
 ```bash
-COOLIFY_BASE_URL=... COOLIFY_ACCESS_TOKEN=... node scripts/coolify-failed-deployments.mjs [hours]
+# Última 1h (padrão) + últimos 3 da lista, com fetch de logs
+node scripts/coolify-failed-deployments.mjs
+
+# Últimas 6 horas
+node scripts/coolify-failed-deployments.mjs 6
+
+# Sem buscar logs completos (só o que vier na listagem)
+node scripts/coolify-failed-deployments.mjs 2 --no-fetch-logs
+
+# Limitar a 100 linhas de log por deployment
+node scripts/coolify-failed-deployments.mjs 1 --lines=100
 ```
 
 Variáveis em `.env`: **COOLIFY_BASE_URL**, **COOLIFY_ACCESS_TOKEN** (ou **COOLIFY_TOKEN**).
+
+Opções: `--no-fetch-logs` (não chama GET /deployments/{uuid}); `--lines=N` (máx. linhas de log por deployment, padrão 250).
 
 ### coolify-restart-apps.mjs
 
