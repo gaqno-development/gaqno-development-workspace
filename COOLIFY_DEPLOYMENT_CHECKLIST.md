@@ -33,7 +33,6 @@
 ### 2. Backend Services
 ```bash
 ✅ gaqno-sso-service (Port 4002)
-✅ gaqno-saas-service (Port 4001)
 ✅ gaqno-admin-service (Port 4003)
 ✅ gaqno-finance-service (Port 4004)
 ✅ gaqno-ai-service (Port 4005)
@@ -47,7 +46,6 @@
 
 ### 3. Frontend Applications
 ```bash
-✅ gaqno-saas-ui (Port 3008)
 ✅ gaqno-admin-ui (Port 3009)
 ✅ gaqno-landing-ui (Port 3010)
 ✅ gaqno-shell-ui (Port 3011)
@@ -112,9 +110,8 @@ Service Dependencies:
 | Subdomain | Service | Port |
 |-----------|---------|-------|
 | sso.your-domain.com | gaqno-sso-service | 4002 |
-| api.your-domain.com | gaqno-saas-service | 4001 |
+| api.your-domain.com | gaqno-admin-service | 4010 |
 | admin.your-domain.com | gaqno-admin-ui | 3009 |
-| app.your-domain.com | gaqno-saas-ui | 3008 |
 | finance.your-domain.com | gaqno-finance-service | 4004 |
 | crm.your-domain.com | gaqno-crm-service | 4006 |
 | ai.your-domain.com | gaqno-ai-service | 4005 |
@@ -138,7 +135,6 @@ All routes below use **one host** (e.g. `Host(\`portal.gaqno.com.br\`)`) with pa
 | `/finance`  | gaqno-finance-ui | Finance module          |
 | `/pdv`      | gaqno-pdv-ui   | PDV module                 |
 | `/rpg`      | gaqno-rpg-ui   | RPG module                 |
-| `/saas`     | gaqno-saas-ui  | SaaS module                |
 | `/omnichannel` | gaqno-omnichannel-ui | Omnichannel module |
 
 - Verify each MFE app is **deployed and running** in Coolify.
@@ -157,7 +153,6 @@ MFE_ERP_URL=https://portal.gaqno.com.br/erp
 MFE_FINANCE_URL=https://portal.gaqno.com.br/finance
 MFE_PDV_URL=https://portal.gaqno.com.br/pdv
 MFE_RPG_URL=https://portal.gaqno.com.br/rpg
-MFE_SAAS_URL=https://portal.gaqno.com.br/saas
 MFE_SSO_URL=https://portal.gaqno.com.br/auth
 MFE_OMNICHANNEL_URL=https://portal.gaqno.com.br/omnichannel
 MFE_ADMIN_URL=https://portal.gaqno.com.br/admin

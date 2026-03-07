@@ -30,7 +30,6 @@ After making code changes in this workspace:
 
 - `gaqno-erp-ui/` - ERP UI application
 - `gaqno-crm-ui/` - CRM UI application
-- `gaqno-saas-ui/` - SaaS UI application
 - `gaqno-pdv-ui/` - PDV UI application
 
 ### NPM Token Management
@@ -53,9 +52,6 @@ docker build -f gaqno-erp-ui/Dockerfile --build-arg NPM_TOKEN=$NPM_TOKEN -t gaqn
 
 # CRM UI
 docker build -f gaqno-crm-ui/Dockerfile --build-arg NPM_TOKEN=$NPM_TOKEN -t gaqno-crm-ui:test gaqno-crm-ui/
-
-# SaaS UI
-docker build -f gaqno-saas-ui/Dockerfile --build-arg NPM_TOKEN=$NPM_TOKEN -t gaqno-saas-ui:test gaqno-saas-ui/
 
 # PDV UI
 docker build -f gaqno-pdv-ui/Dockerfile --build-arg NPM_TOKEN=$NPM_TOKEN -t gaqno-pdv-ui:test gaqno-pdv-ui/

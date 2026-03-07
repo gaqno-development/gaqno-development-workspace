@@ -45,10 +45,6 @@ Track progress in the app’s own `docs/` or in this workspace doc as you comple
 | **gaqno-admin-ui** | DomainForm.tsx | formData | High |
 | **gaqno-admin-ui** | SSLChecker.tsx | checkingIds | Medium |
 | **gaqno-admin-ui** | UsageByUserView.tsx | period | Medium |
-| **gaqno-saas-ui** | App.tsx | tenantId, activeTab | Medium |
-| **gaqno-saas-ui** | BudgetAlerts.tsx | alerts, newAlert, showAddForm | Medium |
-| **gaqno-saas-ui** | TenantCostsSummary.tsx | dateRange | Medium |
-| **gaqno-saas-ui** | CodemapView.tsx | activeTab, searchTerm, filterType | Low (UI state) |
 | **gaqno-omnichannel-ui** | SavedViewsPage.tsx | dialogOpen, name, status, assigneeId, queueId | High |
 | **gaqno-omnichannel-ui** | CustomersPage.tsx | notesDraft | Medium |
 | **gaqno-omnichannel-ui** | LiveMetricsPage.tsx | seconds (timer) | Medium |

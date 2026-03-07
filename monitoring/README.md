@@ -202,7 +202,7 @@ After that, the “HTTP 5xx error rate by service” and “HTTP 4xx error rate 
 To diagnose portal stalling or "Host Error" (e.g. which MFE returns 502/503):
 
 1. **Per-app 5xx (existing panels)**  
-   Ensure each frontend (shell-ui, admin-ui, crm-ui, erp-ui, ai-ui, finance-ui, pdv-ui, rpg-ui, omnichannel-ui, sso-ui, saas-ui) is scraped by Prometheus with a **distinct job name** (e.g. `gaqno-shell-ui`, `gaqno-admin-ui`). Then **Gaqno — Front** → "4xx / 5xx por app (frontend)" and **Gaqno — Errors by frontend** (`/d/gaqno-errors-by-frontend`) show which app has 5xx. A spike on one job (e.g. `gaqno-admin-ui`) indicates that MFE or its route is failing.
+   Ensure each frontend (shell-ui, admin-ui, crm-ui, erp-ui, ai-ui, finance-ui, pdv-ui, rpg-ui, omnichannel-ui, sso-ui) is scraped by Prometheus with a **distinct job name** (e.g. `gaqno-shell-ui`, `gaqno-admin-ui`). Then **Gaqno — Front** → "4xx / 5xx por app (frontend)" and **Gaqno — Errors by frontend** (`/d/gaqno-errors-by-frontend`) show which app has 5xx. A spike on one job (e.g. `gaqno-admin-ui`) indicates that MFE or its route is failing.
 
 2. **Response time (P95/P99) per frontend**  
    If each *-ui exposes `http_request_duration_seconds` on `/metrics`, the Front dashboard "API P95 (frontend)" and latency-by-job panels show which app is slow. Use **Last 1 hour** to correlate with stalls.

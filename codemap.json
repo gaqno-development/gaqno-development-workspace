@@ -2,7 +2,7 @@
   "metadata": {
     "generated": "2026-02-25T19:36:39.766Z",
     "workspaceRoot": "/Users/Gabriel Sousa De Aquino/Coding/gaqno-development-workspace",
-    "totalPackages": 28,
+    "totalPackages": 26,
     "generator": "gaqno-codemap-generator"
   },
   "packages": [
@@ -27,8 +27,6 @@
     "gaqno-pdv-ui",
     "gaqno-rpg-service",
     "gaqno-rpg-ui",
-    "gaqno-saas-service",
-    "gaqno-saas-ui",
     "gaqno-shell-ui",
     "gaqno-sso-service",
     "gaqno-sso-ui",
@@ -374,22 +372,6 @@
       "socket.io-client": "^4.8.3",
       "supports-color": "^10.2.2",
       "zod": "3.25.76"
-    },
-    "gaqno-saas-service": {
-      "@nestjs/common": "^11.0.1",
-      "@nestjs/config": "^3.2.2",
-      "@nestjs/core": "^11.0.1",
-      "@nestjs/platform-express": "^11.0.1",
-      "reflect-metadata": "^0.2.2",
-      "rxjs": "^7.8.1"
-    },
-    "gaqno-saas-ui": {
-      "@tanstack/react-query": "^5.90.12",
-      "lucide-react": "^0.468.0",
-      "react": "^18",
-      "react-dom": "^18",
-      "react-router-dom": "^6.26.0",
-      "zod": "^3.25.76"
     },
     "gaqno-shell-ui": {
       "@dnd-kit/core": "^6.1.0",
@@ -877,35 +859,6 @@
       "@commitlint/cli": "^19.6.1",
       "@commitlint/config-conventional": "^19.6.0"
     },
-    "gaqno-saas-service": {
-      "@isaacs/brace-expansion": "^5.0.0",
-      "@commitlint/cli": "^19.6.1",
-      "@commitlint/config-conventional": "^19.6.0",
-      "@nestjs/cli": "^11.0.0",
-      "@nestjs/testing": "^11.0.1",
-      "@types/express": "^5.0.0",
-      "@types/jest": "^30.0.0",
-      "@types/node": "^22.10.7",
-      "eslint": "^9.18.0",
-      "jest": "^30.0.0",
-      "ts-jest": "^29.2.5",
-      "husky": "^9.1.7",
-      "typescript": "^5.7.3"
-    },
-    "gaqno-saas-ui": {
-      "@module-federation/vite": "^1.0.0",
-      "@originjs/vite-plugin-federation": "^1.4.1",
-      "@tailwindcss/vite": "^4.1.18",
-      "@types/react": "^18.3.27",
-      "@types/react-dom": "^18.3.7",
-      "@vitejs/plugin-react": "^4.3.1",
-      "eslint": "^8.57.0",
-      "nodemon": "^3.1.11",
-      "tailwindcss": "^4.1.18",
-      "tailwindcss-animate": "^1.0.7",
-      "typescript": "5.9.3",
-      "vite": "^5.4.0"
-    },
     "gaqno-shell-ui": {
       "@module-federation/vite": "^1.0.0",
       "@originjs/vite-plugin-federation": "^1.4.1",
@@ -1069,12 +1022,6 @@
       "@gaqno-development/frontcore": "^1.0.54",
       "@gaqno-development/types": "^1.0.0"
     },
-    "gaqno-saas-service": {
-      "@gaqno-development/backcore": "^1.1.15"
-    },
-    "gaqno-saas-ui": {
-      "@gaqno-development/frontcore": "^1.0.54"
-    },
     "gaqno-shell-ui": {
       "@gaqno-development/frontcore": "^1.0.67"
     },
@@ -1096,7 +1043,6 @@
   "servicePorts": {
     "gaqno-sso-service": 4001,
     "gaqno-admin-service": 4010,
-    "gaqno-saas-service": 4009,
     "gaqno-ai-service": 4002,
     "gaqno-finance-service": 4003,
     "gaqno-pdv-service": 4004,
@@ -1114,7 +1060,6 @@
     "gaqno-rpg-ui": 3007,
     "gaqno-wellness-ui": 3008,
     "gaqno-admin-ui": 3009,
-    "gaqno-saas-ui": 3010,
     "gaqno-omnichannel-ui": 3011,
     "gaqno-landing-ui": 3012,
     "gaqno-lenin-ui": 3013
@@ -1133,7 +1078,6 @@
         "gaqno-omnichannel-ui",
         "gaqno-pdv-ui",
         "gaqno-rpg-ui",
-        "gaqno-saas-ui",
         "gaqno-sso-ui",
         "gaqno-wellness-ui"
       ]
@@ -1188,11 +1132,6 @@
       "service": "gaqno-gaqno-rpg-service",
       "port": 3007
     },
-    "gaqno-saas-ui": {
-      "type": "remote",
-      "service": "gaqno-gaqno-saas-service",
-      "port": 3010
-    },
     "gaqno-sso-ui": {
       "type": "remote",
       "service": "gaqno-gaqno-sso-service",
@@ -1225,7 +1164,6 @@
           "gaqno-omnichannel-service",
           "gaqno-pdv-service",
           "gaqno-rpg-service",
-          "gaqno-saas-service",
           "gaqno-sso-service",
           "gaqno-wellness-service"
         ],
@@ -1249,7 +1187,6 @@
           "gaqno-omnichannel-ui",
           "gaqno-pdv-ui",
           "gaqno-rpg-ui",
-          "gaqno-saas-ui",
           "gaqno-shell-ui",
           "gaqno-sso-ui",
           "gaqno-wellness-ui"
@@ -1285,7 +1222,6 @@
           "gaqno-omnichannel-service",
           "gaqno-pdv-service",
           "gaqno-rpg-service",
-          "gaqno-saas-service",
           "gaqno-sso-service",
           "gaqno-wellness-service"
         ]
@@ -1304,7 +1240,6 @@
           "gaqno-omnichannel-ui",
           "gaqno-pdv-ui",
           "gaqno-rpg-ui",
-          "gaqno-saas-ui",
           "gaqno-shell-ui",
           "gaqno-sso-ui",
           "gaqno-wellness-ui"
@@ -1326,7 +1261,6 @@
         "gaqno-omnichannel-service",
         "gaqno-pdv-service",
         "gaqno-rpg-service",
-        "gaqno-saas-service",
         "gaqno-sso-service",
         "gaqno-wellness-service"
       ],
@@ -1341,7 +1275,6 @@
         "gaqno-omnichannel-ui",
         "gaqno-pdv-ui",
         "gaqno-rpg-ui",
-        "gaqno-saas-ui",
         "gaqno-shell-ui",
         "gaqno-sso-ui",
         "gaqno-wellness-ui"
@@ -1350,8 +1283,8 @@
   },
   "visualizations": {
     "mermaid": {
-      "architecture": "graph TB\n  subgraph Shared[\"Shared Packages\"]\n    _gaqno_backcore[\"@gaqno-backcore\"]\n    _gaqno_frontcore[\"@gaqno-frontcore\"]\n    _gaqno_types[\"@gaqno-types\"]\n    _gaqno_agent[\"@gaqno-agent\"]\n  end\n\n  subgraph Services[\"Backend Services\"]\n    gaqno_admin_service[\"gaqno-admin-service<br/>:4010\"]\n    gaqno_ai_service[\"gaqno-ai-service<br/>:4002\"]\n    gaqno_finance_service[\"gaqno-finance-service<br/>:4003\"]\n    gaqno_lead_enrichment_service[\"gaqno-lead-enrichment-service<br/>:4008\"]\n    gaqno_omnichannel_service[\"gaqno-omnichannel-service<br/>:4007\"]\n    gaqno_pdv_service[\"gaqno-pdv-service<br/>:4004\"]\n    gaqno_rpg_service[\"gaqno-rpg-service<br/>:4005\"]\n    gaqno_saas_service[\"gaqno-saas-service<br/>:4009\"]\n    gaqno_sso_service[\"gaqno-sso-service<br/>:4001\"]\n    gaqno_wellness_service[\"gaqno-wellness-service<br/>:4006\"]\n  end\n\n  subgraph UI[\"Frontend Applications\"]\n    gaqno_admin_ui[\"gaqno-admin-ui<br/>:3009\"]\n    gaqno_ai_ui[\"gaqno-ai-ui<br/>:3002\"]\n    gaqno_crm_ui[\"gaqno-crm-ui<br/>:3003\"]\n    gaqno_erp_ui[\"gaqno-erp-ui<br/>:3004\"]\n    gaqno_finance_ui[\"gaqno-finance-ui<br/>:3005\"]\n    gaqno_landing_ui[\"gaqno-landing-ui<br/>:3012\"]\n    gaqno_lenin_ui[\"gaqno-lenin-ui<br/>:3013\"]\n    gaqno_omnichannel_ui[\"gaqno-omnichannel-ui<br/>:3011\"]\n    gaqno_pdv_ui[\"gaqno-pdv-ui<br/>:3006\"]\n    gaqno_rpg_ui[\"gaqno-rpg-ui<br/>:3007\"]\n    gaqno_saas_ui[\"gaqno-saas-ui<br/>:3010\"]\n    gaqno_shell_ui[\"gaqno-shell-ui<br/>:3000 (host)\"]\n    gaqno_sso_ui[\"gaqno-sso-ui<br/>:3001\"]\n    gaqno_wellness_ui[\"gaqno-wellness-ui<br/>:3008\"]\n  end\n\n  _gaqno_backcore --> _gaqno_development_types\n  _gaqno_frontcore --> _gaqno_development_backcore\n  _gaqno_frontcore --> _gaqno_development_types\n  gaqno_admin_service --> _gaqno_development_backcore\n  gaqno_admin_ui --> _gaqno_development_frontcore\n  gaqno_ai_service --> _gaqno_development_backcore\n  gaqno_ai_ui --> _gaqno_development_frontcore\n  gaqno_ai_ui --> _gaqno_development_types\n  gaqno_crm_ui --> _gaqno_development_types\n  gaqno_crm_ui --> _gaqno_development_frontcore\n  gaqno_erp_ui --> _gaqno_development_types\n  gaqno_erp_ui --> _gaqno_development_frontcore\n  gaqno_finance_service --> _gaqno_development_backcore\n  gaqno_finance_ui --> _gaqno_development_frontcore\n  gaqno_lead_enrichment_service --> _gaqno_development_backcore\n  gaqno_omnichannel_service --> _gaqno_development_backcore\n  gaqno_omnichannel_service --> _gaqno_development_types\n  gaqno_omnichannel_ui --> _gaqno_development_frontcore\n  gaqno_omnichannel_ui --> _gaqno_development_types\n  gaqno_pdv_service --> _gaqno_development_backcore\n  gaqno_pdv_ui --> _gaqno_development_types\n  gaqno_pdv_ui --> _gaqno_development_frontcore\n  gaqno_rpg_service --> _gaqno_development_backcore\n  gaqno_rpg_service --> _gaqno_development_types\n  gaqno_rpg_ui --> _gaqno_development_frontcore\n  gaqno_rpg_ui --> _gaqno_development_types\n  gaqno_saas_service --> _gaqno_development_backcore\n  gaqno_saas_ui --> _gaqno_development_frontcore\n  gaqno_shell_ui --> _gaqno_development_frontcore\n  gaqno_sso_service --> _gaqno_development_backcore\n  gaqno_sso_ui --> _gaqno_development_types\n  gaqno_sso_ui --> _gaqno_development_frontcore\n  gaqno_wellness_service --> _gaqno_development_backcore\n  gaqno_wellness_ui --> _gaqno_development_frontcore\n  gaqno_wellness_ui --> _gaqno_development_types\n",
-      "dependencyGraph": "graph LR\n  _gaqno_backcore[\"@gaqno-backcore\"] --> _gaqno_development_types[\"@gaqno-development/types\"]\n  _gaqno_frontcore[\"@gaqno-frontcore\"] --> _gaqno_development_backcore[\"@gaqno-development/backcore\"]\n  _gaqno_frontcore[\"@gaqno-frontcore\"] --> _gaqno_development_types[\"@gaqno-development/types\"]\n  gaqno_admin_service[\"gaqno-admin-service\"] --> _gaqno_development_backcore[\"@gaqno-development/backcore\"]\n  gaqno_admin_ui[\"gaqno-admin-ui\"] --> _gaqno_development_frontcore[\"@gaqno-development/frontcore\"]\n  gaqno_ai_service[\"gaqno-ai-service\"] --> _gaqno_development_backcore[\"@gaqno-development/backcore\"]\n  gaqno_ai_ui[\"gaqno-ai-ui\"] --> _gaqno_development_frontcore[\"@gaqno-development/frontcore\"]\n  gaqno_ai_ui[\"gaqno-ai-ui\"] --> _gaqno_development_types[\"@gaqno-development/types\"]\n  gaqno_crm_ui[\"gaqno-crm-ui\"] --> _gaqno_development_types[\"@gaqno-development/types\"]\n  gaqno_crm_ui[\"gaqno-crm-ui\"] --> _gaqno_development_frontcore[\"@gaqno-development/frontcore\"]\n  gaqno_erp_ui[\"gaqno-erp-ui\"] --> _gaqno_development_types[\"@gaqno-development/types\"]\n  gaqno_erp_ui[\"gaqno-erp-ui\"] --> _gaqno_development_frontcore[\"@gaqno-development/frontcore\"]\n  gaqno_finance_service[\"gaqno-finance-service\"] --> _gaqno_development_backcore[\"@gaqno-development/backcore\"]\n  gaqno_finance_ui[\"gaqno-finance-ui\"] --> _gaqno_development_frontcore[\"@gaqno-development/frontcore\"]\n  gaqno_lead_enrichment_service[\"gaqno-lead-enrichment-service\"] --> _gaqno_development_backcore[\"@gaqno-development/backcore\"]\n  gaqno_omnichannel_service[\"gaqno-omnichannel-service\"] --> _gaqno_development_backcore[\"@gaqno-development/backcore\"]\n  gaqno_omnichannel_service[\"gaqno-omnichannel-service\"] --> _gaqno_development_types[\"@gaqno-development/types\"]\n  gaqno_omnichannel_ui[\"gaqno-omnichannel-ui\"] --> _gaqno_development_frontcore[\"@gaqno-development/frontcore\"]\n  gaqno_omnichannel_ui[\"gaqno-omnichannel-ui\"] --> _gaqno_development_types[\"@gaqno-development/types\"]\n  gaqno_pdv_service[\"gaqno-pdv-service\"] --> _gaqno_development_backcore[\"@gaqno-development/backcore\"]\n  gaqno_pdv_ui[\"gaqno-pdv-ui\"] --> _gaqno_development_types[\"@gaqno-development/types\"]\n  gaqno_pdv_ui[\"gaqno-pdv-ui\"] --> _gaqno_development_frontcore[\"@gaqno-development/frontcore\"]\n  gaqno_rpg_service[\"gaqno-rpg-service\"] --> _gaqno_development_backcore[\"@gaqno-development/backcore\"]\n  gaqno_rpg_service[\"gaqno-rpg-service\"] --> _gaqno_development_types[\"@gaqno-development/types\"]\n  gaqno_rpg_ui[\"gaqno-rpg-ui\"] --> _gaqno_development_frontcore[\"@gaqno-development/frontcore\"]\n  gaqno_rpg_ui[\"gaqno-rpg-ui\"] --> _gaqno_development_types[\"@gaqno-development/types\"]\n  gaqno_saas_service[\"gaqno-saas-service\"] --> _gaqno_development_backcore[\"@gaqno-development/backcore\"]\n  gaqno_saas_ui[\"gaqno-saas-ui\"] --> _gaqno_development_frontcore[\"@gaqno-development/frontcore\"]\n  gaqno_shell_ui[\"gaqno-shell-ui\"] --> _gaqno_development_frontcore[\"@gaqno-development/frontcore\"]\n  gaqno_sso_service[\"gaqno-sso-service\"] --> _gaqno_development_backcore[\"@gaqno-development/backcore\"]\n  gaqno_sso_ui[\"gaqno-sso-ui\"] --> _gaqno_development_types[\"@gaqno-development/types\"]\n  gaqno_sso_ui[\"gaqno-sso-ui\"] --> _gaqno_development_frontcore[\"@gaqno-development/frontcore\"]\n  gaqno_wellness_service[\"gaqno-wellness-service\"] --> _gaqno_development_backcore[\"@gaqno-development/backcore\"]\n  gaqno_wellness_ui[\"gaqno-wellness-ui\"] --> _gaqno_development_frontcore[\"@gaqno-development/frontcore\"]\n  gaqno_wellness_ui[\"gaqno-wellness-ui\"] --> _gaqno_development_types[\"@gaqno-development/types\"]\n",
+      "architecture": "graph TB\n  subgraph Shared[\"Shared Packages\"]\n    _gaqno_backcore[\"@gaqno-backcore\"]\n    _gaqno_frontcore[\"@gaqno-frontcore\"]\n    _gaqno_types[\"@gaqno-types\"]\n    _gaqno_agent[\"@gaqno-agent\"]\n  end\n\n  subgraph Services[\"Backend Services\"]\n    gaqno_admin_service[\"gaqno-admin-service<br/>:4010\"]\n    gaqno_ai_service[\"gaqno-ai-service<br/>:4002\"]\n    gaqno_finance_service[\"gaqno-finance-service<br/>:4003\"]\n    gaqno_lead_enrichment_service[\"gaqno-lead-enrichment-service<br/>:4008\"]\n    gaqno_omnichannel_service[\"gaqno-omnichannel-service<br/>:4007\"]\n    gaqno_pdv_service[\"gaqno-pdv-service<br/>:4004\"]\n    gaqno_rpg_service[\"gaqno-rpg-service<br/>:4005\"]\n    gaqno_sso_service[\"gaqno-sso-service<br/>:4001\"]\n    gaqno_wellness_service[\"gaqno-wellness-service<br/>:4006\"]\n  end\n\n  subgraph UI[\"Frontend Applications\"]\n    gaqno_admin_ui[\"gaqno-admin-ui<br/>:3009\"]\n    gaqno_ai_ui[\"gaqno-ai-ui<br/>:3002\"]\n    gaqno_crm_ui[\"gaqno-crm-ui<br/>:3003\"]\n    gaqno_erp_ui[\"gaqno-erp-ui<br/>:3004\"]\n    gaqno_finance_ui[\"gaqno-finance-ui<br/>:3005\"]\n    gaqno_landing_ui[\"gaqno-landing-ui<br/>:3012\"]\n    gaqno_lenin_ui[\"gaqno-lenin-ui<br/>:3013\"]\n    gaqno_omnichannel_ui[\"gaqno-omnichannel-ui<br/>:3011\"]\n    gaqno_pdv_ui[\"gaqno-pdv-ui<br/>:3006\"]\n    gaqno_rpg_ui[\"gaqno-rpg-ui<br/>:3007\"]\n    gaqno_shell_ui[\"gaqno-shell-ui<br/>:3000 (host)\"]\n    gaqno_sso_ui[\"gaqno-sso-ui<br/>:3001\"]\n    gaqno_wellness_ui[\"gaqno-wellness-ui<br/>:3008\"]\n  end\n\n  _gaqno_backcore --> _gaqno_development_types\n  _gaqno_frontcore --> _gaqno_development_backcore\n  _gaqno_frontcore --> _gaqno_development_types\n  gaqno_admin_service --> _gaqno_development_backcore\n  gaqno_admin_ui --> _gaqno_development_frontcore\n  gaqno_ai_service --> _gaqno_development_backcore\n  gaqno_ai_ui --> _gaqno_development_frontcore\n  gaqno_ai_ui --> _gaqno_development_types\n  gaqno_crm_ui --> _gaqno_development_types\n  gaqno_crm_ui --> _gaqno_development_frontcore\n  gaqno_erp_ui --> _gaqno_development_types\n  gaqno_erp_ui --> _gaqno_development_frontcore\n  gaqno_finance_service --> _gaqno_development_backcore\n  gaqno_finance_ui --> _gaqno_development_frontcore\n  gaqno_lead_enrichment_service --> _gaqno_development_backcore\n  gaqno_omnichannel_service --> _gaqno_development_backcore\n  gaqno_omnichannel_service --> _gaqno_development_types\n  gaqno_omnichannel_ui --> _gaqno_development_frontcore\n  gaqno_omnichannel_ui --> _gaqno_development_types\n  gaqno_pdv_service --> _gaqno_development_backcore\n  gaqno_pdv_ui --> _gaqno_development_types\n  gaqno_pdv_ui --> _gaqno_development_frontcore\n  gaqno_rpg_service --> _gaqno_development_backcore\n  gaqno_rpg_service --> _gaqno_development_types\n  gaqno_rpg_ui --> _gaqno_development_frontcore\n  gaqno_rpg_ui --> _gaqno_development_types\n  gaqno_shell_ui --> _gaqno_development_frontcore\n  gaqno_sso_service --> _gaqno_development_backcore\n  gaqno_sso_ui --> _gaqno_development_types\n  gaqno_sso_ui --> _gaqno_development_frontcore\n  gaqno_wellness_service --> _gaqno_development_backcore\n  gaqno_wellness_ui --> _gaqno_development_frontcore\n  gaqno_wellness_ui --> _gaqno_development_types\n",
+      "dependencyGraph": "graph LR\n  _gaqno_backcore[\"@gaqno-backcore\"] --> _gaqno_development_types[\"@gaqno-development/types\"]\n  _gaqno_frontcore[\"@gaqno-frontcore\"] --> _gaqno_development_backcore[\"@gaqno-development/backcore\"]\n  _gaqno_frontcore[\"@gaqno-frontcore\"] --> _gaqno_development_types[\"@gaqno-development/types\"]\n  gaqno_admin_service[\"gaqno-admin-service\"] --> _gaqno_development_backcore[\"@gaqno-development/backcore\"]\n  gaqno_admin_ui[\"gaqno-admin-ui\"] --> _gaqno_development_frontcore[\"@gaqno-development/frontcore\"]\n  gaqno_ai_service[\"gaqno-ai-service\"] --> _gaqno_development_backcore[\"@gaqno-development/backcore\"]\n  gaqno_ai_ui[\"gaqno-ai-ui\"] --> _gaqno_development_frontcore[\"@gaqno-development/frontcore\"]\n  gaqno_ai_ui[\"gaqno-ai-ui\"] --> _gaqno_development_types[\"@gaqno-development/types\"]\n  gaqno_crm_ui[\"gaqno-crm-ui\"] --> _gaqno_development_types[\"@gaqno-development/types\"]\n  gaqno_crm_ui[\"gaqno-crm-ui\"] --> _gaqno_development_frontcore[\"@gaqno-development/frontcore\"]\n  gaqno_erp_ui[\"gaqno-erp-ui\"] --> _gaqno_development_types[\"@gaqno-development/types\"]\n  gaqno_erp_ui[\"gaqno-erp-ui\"] --> _gaqno_development_frontcore[\"@gaqno-development/frontcore\"]\n  gaqno_finance_service[\"gaqno-finance-service\"] --> _gaqno_development_backcore[\"@gaqno-development/backcore\"]\n  gaqno_finance_ui[\"gaqno-finance-ui\"] --> _gaqno_development_frontcore[\"@gaqno-development/frontcore\"]\n  gaqno_lead_enrichment_service[\"gaqno-lead-enrichment-service\"] --> _gaqno_development_backcore[\"@gaqno-development/backcore\"]\n  gaqno_omnichannel_service[\"gaqno-omnichannel-service\"] --> _gaqno_development_backcore[\"@gaqno-development/backcore\"]\n  gaqno_omnichannel_service[\"gaqno-omnichannel-service\"] --> _gaqno_development_types[\"@gaqno-development/types\"]\n  gaqno_omnichannel_ui[\"gaqno-omnichannel-ui\"] --> _gaqno_development_frontcore[\"@gaqno-development/frontcore\"]\n  gaqno_omnichannel_ui[\"gaqno-omnichannel-ui\"] --> _gaqno_development_types[\"@gaqno-development/types\"]\n  gaqno_pdv_service[\"gaqno-pdv-service\"] --> _gaqno_development_backcore[\"@gaqno-development/backcore\"]\n  gaqno_pdv_ui[\"gaqno-pdv-ui\"] --> _gaqno_development_types[\"@gaqno-development/types\"]\n  gaqno_pdv_ui[\"gaqno-pdv-ui\"] --> _gaqno_development_frontcore[\"@gaqno-development/frontcore\"]\n  gaqno_rpg_service[\"gaqno-rpg-service\"] --> _gaqno_development_backcore[\"@gaqno-development/backcore\"]\n  gaqno_rpg_service[\"gaqno-rpg-service\"] --> _gaqno_development_types[\"@gaqno-development/types\"]\n  gaqno_rpg_ui[\"gaqno-rpg-ui\"] --> _gaqno_development_frontcore[\"@gaqno-development/frontcore\"]\n  gaqno_rpg_ui[\"gaqno-rpg-ui\"] --> _gaqno_development_types[\"@gaqno-development/types\"]\n  gaqno_shell_ui[\"gaqno-shell-ui\"] --> _gaqno_development_frontcore[\"@gaqno-development/frontcore\"]\n  gaqno_sso_service[\"gaqno-sso-service\"] --> _gaqno_development_backcore[\"@gaqno-development/backcore\"]\n  gaqno_sso_ui[\"gaqno-sso-ui\"] --> _gaqno_development_types[\"@gaqno-development/types\"]\n  gaqno_sso_ui[\"gaqno-sso-ui\"] --> _gaqno_development_frontcore[\"@gaqno-development/frontcore\"]\n  gaqno_wellness_service[\"gaqno-wellness-service\"] --> _gaqno_development_backcore[\"@gaqno-development/backcore\"]\n  gaqno_wellness_ui[\"gaqno-wellness-ui\"] --> _gaqno_development_frontcore[\"@gaqno-development/frontcore\"]\n  gaqno_wellness_ui[\"gaqno-wellness-ui\"] --> _gaqno_development_types[\"@gaqno-development/types\"]\n",
       "dataFlow": "flowchart TD\n  subgraph \"Build Pipeline\"\n    A[Types] --> B[Backcore & Frontcore]\n    B --> C[Services]\n    B --> D[UI Applications]\n  end\n\n  subgraph \"Runtime Flow\"\n    E[Users] --> F[Shell UI]\n    F --> G[MFE Remotes]\n    G --> H[Backend Services]\n  end\n"
     }
   }

@@ -44,29 +44,6 @@ VITE_SERVICE_API_URL=https://api.your-domain.com
 
 ### Frontend Applications (UI Projects)
 
-#### gaqno-saas-ui
-
-```yaml
-# Coolify Configuration
-Name: SaaS Dashboard
-Source: GitHub Repository
-Branch: main
-Build Command: npm run build
-Publish Directory: dist
-Port: 3008
-
-# Environment Variables
-VITE_SERVICE_SSO_URL=https://sso.your-domain.com
-VITE_SERVICE_API_URL=https://api.your-domain.com
-NODE_ENV=production
-
-# Docker Configuration
-Dockerfile: ./Dockerfile
-Build Arguments:
-  - NPM_TOKEN=${{ secrets.NPM_TOKEN }}
-  - VITE_SERVICE_SSO_URL=${{ secrets.VITE_SERVICE_SSO_URL }}
-```
-
 #### gaqno-admin-ui
 
 ```yaml
@@ -87,35 +64,6 @@ VITE_SERVICE_SSO_URL=https://sso.your-domain.com
 ```
 
 ### Backend Services
-
-#### gaqno-saas-service
-
-```yaml
-Name: SaaS API
-Port: 4001
-Health Check: /health
-Build Command: npm run build
-Start Command: npm start
-
-# Environment Variables
-NODE_ENV=production
-PORT=4001
-DATABASE_URL=${{ secrets.DATABASE_URL }}
-JWT_SECRET=${{ secrets.JWT_SECRET }}
-REDIS_URL=${{ secrets.REDIS_URL }}
-NPM_TOKEN=${{ secrets.NPM_TOKEN }}
-
-# Database Configuration
-DATABASE_HOST=${{ secrets.DATABASE_HOST }}
-DATABASE_PORT=${{ secrets.DATABASE_PORT }}
-DATABASE_NAME=${{ secrets.DATABASE_NAME }}
-DATABASE_USER=${{ secrets.DATABASE_USER }}
-DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}
-
-# Service Dependencies
-- PostgreSQL Database
-- Redis Cache
-```
 
 #### gaqno-sso-service
 
@@ -314,9 +262,8 @@ Primary Domain: your-domain.com
 
 # Subdomains
 sso.your-domain.com → gaqno-sso-service
-api.your-domain.com → gaqno-saas-service
+api.your-domain.com → gaqno-admin-service
 admin.your-domain.com → gaqno-admin-ui
-app.your-domain.com → gaqno-saas-ui
 finance.your-domain.com → gaqno-finance-service
 crm.your-domain.com → gaqno-crm-service
 ai.your-domain.com → gaqno-ai-service
@@ -324,7 +271,7 @@ ai.your-domain.com → gaqno-ai-service
 
 ### Portal (Module Federation) – path-based routing
 
-For **portal.your-domain.com** (or portal.gaqno.com.br), the **shell** (gaqno-shell-ui) and all **MFEs** are served from the same host via path prefixes: `/` → shell, `/admin` → gaqno-admin-ui, `/crm` → gaqno-crm-ui, `/erp` → gaqno-erp-ui, `/ai` → gaqno-ai-ui, `/finance` → gaqno-finance-ui, `/pdv` → gaqno-pdv-ui, `/rpg` → gaqno-rpg-ui, `/saas` → gaqno-saas-ui, `/omnichannel` → gaqno-omnichannel-ui, `/auth` → gaqno-sso-ui. The shell build requires env vars `MFE_*_URL` pointing to this base URL (e.g. `MFE_ADMIN_URL=https://portal.your-domain.com/admin`). See **COOLIFY_DEPLOYMENT_CHECKLIST.md** section "Portal and Module Federation (MFE)" for routing table, proxy timeouts (60–120 s for assets), and MFE health checks.
+For **portal.your-domain.com** (or portal.gaqno.com.br), the **shell** (gaqno-shell-ui) and all **MFEs** are served from the same host via path prefixes: `/` → shell, `/admin` → gaqno-admin-ui, `/crm` → gaqno-crm-ui, `/erp` → gaqno-erp-ui, `/ai` → gaqno-ai-ui, `/finance` → gaqno-finance-ui, `/pdv` → gaqno-pdv-ui, `/rpg` → gaqno-rpg-ui, `/omnichannel` → gaqno-omnichannel-ui, `/auth` → gaqno-sso-ui. The shell build requires env vars `MFE_*_URL` pointing to this base URL (e.g. `MFE_ADMIN_URL=https://portal.your-domain.com/admin`). See **COOLIFY_DEPLOYMENT_CHECKLIST.md** section "Portal and Module Federation (MFE)" for routing table, proxy timeouts (60–120 s for assets), and MFE health checks.
 
 ### SSL/TLS Configuration
 

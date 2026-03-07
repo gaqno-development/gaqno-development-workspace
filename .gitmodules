@@ -49,12 +49,6 @@
 [submodule "gaqno-rpg-ui"]
 	path = gaqno-rpg-ui
 	url = git@github.com:gaqno-development/gaqno-rpg.git
-[submodule "gaqno-saas-service"]
-	path = gaqno-saas-service
-	url = git@github.com:gaqno-development/gaqno-saas-service.git
-[submodule "gaqno-saas-ui"]
-	path = gaqno-saas-ui
-	url = git@github.com:gaqno-development/gaqno-saas-ui.git
 [submodule "gaqno-shell-ui"]
 	path = gaqno-shell-ui
 	url = git@github.com:gaqno-development/gaqno-shell.git

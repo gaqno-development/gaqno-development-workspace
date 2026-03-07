@@ -214,8 +214,7 @@ All Kafka topics follow the `{bounded_context}.events` convention:
 | `gaqno-pdv-service` | PDV (channel) | Own DB |
 | `gaqno-rpg-service` | RPG | Own DB |
 | `gaqno-wellness-service` | Wellness | Own DB |
-| `gaqno-saas-service` | SaaS (Platform) | Own DB |
-| `gaqno-admin-service` | Admin (thin shell) | — |
+| `gaqno-admin-service` | Admin + SaaS/Platform | — |
 | `gaqno-customer-service` | Customer (master identity) | Own DB |
 | `gaqno-intelligence-service` | Inteligência (analytics/insights) | Own DB |
 | `gaqno-lead-enrichment-service` | Cross-cutting (Comercial ↔ Atendimento) | Own DB |

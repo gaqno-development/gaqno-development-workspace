@@ -6,7 +6,7 @@ Ready-to-import n8n workflow JSONs for cross-service automation. Import via **n8
 
 | File | Name | Trigger | Description |
 |------|------|---------|-------------|
-| `01-service-health-monitor.json` | Service Health Monitor | Every 5 min | Calls `/v1/health` on all 14 Gaqno services; sends Telegram alert if any fail. |
+| `01-service-health-monitor.json` | Service Health Monitor | Every 5 min | Calls `/v1/health` on all 13 Gaqno services; sends Telegram alert if any fail. |
 | `02-lead-enrichment-pipeline.json` | Lead Enrichment Pipeline | Every 15 min | Fetches CRM leads, enriches (placeholder), updates lead, optional notify. |
 | `03-order-to-cash-automation.json` | Order-to-Cash | Every 30 min | Gets ERP orders with status `confirmed`, creates finance transaction, optional customer notify. |
 | `04-payment-overdue-reminder.json` | Payment Overdue Reminder | Daily 9:00 | Fetches finance transactions, filters overdue, sends reminder (e.g. Telegram). |
@@ -103,7 +103,6 @@ All workflows use **`http://localhost:PORT/v1/...`** by default, matching the wo
 | PDV             | `http://localhost:4006` | 01, 06              |
 | RPG             | `http://localhost:4007` | 01                  |
 | Omnichannel     | `http://localhost:4008` | 01, 07              |
-| SaaS            | `http://localhost:4009` | 01                  |
 | Admin           | `http://localhost:4010` | 01                  |
 | Wellness        | `http://localhost:4011` | 01                  |
 | Lead-enrichment | `http://localhost:4012` | 01                  |
@@ -157,7 +156,6 @@ In n8n:
 | gaqno-pdv-service | 4006 |
 | gaqno-rpg-service | 4007 |
 | gaqno-omnichannel-service | 4008 |
-| gaqno-saas-service | 4009 |
 | gaqno-admin-service | 4010 |
 | gaqno-wellness-service | 4011 |
 | gaqno-lead-enrichment-service | 4012 |

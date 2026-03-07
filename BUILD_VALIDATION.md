@@ -37,7 +37,6 @@ Ensure Docker is running and you have permissions to build images.
 ### Services with Dockerfiles
 - `gaqno-erp-ui/` - ERP UI application
 - `gaqno-crm-ui/` - CRM UI application  
-- `gaqno-saas-ui/` - SaaS UI application
 - `gaqno-pdv-ui/` - PDV UI application
 
 ### Build Commands

@@ -11,7 +11,7 @@
 O **.env na raiz** do workspace está configurado para desenvolvimento local:
 
 - `NODE_ENV=development`
-- `MFE_*_URL` → `http://localhost:3XXX` (com path quando o MFE usa `base` no Vite: `/erp`, `/saas`, `/omnichannel`, `/wellness`)
+- `MFE_*_URL` → `http://localhost:3XXX` (com path quando o MFE usa `base` no Vite: `/erp`, `/omnichannel`, `/wellness`)
 - `VITE_SERVICE_*_URL` → `http://localhost:4XXX` (backends)
 
 Para o **shell** usar essas URLs, rode os comandos a partir da **raiz do workspace** depois de carregar o `.env`:
@@ -37,7 +37,6 @@ set -a && source .env && set +a && npm run dev:shell
 | gaqno-finance-ui | 3005  | /           | dev:finance      |
 | gaqno-pdv-ui     | 3006  | /           | dev:pdv          |
 | gaqno-rpg-ui     | 3007  | /           | dev:rpg          |
-| gaqno-saas-ui    | 3008  | /saas       | dev:saas         |
 | gaqno-admin-ui   | 3010  | /           | dev:admin        |
 | gaqno-omnichannel-ui | 3011 | /omnichannel | dev:omnichannel |
 | gaqno-wellness-ui   | 3012 | /wellness   | dev:wellness    |
@@ -54,7 +53,6 @@ set -a && source .env && set +a && npm run dev:shell
 | gaqno-pdv-service        | 4006 | dev:pdv-service        |
 | gaqno-rpg-service        | 4007 | dev:rpg-service        |
 | gaqno-omnichannel-service| 4008 | dev:omnichannel-service|
-| gaqno-saas-service       | 4009 | (sem script; adicionar se precisar) |
 | gaqno-admin-service      | 4010 | (sem script; adicionar se precisar)   |
 | gaqno-wellness-service   | 4011 | dev:wellness-service   |
 
