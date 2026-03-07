@@ -63,27 +63,55 @@ $diff"
 
 run_repo_tests() {
   local repo_path="$1"
+  local repo_name="$2"
+  local coverage_log
+  coverage_log=$(mktemp)
+  trap "rm -f '$coverage_log'" RETURN
+
   if [ ! -f "$repo_path/package.json" ]; then
     return 0
   fi
   if ! grep -qE '"test"\s*:' "$repo_path/package.json" 2>/dev/null; then
     return 0
   fi
+
+  local use_coverage=""
+  if grep -qE '"test:coverage"\s*:' "$repo_path/package.json" 2>/dev/null; then
+    use_coverage="1"
+  fi
+
+  local test_exit_code
   if command -v timeout &>/dev/null; then
-    (cd "$repo_path" && timeout "$TEST_TIMEOUT_SEC" npm run test 2>/dev/null) || return 1
-  else
-    (cd "$repo_path" && npm run test 2>/dev/null) & local pid=$!
-    (sleep "$TEST_TIMEOUT_SEC"; kill -9 "$pid" 2>/dev/null; exit 0) & local killer=$!
-    if wait "$pid" 2>/dev/null; then
-      kill "$killer" 2>/dev/null
-      wait "$killer" 2>/dev/null
-      return 0
+    if [ -n "$use_coverage" ]; then
+      (cd "$repo_path" && timeout "$TEST_TIMEOUT_SEC" npm run test:coverage 2>&1) > "$coverage_log" 2>&1
+    else
+      (cd "$repo_path" && timeout "$TEST_TIMEOUT_SEC" npm run test 2>&1) > "$coverage_log" 2>&1
     fi
+    test_exit_code=$?
+  else
+    if [ -n "$use_coverage" ]; then
+      (cd "$repo_path" && npm run test:coverage 2>&1) > "$coverage_log" 2>&1 &
+    else
+      (cd "$repo_path" && npm run test 2>&1) > "$coverage_log" 2>&1 &
+    fi
+    local pid=$!
+    (sleep "$TEST_TIMEOUT_SEC"; kill -9 "$pid" 2>/dev/null; exit 0) & local killer=$!
+    wait "$pid" 2>/dev/null
+    test_exit_code=$?
     kill "$killer" 2>/dev/null
     wait "$killer" 2>/dev/null
-    echo "   ⏱️  Tests timed out after ${TEST_TIMEOUT_SEC}s" >&2
+    if [ $test_exit_code -eq 124 ] || [ $test_exit_code -eq 137 ] || [ $test_exit_code -eq 143 ]; then
+      echo "   ⏱️  Tests timed out after ${TEST_TIMEOUT_SEC}s" >&2
+    fi
+  fi
+
+  if [ $test_exit_code -ne 0 ]; then
+    cat "$coverage_log" >&2
     return 1
   fi
+
+  echo "   📊 Coverage ($repo_name):"
+  tail -n 35 "$coverage_log" | sed 's/^/      /'
   return 0
 }
 
@@ -149,7 +177,7 @@ for repo in "${REPOS[@]}"; do
   fi
 
   echo "   🧪 Running tests (há alterações; testes obrigatórios antes de commit/push)..."
-  if ! run_repo_tests "$REPO_PATH"; then
+  if ! run_repo_tests "$REPO_PATH" "$repo"; then
     echo "   ❌ Tests failed — skipping commit/push for $repo"
     echo ""
     continue

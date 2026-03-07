@@ -12,6 +12,8 @@ alwaysApply: false
 
 **Structure**: Hooks by domain (auth/, user/, product/). Pages are composition-only. Shared logic in `@gaqno-frontcore`. Test files colocated (*.spec.tsx, *.test.tsx).
 
+**Tests and i18n**: Prefer `data-testid` over matching on visible labels or text. Use `screen.getByTestId("...")` / `getByRole(..., { name: ... })` for queries; avoid `getByText` / `getByLabelText` for user-facing strings that are translated (i18n). Add `data-testid` to key elements (e.g. `data-testid="submit-button"`, `data-testid="empty-state"`) so tests stay stable when copy or locale changes.
+
 **MFE**: No direct imports between MFEs. Shared code only via `@gaqno-frontcore`. Module Federation for runtime integration. Each MFE owns its domain and routes.
 
 **Worktree**: Use `git worktree add ../<repo>-<desc> -b feature/TICKET-KEY-desc` for feature work; remove after PR merged.

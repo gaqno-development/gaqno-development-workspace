@@ -120,5 +120,5 @@ jobs:
 
       - run: npm install --legacy-peer-deps
 
-      - name: Tests
-        run: npx turbo run test
+      - name: Tests and coverage
+        run: npx turbo run test:coverage
