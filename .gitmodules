@@ -94,3 +94,6 @@
 [submodule "gaqno-docs-ui"]
 	path = gaqno-docs-ui
 	url = git@github.com:gaqno-development/gaqno-docs-ui.git
+[submodule "gaqno-consumer-service"]
+	path = gaqno-consumer-service
+	url = git@github.com:gaqno-development/gaqno-consumer-service.git
