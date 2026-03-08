@@ -168,6 +168,7 @@ else
 fi
 
 PUSHED_PACKAGE=0
+PUSHED_PACKAGES=()
 for repo in "${REPOS[@]}"; do
   REPO_PATH="$BASE_DIR/$repo"
   
@@ -223,7 +224,10 @@ for repo in "${REPOS[@]}"; do
     echo "   ⚠️  Push failed (check if remote is configured)"
   else
     case "$repo" in
-      @gaqno-types|@gaqno-backcore|@gaqno-frontcore|@gaqno-agent) PUSHED_PACKAGE=1 ;;
+      @gaqno-types|@gaqno-backcore|@gaqno-frontcore|@gaqno-agent)
+        PUSHED_PACKAGE=1
+        PUSHED_PACKAGES+=("$repo")
+        ;;
     esac
   fi
 
@@ -233,11 +237,17 @@ done
 
 cd "$BASE_DIR"
 PACKAGE_DIRS=("@gaqno-types" "@gaqno-backcore" "@gaqno-frontcore" "@gaqno-agent")
+
+# Only consider a package "changed" if it was actually pushed in this run,
+# not merely because another package changed. This prevents phantom version
+# bumps on packages that have no real code changes.
 for pkg in "${PACKAGE_DIRS[@]}"; do
-  if [ -d "$BASE_DIR/$pkg" ] && [ -n "$(git -C "$BASE_DIR" status --porcelain "$pkg" 2>/dev/null)" ]; then
-    PUSHED_PACKAGE=1
-    break
-  fi
+  for pushed in "${PUSHED_PACKAGES[@]}"; do
+    if [ "$pkg" = "$pushed" ]; then
+      PUSHED_PACKAGE=1
+      break
+    fi
+  done
 done
 
 if [ "$PUSHED_PACKAGE" = "1" ]; then
@@ -247,9 +257,16 @@ if [ "$PUSHED_PACKAGE" = "1" ]; then
     if [ ! -d "$PKG_PATH" ] || [ ! -f "$PKG_PATH/package.json" ]; then
       continue
     fi
-    if [ -z "$(git -C "$BASE_DIR" status --porcelain "$pkg" 2>/dev/null)" ]; then
+
+    # Only bump packages that were actually pushed in this run
+    ACTUALLY_PUSHED=0
+    for pushed in "${PUSHED_PACKAGES[@]}"; do
+      if [ "$pkg" = "$pushed" ]; then ACTUALLY_PUSHED=1; break; fi
+    done
+    if [ "$ACTUALLY_PUSHED" = "0" ]; then
       continue
     fi
+
     LOCAL_VER=$(node -p "require('$PKG_PATH/package.json').version" 2>/dev/null || true)
     case "$pkg" in
       @gaqno-types)     NPM_NAME="@gaqno-development/types" ;;
@@ -262,6 +279,8 @@ if [ "$PUSHED_PACKAGE" = "1" ]; then
     if [ -n "$LOCAL_VER" ] && [ "$LOCAL_VER" = "$PUBLISHED_VER" ]; then
       echo "   📌 Bump patch em $pkg ($LOCAL_VER → patch) para permitir publicação"
       (cd "$PKG_PATH" && npm version patch --no-git-tag-version) || true
+      # Commit and push the bump immediately so it doesn't linger as dirty state
+      (cd "$PKG_PATH" && git add package.json && git commit -m "chore: bump version for publish" && git push) || true
     fi
   done
   echo ""
