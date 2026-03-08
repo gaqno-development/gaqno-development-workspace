@@ -10,18 +10,39 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 PROJECTS=(
-  "gaqno-shell-ui"
-  "gaqno-sso-ui"
+  "gaqno-admin-ui"
   "gaqno-ai-ui"
+  "gaqno-consumer-ui"
   "gaqno-crm-ui"
+  "gaqno-docs-ui"
   "gaqno-erp-ui"
   "gaqno-finance-ui"
+  "gaqno-intelligence-ui"
+  "gaqno-landing-ui"
+  "gaqno-lenin-ui"
+  "gaqno-omnichannel-ui"
   "gaqno-pdv-ui"
+  "gaqno-rpg-ui"
+  "gaqno-shell-ui"
+  "gaqno-sso-ui"
+  "gaqno-wellness-ui"
 )
 
 SERVICES=(
+  "gaqno-admin-service"
+  "gaqno-ai-service"
+  "gaqno-consumer-service"
+  "gaqno-crm-service"
+  "gaqno-customer-service"
+  "gaqno-erp-service"
+  "gaqno-finance-service"
+  "gaqno-intelligence-service"
+  "gaqno-lead-enrichment-service"
+  "gaqno-omnichannel-service"
   "gaqno-pdv-service"
+  "gaqno-rpg-service"
   "gaqno-sso-service"
+  "gaqno-wellness-service"
 )
 
 if [ ! -d "${BUILD_LOG_DIR}" ]; then
