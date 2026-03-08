@@ -18,6 +18,19 @@ fallback_commit_message() {
   echo "chore($scope): update"
 }
 
+# Force subject-case rule: subject must be lowercase (no PascalCase/Start-Case)
+normalize_commit_message() {
+  local msg="$1"
+  if [[ "$msg" =~ ^([^:]+:[[:space:]]*)(.+)$ ]]; then
+    local prefix="${BASH_REMATCH[1]}"
+    local subject="${BASH_REMATCH[2]}"
+    subject=$(echo "$subject" | tr '[:upper:]' '[:lower:]')
+    echo "${prefix}${subject}"
+  else
+    echo "$msg"
+  fi
+}
+
 generate_semantic_commit() {
   local repo_path="$1"
   local repo_name="$2"
@@ -195,6 +208,7 @@ for repo in "${REPOS[@]}"; do
     echo "   💬 Generated: $COMMIT_MESSAGE"
   fi
   COMMIT_MESSAGE="${COMMIT_MESSAGE%.}"
+  COMMIT_MESSAGE=$(normalize_commit_message "$COMMIT_MESSAGE")
 
   echo "   💾 Committing with message: '$COMMIT_MESSAGE'"
   export GAQNO_TESTS_ALREADY_RAN=1
@@ -234,7 +248,7 @@ if [ -n "$(git status --porcelain)" ]; then
   git add .
 
   if [ -n "$CUSTOM_MESSAGE" ]; then
-    PARENT_MESSAGE="$CUSTOM_MESSAGE"
+    PARENT_MESSAGE=$(normalize_commit_message "$CUSTOM_MESSAGE")
   else
     PARENT_MESSAGE="chore: update submodule references"
   fi
