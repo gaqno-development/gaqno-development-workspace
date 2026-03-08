@@ -96,16 +96,16 @@ run_repo_tests() {
   local test_exit_code
   if command -v timeout &>/dev/null; then
     if [ -n "$use_coverage" ]; then
-      (cd "$repo_path" && timeout "$TEST_TIMEOUT_SEC" npm run test:coverage 2>&1) > "$coverage_log" 2>&1
+      (cd "$repo_path" && timeout "$TEST_TIMEOUT_SEC" npm run test:coverage 2>&1) | tee "$coverage_log"
     else
-      (cd "$repo_path" && timeout "$TEST_TIMEOUT_SEC" npm run test 2>&1) > "$coverage_log" 2>&1
+      (cd "$repo_path" && timeout "$TEST_TIMEOUT_SEC" npm run test 2>&1) | tee "$coverage_log"
     fi
-    test_exit_code=$?
+    test_exit_code=${PIPESTATUS[0]}
   else
     if [ -n "$use_coverage" ]; then
-      (cd "$repo_path" && npm run test:coverage 2>&1) > "$coverage_log" 2>&1 &
+      (cd "$repo_path" && npm run test:coverage 2>&1) | tee "$coverage_log" &
     else
-      (cd "$repo_path" && npm run test 2>&1) > "$coverage_log" 2>&1 &
+      (cd "$repo_path" && npm run test 2>&1) | tee "$coverage_log" &
     fi
     local pid=$!
     (sleep "$TEST_TIMEOUT_SEC"; kill -9 "$pid" 2>/dev/null; exit 0) & local killer=$!
