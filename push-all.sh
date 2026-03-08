@@ -231,8 +231,41 @@ for repo in "${REPOS[@]}"; do
   echo ""
 done
 
+cd "$BASE_DIR"
+PACKAGE_DIRS=("@gaqno-types" "@gaqno-backcore" "@gaqno-frontcore" "@gaqno-agent")
+for pkg in "${PACKAGE_DIRS[@]}"; do
+  if [ -d "$BASE_DIR/$pkg" ] && [ -n "$(git -C "$BASE_DIR" status --porcelain "$pkg" 2>/dev/null)" ]; then
+    PUSHED_PACKAGE=1
+    break
+  fi
+done
+
 if [ "$PUSHED_PACKAGE" = "1" ]; then
-  echo "📦 Publishing packages first (so Coolify/deploy gets the new version on npm)..."
+  echo "📦 Pacotes com alterações detectados; garantindo versão publicável..."
+  for pkg in "${PACKAGE_DIRS[@]}"; do
+    PKG_PATH="$BASE_DIR/$pkg"
+    if [ ! -d "$PKG_PATH" ] || [ ! -f "$PKG_PATH/package.json" ]; then
+      continue
+    fi
+    if [ -z "$(git -C "$BASE_DIR" status --porcelain "$pkg" 2>/dev/null)" ]; then
+      continue
+    fi
+    LOCAL_VER=$(node -p "require('$PKG_PATH/package.json').version" 2>/dev/null || true)
+    case "$pkg" in
+      @gaqno-types)     NPM_NAME="@gaqno-development/types" ;;
+      @gaqno-backcore)  NPM_NAME="@gaqno-development/backcore" ;;
+      @gaqno-frontcore) NPM_NAME="@gaqno-development/frontcore" ;;
+      @gaqno-agent)     NPM_NAME="@gaqno-development/gaqno-agent" ;;
+      *) continue ;;
+    esac
+    PUBLISHED_VER=$(npm view "$NPM_NAME" version 2>/dev/null || true)
+    if [ -n "$LOCAL_VER" ] && [ "$LOCAL_VER" = "$PUBLISHED_VER" ]; then
+      echo "   📌 Bump patch em $pkg ($LOCAL_VER → patch) para permitir publicação"
+      (cd "$PKG_PATH" && npm version patch --no-git-tag-version) || true
+    fi
+  done
+  echo ""
+  echo "📦 Publishing packages (Coolify/deploy gets the new version on npm)..."
   if [ -f "$BASE_DIR/publish-packages.sh" ]; then
     "$BASE_DIR/publish-packages.sh" || echo "   ⚠️  Publish failed (check npm auth and versions)"
   else
