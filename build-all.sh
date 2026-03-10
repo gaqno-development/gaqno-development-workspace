@@ -45,6 +45,24 @@ SERVICES=(
   "gaqno-wellness-service"
 )
 
+FILTER="$1"
+
+if [ -n "${FILTER}" ]; then
+  FOUND=0
+  for s in "${SERVICES[@]}"; do [ "${s}" = "${FILTER}" ] && FOUND=1; done
+  for p in "${PROJECTS[@]}"; do [ "${p}" = "${FILTER}" ] && FOUND=1; done
+  if [ "${FOUND}" -eq 0 ]; then
+    echo -e "${RED}❌ Unknown project: ${FILTER}${NC}"
+    echo ""
+    echo "Available services:"
+    printf "   %s\n" "${SERVICES[@]}"
+    echo ""
+    echo "Available frontend projects:"
+    printf "   %s\n" "${PROJECTS[@]}"
+    exit 1
+  fi
+fi
+
 if [ ! -d "${BUILD_LOG_DIR}" ]; then
   mkdir -p "${BUILD_LOG_DIR}"
   echo "📁 Created build logs directory: ${BUILD_LOG_DIR}"
@@ -62,7 +80,11 @@ if [ -z "${NPM_TOKEN}" ]; then
 fi
 
 echo ""
-echo "🐳 Building all projects and services with Docker..."
+if [ -n "${FILTER}" ]; then
+  echo "🐳 Building ${FILTER} with Docker..."
+else
+  echo "🐳 Building all projects and services with Docker..."
+fi
 echo "===================================================="
 echo ""
 
@@ -101,35 +123,44 @@ docker_build_one() {
   fi
 }
 
-echo -e "${BLUE}🔧 Building services...${NC}"
-echo ""
-for service in "${SERVICES[@]}"; do
-  if docker_build_one "${service}" "${service}"; then
-    SUCCESSFUL+=("${service}")
-  else
-    FAILED+=("${service}")
-  fi
+build_services() {
+  echo -e "${BLUE}🔧 Building services...${NC}"
   echo ""
-done
+  for service in "${SERVICES[@]}"; do
+    [ -n "${FILTER}" ] && [ "${service}" != "${FILTER}" ] && continue
+    if docker_build_one "${service}" "${service}"; then
+      SUCCESSFUL+=("${service}")
+    else
+      FAILED+=("${service}")
+    fi
+    echo ""
+  done
+}
 
-echo -e "${BLUE}🌐 Building frontend projects...${NC}"
-echo ""
-for project in "${PROJECTS[@]}"; do
-  if [ "${project}" = "gaqno-erp-ui" ]; then
-    if docker_build_one "${project}" "${project}" "${BASE_DIR}" "${project}/Dockerfile.monorepo"; then
-      SUCCESSFUL+=("${project}")
-    else
-      FAILED+=("${project}")
-    fi
-  else
-    if docker_build_one "${project}" "${project}"; then
-      SUCCESSFUL+=("${project}")
-    else
-      FAILED+=("${project}")
-    fi
-  fi
+build_frontends() {
+  echo -e "${BLUE}🌐 Building frontend projects...${NC}"
   echo ""
-done
+  for project in "${PROJECTS[@]}"; do
+    [ -n "${FILTER}" ] && [ "${project}" != "${FILTER}" ] && continue
+    if [ "${project}" = "gaqno-erp-ui" ]; then
+      if docker_build_one "${project}" "${project}" "${BASE_DIR}" "${project}/Dockerfile.monorepo"; then
+        SUCCESSFUL+=("${project}")
+      else
+        FAILED+=("${project}")
+      fi
+    else
+      if docker_build_one "${project}" "${project}"; then
+        SUCCESSFUL+=("${project}")
+      else
+        FAILED+=("${project}")
+      fi
+    fi
+    echo ""
+  done
+}
+
+build_services
+build_frontends
 
 echo ""
 echo "=========================================="
@@ -155,7 +186,11 @@ if [ ${#FAILED[@]} -gt 0 ]; then
   exit 1
 fi
 
-echo -e "${GREEN}🎉 All Docker builds completed successfully!${NC}"
+if [ -n "${FILTER}" ]; then
+  echo -e "${GREEN}🎉 ${FILTER} built successfully!${NC}"
+else
+  echo -e "${GREEN}🎉 All Docker builds completed successfully!${NC}"
+fi
 echo ""
 echo "📁 Build logs: ${BUILD_LOG_DIR}"
 echo ""
