@@ -11,6 +11,10 @@ services:
       - --path.sysfs=/host/sys
       - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 64m
   prometheus:
     image: prom/prometheus:latest
     volumes:
@@ -18,16 +22,26 @@ services:
     command:
       - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=15d
+      - --storage.tsdb.retention.size=1GB
       - --web.enable-lifecycle
     configs:
       - source: prometheus_config
         target: /etc/prometheus/prometheus.yml
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512m
     ports:
       - "9090:9090"
   postgres-exporter:
     image: quay.io/prometheuscommunity/postgres-exporter:v0.15.0
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 64m
     env_file:
       - .env
     environment:
@@ -37,6 +51,10 @@ services:
   pushgateway:
     image: prom/pushgateway:v1.6.2
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 128m
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.49.1
     volumes:
@@ -46,10 +64,18 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    command:
+      - --housekeeping_interval=30s
+      - --docker_only=true
+      - --disable_metrics=percpu,sched,tcp,udp,disk,diskIO,hugetlb,referenced_memory,resctrl,process
     privileged: true
     devices:
       - /dev/kmsg
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256m
   container-name-mapper:
     image: docker:cli
     volumes:
@@ -75,12 +101,20 @@ services:
             metrics="$${metrics}container_disk_usage_bytes{container_id=\"$$cid\",short_id=\"$$short\",name=\"$$name\",service=\"$$svc\",component=\"$$comp\"} $$size\n"
           done
           printf "$$metrics" | curl -s --data-binary @- "http://pushgateway:9091/metrics/job/container_info" 2>/dev/null
-          sleep 15
+          sleep 60
         done
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 128m
   cloudflared:
     image: cloudflare/cloudflared:latest
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 128m
     environment:
       - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
     command:
@@ -110,6 +144,10 @@ services:
       - grafana-data:/var/lib/grafana
       - ./grafana/dashboards:/etc/grafana/dashboards
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256m
     ports:
       - "5678:3000"
     depends_on:
