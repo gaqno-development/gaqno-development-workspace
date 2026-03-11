@@ -1,0 +1,48 @@
+# Coolify failed deployments – root causes and fixes
+
+**Script to list failed/retrying apps:** `node scripts/coolify-status-retries.mjs`
+
+## Current failed applications (12)
+
+| App | Root cause | Fix |
+|-----|------------|-----|
+| **gaqno-admin-service** | Runtime: `Cannot find module '/app/dist/main.js'` | Set Coolify build context/base directory to the service folder so `nest build` outputs to `dist/` in the image; or adjust Dockerfile so `dist/main.js` exists. |
+| **gaqno-consumer-service** | Likely same as admin (build path) | Same as admin-service. |
+| **gaqno-crm-service** | Migration: `CREATE TYPE "crm_deal_stage" AS ENUM(...)` — type already exists | Make migration idempotent (e.g. DO block with exception handler for `duplicate_object`). |
+| **gaqno-customer-service** | Same Drizzle CREATE TYPE | Same as crm-service. |
+| **gaqno-erp-service** | Same Drizzle CREATE TYPE | Same as crm-service. |
+| **gaqno-erp-ui** | Vite: `"useErpOrders" is not exported` from frontcore | Bump and publish `@gaqno-development/frontcore`; erp-ui already has explicit export in frontcore. |
+| **gaqno-finance-service** | Same Drizzle CREATE TYPE | Same as crm-service. |
+| **gaqno-intelligence-service** | Likely migration or runtime | Check logs; apply migration or build-path fix as above. |
+| **gaqno-lead-enrichment-service** | Likely migration or runtime | Same. |
+| **gaqno-omnichannel-service** | Migration: CREATE TYPE/table already exists → app crashes before listening, healthcheck fails | **Fixed:** `0000_true_tombstone.sql` made idempotent (DO blocks for CREATE TYPE, IF NOT EXISTS for tables/constraints/indexes). Redeploy. |
+| **gaqno-saas-service** | Likely migration or runtime | Same. |
+| **gaqno-wellness-service** | Same Drizzle CREATE TYPE | Same as crm-service. |
+
+## Backend: Drizzle CREATE TYPE already exists
+
+PostgreSQL has no `CREATE TYPE IF NOT EXISTS`. Migrations that run `CREATE TYPE "public"."…" AS ENUM(...)` fail when the type already exists (e.g. re-run or partial apply).
+
+**Fix:** Make the migration idempotent, e.g.:
+
+```sql
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'crm_deal_stage') THEN
+    CREATE TYPE "public"."crm_deal_stage" AS ENUM (...);
+  END IF;
+END $$;
+```
+
+Apply the same pattern to each CREATE TYPE in the failing migration files (or generate new migrations and edit them).
+
+## Frontend: gaqno-erp-ui and useErpOrders
+
+- **Cause:** The version of `@gaqno-development/frontcore` used in Coolify’s build doesn’t export `useErpOrders` (or the bundler doesn’t resolve the re-export).
+- **Done:** Explicit `export { useErpOrders } from "./useErpOrders"` added in `@gaqno-frontcore/src/hooks/erp/index.ts`.
+- **Next:** Bump frontcore version, run `npm run release:packages`, then redeploy gaqno-erp-ui on Coolify so it uses the new package.
+
+## Backend: dist/main.js not found
+
+- **Cause:** Image is built from a context where `nest build` runs in the wrong directory, so `dist/main.js` is not at `/app/dist/main.js` in the container.
+- **Fix:** In Coolify, set the application’s build base directory to the service folder (e.g. `gaqno-admin-service`). Alternatively, change the Dockerfile so the built output is copied to `/app/dist/` from the correct path.

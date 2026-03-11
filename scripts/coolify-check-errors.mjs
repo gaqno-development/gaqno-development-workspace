@@ -77,13 +77,14 @@ async function main() {
       continue;
     }
     const status = latest.status ?? latest.deployment_status ?? "unknown";
-    if (
-      status === "Failed" ||
-      status === "Crashed" ||
-      status === "failed" ||
-      status === "crashed" ||
-      status === "Error"
-    ) {
+    const statusLower = String(status).toLowerCase();
+    const isFailed =
+      statusLower === "failed" ||
+      statusLower === "crashed" ||
+      statusLower === "error" ||
+      statusLower === "retrying" ||
+      statusLower.includes("retry");
+    if (isFailed) {
       failed.push({
         name,
         uuid,
