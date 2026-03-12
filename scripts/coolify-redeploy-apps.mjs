@@ -84,8 +84,15 @@ async function main() {
   console.log("");
 
   const appsToDeploy = [
-    { name: "shell", pattern: "shell" },
-    { name: "omnichannel", pattern: "omnichannel" },
+    { name: "gaqno-crm-service", pattern: "crm-service" },
+    { name: "gaqno-erp-service", pattern: "erp-service" },
+    { name: "gaqno-finance-service", pattern: "finance-service" },
+    { name: "gaqno-wellness-service", pattern: "wellness-service" },
+    { name: "gaqno-omnichannel-service", pattern: "omnichannel-service" },
+    { name: "gaqno-admin-service", pattern: "admin-service" },
+    { name: "gaqno-consumer-service", pattern: "consumer-service" },
+    { name: "gaqno-erp-ui", pattern: "erp-ui" },
+    { name: "gaqno-shell-ui", pattern: "shell" },
   ];
 
   const results = [];
