@@ -151,7 +151,7 @@ This document captures the bounded context map, event flows, responsibility matr
 ### Phase 2 — PDV as Channel + Product Ownership
 
 - [x] Publish `operacoes.product_created/updated/deleted` events from ERP
-- [x] PDV reads product catalog from Operações (event sync via Kafka consumer)
+- [x] PDV reads product catalog from Operações (event sync via BullMQ consumer)
 - [x] PDV publishes `pdv.sale_completed` to Financeiro Empresarial / Operações
 - [x] Remove product duplication in PDV (migrated to `erpProductId` references + soft-delete)
 
@@ -160,13 +160,13 @@ This document captures the bounded context map, event flows, responsibility matr
 - [x] Introduce Customer bounded context (new `gaqno-customer-service`, port 4013)
 - [x] Migrate Omnichannel/CRM/PDV to reference `masterCustomerId`
 - [x] Sync via domain events (`customer.created`, `customer.updated`)
-- [x] HTTP for creation (synchronous), Kafka for update propagation
+- [x] HTTP for creation (synchronous), BullMQ for update propagation
 - [x] Graceful degradation — services work without Customer service
 
 ### Phase 4 — Intelligence Service
 
 - [x] Create `gaqno-intelligence-service` as event-driven consumer (port 4014)
-- [x] Kafka consumers for comercial, atendimento, operacoes, financeiro, pdv, ai_studio, customer events
+- [x] BullMQ consumers for comercial, atendimento, operacoes, financeiro, pdv, ai_studio, customer events
 - [x] Insights API: dashboard metrics, event log, event counts by type/source
 - [x] Create `gaqno-intelligence-ui` MFE (port 3013) with analytics, forecasts, insights, event log pages
 - [x] Wire intelligence MFE in shell vite.config + replace placeholder routes
@@ -182,7 +182,7 @@ This document captures the bounded context map, event flows, responsibility matr
 
 ## Topic Registry
 
-All Kafka topics follow the `{bounded_context}.events` convention:
+All BullMQ queue topics follow the `{bounded_context}.events` convention:
 
 | Topic | Bounded Context |
 |-------|----------------|

@@ -18,8 +18,8 @@
 | **gaqno-finance-service** | `src/kafka/kafka.module.ts` | Novo: TopicRegistry, KafkaConsumer, ComercialEventsConsumer; subscribe após connect. |
 | **gaqno-finance-service** | `src/kafka/comercial-events.consumer.ts` | Novo: subscreve `comercial.events`; parse `IntegrationEvent<OpportunityWonData>`; se `opportunity_won` e `FINANCE_SYSTEM_USER_ID` setado, cria transação receita. |
 | **gaqno-finance-service** | `src/app.module.ts` | Importa `KafkaModule`. |
-| **gaqno-finance-service** | `package.json` | backcore `^1.1.25`, types `^1.3.0`, kafkajs `^2.2.4`. |
-| **docker-compose.yml** | — | Novos serviços `zookeeper` e `kafka`; `crm-service` (4003, KAFKA_BROKERS, depends_on kafka); `finance-service` e `omnichannel-service` com KAFKA_BROKERS e depends_on kafka. |
+| **gaqno-finance-service** | `package.json` | backcore `^1.1.25`, types `^1.3.0`, BullMQ via backcore (kafkajs removido). |
+| **docker-compose.yml** | — | Novos serviços `redis`; `crm-service` (4003, REDIS_URL, depends_on kafka); `finance-service` e `omnichannel-service` com REDIS_URL e depends_on kafka. |
 | **docs** | `event-driven-comercial-finance.md` | Fluxo, env vars, contratos, Docker Compose, próximos passos. |
 
 ---
