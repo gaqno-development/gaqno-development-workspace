@@ -45,7 +45,14 @@ SERVICES=(
   "gaqno-wellness-service"
 )
 
-FILTER="$1"
+DOCKER_EXTRA_ARGS=""
+FILTER=""
+for arg in "$@"; do
+  case "${arg}" in
+    --no-cache) DOCKER_EXTRA_ARGS="${DOCKER_EXTRA_ARGS} --no-cache" ;;
+    *) FILTER="${arg}" ;;
+  esac
+done
 
 if [ -n "${FILTER}" ]; then
   FOUND=0
@@ -112,6 +119,7 @@ docker_build_one() {
   echo -e "${BLUE}🐳 Building ${name}...${NC}"
   if docker build -f "${dockerfile}" \
     --build-arg NPM_TOKEN="${NPM_TOKEN}" \
+    ${DOCKER_EXTRA_ARGS} \
     -t "${name}:test" \
     "${context}" > "${log_file}" 2>&1; then
     echo -e "${GREEN}✅ ${name} built successfully${NC}"
