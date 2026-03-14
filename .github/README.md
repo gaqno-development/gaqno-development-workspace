@@ -145,7 +145,7 @@ flowchart LR
 | Package              | Scope                            | Purpose                                                                                   |
 | -------------------- | -------------------------------- | ----------------------------------------------------------------------------------------- |
 | **@gaqno-types**     | `@gaqno-development/types`       | Shared TypeScript types, DTOs, API contracts                                              |
-| **@gaqno-backcore**  | `@gaqno-development/backcore`    | NestJS shared kernel: domain, event-store, multitenancy, encryption, Kafka, OpenClaw auth |
+| **@gaqno-backcore**  | `@gaqno-development/backcore`    | NestJS shared kernel: domain, event-store, multitenancy, encryption, messaging (BullMQ), OpenClaw auth |
 | **@gaqno-frontcore** | `@gaqno-development/frontcore`   | React shared UI: components, theme, auth, guards, layout                                  |
 | **@gaqno-agent**     | `@gaqno-development/gaqno-agent` | OpenClaw agent config, workspace, skills (humanizer, summarize, GitHub, MCP bridge, etc.) |
 

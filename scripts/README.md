@@ -173,6 +173,15 @@ Variáveis em `.env`: **COOLIFY_BASE_URL**, **COOLIFY_ACCESS_TOKEN** (ou **COOLI
 
 Opções: `--no-fetch-logs` (não chama GET /deployments/{uuid}); `--lines=N` (máx. linhas de log por deployment, padrão 250).
 
+### coolify-cancel-deployments.mjs
+
+Cancela todos os deployments em execução ou enfileirados no Coolify.
+
+```bash
+node scripts/coolify-cancel-deployments.mjs --dry-run   # listar
+node scripts/coolify-cancel-deployments.mjs --apply    # cancelar
+```
+
 ### coolify-restart-apps.mjs
 
 Reinicia aplicações no Coolify por UUID ou por nome (substring).

@@ -78,7 +78,7 @@ Workflows **10** and **11** are **not triggered by users directly**. The CRM bac
 
 ### Event-driven workflows (automation-bridge)
 
-The **automation-bridge** service subscribes to Kafka domain events and POSTs each event to **N8N_WEBHOOK_URL**. Use this URL as the **Webhook** trigger in n8n (e.g. workflow 09). Incoming body shape:
+The **automation-bridge** service subscribes to domain events (BullMQ) and POSTs each event to **N8N_WEBHOOK_URL**. Use this URL as the **Webhook** trigger in n8n (e.g. workflow 09). Incoming body shape:
 
 - `eventType` – e.g. `atendimento.message_received`, `comercial.sale_completed`
 - `tenantId`, `aggregateId`, `aggregateType`, `source`

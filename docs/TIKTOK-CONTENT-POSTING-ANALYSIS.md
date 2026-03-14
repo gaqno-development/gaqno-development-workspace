@@ -11,7 +11,7 @@ Este documento compara a **seção 8 (Integração TikTok Content Posting API)**
 | **Creator Info** | `GET /api/v1/tiktok/creator-info` | Dados do criador (privacy options, max duration, flags) para montar o post |
 | **Iniciar publicação** | `POST /api/v1/videos/:id/publish/tiktok` | Body com `TikTokDirectPostDto` (title, privacyLevel, flags, source, videoUrl etc.) |
 | **Status** | `GET /api/v1/videos/:id/publish/tiktok/status?publishId=...` | Status da publicação (PROCESSING, PUBLISH_COMPLETE, FAILED) |
-| **Kafka** | `video.publish.commands` / `video.publish.events` | Payload com `provider`, `publishId`, `postInfo`, `source`, `videoUrl` |
+| **BullMQ** | `video.publish.commands` / `video.publish.events` | Payload com `provider`, `publishId`, `postInfo`, `source`, `videoUrl` |
 
 Fluxo oficial TikTok: **creator_info/query** → **video/init** → (se FILE_UPLOAD) **PUT upload_url** → **status/fetch**.
 
@@ -26,8 +26,8 @@ Fluxo oficial TikTok: **creator_info/query** → **video/init** → (se FILE_UPL
 | **Rota de publish** | `POST /api/v1/videos/:id/publish` (única para todos os providers) | `POST /api/v1/videos/:id/publish/tiktok` (específica TikTok) |
 | **Body do publish** | `PublishVideoDto`: `socialAccountIds`, `caption` | `TikTokDirectPostDto`: title, privacyLevel, disableDuet/Comment/Stitch, videoCoverTimestampMs, source, videoUrl, videoSizeBytes, chunkSize |
 | **Creator info** | Não existe | `GET /api/v1/tiktok/creator-info` |
-| **Status de publicação** | Não existe endpoint; status vem só via Kafka → `updatePublishStatus` | `GET /api/v1/videos/:id/publish/tiktok/status?publishId=...` |
-| **Kafka topics** | `video.publish.commands`, `video.publish.events` ✅ | Mesmos nomes ✅ |
+| **Status de publicação** | Não existe endpoint; status vem só via BullMQ → `updatePublishStatus` | `GET /api/v1/videos/:id/publish/tiktok/status?publishId=...` |
+| **Message queues** | `video.publish.commands`, `video.publish.events` ✅ | Mesmos nomes ✅ |
 | **Payload commands** | `tenantId`, `userId`, `projectId`, `socialAccountIds`, `videoUrl`, `caption` | Spec adiciona: `provider`, `source`, `publishId`, `uploadUrl`, `postInfo` |
 | **TikTok publisher** | Stub que só emite evento `failed` com "TikTok publisher not yet implemented" | Implementar init → (upload se FILE_UPLOAD) → status/fetch |
 | **Social accounts** | `social_accounts` com `access_token_enc`, `platform` (incl. tiktok) ✅ | Uso do token para chamadas TikTok API ✅ |
@@ -37,7 +37,7 @@ Fluxo oficial TikTok: **creator_info/query** → **video/init** → (se FILE_UPL
 
 Em `@gaqno-types/src/video.ts` já existem:
 
-- **VideoPublishCommandPayload**: já tem `provider`, `socialAccountId`, `source`, `publishId`, `uploadUrl`, `postInfo` (title, privacyLevel, disableDuet/Comment/Stitch, videoCoverTimestampMs), `caption`. Ou seja, o **payload Kafka da spec já está coberto** pelo tipo atual; falta apenas garantir que o backend preencha esses campos no fluxo TikTok.
+- **VideoPublishCommandPayload**: já tem `provider`, `socialAccountId`, `source`, `publishId`, `uploadUrl`, `postInfo` (title, privacyLevel, disableDuet/Comment/Stitch, videoCoverTimestampMs), `caption`. Ou seja, o **payload BullMQ da spec já está coberto** pelo tipo atual; falta apenas garantir que o backend preencha esses campos no fluxo TikTok.
 - **VideoPublishEventPayload**: já tem `publishId`, `status`, `publishedAt`, `error` — alinhado com a spec.
 
 ### 2.3 Frontend (gaqno-ai-ui)
@@ -59,7 +59,7 @@ Em `@gaqno-types/src/video.ts` já existem:
 2. **POST /api/v1/videos/:id/publish/tiktok**  
    - Nova rota (ou refatorar para “publish por provider”).  
    - Body: `TikTokDirectPostDto`.  
-   - Fluxo: validar projeto completed + URL; opcionalmente validar contra creator-info (privacy_level, max_video_post_duration_sec); chamar TikTok `video/init`; se PULL_FROM_URL, publicar comando no Kafka com `source: 'PULL_FROM_URL'`, `publishId`, `postInfo`, `videoUrl`; se FILE_UPLOAD, persistir `uploadUrl` + `publishId` e publicar comando para worker fazer o PUT.
+   - Fluxo: validar projeto completed + URL; opcionalmente validar contra creator-info (privacy_level, max_video_post_duration_sec); chamar TikTok `video/init`; se PULL_FROM_URL, publicar comando no BullMQ com `source: 'PULL_FROM_URL'`, `publishId`, `postInfo`, `videoUrl`; se FILE_UPLOAD, persistir `uploadUrl` + `publishId` e publicar comando para worker fazer o PUT.
 
 3. **GET /api/v1/videos/:id/publish/tiktok/status?publishId=...**  
    - Novo endpoint.  
@@ -70,7 +70,7 @@ Em `@gaqno-types/src/video.ts` já existem:
    - Para `FILE_UPLOAD`, worker faz PUT no `upload_url` e depois faz polling de status até concluir/falhar e emite o evento.
 
 5. **Payload de commands**  
-   - O service que publica no Kafka deve preencher para TikTok: `provider: 'tiktok'`, `source`, `publishId`, `postInfo`, `videoUrl` (e `uploadUrl` + metadados de chunk se FILE_UPLOAD). O consumer já usa `socialAccountIds` e itera por conta; pode continuar assim, mas cada mensagem por conta TikTok deve seguir o formato da spec (e o tipo em `@gaqno-types` já suporta).
+   - O service que publica no BullMQ deve preencher para TikTok: `provider: 'tiktok'`, `source`, `publishId`, `postInfo`, `videoUrl` (e `uploadUrl` + metadados de chunk se FILE_UPLOAD). O consumer já usa `socialAccountIds` e itera por conta; pode continuar assim, mas cada mensagem por conta TikTok deve seguir o formato da spec (e o tipo em `@gaqno-types` já suporta).
 
 ### Frontend (SaaS / gaqno-ai-ui)
 
@@ -104,7 +104,7 @@ Em `@gaqno-types/src/video.ts` já existem:
 
 Você pode colar no prompt do microfrontend SaaS:
 
-1. **A seção 8 completa** que você recebeu (requisitos TikTok, endpoints REST, DTOs, eventos Kafka, observações).  
+1. **A seção 8 completa** que você recebeu (requisitos TikTok, endpoints REST, DTOs, eventos BullMQ, observações).  
 2. **Este resumo de alinhamento**:  
    - “O backend hoje tem `POST /api/v1/videos/:id/publish` com `socialAccountIds` e `caption`; para TikTok deve existir `GET /api/v1/tiktok/creator-info`, `POST /api/v1/videos/:id/publish/tiktok` com TikTokDirectPostDto e `GET /api/v1/videos/:id/publish/tiktok/status?publishId=...`. O frontend deve chamar creator-info antes do formulário TikTok, usar os campos da spec no form e fazer polling de status após publicar.”
 

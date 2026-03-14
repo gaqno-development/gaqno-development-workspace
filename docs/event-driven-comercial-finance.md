@@ -9,7 +9,7 @@ Fluxo de eventos de negócio entre CRM e Financeiro via BullMQ (Redis), usando o
 
 2. **BullMQ / Redis**  
    Tópico por domínio: `comercial.events`. Chave da mensagem: `tenantId`. Payload: JSON do evento (eventId, eventType, tenantId, aggregateId, data, metadata, etc.).  
-   O `KafkaProducer` faz fan-out para a fila `comercial.events__finance` (e demais subscribers definidos em `TOPIC_SUBSCRIBERS`).
+   O producer BullMQ faz fan-out para a fila `comercial.events__finance` (e demais subscribers definidos em `TOPIC_SUBSCRIBERS`).
 
 3. **Financeiro (gaqno-finance-service)**  
    Worker inscrito na fila `comercial.events__finance`. Para cada job com `eventType === 'comercial.opportunity_won'`, cria uma transação de **receita** (conta a receber) quando `FINANCE_SYSTEM_USER_ID` estiver configurado.
@@ -26,7 +26,7 @@ Fluxo de eventos de negócio entre CRM e Financeiro via BullMQ (Redis), usando o
 
 - Tipos e catálogo: `@gaqno-development/types` (subpath `events`).
 - Tópicos de domínio: `TopicRegistry` em `@gaqno-development/backcore` usa os mesmos nomes do catálogo (ex.: `comercialEvents` → `comercial.events`).
-- Publicação no CRM: `ComercialEventPublisherService.publishOpportunityWon()` usa `createIntegrationEvent` e `KafkaProducer.publishIntegrationEvent`.
+- Publicação no CRM: `ComercialEventPublisherService.publishOpportunityWon()` usa `createIntegrationEvent` e `MessageProducer.publishIntegrationEvent` (via BullMQ).
 - Consumo no Finance: `ComercialEventsConsumer` faz parse do JSON como `IntegrationEvent<OpportunityWonData>` e chama `TransactionsService.createTransaction` com tipo receita.
 
 ## Docker Compose

@@ -58,7 +58,7 @@ This document captures the bounded context map, event flows, responsibility matr
 │  ┌──────────────┐                                                              │
 │  │  Customer     │  Master customer identity (gaqno-customer-service)          │
 │  │  (master)     │  → HTTP create from CRM/Omnichannel/PDV                    │
-│  │  master_      │  → Publishes customer.created/updated via Kafka            │
+│  │  master_      │  → Publishes customer.created/updated via BullMQ          │
 │  │  customers    │  → CRM, Omnichannel, PDV store masterCustomerId            │
 │  └──────────────┘                                                              │
 │                                                                                 │

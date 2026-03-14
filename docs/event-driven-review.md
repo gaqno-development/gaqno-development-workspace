@@ -5,30 +5,30 @@
 | Área | Arquivos | Alteração |
 |------|----------|-----------|
 | **@gaqno-types** | `src/events/*` (já existente) | Catálogo de eventos, tópicos, payloads, factory, validação. Nenhuma mudança nesta revisão. |
-| **@gaqno-backcore** | `src/kafka/topic-registry.ts` | Importa `TOPICS` de `@gaqno-development/types`; adiciona 10 propriedades de tópicos de domínio (comercialEvents, atendimentoEvents, …) com defaults do catálogo. |
-| **@gaqno-backcore** | `src/kafka/kafka-producer.ts` | Novo método `publishIntegrationEvent(topic, event: IntegrationEvent, correlationId?)`; serializa evento completo; key = `tenantId`. |
-| **@gaqno-backcore** | `src/kafka/index.ts` | Reexporta `DOMAIN_TOPICS` (alias de TOPICS). |
+| **@gaqno-backcore** | `src/messaging/topic-registry.ts` | Importa `TOPICS` de `@gaqno-development/types`; adiciona 10 propriedades de tópicos de domínio (comercialEvents, atendimentoEvents, …) com defaults do catálogo. |
+| **@gaqno-backcore** | `src/messaging/message-producer.ts` | Novo método `publishIntegrationEvent(topic, event: IntegrationEvent, correlationId?)`; serializa evento completo; key = `tenantId`. |
+| **@gaqno-backcore** | `src/messaging/index.ts` | Reexporta `DOMAIN_TOPICS` (alias de TOPICS). |
 | **@gaqno-backcore** | `package.json` | `@gaqno-development/types`: `^1.3.0`. |
-| **gaqno-crm-service** | `src/kafka/kafka.module.ts` | Provider de `KafkaProducer`; connect/disconnect no ciclo do módulo; export do producer. |
-| **gaqno-crm-service** | `src/events/comercial-event-publisher.service.ts` | Novo: publica `comercial.opportunity_won` com `createIntegrationEvent` + `publishIntegrationEvent`. |
+| **gaqno-crm-service** | `src/messaging/messaging.module.ts` | Provider de `MessageProducer`; connect/disconnect no ciclo do módulo; export do producer. |
+| **gaqno-crm-service** | `src/events/comercial-event-publisher.service.ts` | Novo: publica `comercial.opportunity_won` com `createIntegrationEvent` + `publishIntegrationEvent` (via BullMQ). |
 | **gaqno-crm-service** | `src/deals/deals.service.ts` | Injeta `ComercialEventPublisherService`; em `update()`, se `deal.stage === 'won'`, chama `publishOpportunityWon` em background (catch só loga). |
 | **gaqno-crm-service** | `src/deals/deals.module.ts` | Provider e export de `ComercialEventPublisherService`. |
 | **gaqno-crm-service** | `package.json` | backcore `^1.1.25`, types `^1.3.0`. |
-| **gaqno-crm-service** | `kafka.module.spec.ts`, `deals.service.spec.ts` | Mocks para producer e publisher; testes para “won” publica e “não won” não publica. |
-| **gaqno-finance-service** | `src/kafka/kafka.module.ts` | Novo: TopicRegistry, KafkaConsumer, ComercialEventsConsumer; subscribe após connect. |
-| **gaqno-finance-service** | `src/kafka/comercial-events.consumer.ts` | Novo: subscreve `comercial.events`; parse `IntegrationEvent<OpportunityWonData>`; se `opportunity_won` e `FINANCE_SYSTEM_USER_ID` setado, cria transação receita. |
-| **gaqno-finance-service** | `src/app.module.ts` | Importa `KafkaModule`. |
-| **gaqno-finance-service** | `package.json` | backcore `^1.1.25`, types `^1.3.0`, BullMQ via backcore (kafkajs removido). |
-| **docker-compose.yml** | — | Novos serviços `redis`; `crm-service` (4003, REDIS_URL, depends_on kafka); `finance-service` e `omnichannel-service` com REDIS_URL e depends_on kafka. |
+| **gaqno-crm-service** | `messaging.module.spec.ts`, `deals.service.spec.ts` | Mocks para producer e publisher; testes para “won” publica e “não won” não publica. |
+| **gaqno-finance-service** | `src/messaging/messaging.module.ts` | Novo: TopicRegistry, MessageConsumer, ComercialEventsConsumer; subscribe após connect. |
+| **gaqno-finance-service** | `src/messaging/comercial-events.consumer.ts` | Novo: subscreve `comercial.events`; parse `IntegrationEvent<OpportunityWonData>`; se `opportunity_won` e `FINANCE_SYSTEM_USER_ID` setado, cria transação receita. |
+| **gaqno-finance-service** | `src/app.module.ts` | Importa `MessagingModule`. |
+| **gaqno-finance-service** | `package.json` | backcore `^1.1.25`, types `^1.3.0`, BullMQ via backcore. |
+| **docker-compose.yml** | — | Novos serviços `redis`; `crm-service` (4003, REDIS_URL, depends_on redis); `finance-service` e `omnichannel-service` com REDIS_URL e depends_on redis. |
 | **docs** | `event-driven-comercial-finance.md` | Fluxo, env vars, contratos, Docker Compose, próximos passos. |
 
 ---
 
 ## Consistência
 
-- **tenantId**: Contratos em `@gaqno-types` e mensagens Kafka usam `tenantId`; backcore mantém `orgId` em `PublishEnvelope` (legado). No novo fluxo só se usa `IntegrationEvent` com `tenantId`. OK.
+- **tenantId**: Contratos em `@gaqno-types` e mensagens BullMQ usam `tenantId`; backcore mantém `orgId` em `PublishEnvelope` (legado). No novo fluxo só se usa `IntegrationEvent` com `tenantId`. OK.
 - **Nomes de eventos**: `comercial.opportunity_won` está em `DOMAIN_EVENT_NAMES` e no catálogo; producer e consumer usam o mesmo nome. OK.
-- **Tópico**: `comercial.events` = `TOPICS.COMERCIAL_EVENTS` = `TopicRegistry.comercialEvents`. CRM e Finance usam `topics.comercialEvents`. OK.
+- **Fila**: `comercial.events` = `TOPICS.COMERCIAL_EVENTS` = `TopicRegistry.comercialEvents`. CRM e Finance usam `topics.comercialEvents` (message queue). OK.
 - **Payload**: `OpportunityWonData` com `opportunityId`, `value`, `tenantId`, `occurredAt`; producer preenche; consumer lê e cria transação. OK.
 
 ---
@@ -38,8 +38,8 @@
 ### 1. Publicação no CRM é fire-and-forget
 
 - **Onde**: `DealsService.update()` chama `publishOpportunityWon().catch(...)` e não espera.
-- **Risco**: Se o Kafka estiver indisponível, o update do deal persiste mas o evento pode ser perdido (ou falha silenciosa no producer).
-- **Recomendação**: Adotar padrão Outbox (gravar evento na mesma transação do update; worker lê outbox e publica no Kafka). Documentado como próximo passo.
+- **Risco**: Se o message broker (BullMQ/Redis) estiver indisponível, o update do deal persiste mas o evento pode ser perdido (ou falha silenciosa no producer).
+- **Recomendação**: Adotar padrão Outbox (gravar evento na mesma transação do update; worker lê outbox e publica no BullMQ). Documentado como próximo passo.
 
 ### 2. Idempotência no Financeiro ✅ Implementado
 
@@ -57,17 +57,17 @@
 - **Onde**: Finance exige esse env para criar receita; senão apenas loga.
 - **Estado**: Correto para multi-tenant; garante que existe um “usuário sistema” por ambiente. Documentado.
 
-### 5. Docker: healthcheck do Kafka
+### 5. Docker: healthcheck do Redis (BullMQ)
 
-- **Onde**: `kafka-topics --bootstrap-server localhost:9092 --list`.
-- **Estado**: Pode falhar em algumas imagens se o comando não existir ou o broker demorar. Se o compose falhar ao subir, considerar aumentar `start_period` ou trocar o healthcheck.
+- **Onde**: `redis-cli ping` ou similar para verificar Redis.
+- **Estado**: Se o compose falhar ao subir, considerar aumentar `start_period` ou trocar o healthcheck.
 
 ---
 
 ## Testes
 
 - **@gaqno-types**: 74 testes (events: types, catalog, factory, topics, payloads, validation). OK.
-- **gaqno-crm-service**: DealsService com mock do publisher; ComercialEventPublisherService com mock do producer; KafkaModule com mock consumer + producer. OK.
+- **gaqno-crm-service**: DealsService com mock do publisher; ComercialEventPublisherService com mock do producer; MessagingModule com mock consumer + producer. OK.
 - **gaqno-finance-service**: ComercialEventsConsumer com subscribe, handle opportunity_won (com e sem FINANCE_SYSTEM_USER_ID). OK.
 
 ---

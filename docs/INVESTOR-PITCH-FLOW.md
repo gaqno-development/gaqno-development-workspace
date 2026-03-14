@@ -27,7 +27,7 @@ Mensagem: **uma única plataforma** (Shell + Module Federation) que entrega CRM,
 - **Module Federation (MFE)**: Shell único, apps (CRM, ERP, PDV, etc.) carregados sob demanda; escalabilidade e deploys independentes.
 - **Multi-tenant + SSO**: gaqno-sso-service; tenants, domínios, filiais no admin/saas.
 - **IA integrada**: AI Marketing no CRM (vídeo), AI Content no ERP, módulo IA dedicado (books, audio, images, video, studio, discovery, retail).
-- **Lead enrichment**: Serviço assíncrono (Kafka + Pipedrive) para enriquecimento de leads — integração B2B.
+- **Lead enrichment**: Serviço assíncrono (BullMQ + Pipedrive) para enriquecimento de leads — integração B2B.
 - **Observabilidade**: Prometheus + Grafana (Front, Backend, DevOps, DNS droppage, bundle size, DORA/CI-CD); Coolify para deploy.
 - **Design system**: frontcore (UI unificada, i18n, auth, tenant); regras de design (dark-first, hierarquia, SMB).
 
@@ -70,7 +70,7 @@ Mensagem: **uma única plataforma** (Shell + Module Federation) que entrega CRM,
 
 14. **Arquitetura**: Shell + MFE; um login, vários produtos; deploys independentes.
 15. **Observabilidade**: Grafana (Front, Backend, DevOps) — “monitoramos tudo”.
-16. **Lead enrichment**: Integração Pipedrive + Kafka — “dados de leads enriquecidos em tempo real”.
+16. **Lead enrichment**: Integração Pipedrive + BullMQ — “dados de leads enriquecidos em tempo real”.
 
 ### Fase 5 — Fechamento (1–2 min)
 

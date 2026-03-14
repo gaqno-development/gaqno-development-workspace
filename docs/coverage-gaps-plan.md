@@ -26,7 +26,7 @@ Threshold: **80%** for statements, branches, functions, and lines. No file exclu
 95/96.42/80/96.85. 54 tests. Tests for: health, http-exception.filter, db.service (init/destroy), schema (exports + getSchemaTableNames), products.dto (validation).
 
 ### gaqno-crm-service ✅
-98.08/93.10/91.39/98.59. 151 tests. Tests for: contacts (controller+service), deals (controller+service), leads (controller+service), interactions (controller+service+sync), customer-context (controller+service), health, kafka module, db.service, schema, http-exception.filter.
+98.08/93.10/91.39/98.59. 151 tests. Tests for: contacts (controller+service), deals (controller+service), leads (controller+service), interactions (controller+service+sync), customer-context (controller+service), health, messaging module, db.service, schema, http-exception.filter.
 
 ### gaqno-sso-service ✅
 86.07/80.09/82.94/87.89. 489 tests. Tests for: auth (controller+service+guard+pipe), users (controller+service), tenants (controller+service+saas-integration), branches (controller+service), permissions (controller+service+guard+feature-flags+abac), dashboard (controller+service+overview+activity), domains (controller+service+ssl-checker), menu (controller+service+crud), metrics (controller+service+interceptor), orgs (controller+service), whitelabel (controller+service), health, audit (controller+service), db.service, jwt, common (logger+filter).
