@@ -167,6 +167,15 @@ build_frontends() {
   done
 }
 
+echo -e "${BLUE}📦 Generating codemap.json for admin-service...${NC}"
+if npm run codemap --silent > /dev/null 2>&1 && [ -f "${BASE_DIR}/codemap.json" ]; then
+  cp "${BASE_DIR}/codemap.json" "${BASE_DIR}/gaqno-admin-service/codemap.json"
+  echo -e "${GREEN}✅ codemap.json generated and copied${NC}"
+else
+  echo -e "${YELLOW}⚠️  codemap.json generation skipped (script missing or failed)${NC}"
+fi
+echo ""
+
 build_services
 build_frontends
 
