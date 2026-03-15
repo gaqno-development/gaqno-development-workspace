@@ -692,6 +692,38 @@ services:
     networks: [gaqno]
 
   # ════════════════════════════════════════════════════════════
+  #  AUTOMATION
+  # ════════════════════════════════════════════════════════════
+
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: gaqno-n8n
+    restart: *restart
+    environment:
+      N8N_HOST: n8n.gaqno.com.br
+      N8N_PORT: "5679"
+      N8N_PROTOCOL: https
+      WEBHOOK_URL: https://n8n.gaqno.com.br/
+      N8N_EDITOR_BASE_URL: https://n8n.gaqno.com.br/
+      GENERIC_TIMEZONE: America/Sao_Paulo
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: ${PG_HOST:-postgres}
+      DB_POSTGRESDB_PORT: "5432"
+      DB_POSTGRESDB_DATABASE: gaqno_n8n_db
+      DB_POSTGRESDB_USER: ${POSTGRES_USER:-postgres}
+      DB_POSTGRESDB_PASSWORD: ${POSTGRES_PASSWORD}
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY:-}
+    volumes:
+      - n8n-data:/home/node/.n8n
+    ports: ["5679:5679"]
+    deploy:
+      resources:
+        limits: { memory: 512m, cpus: "1.0" }
+    depends_on:
+      postgres: { condition: service_healthy }
+    networks: [gaqno]
+
+  # ════════════════════════════════════════════════════════════
   #  MONITORING
   # ════════════════════════════════════════════════════════════
 
@@ -842,6 +874,7 @@ volumes:
   redisdata: {}
   prometheus-data: {}
   grafana-data: {}
+  n8n-data: {}
 
 networks:
   gaqno:

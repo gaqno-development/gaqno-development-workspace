@@ -1,0 +1,174 @@
+services:
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: gaqno-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init-databases.sh:/docker-entrypoint-initdb.d/init-databases.sh:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [gaqno]
+
+  redis:
+    image: redis:7-alpine
+    container_name: gaqno-redis
+    restart: unless-stopped
+    command: redis-server --maxmemory 512mb --maxmemory-policy noeviction --save ""
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [gaqno]
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: gaqno-cloudflared
+    restart: unless-stopped
+    command:
+      - tunnel
+      - --no-autoupdate
+      - --metrics=0.0.0.0:60123
+      - run
+      - --token
+      - ${CLOUDFLARE_TUNNEL_TOKEN}
+    networks: [gaqno]
+
+  node-exporter:
+    image: prom/node-exporter:v1.6.1
+    container_name: gaqno-node-exporter
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - --path.procfs=/host/proc
+      - --path.rootfs=/rootfs
+      - --path.sysfs=/host/sys
+      - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
+    networks: [gaqno]
+
+  prometheus:
+    image: prom/prometheus:v2.47.0
+    container_name: gaqno-prometheus
+    restart: unless-stopped
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=15d
+      - --storage.tsdb.retention.size=1GB
+      - --web.enable-lifecycle
+    ports: ["9090:9090"]
+    networks: [gaqno]
+
+  postgres-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter:v0.15.0
+    container_name: gaqno-postgres-exporter
+    restart: unless-stopped
+    environment:
+      DATA_SOURCE_URI: postgres:5432/gaqno_sso_db?sslmode=disable
+      DATA_SOURCE_USER: ${POSTGRES_USER:-postgres}
+      DATA_SOURCE_PASS: ${POSTGRES_PASSWORD}
+    depends_on:
+      postgres: { condition: service_healthy }
+    networks: [gaqno]
+
+  pushgateway:
+    image: prom/pushgateway:v1.6.2
+    container_name: gaqno-pushgateway
+    restart: unless-stopped
+    networks: [gaqno]
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    container_name: gaqno-cadvisor
+    restart: unless-stopped
+    volumes:
+      - /:/rootfs:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    command:
+      - --housekeeping_interval=30s
+      - --docker_only=true
+      - --disable_metrics=percpu,sched,tcp,udp,disk,diskIO,hugetlb,referenced_memory,resctrl,process
+    privileged: true
+    devices:
+      - /dev/kmsg
+    networks: [gaqno]
+
+  container-name-mapper:
+    image: docker:cli
+    container_name: gaqno-container-mapper
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - |
+        apk add --no-cache curl jq > /dev/null 2>&1
+        while true; do
+          metrics=""
+          for cid in $$(docker ps -q --no-trunc); do
+            info=$$(docker inspect "$$cid" 2>/dev/null)
+            name=$$(echo "$$info" | jq -r '.[0].Name' | sed 's|^/||')
+            image=$$(echo "$$info" | jq -r '.[0].Config.Image')
+            short=$$(echo "$$cid" | head -c 12)
+            size=$$(echo "$$info" | jq -r '.[0].SizeRw // 0')
+            metrics="$${metrics}container_info{container_id=\"$$cid\",short_id=\"$$short\",name=\"$$name\",image=\"$$image\"} 1\n"
+            metrics="$${metrics}container_disk_usage_bytes{container_id=\"$$cid\",short_id=\"$$short\",name=\"$$name\"} $$size\n"
+          done
+          printf "$$metrics" | curl -s --data-binary @- "http://pushgateway:9091/metrics/job/container_info" 2>/dev/null
+          sleep 60
+        done
+    networks: [gaqno]
+
+  grafana:
+    image: grafana/grafana:10.2.0
+    container_name: gaqno-grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_SERVER_ROOT_URL: ${GRAFANA_ROOT_URL:-http://localhost:5678}
+      GF_PATHS_PROVISIONING: /etc/grafana/provisioning
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports: ["5678:3000"]
+    depends_on:
+      - prometheus
+    networks: [gaqno]
+
+volumes:
+  pgdata: {}
+  redisdata: {}
+  prometheus-data: {}
+  grafana-data: {}
+
+networks:
+  gaqno:
+    driver: bridge

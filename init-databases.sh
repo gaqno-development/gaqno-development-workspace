@@ -16,6 +16,7 @@ DATABASES=(
   gaqno_pdv_db
   gaqno_rpg_db
   gaqno_wellness_db
+  gaqno_n8n_db
 )
 
 for db in "${DATABASES[@]}"; do

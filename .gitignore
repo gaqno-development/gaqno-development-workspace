@@ -22,6 +22,10 @@ logs/
 # External repos (not submodules; see docs/external-repos.md)
 gaqno-consumer-ui/
 
+# Deployment scripts with secrets
+deploy-dokku.sh
+deploy-dokploy.py
+
 # IDE / tools
 .cursor/mcp.json
 .npmrc
