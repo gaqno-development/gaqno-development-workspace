@@ -98,7 +98,7 @@ BASE_COMPOSE = r"""services:
     image: 'prom/pushgateway:v1.6.2'
     restart: unless-stopped
   grafana:
-    image: 'grafana/grafana:latest'
+    image: 'grafana/grafana:12.4.1'
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=gaqno2026

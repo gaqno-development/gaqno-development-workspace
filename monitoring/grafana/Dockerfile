@@ -1,4 +1,4 @@
-FROM grafana/grafana:latest
+FROM grafana/grafana:12.4.1
 USER root
 RUN grafana-cli plugins install yesoreyeram-infinity-datasource
 COPY provisioning /etc/grafana/provisioning
