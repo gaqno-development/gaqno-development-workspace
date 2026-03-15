@@ -70,6 +70,9 @@ services:
       - GF_SERVER_DOMAIN=grafana.gaqno.com.br
       - GF_AUTH_BASIC_ENABLED=true
       - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+      - GF_INSTALL_PLUGINS=yesoreyeram-infinity-datasource
+      - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN:-}
+      - CLOUDFLARE_ZONE_ID=${CLOUDFLARE_ZONE_ID:-d628a8ac60069acccbc154d173b88717}
     volumes:
       - 'grafana-data-v3:/var/lib/grafana'
     restart: unless-stopped
@@ -81,6 +84,9 @@ services:
       -
         source: grafana_datasource
         target: /etc/grafana/provisioning/datasources/prometheus.yml
+      -
+        source: grafana_datasource_infinity
+        target: /etc/grafana/provisioning/datasources/infinity-cloudflare.yml
       -
         source: grafana_dashboards_yml
         target: /etc/grafana/provisioning/dashboards/dashboards.yml
@@ -101,6 +107,23 @@ configs:
     content: "global:\n  scrape_interval: 15s\n  evaluation_interval: 15s\nscrape_configs:\n  - job_name: prometheus\n    static_configs:\n      - targets: [\"localhost:9090\"]\n  - job_name: node-exporter\n    static_configs:\n      - targets: [\"node-exporter:9100\"]\n  - job_name: cadvisor\n    static_configs:\n      - targets: [\"cadvisor:8080\"]\n  - job_name: postgres-exporter\n    static_configs:\n      - targets: [\"postgres-exporter:9187\"]\n  - job_name: pushgateway\n    honor_labels: true\n    static_configs:\n      - targets: [\"pushgateway:9091\"]\n"
   grafana_datasource:
     content: "apiVersion: 1\ndatasources:\n  - name: Prometheus\n    type: prometheus\n    access: proxy\n    url: http://prometheus:9090\n    isDefault: true\n    editable: true\n"
+  grafana_datasource_infinity:
+    content: |
+      apiVersion: 1
+      datasources:
+        - name: Infinity (Cloudflare)
+          type: yesoreyeram-infinity-datasource
+          access: proxy
+          uid: infinity-cloudflare
+          isDefault: false
+          editable: true
+          jsonData:
+            auth_method: bearer
+            allowedHosts:
+              - https://api.cloudflare.com
+              - https://api.cloudflare.com/client/v4/graphql
+          secureJsonData:
+            bearerToken: ${CLOUDFLARE_API_TOKEN}
   grafana_dashboards_yml:
     content: |
       ---

@@ -107,6 +107,9 @@ BASE_COMPOSE = r"""services:
       - GF_SERVER_DOMAIN=grafana.gaqno.com.br
       - GF_AUTH_BASIC_ENABLED=true
       - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+      - GF_INSTALL_PLUGINS=yesoreyeram-infinity-datasource
+      - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN:-}
+      - CLOUDFLARE_ZONE_ID=${CLOUDFLARE_ZONE_ID:-d628a8ac60069acccbc154d173b88717}
     volumes:
       - 'grafana-data-v3:/var/lib/grafana'
     restart: unless-stopped
@@ -118,6 +121,9 @@ BASE_COMPOSE = r"""services:
       -
         source: grafana_datasource
         target: /etc/grafana/provisioning/datasources/prometheus.yml
+      -
+        source: grafana_datasource_infinity
+        target: /etc/grafana/provisioning/datasources/infinity-cloudflare.yml
 """
 
 
@@ -158,6 +164,9 @@ def main(dashboard_files=None):
         source: grafana_datasource
         target: /etc/grafana/provisioning/datasources/prometheus.yml
       -
+        source: grafana_datasource_infinity
+        target: /etc/grafana/provisioning/datasources/infinity-cloudflare.yml
+      -
         source: grafana_dashboards_yml
         target: /etc/grafana/provisioning/dashboards/dashboards.yml
 """ + "\n".join(dashboard_mount_entries)
@@ -168,6 +177,9 @@ def main(dashboard_files=None):
       -
         source: grafana_datasource
         target: /etc/grafana/provisioning/datasources/prometheus.yml
+      -
+        source: grafana_datasource_infinity
+        target: /etc/grafana/provisioning/datasources/infinity-cloudflare.yml
 """,
         grafana_configs + "\n",
     )
@@ -182,7 +194,8 @@ def main(dashboard_files=None):
     content: "apiVersion: 1\ndatasources:\n  - name: Prometheus\n    type: prometheus\n    access: proxy\n    url: http://prometheus:9090\n    isDefault: true\n    editable: true\n"
 """
     new_configs = "\n".join(config_defs)
-    full_configs = "configs:\n  prometheus_config:\n    content: \"global:\\n  scrape_interval: 15s\\n  evaluation_interval: 15s\\nscrape_configs:\\n  - job_name: prometheus\\n    static_configs:\\n      - targets: [\\\"localhost:9090\\\"]\\n  - job_name: node-exporter\\n    static_configs:\\n      - targets: [\\\"node-exporter:9100\\\"]\\n  - job_name: cadvisor\\n    static_configs:\\n      - targets: [\\\"cadvisor:8080\\\"]\\n  - job_name: postgres-exporter\\n    static_configs:\\n      - targets: [\\\"postgres-exporter:9187\\\"]\\n  - job_name: pushgateway\\n    honor_labels: true\\n    static_configs:\\n      - targets: [\\\"pushgateway:9091\\\"]\\n\"\n  grafana_datasource:\n    content: \"apiVersion: 1\\ndatasources:\\n  - name: Prometheus\\n    type: prometheus\\n    access: proxy\\n    url: http://prometheus:9090\\n    isDefault: true\\n    editable: true\\n\"\n" + new_configs + "\n"
+    infinity_ds = '  grafana_datasource_infinity:\n    content: "apiVersion: 1\\ndatasources:\\n  - name: Infinity (Cloudflare)\\n    type: yesoreyeram-infinity-datasource\\n    access: proxy\\n    uid: infinity-cloudflare\\n    isDefault: false\\n    editable: true\\n    jsonData:\\n      auth_method: bearer\\n      allowedHosts:\\n        - https://api.cloudflare.com\\n        - https://api.cloudflare.com/client/v4/graphql\\n    secureJsonData:\\n      bearerToken: ${CLOUDFLARE_API_TOKEN}\\n"\n'
+    full_configs = "configs:\n  prometheus_config:\n    content: \"global:\\n  scrape_interval: 15s\\n  evaluation_interval: 15s\\nscrape_configs:\\n  - job_name: prometheus\\n    static_configs:\\n      - targets: [\\\"localhost:9090\\\"]\\n  - job_name: node-exporter\\n    static_configs:\\n      - targets: [\\\"node-exporter:9100\\\"]\\n  - job_name: cadvisor\\n    static_configs:\\n      - targets: [\\\"cadvisor:8080\\\"]\\n  - job_name: postgres-exporter\\n    static_configs:\\n      - targets: [\\\"postgres-exporter:9187\\\"]\\n  - job_name: pushgateway\\n    honor_labels: true\\n    static_configs:\\n      - targets: [\\\"pushgateway:9091\\\"]\\n\"\n  grafana_datasource:\n    content: \"apiVersion: 1\\ndatasources:\\n  - name: Prometheus\\n    type: prometheus\\n    access: proxy\\n    url: http://prometheus:9090\\n    isDefault: true\\n    editable: true\\n\"\n" + infinity_ds + new_configs + "\n"
     compose = compose + "\n" + full_configs + "volumes:\n  prometheus-data: {  }\n  grafana-data-v3: {  }\n"
     print(compose)
 

@@ -270,7 +270,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "count(container_info{service!=\"\"})",
+          "expr": "count(container_info{name!=\"\"})",
           "instant": true,
           "legendFormat": "Containers",
           "refId": "A"
@@ -393,7 +393,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "topk(10, sum by (component) (label_replace(rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker.*\",cpu=\"total\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{service!=\"\"}))",
+          "expr": "topk(10, sum by (component) (label_replace(rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker.*|/docker/.*\",cpu=\"total\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{service!=\"\"}))",
           "instant": true,
           "legendFormat": "{{component}}",
           "refId": "A"
@@ -490,7 +490,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum by (component) (label_replace(rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker.*\",cpu=\"total\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{service!=\"\"})",
+          "expr": "sum by (component) (label_replace(rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker.*|/docker/.*\",cpu=\"total\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{service!=\"\"})",
           "legendFormat": "{{component}}",
           "refId": "A"
         }
@@ -685,7 +685,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "topk(10, sum by (component) (label_replace(container_memory_usage_bytes{id=~\"/system.slice/docker.*\"},\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{service!=\"\"}))",
+          "expr": "topk(10, sum by (component) (label_replace(container_memory_usage_bytes{id=~\"/system.slice/docker.*|/docker/.*\"},\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{service!=\"\"}))",
           "instant": true,
           "legendFormat": "{{component}}",
           "refId": "A"
@@ -782,7 +782,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum by (component) (label_replace(container_memory_usage_bytes{id=~\"/system.slice/docker.*\"},\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{service!=\"\"})",
+          "expr": "sum by (component) (label_replace(container_memory_usage_bytes{id=~\"/system.slice/docker.*|/docker/.*\"},\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") * on(container_id) group_left(component) container_info{service!=\"\"})",
           "legendFormat": "{{component}}",
           "refId": "A"
         }
@@ -1043,7 +1043,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum by (component) ((label_replace(rate(container_network_receive_bytes_total{id=~\"/system.slice/docker.*\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") or label_replace(rate(container_network_receive_bytes_total{id=~\"/docker/.*\"}[5m]),\"container_id\",\"$1\",\"id\",\"/docker/(.*)\")) * on(container_id) group_left(component) container_info{service!=\"\"})",
+          "expr": "sum by (component) ((label_replace(rate(container_network_receive_bytes_total{id=~\"/system.slice/docker.*|/docker/.*\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") or label_replace(rate(container_network_receive_bytes_total{id=~\"/docker/.*\"}[5m]),\"container_id\",\"$1\",\"id\",\"/docker/(.*)\")) * on(container_id) group_left(component) container_info{service!=\"\"})",
           "legendFormat": "{{component}}",
           "refId": "A"
         }
@@ -1137,7 +1137,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum by (component) ((label_replace(rate(container_network_transmit_bytes_total{id=~\"/system.slice/docker.*\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") or label_replace(rate(container_network_transmit_bytes_total{id=~\"/docker/.*\"}[5m]),\"container_id\",\"$1\",\"id\",\"/docker/(.*)\")) * on(container_id) group_left(component) container_info{service!=\"\"})",
+          "expr": "sum by (component) ((label_replace(rate(container_network_transmit_bytes_total{id=~\"/system.slice/docker.*|/docker/.*\"}[5m]),\"container_id\",\"$1\",\"id\",\"/system.slice/docker-(.*)\\\\.scope\") or label_replace(rate(container_network_transmit_bytes_total{id=~\"/docker/.*\"}[5m]),\"container_id\",\"$1\",\"id\",\"/docker/(.*)\")) * on(container_id) group_left(component) container_info{service!=\"\"})",
           "legendFormat": "{{component}}",
           "refId": "A"
         }

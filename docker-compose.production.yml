@@ -829,9 +829,13 @@ services:
             name=$$(echo "$$info" | jq -r '.[0].Name' | sed 's|^/||')
             image=$$(echo "$$info" | jq -r '.[0].Config.Image')
             short=$$(echo "$$cid" | head -c 12)
+            svc=$$(echo "$$info" | jq -r '.[0].Config.Labels["coolify.resourceName"] // empty')
+            comp=$$(echo "$$info" | jq -r '.[0].Config.Labels["coolify.serviceName"] // empty')
+            if [ -z "$$svc" ]; then svc="$$name"; fi
+            if [ -z "$$comp" ]; then comp="$$name"; fi
             size=$$(echo "$$info" | jq -r '.[0].SizeRw // 0')
-            metrics="$${metrics}container_info{container_id=\"$$cid\",short_id=\"$$short\",name=\"$$name\",image=\"$$image\"} 1\n"
-            metrics="$${metrics}container_disk_usage_bytes{container_id=\"$$cid\",short_id=\"$$short\",name=\"$$name\"} $$size\n"
+            metrics="$${metrics}container_info{container_id=\"$$cid\",short_id=\"$$short\",name=\"$$name\",service=\"$$svc\",component=\"$$comp\",image=\"$$image\"} 1\n"
+            metrics="$${metrics}container_disk_usage_bytes{container_id=\"$$cid\",short_id=\"$$short\",name=\"$$name\",service=\"$$svc\",component=\"$$comp\"} $$size\n"
           done
           printf "$$metrics" | curl -s --data-binary @- "http://pushgateway:9091/metrics/job/container_info" 2>/dev/null
           sleep 60
@@ -842,7 +846,9 @@ services:
     networks: [gaqno]
 
   grafana:
-    image: grafana/grafana:10.2.0
+    build:
+      context: ./monitoring/grafana
+      dockerfile: Dockerfile
     container_name: gaqno-grafana
     restart: *restart
     environment:
@@ -855,8 +861,6 @@ services:
       CLOUDFLARE_ZONE_ID: ${CLOUDFLARE_ZONE_ID:-d628a8ac60069acccbc154d173b88717}
     volumes:
       - grafana-data:/var/lib/grafana
-      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
-      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
     ports: ["5678:3000"]
     deploy:
       resources:
