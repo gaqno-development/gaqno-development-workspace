@@ -46,20 +46,20 @@ SERVICES=(
 )
 
 DOCKER_EXTRA_ARGS=""
-FILTER=""
+FILTERS=()
 for arg in "$@"; do
   case "${arg}" in
     --no-cache) DOCKER_EXTRA_ARGS="${DOCKER_EXTRA_ARGS} --no-cache" ;;
-    *) FILTER="${arg}" ;;
+    *) FILTERS+=("${arg}") ;;
   esac
 done
 
-if [ -n "${FILTER}" ]; then
+for flt in "${FILTERS[@]}"; do
   FOUND=0
-  for s in "${SERVICES[@]}"; do [ "${s}" = "${FILTER}" ] && FOUND=1; done
-  for p in "${PROJECTS[@]}"; do [ "${p}" = "${FILTER}" ] && FOUND=1; done
+  for s in "${SERVICES[@]}"; do [ "${s}" = "${flt}" ] && FOUND=1; done
+  for p in "${PROJECTS[@]}"; do [ "${p}" = "${flt}" ] && FOUND=1; done
   if [ "${FOUND}" -eq 0 ]; then
-    echo -e "${RED}❌ Unknown project: ${FILTER}${NC}"
+    echo -e "${RED}❌ Unknown project: ${flt}${NC}"
     echo ""
     echo "Available services:"
     printf "   %s\n" "${SERVICES[@]}"
@@ -68,7 +68,18 @@ if [ -n "${FILTER}" ]; then
     printf "   %s\n" "${PROJECTS[@]}"
     exit 1
   fi
-fi
+done
+
+HAS_FILTER=$(( ${#FILTERS[@]} > 0 ? 1 : 0 ))
+
+matches_filter() {
+  [ "${HAS_FILTER}" -eq 0 ] && return 0
+  local name="$1"
+  for flt in "${FILTERS[@]}"; do
+    [ "${flt}" = "${name}" ] && return 0
+  done
+  return 1
+}
 
 if [ ! -d "${BUILD_LOG_DIR}" ]; then
   mkdir -p "${BUILD_LOG_DIR}"
@@ -87,8 +98,8 @@ if [ -z "${NPM_TOKEN}" ]; then
 fi
 
 echo ""
-if [ -n "${FILTER}" ]; then
-  echo "🐳 Building ${FILTER} with Docker..."
+if [ "${HAS_FILTER}" -eq 1 ]; then
+  echo "🐳 Building ${FILTERS[*]} with Docker..."
 else
   echo "🐳 Building all projects and services with Docker..."
 fi
@@ -135,7 +146,7 @@ build_services() {
   echo -e "${BLUE}🔧 Building services...${NC}"
   echo ""
   for service in "${SERVICES[@]}"; do
-    [ -n "${FILTER}" ] && [ "${service}" != "${FILTER}" ] && continue
+    matches_filter "${service}" || continue
     if docker_build_one "${service}" "${service}"; then
       SUCCESSFUL+=("${service}")
     else
@@ -149,7 +160,7 @@ build_frontends() {
   echo -e "${BLUE}🌐 Building frontend projects...${NC}"
   echo ""
   for project in "${PROJECTS[@]}"; do
-    [ -n "${FILTER}" ] && [ "${project}" != "${FILTER}" ] && continue
+    matches_filter "${project}" || continue
     if [ "${project}" = "gaqno-erp-ui" ]; then
       if docker_build_one "${project}" "${project}" "${BASE_DIR}" "${project}/Dockerfile.monorepo"; then
         SUCCESSFUL+=("${project}")
@@ -203,8 +214,8 @@ if [ ${#FAILED[@]} -gt 0 ]; then
   exit 1
 fi
 
-if [ -n "${FILTER}" ]; then
-  echo -e "${GREEN}🎉 ${FILTER} built successfully!${NC}"
+if [ "${HAS_FILTER}" -eq 1 ]; then
+  echo -e "${GREEN}🎉 ${FILTERS[*]} built successfully!${NC}"
 else
   echo -e "${GREEN}🎉 All Docker builds completed successfully!${NC}"
 fi
