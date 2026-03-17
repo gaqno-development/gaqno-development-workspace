@@ -58,8 +58,15 @@ describe('mapDokployError', () => {
     expect(result.code).toBe('INTERNAL_ERROR');
   });
 
-  it('should map network errors to NETWORK_ERROR', async () => {
+  it('should map network errors to NETWORK_ERROR (fetch failed)', async () => {
     const error = new TypeError('fetch failed');
+    const result = await mapDokployError(error);
+    expect(result.code).toBe('NETWORK_ERROR');
+    expect(result.message).toContain('unreachable');
+  });
+
+  it('should map network errors to NETWORK_ERROR (network message)', async () => {
+    const error = new TypeError('network request failed');
     const result = await mapDokployError(error);
     expect(result.code).toBe('NETWORK_ERROR');
     expect(result.message).toContain('unreachable');
@@ -70,6 +77,12 @@ describe('mapDokployError', () => {
     const result = await mapDokployError(error);
     expect(result.code).toBe('UNKNOWN');
     expect(result.message).toBe('some random error');
+  });
+
+  it('should handle plain string (not Error)', async () => {
+    const result = await mapDokployError('something went wrong');
+    expect(result.code).toBe('UNKNOWN');
+    expect(result.message).toBe('something went wrong');
   });
 });
 

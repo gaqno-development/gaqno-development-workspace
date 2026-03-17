@@ -140,11 +140,64 @@ describe('end-to-end prompt flow', () => {
 });
 
 describe('config and logger', () => {
+  const originalEnv: Record<string, string | undefined> = {};
+
+  beforeEach(() => {
+    originalEnv.DOKPLOY_API_KEY = process.env.DOKPLOY_API_KEY;
+    originalEnv.MCP_TRANSPORT = process.env.MCP_TRANSPORT;
+    originalEnv.MCP_HTTP_PORT = process.env.MCP_HTTP_PORT;
+    originalEnv.DOKPLOY_BASE_URL = process.env.DOKPLOY_BASE_URL;
+    originalEnv.DOKPLOY_URL = process.env.DOKPLOY_URL;
+    originalEnv.LOG_LEVEL = process.env.LOG_LEVEL;
+  });
+
+  afterEach(() => {
+    if (originalEnv.DOKPLOY_API_KEY !== undefined)
+      process.env.DOKPLOY_API_KEY = originalEnv.DOKPLOY_API_KEY;
+    if (originalEnv.MCP_TRANSPORT !== undefined)
+      process.env.MCP_TRANSPORT = originalEnv.MCP_TRANSPORT;
+    if (originalEnv.MCP_HTTP_PORT !== undefined)
+      process.env.MCP_HTTP_PORT = originalEnv.MCP_HTTP_PORT;
+    if (originalEnv.DOKPLOY_BASE_URL !== undefined)
+      process.env.DOKPLOY_BASE_URL = originalEnv.DOKPLOY_BASE_URL;
+    if (originalEnv.DOKPLOY_URL !== undefined)
+      process.env.DOKPLOY_URL = originalEnv.DOKPLOY_URL;
+    if (originalEnv.LOG_LEVEL !== undefined)
+      process.env.LOG_LEVEL = originalEnv.LOG_LEVEL;
+  });
+
   it('should throw when DOKPLOY_API_KEY is missing', () => {
-    const original = process.env.DOKPLOY_API_KEY;
+    process.env.DOKPLOY_API_KEY = 'test-key';
     delete process.env.DOKPLOY_API_KEY;
     expect(() => getConfig()).toThrow('DOKPLOY_API_KEY is required');
-    if (original) process.env.DOKPLOY_API_KEY = original;
+  });
+
+  it('should throw when MCP_TRANSPORT is invalid', () => {
+    process.env.DOKPLOY_API_KEY = 'test-key';
+    process.env.MCP_TRANSPORT = 'invalid';
+    expect(() => getConfig()).toThrow('MCP_TRANSPORT must be stdio, http, or both');
+  });
+
+  it('should accept MCP_TRANSPORT=http', () => {
+    process.env.DOKPLOY_API_KEY = 'test-key';
+    process.env.MCP_TRANSPORT = 'http';
+    const config = getConfig();
+    expect(config.mcpTransport).toBe('http');
+  });
+
+  it('should accept MCP_TRANSPORT=both', () => {
+    process.env.DOKPLOY_API_KEY = 'test-key';
+    process.env.MCP_TRANSPORT = 'both';
+    const config = getConfig();
+    expect(config.mcpTransport).toBe('both');
+  });
+
+  it('should use DOKPLOY_URL fallback when DOKPLOY_BASE_URL not set', () => {
+    process.env.DOKPLOY_API_KEY = 'test-key';
+    delete process.env.DOKPLOY_BASE_URL;
+    process.env.DOKPLOY_URL = 'https://custom.example.com/api';
+    const config = getConfig();
+    expect(config.dokployBaseUrl).toBe('https://custom.example.com/api');
   });
 
   it('should create a logger with all methods', () => {
@@ -155,11 +208,48 @@ describe('config and logger', () => {
     expect(typeof logger.error).toBe('function');
   });
 
-  it('should log to stderr', () => {
+  it('should log debug when LOG_LEVEL=debug', () => {
+    process.env.LOG_LEVEL = 'debug';
+    const spy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
+    const logger = createLogger('test');
+    logger.debug('debug message');
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining('debug message'));
+    spy.mockRestore();
+  });
+
+  it('should log info when LOG_LEVEL=info', () => {
+    process.env.LOG_LEVEL = 'info';
+    const spy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
+    const logger = createLogger('test');
+    logger.info('info message');
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining('info message'));
+    spy.mockRestore();
+  });
+
+  it('should log warn when LOG_LEVEL=warn', () => {
+    process.env.LOG_LEVEL = 'warn';
+    const spy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
+    const logger = createLogger('test');
+    logger.warn('warn message');
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining('warn message'));
+    spy.mockRestore();
+  });
+
+  it('should log to stderr (error)', () => {
+    process.env.LOG_LEVEL = 'error';
     const spy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
     const logger = createLogger('test');
     logger.error('test message');
     expect(spy).toHaveBeenCalled();
+    spy.mockRestore();
+  });
+
+  it('should not log debug when LOG_LEVEL=info', () => {
+    process.env.LOG_LEVEL = 'info';
+    const spy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
+    const logger = createLogger('test');
+    logger.debug('should not appear');
+    expect(spy).not.toHaveBeenCalledWith(expect.stringContaining('should not appear'));
     spy.mockRestore();
   });
 });
