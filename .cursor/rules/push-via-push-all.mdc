@@ -1,0 +1,42 @@
+---
+description: Enforce sequential push via push-all.sh to avoid CI pipeline collisions
+alwaysApply: true
+---
+
+# Always push via `push-all.sh` — never push repos individually in parallel
+
+When changes span multiple submodule repos, **never** `git push` each repo separately or in parallel. Each push triggers its own CI pipeline, and simultaneous pipelines compete for shared resources (Docker layers, npm registry, Dokploy deploy slots), causing flaky builds and failed deploys.
+
+## Required workflow
+
+```bash
+# ❌ FORBIDDEN — parallel or individual pushes
+cd gaqno-sso-service && git add . && git commit -m "..." && git push &
+cd gaqno-crm-service && git add . && git commit -m "..." && git push &
+
+# ❌ FORBIDDEN — sequential but manual pushes across repos
+cd gaqno-sso-service && git add . && git commit -m "..." && git push
+cd gaqno-crm-service && git add . && git commit -m "..." && git push
+
+# ✅ CORRECT — single script handles everything sequentially
+cd /path/to/workspace && ./push-all.sh
+
+# ✅ CORRECT — with a custom commit message for all repos
+cd /path/to/workspace && ./push-all.sh "fix(cors): remove non-existent CorsPreflightMiddleware"
+```
+
+## What `push-all.sh` does
+
+1. Iterates every submodule **sequentially**
+2. Skips repos with no changes
+3. Runs tests before committing (skips commit/push if tests fail)
+4. Generates a semantic commit message (via local LLM) or uses the custom message argument
+5. Commits, pushes, and moves to the next repo
+6. Bumps and publishes shared packages (`@gaqno-types`, `@gaqno-backcore`, `@gaqno-frontcore`, `@gaqno-agent`) if they were changed
+7. Updates the parent repo's submodule references last
+
+## When to use
+
+- **Always** when 2+ repos have uncommitted changes that need pushing
+- **Preferred** even for a single repo (consistency + automatic test gate)
+- Only skip when you need to push a single repo with non-standard flags (e.g., `--force` after a rebase — which itself requires explicit user approval)
