@@ -37,9 +37,14 @@ export class DokployClient {
     if (options?.body !== undefined) {
       init.body = JSON.stringify(options.body);
     }
-    const response = await fetch(url.toString(), init);
+    let response: Response;
+    try {
+      response = await fetch(url.toString(), init);
+    } catch (error) {
+      throw await mapDokployError(error);
+    }
     if (!response.ok) {
-      throw mapDokployError(response);
+      throw await mapDokployError(response);
     }
     const text = await response.text();
     if (!text) {
