@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated": "2026-03-17T14:25:30.951Z",
+    "generated": "2026-03-17T15:39:09.086Z",
     "workspaceRoot": "/Users/Gabriel Sousa De Aquino/Coding/gaqno-development-workspace",
     "totalPackages": 32,
     "generator": "gaqno-codemap-generator"
@@ -1308,11 +1308,11 @@
   "workspaceDependencies": {
     "@gaqno-agent": {},
     "@gaqno-backcore": {
-      "@gaqno-development/types": "^1.3.0"
+      "@gaqno-development/types": "^1.8.13"
     },
     "@gaqno-frontcore": {
       "@gaqno-development/backcore": "^1.1.15",
-      "@gaqno-development/types": "^1.0.0"
+      "@gaqno-development/types": "^1.8.13"
     },
     "@gaqno-types": {},
     "gaqno-admin-service": {
