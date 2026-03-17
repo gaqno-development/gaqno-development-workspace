@@ -18,7 +18,7 @@ export function getConfig(): Config {
   }
   return {
     dokployApiKey,
-    dokployBaseUrl: process.env.DOKPLOY_BASE_URL ?? 'http://localhost:3000/api',
+    dokployBaseUrl: process.env.DOKPLOY_BASE_URL ?? process.env.DOKPLOY_URL ?? 'http://localhost:3000/api',
     mcpTransport,
     mcpHttpPort: parseInt(process.env.MCP_HTTP_PORT ?? '3001', 10),
     mcpHttpAuthToken: process.env.MCP_HTTP_AUTH_TOKEN ?? undefined,
