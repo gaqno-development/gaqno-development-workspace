@@ -45,6 +45,14 @@ describe('mapDokployError', () => {
     expect(result.message).toContain('not found');
   });
 
+  it('should handle Response when text() throws', async () => {
+    const response = new Response('body', { status: 500, statusText: 'Internal' });
+    response.text = () => Promise.reject(new Error('text failed'));
+    const result = await mapDokployError(response);
+    expect(result.code).toBe('INTERNAL_ERROR');
+    expect(result.statusCode).toBe(500);
+  });
+
   it('should map 400 to BAD_REQUEST', async () => {
     const response = new Response('Bad Request', { status: 400 });
     const result = await mapDokployError(response);

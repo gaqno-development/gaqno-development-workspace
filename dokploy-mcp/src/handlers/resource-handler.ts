@@ -128,12 +128,8 @@ export async function handleResourceRead(
     return formatApplicationDetail(app);
   }
 
-  if (pattern === 'dokploy://domain/{domainId}') {
-    const domain = await getDomain(client, params.domainId);
-    return formatDomainDetail(domain);
-  }
-
-  throw new Error(`Unknown resource URI: ${uri}`);
+  const domain = await getDomain(client, params.domainId);
+  return formatDomainDetail(domain);
 }
 
 function formatProjectDetail(p: DokployProject): string {

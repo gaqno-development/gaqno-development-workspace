@@ -194,6 +194,7 @@ describe('config and logger', () => {
 
   it('should use DOKPLOY_URL fallback when DOKPLOY_BASE_URL not set', () => {
     process.env.DOKPLOY_API_KEY = 'test-key';
+    process.env.MCP_TRANSPORT = 'stdio';
     delete process.env.DOKPLOY_BASE_URL;
     process.env.DOKPLOY_URL = 'https://custom.example.com/api';
     const config = getConfig();
@@ -241,6 +242,16 @@ describe('config and logger', () => {
     const logger = createLogger('test');
     logger.error('test message');
     expect(spy).toHaveBeenCalled();
+    spy.mockRestore();
+  });
+
+  it('should include data in log output when provided', () => {
+    process.env.LOG_LEVEL = 'debug';
+    const spy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
+    const logger = createLogger('test');
+    logger.info('msg', { key: 'value', count: 42 });
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining('"data"'));
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining('"key":"value"'));
     spy.mockRestore();
   });
 

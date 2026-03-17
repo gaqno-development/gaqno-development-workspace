@@ -94,6 +94,24 @@ describe('handleResourceRead', () => {
     expect(result).toMatch(/^# TestProject/);
   });
 
+  it('should format project detail with mariadb', async () => {
+    const project = {
+      projectId: 'p1',
+      name: 'TestProject',
+      applications: [],
+      mysql: [],
+      postgres: [],
+      redis: [],
+      mariadb: [{ name: 'mariadb-db', applicationStatus: 'done', createdAt: '2024-01-01' }],
+      mongo: [],
+      createdAt: '2024-01-01',
+    };
+    const client = createMockClient(project);
+    const result = await handleResourceRead(client, 'dokploy://project/p1');
+    expect(result).toContain('mariadb-db');
+    expect(result).toContain('MariaDB');
+  });
+
   it('should format application detail', async () => {
     const application = {
       applicationId: 'a1',
@@ -161,6 +179,23 @@ describe('handlePromptGet', () => {
     expect(userText).toContain('MyApp');
   });
 
+  it('should include only applicationName in deploy-application', () => {
+    const result = handlePromptGet('deploy-application', {
+      applicationName: 'SoloApp',
+    });
+    const userText = result.find((m) => m.role === 'user')?.content.text ?? '';
+    expect(userText).toContain('SoloApp');
+    expect(userText).not.toContain('project');
+  });
+
+  it('should include only projectName in deploy-application', () => {
+    const result = handlePromptGet('deploy-application', {
+      projectName: 'SoloProject',
+    });
+    const userText = result.find((m) => m.role === 'user')?.content.text ?? '';
+    expect(userText).toContain('SoloProject');
+  });
+
   it('should return messages for provision-database', () => {
     const result = handlePromptGet('provision-database', {
       projectId: 'p1',
@@ -171,6 +206,36 @@ describe('handlePromptGet', () => {
     expect(userText).toContain('postgres');
     expect(userText).toContain('mydb');
     expect(userText).toContain('p1');
+  });
+
+  it('should return messages for provision-database with redis', () => {
+    const result = handlePromptGet('provision-database', {
+      projectId: 'p1',
+      dbType: 'redis',
+      name: 'cache',
+    });
+    const userText = result.find((m) => m.role === 'user')?.content.text ?? '';
+    expect(userText).toContain('redis');
+  });
+
+  it('should return messages for provision-database with mariadb', () => {
+    const result = handlePromptGet('provision-database', {
+      projectId: 'p1',
+      dbType: 'mariadb',
+      name: 'mydb',
+    });
+    const userText = result.find((m) => m.role === 'user')?.content.text ?? '';
+    expect(userText).toContain('mariadb');
+  });
+
+  it('should return messages for provision-database with mongo', () => {
+    const result = handlePromptGet('provision-database', {
+      projectId: 'p1',
+      dbType: 'mongo',
+      name: 'mydb',
+    });
+    const userText = result.find((m) => m.role === 'user')?.content.text ?? '';
+    expect(userText).toContain('mongo');
   });
 
   it('should return messages for list-and-manage-apps', () => {
