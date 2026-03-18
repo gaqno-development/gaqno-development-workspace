@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated": "2026-03-17T22:20:06.119Z",
+    "generated": "2026-03-18T00:13:10.309Z",
     "workspaceRoot": "/Users/Gabriel Sousa De Aquino/Coding/gaqno-development-workspace",
     "totalPackages": 32,
     "generator": "gaqno-codemap-generator"
@@ -1313,24 +1313,24 @@
       "@gaqno-development/types": "^1.8.13"
     },
     "@gaqno-frontcore": {
-      "@gaqno-development/backcore": "^1.1.15",
+      "@gaqno-development/backcore": "^1.5.6",
       "@gaqno-development/types": "^1.8.13"
     },
     "@gaqno-types": {},
     "gaqno-admin-service": {
-      "@gaqno-development/backcore": "^1.4.0"
+      "@gaqno-development/backcore": "^1.5.6"
     },
     "gaqno-admin-ui": {
       "@gaqno-development/frontcore": "^1.5.0"
     },
     "gaqno-ai-service": {
-      "@gaqno-development/backcore": "^1.4.5"
+      "@gaqno-development/backcore": "^1.5.6"
     },
     "gaqno-ai-ui": {
       "@gaqno-development/frontcore": "^1.5.0"
     },
     "gaqno-crm-service": {
-      "@gaqno-development/backcore": "^1.4.0",
+      "@gaqno-development/backcore": "^1.5.6",
       "@gaqno-development/types": "^1.3.0"
     },
     "gaqno-crm-ui": {
@@ -1338,12 +1338,12 @@
       "@gaqno-development/types": "^1.0.0"
     },
     "gaqno-customer-service": {
-      "@gaqno-development/backcore": "^1.4.0",
+      "@gaqno-development/backcore": "^1.5.6",
       "@gaqno-development/types": "^1.7.0"
     },
     "gaqno-docs-ui": {},
     "gaqno-erp-service": {
-      "@gaqno-development/backcore": "^1.4.0",
+      "@gaqno-development/backcore": "^1.5.6",
       "@gaqno-development/types": "^1.0.0"
     },
     "gaqno-erp-ui": {
@@ -1351,7 +1351,7 @@
       "@gaqno-development/types": "^1.0.0"
     },
     "gaqno-finance-service": {
-      "@gaqno-development/backcore": "^1.4.0",
+      "@gaqno-development/backcore": "^1.5.6",
       "@gaqno-development/types": "^1.3.0"
     },
     "gaqno-finance-ui": {
@@ -1359,7 +1359,7 @@
       "@gaqno-development/types": "^1.4.0"
     },
     "gaqno-intelligence-service": {
-      "@gaqno-development/backcore": "^1.4.0",
+      "@gaqno-development/backcore": "^1.5.6",
       "@gaqno-development/types": "^1.7.0"
     },
     "gaqno-intelligence-ui": {
@@ -1368,11 +1368,11 @@
     },
     "gaqno-landing-ui": {},
     "gaqno-lead-enrichment-service": {
-      "@gaqno-development/backcore": "^1.4.0"
+      "@gaqno-development/backcore": "^1.5.6"
     },
     "gaqno-lenin-ui": {},
     "gaqno-omnichannel-service": {
-      "@gaqno-development/backcore": "^1.4.0",
+      "@gaqno-development/backcore": "^1.5.6",
       "@gaqno-development/types": "^1.8.11"
     },
     "gaqno-omnichannel-ui": {
@@ -1380,7 +1380,7 @@
       "@gaqno-development/types": "^1.8.11"
     },
     "gaqno-pdv-service": {
-      "@gaqno-development/backcore": "^1.4.0",
+      "@gaqno-development/backcore": "^1.5.6",
       "@gaqno-development/types": "^1.0.0"
     },
     "gaqno-pdv-ui": {
@@ -1388,7 +1388,7 @@
       "@gaqno-development/types": "^1.0.0"
     },
     "gaqno-rpg-service": {
-      "@gaqno-development/backcore": "^1.4.0",
+      "@gaqno-development/backcore": "^1.5.6",
       "@gaqno-development/types": "^1.0.0"
     },
     "gaqno-rpg-ui": {
@@ -1399,14 +1399,14 @@
       "@gaqno-development/frontcore": "^1.6.25"
     },
     "gaqno-sso-service": {
-      "@gaqno-development/backcore": "^1.4.0"
+      "@gaqno-development/backcore": "^1.5.6"
     },
     "gaqno-sso-ui": {
       "@gaqno-development/frontcore": "^1.0.68",
       "@gaqno-development/types": "^1.0.0"
     },
     "gaqno-wellness-service": {
-      "@gaqno-development/backcore": "^1.4.0"
+      "@gaqno-development/backcore": "^1.5.6"
     },
     "gaqno-wellness-ui": {
       "@gaqno-development/frontcore": "^1.5.0",
