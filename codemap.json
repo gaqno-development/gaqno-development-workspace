@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated": "2026-03-18T23:02:03.119Z",
+    "generated": "2026-03-18T23:28:36.245Z",
     "workspaceRoot": "/Users/Gabriel Sousa De Aquino/Coding/gaqno-development-workspace",
     "totalPackages": 32,
     "generator": "gaqno-codemap-generator"
@@ -646,7 +646,7 @@
       "@commitlint/config-conventional": "^19.6.0",
       "@eslint/eslintrc": "^3.2.0",
       "@eslint/js": "^9.18.0",
-      "@gaqno-development/types": "^1.8.24",
+      "@gaqno-development/types": "^1.8.27",
       "@nestjs/cli": "^11.0.0",
       "@nestjs/schematics": "^11.0.0",
       "@nestjs/testing": "^11.0.1",
@@ -1327,7 +1327,7 @@
       "@gaqno-development/backcore": "1.5.7"
     },
     "gaqno-ai-ui": {
-      "@gaqno-development/frontcore": "^1.9.3"
+      "@gaqno-development/frontcore": "^1.9.9"
     },
     "gaqno-crm-service": {
       "@gaqno-development/backcore": "^1.5.6",
