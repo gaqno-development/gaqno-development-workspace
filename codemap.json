@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated": "2026-03-18T17:37:50.328Z",
+    "generated": "2026-03-18T18:22:47.375Z",
     "workspaceRoot": "/Users/Gabriel Sousa De Aquino/Coding/gaqno-development-workspace",
     "totalPackages": 32,
     "generator": "gaqno-codemap-generator"
@@ -646,7 +646,7 @@
       "@commitlint/config-conventional": "^19.6.0",
       "@eslint/eslintrc": "^3.2.0",
       "@eslint/js": "^9.18.0",
-      "@gaqno-development/types": "^1.8.18",
+      "@gaqno-development/types": "^1.8.22",
       "@nestjs/cli": "^11.0.0",
       "@nestjs/schematics": "^11.0.0",
       "@nestjs/testing": "^11.0.1",
