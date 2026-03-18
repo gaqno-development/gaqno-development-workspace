@@ -51,6 +51,7 @@ export const TOOLS: ToolDefinition[] = [
       name: z.string(),
       projectId: z.string(),
       description: z.string().optional(),
+      environmentId: z.string().optional(),
     }),
   },
   {
