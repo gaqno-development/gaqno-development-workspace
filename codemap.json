@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated": "2026-03-20T00:42:40.800Z",
+    "generated": "2026-03-20T01:08:58.349Z",
     "workspaceRoot": "/Users/Gabriel Sousa De Aquino/Coding/gaqno-development-workspace",
     "totalPackages": 32,
     "generator": "gaqno-codemap-generator"
@@ -1343,8 +1343,8 @@
     },
     "gaqno-docs-ui": {},
     "gaqno-erp-service": {
-      "@gaqno-development/backcore": "^1.5.6",
-      "@gaqno-development/types": "^1.0.0"
+      "@gaqno-development/backcore": "^1.5.8",
+      "@gaqno-development/types": "^1.8.31"
     },
     "gaqno-erp-ui": {
       "@gaqno-development/frontcore": "^1.6.9",
