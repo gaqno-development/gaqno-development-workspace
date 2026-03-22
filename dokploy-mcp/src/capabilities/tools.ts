@@ -364,6 +364,110 @@ export const TOOLS: ToolDefinition[] = [
     description: 'Delete an AI configuration.',
     inputSchema: z.object({ aiId: z.string() }),
   },
+  {
+    name: 'deployment-list',
+    description: 'List all deployments for an application. Returns deployment IDs, status, timestamps, and log paths.',
+    inputSchema: z.object({ applicationId: z.string() }),
+  },
+  {
+    name: 'deployment-list-by-type',
+    description: 'List deployments by resource type (application, compose, server, etc.).',
+    inputSchema: z.object({
+      id: z.string(),
+      type: z.enum(['application', 'compose', 'server', 'schedule', 'previewDeployment', 'backup', 'volumeBackup']),
+    }),
+  },
+  {
+    name: 'deployment-kill',
+    description: 'Kill a running deployment build process.',
+    inputSchema: z.object({ deploymentId: z.string() }),
+  },
+  {
+    name: 'deployment-remove',
+    description: 'Remove a deployment record.',
+    inputSchema: z.object({ deploymentId: z.string() }),
+  },
+  {
+    name: 'docker-get-containers',
+    description: 'List all Docker containers on the server with name, image, state, and status.',
+    inputSchema: z.object({}),
+  },
+  {
+    name: 'docker-get-containers-by-app',
+    description: 'Get Docker containers matching an application name.',
+    inputSchema: z.object({ appName: z.string() }),
+  },
+  {
+    name: 'docker-get-service-containers',
+    description: 'Get Docker service containers by app name (Docker Swarm).',
+    inputSchema: z.object({ appName: z.string() }),
+  },
+  {
+    name: 'docker-restart-container',
+    description: 'Restart a Docker container by its ID.',
+    inputSchema: z.object({ containerId: z.string() }),
+  },
+  {
+    name: 'docker-get-config',
+    description: 'Get Docker daemon configuration.',
+    inputSchema: z.object({}),
+  },
+  {
+    name: 'settings-health',
+    description: 'Check Dokploy server health status.',
+    inputSchema: z.object({}),
+  },
+  {
+    name: 'settings-get-ip',
+    description: 'Get the public IP address of the Dokploy server.',
+    inputSchema: z.object({}),
+  },
+  {
+    name: 'settings-clean-docker-prune',
+    description: 'Run Docker system prune to free disk space.',
+    inputSchema: z.object({}),
+  },
+  {
+    name: 'settings-clean-unused-images',
+    description: 'Remove unused Docker images to free disk space.',
+    inputSchema: z.object({}),
+  },
+  {
+    name: 'settings-clean-docker-builder',
+    description: 'Clean Docker builder cache.',
+    inputSchema: z.object({}),
+  },
+  {
+    name: 'settings-clean-stopped-containers',
+    description: 'Remove stopped Docker containers.',
+    inputSchema: z.object({}),
+  },
+  {
+    name: 'settings-read-traefik-config',
+    description: 'Read the global Traefik configuration.',
+    inputSchema: z.object({}),
+  },
+  {
+    name: 'settings-get-web-server',
+    description: 'Get Dokploy web server settings.',
+    inputSchema: z.object({}),
+  },
+  {
+    name: 'deployment-read-log',
+    description: 'Read the build/deployment log for a specific deployment by its logPath. Use deployment-list to get the logPath first.',
+    inputSchema: z.object({
+      logPath: z.string().describe('Absolute path to the log file on the Dokploy server (from deployment record logPath field)'),
+      timeoutMs: z.number().optional().describe('Max time in ms to wait for log data (default 10000)'),
+    }),
+  },
+  {
+    name: 'deployment-read-latest-log',
+    description: 'Read the build/deployment log for the latest deployment of an application. Returns deploymentId, status, title and full log output.',
+    inputSchema: z.object({
+      applicationId: z.string(),
+      timeoutMs: z.number().optional().describe('Max time in ms to wait for log data (default 10000)'),
+    }),
+  },
 ];
 
 export function findTool(name: string): ToolDefinition | undefined {

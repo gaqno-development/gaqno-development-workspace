@@ -68,6 +68,33 @@ import {
   updateAi,
   deleteAi,
 } from '../dokploy-client/endpoints/ai.js';
+import {
+  listDeployments,
+  listDeploymentsByType,
+  killDeploymentProcess,
+  removeDeployment,
+} from '../dokploy-client/endpoints/deployments.js';
+import {
+  getContainers,
+  getContainersByAppNameMatch,
+  getServiceContainersByAppName,
+  restartContainer,
+  getDockerConfig,
+} from '../dokploy-client/endpoints/docker.js';
+import {
+  getHealth,
+  getIp,
+  cleanDockerPrune,
+  cleanUnusedImages,
+  cleanDockerBuilder,
+  cleanStoppedContainers,
+  readTraefikConfig,
+  getWebServerSettings,
+} from '../dokploy-client/endpoints/settings.js';
+import {
+  readDeploymentLog,
+  readLatestDeploymentLog,
+} from '../dokploy-client/endpoints/logs.js';
 
 type ToolHandler = (
   client: DokployClient,
@@ -135,6 +162,33 @@ const HANDLER_MAP: Record<string, ToolHandler> = {
   'ai-create': (c, a) => createAi(c, a),
   'ai-update': (c, a) => updateAi(c, a),
   'ai-delete': (c, a) => deleteAi(c, a.aiId as string),
+  'deployment-list': (c, a) => listDeployments(c, a.applicationId as string),
+  'deployment-list-by-type': (c, a) =>
+    listDeploymentsByType(c, a.id as string, a.type as string),
+  'deployment-kill': (c, a) =>
+    killDeploymentProcess(c, a.deploymentId as string),
+  'deployment-remove': (c, a) =>
+    removeDeployment(c, a.deploymentId as string),
+  'docker-get-containers': (c) => getContainers(c),
+  'docker-get-containers-by-app': (c, a) =>
+    getContainersByAppNameMatch(c, a.appName as string),
+  'docker-get-service-containers': (c, a) =>
+    getServiceContainersByAppName(c, a.appName as string),
+  'docker-restart-container': (c, a) =>
+    restartContainer(c, a.containerId as string),
+  'docker-get-config': (c) => getDockerConfig(c),
+  'settings-health': (c) => getHealth(c),
+  'settings-get-ip': (c) => getIp(c),
+  'settings-clean-docker-prune': (c) => cleanDockerPrune(c),
+  'settings-clean-unused-images': (c) => cleanUnusedImages(c),
+  'settings-clean-docker-builder': (c) => cleanDockerBuilder(c),
+  'settings-clean-stopped-containers': (c) => cleanStoppedContainers(c),
+  'settings-read-traefik-config': (c) => readTraefikConfig(c),
+  'settings-get-web-server': (c) => getWebServerSettings(c),
+  'deployment-read-log': (c, a) =>
+    readDeploymentLog(c, a.logPath as string, (a.timeoutMs as number) ?? 10000),
+  'deployment-read-latest-log': (c, a) =>
+    readLatestDeploymentLog(c, a.applicationId as string, (a.timeoutMs as number) ?? 10000),
 };
 
 export async function handleToolCall(

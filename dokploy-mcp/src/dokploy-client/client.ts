@@ -15,6 +15,10 @@ export class DokployClient {
     this.baseUrl = options.baseUrl.replace(/\/$/, '');
   }
 
+  getConnectionInfo(): { baseUrl: string; apiKey: string } {
+    return { baseUrl: this.baseUrl, apiKey: this.apiKey };
+  }
+
   async request<T>(endpoint: string, options?: RequestOptions): Promise<T> {
     const method = options?.method ?? 'GET';
     const url = new URL(this.baseUrl + endpoint);
