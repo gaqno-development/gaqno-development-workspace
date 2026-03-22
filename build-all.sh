@@ -161,7 +161,7 @@ build_frontends() {
   echo ""
   for project in "${PROJECTS[@]}"; do
     matches_filter "${project}" || continue
-    if [ "${project}" = "gaqno-erp-ui" ]; then
+    if [ -f "${BASE_DIR}/${project}/Dockerfile.monorepo" ]; then
       if docker_build_one "${project}" "${project}" "${BASE_DIR}" "${project}/Dockerfile.monorepo"; then
         SUCCESSFUL+=("${project}")
       else
