@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated": "2026-03-25T22:48:49.579Z",
+    "generated": "2026-03-25T23:02:11.199Z",
     "workspaceRoot": "/Users/Gabriel Sousa De Aquino/Coding/gaqno-development-workspace",
     "totalPackages": 32,
     "generator": "gaqno-codemap-generator"
@@ -744,7 +744,7 @@
       "nodemon": "^3.1.11",
       "postcss": "^8.4.32",
       "socket.io-client": "^4.0.0",
-      "tailwind-scrollbar": "^3.0.5",
+      "tailwind-scrollbar": "^4.0.0",
       "tailwindcss": "^4.1.18",
       "tailwindcss-animate": "^1.0.7",
       "typescript": "5.9.3",
