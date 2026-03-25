@@ -40,7 +40,7 @@ const R2_ACCOUNT_ID = process.env.R2_ACCOUNT_ID || "17c0f489f699231dff3588ca19a9
 const R2_ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID;
 const R2_SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY;
 const R2_BUCKET = process.env.R2_BUCKET || "gaqno-media";
-const R2_PUBLIC_URL = process.env.R2_PUBLIC_URL || "https://media.gaqno.com.br";
+const R2_PUBLIC_URL = process.env.R2_PUBLIC_URL || "https://cdn.gaqno.com.br";
 const IMAGES_PER_PRODUCT = parseInt(process.env.IMAGES_PER_PRODUCT || "3", 10);
 const DRY_RUN = process.env.DRY_RUN === "true";
 
