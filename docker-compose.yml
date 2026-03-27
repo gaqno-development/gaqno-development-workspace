@@ -21,6 +21,7 @@ services:
       - COOKIE_SECURE=${COOKIE_SECURE:-false}
       - COOKIE_SAME_SITE=${COOKIE_SAME_SITE:-lax}
       - CORS_ORIGIN=${CORS_ORIGIN:-*}
+      - N8N_WEBHOOK_URL=${N8N_WEBHOOK_URL:-https://n8n.gaqno.com.br}
     env_file:
       - .env
     restart: unless-stopped
