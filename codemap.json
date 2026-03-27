@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated": "2026-03-26T23:58:41.653Z",
+    "generated": "2026-03-27T00:25:25.841Z",
     "workspaceRoot": "/Users/Gabriel Sousa De Aquino/Coding/gaqno-development-workspace",
     "totalPackages": 32,
     "generator": "gaqno-codemap-generator"
@@ -103,6 +103,7 @@
       "@nestjs/throttler": "^6.3.0",
       "@nestjs/websockets": "^11.0.0",
       "axios": "^1.13.6",
+      "class-transformer": "^0.5.1",
       "class-validator": "^0.14.3",
       "drizzle-orm": "^0.45.1",
       "pg": "^8.11.3",
