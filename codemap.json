@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated": "2026-03-27T14:22:15.325Z",
+    "generated": "2026-03-27T14:55:12.390Z",
     "workspaceRoot": "/Users/Gabriel Sousa De Aquino/Coding/gaqno-development-workspace",
     "totalPackages": 32,
     "generator": "gaqno-codemap-generator"
@@ -1328,7 +1328,7 @@
       "@gaqno-development/backcore": "^1.5.11"
     },
     "gaqno-admin-ui": {
-      "@gaqno-development/frontcore": "^1.10.40"
+      "@gaqno-development/frontcore": "^1.10.42"
     },
     "gaqno-ai-service": {
       "@gaqno-development/backcore": "^1.5.11"
