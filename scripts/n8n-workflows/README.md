@@ -19,6 +19,39 @@ Ready-to-import n8n workflow JSONs for cross-service automation. Import via **n8
 | `11-salesforce-to-crm-sync.json` | Salesforce to CRM Sync | **Backend webhook** | Triggered by CRM backend (`POST /integrations/salesforce/sync`); fetches Salesforce Contacts/Leads/Opportunities and creates CRM contacts/leads/deals. |
 | `12-ai-viral-video-pipeline.json` | AI Viral Video Pipeline | Webhook `POST /gaqno-ai-video-pipeline` | End-to-end viral video creation: AI generates concept → AI writes video prompt → AI Studio generates video → polls until ready → optionally publishes to TikTok. All via Gaqno AI Studio APIs (no external VEO3/Blotato). |
 | `13-auth-otp-flow.json` | OTP Authentication | Webhook `POST /gaqno-auth-otp` + `POST /gaqno-auth-verify` | Generates 6-digit OTP, stores in Postgres, sends via email (SMTP) and WhatsApp (Omnichannel), verifies code. |
+| `14-welcome-email.json` | Welcome Email | Webhook `POST /gaqno-welcome-email` | Sends a branded welcome email to new users after sign-up. |
+| `15-reset-password-email.json` | Reset Password Email | Webhook `POST /gaqno-reset-password-email` | Sends a password reset email with a time-limited link. |
+
+### Welcome Email (14)
+
+Workflow **14** sends a branded welcome email when a user signs up. Triggered by the SSO service after `signUp()`.
+
+**Webhook payload:**
+
+```json
+{
+  "email": "user@example.com",
+  "name": "João"
+}
+```
+
+**Required credentials:** `Gaqno SMTP`
+
+### Reset Password Email (15)
+
+Workflow **15** delivers the password reset email. The SSO service generates a short-lived JWT token, builds the reset URL, and calls this webhook to deliver the email.
+
+**Webhook payload:**
+
+```json
+{
+  "email": "user@example.com",
+  "name": "João",
+  "resetUrl": "https://portal.gaqno.com.br/reset-password?token=xxx&email=user@example.com"
+}
+```
+
+**Required credentials:** `Gaqno SMTP`
 
 ### OTP Authentication (13)
 
@@ -179,7 +212,9 @@ In n8n:
 - **09 (event-driven)**: Set **N8N_WEBHOOK_URL** in automation-bridge to this workflow’s Webhook URL (e.g. `https://n8n.gaqno.com.br/webhook/gaqno-message-received`). The body is the full domain event (`eventType`, `tenantId`, `data`, etc.).
 - **10** and **11** (CRM sync): Set **N8N_SYNC_WEBHOOK_URL** in `gaqno-crm-service/.env` to the webhook URL (e.g. `https://n8n.gaqno.com.br/webhook/gaqno-pipedrive-sync`). The CRM backend POSTs provider tokens and `crmAuthToken` when the user clicks "Sync".
 - **12** (AI video pipeline): Webhook URL e.g. `https://n8n.gaqno.com.br/webhook/gaqno-ai-video-pipeline`. Triggered by the AI Studio UI or backend with topic, auth token, and optional TikTok publish settings.
-- **13** (OTP auth): Two webhooks — `https://n8n.gaqno.com.br/webhook/gaqno-auth-otp` (send code) and `https://n8n.gaqno.com.br/webhook/gaqno-auth-verify` (verify code). Requires **Gaqno SMTP** credential (for `contato@gaqno.com.br`) and **n8n Postgres** credential (same DB).
+- **13** (OTP auth): Two webhooks — `https://n8n.gaqno.com.br/webhook/gaqno-auth-otp` (send code) and `https://n8n.gaqno.com.br/webhook/gaqno-auth-verify` (verify code). Requires **Gaqno SMTP** credential (for `comercial@gaqno.com.br`) and **n8n Postgres** credential (same DB).
+- **14** (Welcome email): `https://n8n.gaqno.com.br/webhook/gaqno-welcome-email`. Called by SSO service after sign-up. Requires **Gaqno SMTP** credential.
+- **15** (Reset password email): `https://n8n.gaqno.com.br/webhook/gaqno-reset-password-email`. Called by SSO service on password recovery request. Requires **Gaqno SMTP** credential.
 
 ### Wait nodes (workflows 07, 12)  
    The “Wait 3 days” step requires n8n to be able to resume executions (e.g. queue mode or persistent execution store). Ensure your n8n instance supports resumable waits.
