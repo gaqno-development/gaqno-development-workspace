@@ -18,6 +18,45 @@ Ready-to-import n8n workflow JSONs for cross-service automation. Import via **n8
 | `10-pipedrive-to-crm-sync.json` | Pipedrive to CRM Sync | **Backend webhook** | Triggered by CRM backend (`POST /integrations/pipedrive/sync`); fetches Pipedrive persons/deals and creates CRM contacts/deals. |
 | `11-salesforce-to-crm-sync.json` | Salesforce to CRM Sync | **Backend webhook** | Triggered by CRM backend (`POST /integrations/salesforce/sync`); fetches Salesforce Contacts/Leads/Opportunities and creates CRM contacts/leads/deals. |
 | `12-ai-viral-video-pipeline.json` | AI Viral Video Pipeline | Webhook `POST /gaqno-ai-video-pipeline` | End-to-end viral video creation: AI generates concept → AI writes video prompt → AI Studio generates video → polls until ready → optionally publishes to TikTok. All via Gaqno AI Studio APIs (no external VEO3/Blotato). |
+| `13-auth-otp-flow.json` | OTP Authentication | Webhook `POST /gaqno-auth-otp` + `POST /gaqno-auth-verify` | Generates 6-digit OTP, stores in Postgres, sends via email (SMTP) and WhatsApp (Omnichannel), verifies code. |
+
+### OTP Authentication (13)
+
+Workflow **13** provides a standalone OTP authentication flow. Two webhook endpoints: one to **send** the OTP (via email + WhatsApp), another to **verify** it.
+
+**Flow:**
+
+1. **Send OTP** – `POST /webhook/gaqno-auth-otp` – Generates a 6-digit code, stores in Postgres (`otp_codes` table, auto-created), sends via SMTP email from `contato@gaqno.com.br` and WhatsApp via Omnichannel `POST /v1/distribution/publish`
+2. **Verify OTP** – `POST /webhook/gaqno-auth-verify` – Looks up the latest unused code for the email, validates match + expiry (5 min), marks as used
+
+**Send OTP payload:**
+
+```json
+{
+  "email": "user@example.com",
+  "phone": "5511999999999",
+  "tenantId": "uuid"
+}
+```
+
+**Verify OTP payload:**
+
+```json
+{
+  "email": "user@example.com",
+  "code": "123456"
+}
+```
+
+**Required credentials (configure in n8n UI):**
+
+| Credential | Type | Purpose |
+|------------|------|---------|
+| `Gaqno SMTP` | SMTP | Email sending from `contato@gaqno.com.br` |
+| `Gaqno JWT` | HTTP Header Auth | `Authorization: Bearer <jwt>` for Omnichannel API |
+| `n8n Postgres` | Postgres | Connection to `gaqno_n8n_db` (same DB n8n uses internally) |
+
+The `otp_codes` table is created automatically on first execution (idempotent `CREATE TABLE IF NOT EXISTS`).
 
 ### AI Viral Video Pipeline (12)
 
@@ -102,7 +141,7 @@ All workflows use **`http://localhost:PORT/v1/...`** by default, matching the wo
 | Finance         | `http://localhost:4005` | 01, 03, 04, 06      |
 | PDV             | `http://localhost:4006` | 01, 06              |
 | RPG             | `http://localhost:4007` | 01                  |
-| Omnichannel     | `http://localhost:4008` | 01, 07              |
+| Omnichannel     | `http://localhost:4008` | 01, 07, 13          |
 | Admin           | `http://localhost:4010` | 01                  |
 | Wellness        | `http://localhost:4011` | 01                  |
 | Lead-enrichment | `http://localhost:4012` | 01                  |
@@ -140,6 +179,7 @@ In n8n:
 - **09 (event-driven)**: Set **N8N_WEBHOOK_URL** in automation-bridge to this workflow’s Webhook URL (e.g. `https://n8n.gaqno.com.br/webhook/gaqno-message-received`). The body is the full domain event (`eventType`, `tenantId`, `data`, etc.).
 - **10** and **11** (CRM sync): Set **N8N_SYNC_WEBHOOK_URL** in `gaqno-crm-service/.env` to the webhook URL (e.g. `https://n8n.gaqno.com.br/webhook/gaqno-pipedrive-sync`). The CRM backend POSTs provider tokens and `crmAuthToken` when the user clicks "Sync".
 - **12** (AI video pipeline): Webhook URL e.g. `https://n8n.gaqno.com.br/webhook/gaqno-ai-video-pipeline`. Triggered by the AI Studio UI or backend with topic, auth token, and optional TikTok publish settings.
+- **13** (OTP auth): Two webhooks — `https://n8n.gaqno.com.br/webhook/gaqno-auth-otp` (send code) and `https://n8n.gaqno.com.br/webhook/gaqno-auth-verify` (verify code). Requires **Gaqno SMTP** credential (for `contato@gaqno.com.br`) and **n8n Postgres** credential (same DB).
 
 ### Wait nodes (workflows 07, 12)  
    The “Wait 3 days” step requires n8n to be able to resume executions (e.g. queue mode or persistent execution store). Ensure your n8n instance supports resumable waits.

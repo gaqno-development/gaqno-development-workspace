@@ -130,6 +130,7 @@ docker_build_one() {
   echo -e "${BLUE}🐳 Building ${name}...${NC}"
   if docker build -f "${dockerfile}" \
     --build-arg NPM_TOKEN="${NPM_TOKEN}" \
+    --build-arg GAQNO_CACHE_BUST="$(date +%s)" \
     ${DOCKER_EXTRA_ARGS} \
     -t "${name}:test" \
     "${context}" > "${log_file}" 2>&1; then
