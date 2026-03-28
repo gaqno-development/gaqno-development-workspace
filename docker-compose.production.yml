@@ -96,6 +96,8 @@ services:
       COOKIE_SAME_SITE: ${COOKIE_SAME_SITE:-lax}
       CORS_ORIGIN: ${CORS_ORIGIN:-*}
       REDIS_URL: redis://redis:6379
+      ADMIN_SERVICE_URL: http://admin-service:4010
+      AI_SERVICE_URL: http://ai-service:4002
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:4001/health"]
       interval: 15s
@@ -352,7 +354,7 @@ services:
       AI_SERVICE_URL: http://ai-service:4002
       REDIS_URL: redis://redis:6379
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:4010/health"]
+      test: ["CMD", "wget", "-qO-", "http://localhost:4010/v1/health"]
       interval: 15s
       timeout: 5s
       retries: 5
@@ -518,7 +520,7 @@ services:
         VITE_APP_ORIGIN: ${VITE_APP_ORIGIN:-https://portal.gaqno.com.br}
     container_name: gaqno-sso-ui
     restart: *restart
-    ports: ["3001:80"]
+    ports: ["3001:3001"]
     deploy:
       resources:
         limits: { memory: 128m, cpus: "0.25" }
@@ -532,7 +534,7 @@ services:
         VITE_APP_ORIGIN: ${VITE_APP_ORIGIN:-https://portal.gaqno.com.br}
     container_name: gaqno-ai-ui
     restart: *restart
-    ports: ["3002:80"]
+    ports: ["3002:3002"]
     deploy:
       resources:
         limits: { memory: 128m, cpus: "0.25" }
@@ -546,7 +548,7 @@ services:
         VITE_APP_ORIGIN: ${VITE_APP_ORIGIN:-https://portal.gaqno.com.br}
     container_name: gaqno-crm-ui
     restart: *restart
-    ports: ["3003:80"]
+    ports: ["3003:3003"]
     deploy:
       resources:
         limits: { memory: 128m, cpus: "0.25" }
@@ -561,7 +563,7 @@ services:
         VITE_APP_ORIGIN: ${VITE_APP_ORIGIN:-https://portal.gaqno.com.br}
     container_name: gaqno-erp-ui
     restart: *restart
-    ports: ["3004:80"]
+    ports: ["3004:3004"]
     deploy:
       resources:
         limits: { memory: 128m, cpus: "0.25" }
@@ -575,7 +577,7 @@ services:
         VITE_APP_ORIGIN: ${VITE_APP_ORIGIN:-https://portal.gaqno.com.br}
     container_name: gaqno-finance-ui
     restart: *restart
-    ports: ["3005:80"]
+    ports: ["3005:3005"]
     deploy:
       resources:
         limits: { memory: 128m, cpus: "0.25" }
@@ -589,7 +591,7 @@ services:
         VITE_APP_ORIGIN: ${VITE_APP_ORIGIN:-https://portal.gaqno.com.br}
     container_name: gaqno-pdv-ui
     restart: *restart
-    ports: ["3006:80"]
+    ports: ["3006:3006"]
     deploy:
       resources:
         limits: { memory: 128m, cpus: "0.25" }
@@ -603,7 +605,7 @@ services:
         VITE_APP_ORIGIN: ${VITE_APP_ORIGIN:-https://portal.gaqno.com.br}
     container_name: gaqno-rpg-ui
     restart: *restart
-    ports: ["3007:80"]
+    ports: ["3007:3007"]
     deploy:
       resources:
         limits: { memory: 128m, cpus: "0.25" }
@@ -617,7 +619,7 @@ services:
         VITE_APP_ORIGIN: ${VITE_APP_ORIGIN:-https://portal.gaqno.com.br}
     container_name: gaqno-omnichannel-ui
     restart: *restart
-    ports: ["3008:80"]
+    ports: ["3008:3008"]
     deploy:
       resources:
         limits: { memory: 128m, cpus: "0.25" }
@@ -629,9 +631,11 @@ services:
       args:
         NPM_TOKEN: ${NPM_TOKEN}
         VITE_APP_ORIGIN: ${VITE_APP_ORIGIN:-https://portal.gaqno.com.br}
+        VITE_GRAFANA_URL: ${VITE_GRAFANA_URL:-https://grafana.gaqno.com.br}
+        VITE_GRAFANA_API_KEY: ${VITE_GRAFANA_API_KEY:-}
     container_name: gaqno-admin-ui
     restart: *restart
-    ports: ["3009:80"]
+    ports: ["3009:3009"]
     deploy:
       resources:
         limits: { memory: 128m, cpus: "0.25" }
@@ -645,7 +649,7 @@ services:
         VITE_APP_ORIGIN: ${VITE_APP_ORIGIN:-https://portal.gaqno.com.br}
     container_name: gaqno-wellness-ui
     restart: *restart
-    ports: ["3011:80"]
+    ports: ["3011:3011"]
     deploy:
       resources:
         limits: { memory: 128m, cpus: "0.25" }
@@ -659,7 +663,7 @@ services:
         VITE_APP_ORIGIN: ${VITE_APP_ORIGIN:-https://portal.gaqno.com.br}
     container_name: gaqno-intelligence-ui
     restart: *restart
-    ports: ["3013:80"]
+    ports: ["3013:3013"]
     deploy:
       resources:
         limits: { memory: 128m, cpus: "0.25" }
@@ -685,7 +689,7 @@ services:
         NPM_TOKEN: ${NPM_TOKEN}
     container_name: gaqno-docs-ui
     restart: *restart
-    ports: ["3020:80"]
+    ports: ["3020:3020"]
     deploy:
       resources:
         limits: { memory: 128m, cpus: "0.25" }
