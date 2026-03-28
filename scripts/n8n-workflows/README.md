@@ -18,40 +18,63 @@ Ready-to-import n8n workflow JSONs for cross-service automation. Import via **n8
 | `10-pipedrive-to-crm-sync.json` | Pipedrive to CRM Sync | **Backend webhook** | Triggered by CRM backend (`POST /integrations/pipedrive/sync`); fetches Pipedrive persons/deals and creates CRM contacts/deals. |
 | `11-salesforce-to-crm-sync.json` | Salesforce to CRM Sync | **Backend webhook** | Triggered by CRM backend (`POST /integrations/salesforce/sync`); fetches Salesforce Contacts/Leads/Opportunities and creates CRM contacts/leads/deals. |
 | `12-ai-viral-video-pipeline.json` | AI Viral Video Pipeline | Webhook `POST /gaqno-ai-video-pipeline` | End-to-end viral video creation: AI generates concept → AI writes video prompt → AI Studio generates video → polls until ready → optionally publishes to TikTok. All via Gaqno AI Studio APIs (no external VEO3/Blotato). |
-| `13-auth-otp-flow.json` | OTP Authentication | Webhook `POST /gaqno-auth-otp` + `POST /gaqno-auth-verify` | Generates 6-digit OTP, stores in Postgres, sends via email (SMTP) and WhatsApp (Omnichannel), verifies code. |
-| `14-welcome-email.json` | Welcome Email | Webhook `POST /gaqno-welcome-email` | Sends a branded welcome email to new users after sign-up. |
-| `15-reset-password-email.json` | Reset Password Email | Webhook `POST /gaqno-reset-password-email` | Sends a password reset email with a time-limited link. |
+| `13-auth-otp-flow.json` | OTP Authentication | Webhook `POST /gaqno-auth-otp` + `POST /gaqno-auth-verify` | Generates 6-digit OTP, stores in Postgres, **dispatches** email + WhatsApp via workflow **16** hub, verifies code. |
+| `16-gaqno-notifications-hub.json` | Notifications Hub | Webhook `POST /gaqno-notify` | Central SMTP + WhatsApp (Omnichannel) for welcome, reset password, OTP delivery, and generic alerts. |
 
-### Welcome Email (14)
+### Notifications Hub (16)
 
-Workflow **14** sends a branded welcome email when a user signs up. Triggered by the SSO service after `signUp()`.
+Workflow **16** is the **single place** for transactional e-mail and WhatsApp (Meta via Omnichannel). Callers send **`action`** (preferred). Legacy **`template`** values are mapped to the same actions inside the hub Code node. **`channels` in the body is ignored**; the hub applies fixed gates per action.
 
-**Webhook payload:**
+**Webhook:** `POST /webhook/gaqno-notify`
+
+**Channel gates (server-side):**
+
+| Action | E-mail | WhatsApp |
+|--------|--------|----------|
+| `RESET_PASSWORD` | Yes | No |
+| `NEW_ACCOUNT` | Yes | Yes (needs `phone` + `tenantDomain` hostname for WhatsApp) |
+| `OTP_CODE` | Yes | Yes (needs `phone` + `tenantDomain` for WhatsApp) |
+| `USAGE_LIMIT` | Yes | Yes |
+| `ACCOUNT_UPDATE` | Yes | Yes |
+
+**Common fields:**
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `action` | Yes (or legacy `template`) | `NEW_ACCOUNT`, `RESET_PASSWORD`, `OTP_CODE`, `USAGE_LIMIT`, `ACCOUNT_UPDATE`, or legacy `welcome` / `reset_password` / `otp_code` / `alert` |
+| `email` | If e-mail is in the gate | Recipient address |
+| `phone` | If WhatsApp is in the gate | Digits only (e.g. `5511999999999`) |
+| `tenantDomain` | For WhatsApp (preferred) | Request hostname (e.g. `portal.cliente.gaqno.com.br`); sent as `x-tenant-domain`; Omnichannel resolves tenant via SSO |
+| `tenantId` | Legacy WhatsApp | Optional UUID; sent as `x-tenant-id` if present |
+| `data` | Per action | See below |
+
+**Action payloads:**
+
+`NEW_ACCOUNT` — `data: { "name": "João" }`
+
+`RESET_PASSWORD` — `data: { "name": "João", "resetUrl": "https://..." }`
+
+`OTP_CODE` — `data: { "code": "123456" }`
+
+`USAGE_LIMIT` — `data: { "name": "João", "resource": "API calls", "limit": 1000 }` (optional fields; hub builds copy from what is present)
+
+`ACCOUNT_UPDATE` — `data: { "name": "João", "summary": "Seu perfil foi atualizado." }`
+
+Legacy `alert` maps to a simple title/body e-mail path in the hub.
+
+**Example (new account + WhatsApp):**
 
 ```json
 {
+  "action": "NEW_ACCOUNT",
   "email": "user@example.com",
-  "name": "João"
+  "phone": "5511999999999",
+  "tenantDomain": "portal.cliente.gaqno.com.br",
+  "data": { "name": "João" }
 }
 ```
 
-**Required credentials:** `Gaqno SMTP`
-
-### Reset Password Email (15)
-
-Workflow **15** delivers the password reset email. The SSO service generates a short-lived JWT token, builds the reset URL, and calls this webhook to deliver the email.
-
-**Webhook payload:**
-
-```json
-{
-  "email": "user@example.com",
-  "name": "João",
-  "resetUrl": "https://portal.gaqno.com.br/reset-password?token=xxx&email=user@example.com"
-}
-```
-
-**Required credentials:** `Gaqno SMTP`
+**Required credentials:** `Gaqno SMTP`, `Gaqno JWT` (WhatsApp only). Production Omnichannel URL in the shipped workflow: `https://api.gaqno.com.br/omnichannel/v1/distribution/publish`. Omnichannel must have **`SSO_TENANT_BY_HOST_URL`** set (see `.env.production.example`) so `x-tenant-domain` resolves to a tenant UUID. For local dev, point **Publish WhatsApp** at your Omnichannel base (`OMNICHANNEL_API_BASE_URL`).
 
 ### OTP Authentication (13)
 
@@ -59,18 +82,19 @@ Workflow **13** provides a standalone OTP authentication flow. Two webhook endpo
 
 **Flow:**
 
-1. **Send OTP** – `POST /webhook/gaqno-auth-otp` – Generates a 6-digit code, stores in Postgres (`otp_codes` table, auto-created), sends via SMTP email from `contato@gaqno.com.br` and WhatsApp via Omnichannel `POST /v1/distribution/publish`
+1. **Send OTP** – `POST /webhook/gaqno-auth-otp` – Generates a 6-digit code, stores in Postgres (`otp_codes` table, auto-created), then calls **workflow 16** at `POST /webhook/gaqno-notify` with `action: "OTP_CODE"` and `data.code` (e-mail + WhatsApp per hub gates). After import, edit the **Dispatch via notifications hub** node URL if your n8n base is not `https://n8n.gaqno.com.br` (e.g. local: `http://host.docker.internal:5678/webhook/gaqno-notify`).
 2. **Verify OTP** – `POST /webhook/gaqno-auth-verify` – Looks up the latest unused code for the email, validates match + expiry (5 min), marks as used
 
-**Send OTP payload:**
+**Send OTP payload** (to SSO `POST …/otp/send`, which forwards to `POST /webhook/gaqno-auth-otp` with `tenantDomain` from the request host):
 
 ```json
 {
   "email": "user@example.com",
-  "phone": "5511999999999",
-  "tenantId": "uuid"
+  "phone": "5511999999999"
 }
 ```
+
+Workflow **13** then calls workflow **16** with `action: "OTP_CODE"`, `tenantDomain`, `email`, `phone`, and `data.code`.
 
 **Verify OTP payload:**
 
@@ -145,8 +169,64 @@ Workflows **10** and **11** are **not triggered by users directly**. The CRM bac
 ```
 
 - `apiDomain` is sent for Pipedrive; `instanceUrl` for Salesforce.
-- `crmAuthToken` is a JWT (5-10 min TTL) that the workflow uses as `Authorization: Bearer` when calling CRM endpoints (`POST /v1/contacts`, `/v1/leads`, `/v1/deals`).
+- `crmAuthToken` is a JWT (5-10 min TTL) that the workflow uses as `Authorization: Bearer` when calling CRM endpoints.
 - Configure `N8N_SYNC_WEBHOOK_URL` in the CRM backend `.env` to point to the webhook URL of workflow 10 (for Pipedrive) or a single dispatcher. If using one webhook for both, the Code node routes by `provider`.
+
+### Salesforce sync (11) — batch upsert architecture
+
+Workflow **11** uses **idempotent batch upsert** endpoints instead of individual `POST /v1/contacts|leads|deals` creates. Each entity is matched by `(tenantId, externalSource, externalId)` so re-syncs update existing records rather than creating duplicates.
+
+**Sync flow:**
+
+1. `01_Validate` — fails fast if `tenantId`, `accessToken`, `instanceUrl`, `crmAuthToken`, or `crmBaseUrl` are missing; generates a `correlationId` for tracing.
+2. `02_FetchContacts` / `03_FetchLeads` / `04_FetchOpportunities` — SOQL queries against Salesforce (no `LIMIT 200`; SF returns up to 2000 per page). Opportunities include `OpportunityContactRoles` subquery for primary contact mapping. Each request retries 3 times with 1s backoff.
+3. `05_MapContacts` / `07_MapLeads` / `10_MapDeals` — Code nodes transform SF records into batch DTO format with `externalId` and `externalSource: "salesforce"`.
+4. `06_UpsertContacts` / `08_UpsertLeads` / `11_UpsertDeals` — `POST /v1/integrations/sync/{entity}/upsert-batch` with `{ items: [...] }`. Returns per-item result (`created|updated|skipped|failed`).
+5. `09_BuildContactMap` — builds `Map<sfContactId, crmUuid>` from contact upsert results for deal→contact resolution.
+6. `12_Summary` — aggregates all results into a structured summary.
+7. `13_NotifyCRM` — `POST /v1/internal/events` with `eventType: "crm.sync.completed"` (best-effort, `continueOnFail: true`); CRM publishes to message bus.
+8. `14_Respond` — returns the summary JSON to the webhook caller.
+
+**Batch upsert endpoints (CRM service):**
+
+| Endpoint | Body |
+|----------|------|
+| `POST /v1/integrations/sync/contacts/upsert-batch` | `{ items: [{ externalId, externalSource, name, email?, phone?, company? }] }` |
+| `POST /v1/integrations/sync/leads/upsert-batch` | `{ items: [{ externalId, externalSource, name, email?, company?, status?, source? }] }` |
+| `POST /v1/integrations/sync/deals/upsert-batch` | `{ items: [{ externalId, externalSource, name, contactExternalId?, company?, value?, stage? }] }` |
+
+Response: `{ results: [{ externalId, status: "created"|"updated"|"skipped"|"failed", id?, error? }] }`
+
+**Internal completion event:**
+
+```json
+{
+  "eventType": "crm.sync.completed",
+  "tenantId": "uuid",
+  "correlationId": "uuid",
+  "data": {
+    "provider": "salesforce",
+    "summary": {
+      "contacts": { "created": 10, "updated": 5, "skipped": 0, "failed": 1 },
+      "leads": { "created": 3, "updated": 2, "skipped": 0, "failed": 0 },
+      "deals": { "created": 7, "updated": 1, "skipped": 2, "failed": 0 }
+    },
+    "errors": [{ "externalId": "003xx...", "error": "duplicate key" }]
+  }
+}
+```
+
+Guarded by `x-internal-secret` header (set `INTERNAL_SYNC_SECRET` in CRM `.env`). The controller publishes the event to the message bus (`comercial.sync_completed`) for downstream consumers (WS/SSE fan-out, dashboards, etc.).
+
+**Environment variables (CRM service):**
+
+| Variable | Purpose |
+|----------|---------|
+| `N8N_SYNC_WEBHOOK_URL` | n8n webhook URL for Salesforce sync |
+| `INTERNAL_SYNC_SECRET` | Shared secret for internal event endpoint |
+| `CRM_BASE_URL` | Base URL the workflow uses to call back into CRM |
+
+**DB schema additions:** `external_id` (varchar 255) + `external_source` (varchar 64) on `crm_contacts`, `crm_leads`, `crm_deals` with a partial unique index `(tenant_id, external_source, external_id) WHERE external_id IS NOT NULL`. `crm_deals.contact_id` is now nullable to support deals without a resolved contact.
 
 ### Event-driven workflows (automation-bridge)
 
@@ -174,7 +254,7 @@ All workflows use **`http://localhost:PORT/v1/...`** by default, matching the wo
 | Finance         | `http://localhost:4005` | 01, 03, 04, 06      |
 | PDV             | `http://localhost:4006` | 01, 06              |
 | RPG             | `http://localhost:4007` | 01                  |
-| Omnichannel     | `http://localhost:4008` | 01, 07, 13          |
+| Omnichannel     | `http://localhost:4008` | 01, 07, 13, 16      |
 | Admin           | `http://localhost:4010` | 01                  |
 | Wellness        | `http://localhost:4011` | 01                  |
 | Lead-enrichment | `http://localhost:4012` | 01                  |
@@ -212,9 +292,8 @@ In n8n:
 - **09 (event-driven)**: Set **N8N_WEBHOOK_URL** in automation-bridge to this workflow’s Webhook URL (e.g. `https://n8n.gaqno.com.br/webhook/gaqno-message-received`). The body is the full domain event (`eventType`, `tenantId`, `data`, etc.).
 - **10** and **11** (CRM sync): Set **N8N_SYNC_WEBHOOK_URL** in `gaqno-crm-service/.env` to the webhook URL (e.g. `https://n8n.gaqno.com.br/webhook/gaqno-pipedrive-sync`). The CRM backend POSTs provider tokens and `crmAuthToken` when the user clicks "Sync".
 - **12** (AI video pipeline): Webhook URL e.g. `https://n8n.gaqno.com.br/webhook/gaqno-ai-video-pipeline`. Triggered by the AI Studio UI or backend with topic, auth token, and optional TikTok publish settings.
-- **13** (OTP auth): Two webhooks — `https://n8n.gaqno.com.br/webhook/gaqno-auth-otp` (send code) and `https://n8n.gaqno.com.br/webhook/gaqno-auth-verify` (verify code). Requires **Gaqno SMTP** credential (for `comercial@gaqno.com.br`) and **n8n Postgres** credential (same DB).
-- **14** (Welcome email): `https://n8n.gaqno.com.br/webhook/gaqno-welcome-email`. Called by SSO service after sign-up. Requires **Gaqno SMTP** credential.
-- **15** (Reset password email): `https://n8n.gaqno.com.br/webhook/gaqno-reset-password-email`. Called by SSO service on password recovery request. Requires **Gaqno SMTP** credential.
+- **13** (OTP auth): Two webhooks — `https://n8n.gaqno.com.br/webhook/gaqno-auth-otp` (send code) and `https://n8n.gaqno.com.br/webhook/gaqno-auth-verify` (verify code). Requires **n8n Postgres** (OTP storage). Delivery uses **16** — import **16** first and align the **Dispatch via notifications hub** URL with your n8n host.
+- **16** (Notifications hub): `https://n8n.gaqno.com.br/webhook/gaqno-notify` — actions `NEW_ACCOUNT`, `RESET_PASSWORD` (e-mail only), `OTP_CODE`, `USAGE_LIMIT`, `ACCOUNT_UPDATE` (gates in hub Code node; client `channels` ignored). WhatsApp paths send **`tenantDomain`** (hostname) as `x-tenant-domain`; Omnichannel resolves tenant via SSO (`SSO_TENANT_BY_HOST_URL`). SSO uses this for welcome + reset; workflow **13** calls it for OTP with `action: "OTP_CODE"`. Requires **Gaqno SMTP** and **Gaqno JWT** (WhatsApp). Publish URL in JSON: `https://api.gaqno.com.br/omnichannel/v1/distribution/publish`.
 
 ### Wait nodes (workflows 07, 12)  
    The “Wait 3 days” step requires n8n to be able to resume executions (e.g. queue mode or persistent execution store). Ensure your n8n instance supports resumable waits.
