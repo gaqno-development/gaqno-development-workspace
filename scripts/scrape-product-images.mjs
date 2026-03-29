@@ -1,18 +1,4 @@
 #!/usr/bin/env node
-/**
- * Scrape product images from DuckDuckGo and upload to Cloudflare R2.
- *
- * Usage:
- *   R2_ACCESS_KEY_ID=xxx R2_SECRET_ACCESS_KEY=yyy node scripts/scrape-product-images.mjs
- *
- * Optional env vars:
- *   DATABASE_URL          — ERP database (default: from gaqno-erp-service/.env)
- *   R2_ACCOUNT_ID         — Cloudflare account  (default: 17c0f489f699231dff3588ca19a9cb9a)
- *   R2_BUCKET             — R2 bucket name       (default: gaqno-media)
- *   R2_PUBLIC_URL         — Public URL prefix     (default: https://media.gaqno.com.br)
- *   IMAGES_PER_PRODUCT    — How many images       (default: 3)
- *   DRY_RUN               — Set "true" to skip upload + DB update
- */
 
 import pg from "pg";
 import { S3Client, PutObjectCommand, HeadBucketCommand } from "@aws-sdk/client-s3";
@@ -24,21 +10,49 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // ─── Config ──────────────────────────────────────────────────────────
 
-function loadErpDatabaseUrl() {
+function loadDatabaseUrlFromFile(envPath) {
   try {
-    const envPath = resolve(__dirname, "../gaqno-erp-service/.env");
     const content = readFileSync(envPath, "utf-8");
-    const match = content.match(/DATABASE_URL=(.+)/);
-    return match?.[1]?.trim();
+    const match = content.match(/^DATABASE_URL=(.+)$/m);
+    return match?.[1]?.trim()?.replace(/^["']|["']$/g, "");
   } catch {
     return undefined;
   }
 }
 
+function loadErpDatabaseUrl() {
+  return (
+    loadDatabaseUrlFromFile(resolve(__dirname, "../gaqno-erp-service/.env")) ||
+    loadDatabaseUrlFromFile(resolve(__dirname, "../.env"))
+  );
+}
+
 const DATABASE_URL = process.env.DATABASE_URL || loadErpDatabaseUrl();
+const SCRAPE_SYNC_CRM =
+  process.env.SCRAPE_SYNC_CRM === "true" || process.env.SCRAPE_SYNC_CRM === "1";
+const CRM_SYNC_BASE = (
+  process.env.SCRAPE_CRM_BASE_URL ||
+  process.env.SEED_CRM_BASE_URL ||
+  (SCRAPE_SYNC_CRM ? "http://localhost:4003/v1" : "")
+).replace(/\/$/, "");
+const CRM_SYNC_TOKEN =
+  process.env.SCRAPE_CRM_TOKEN ||
+  process.env.SEED_ACCESS_TOKEN ||
+  process.env.GAQNO_JWT ||
+  "";
 const R2_ACCOUNT_ID = process.env.R2_ACCOUNT_ID || "17c0f489f699231dff3588ca19a9cb9a";
-const R2_ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID;
-const R2_SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY;
+const R2_ACCESS_KEY_ID =
+  process.env.R2_ACCESS_KEY_ID || process.env.R2_ACCESS_KEY || "";
+
+const r2TokenEnv = process.env.R2_TOKEN?.trim() || "";
+const r2SecretFromToken =
+  r2TokenEnv && !r2TokenEnv.startsWith("cfat_") ? r2TokenEnv : "";
+
+const R2_SECRET_ACCESS_KEY =
+  process.env.R2_SECRET_ACCESS_KEY ||
+  process.env.R2_SECRET_KEY ||
+  r2SecretFromToken ||
+  "";
 const R2_BUCKET = process.env.R2_BUCKET || "gaqno-media";
 const R2_PUBLIC_URL = process.env.R2_PUBLIC_URL || "https://cdn.gaqno.com.br";
 const IMAGES_PER_PRODUCT = parseInt(process.env.IMAGES_PER_PRODUCT || "3", 10);
@@ -52,12 +66,18 @@ const UA =
 function validateConfig() {
   const missing = [];
   if (!DATABASE_URL) missing.push("DATABASE_URL");
-  if (!R2_ACCESS_KEY_ID) missing.push("R2_ACCESS_KEY_ID");
-  if (!R2_SECRET_ACCESS_KEY) missing.push("R2_SECRET_ACCESS_KEY");
+  if (!DRY_RUN) {
+    if (!R2_ACCESS_KEY_ID) missing.push("R2_ACCESS_KEY_ID or R2_ACCESS_KEY");
+    if (!R2_SECRET_ACCESS_KEY) {
+      missing.push("R2_SECRET_ACCESS_KEY or R2_SECRET_KEY (or R2_TOKEN if it is the S3 secret, not a cfat_ API token)");
+    }
+  }
   if (missing.length > 0) {
     console.error(`\n❌ Missing required env vars: ${missing.join(", ")}`);
     console.error(`\nUsage:`);
-    console.error(`  R2_ACCESS_KEY_ID=xxx R2_SECRET_ACCESS_KEY=yyy node scripts/scrape-product-images.mjs\n`);
+    console.error(`  R2_ACCESS_KEY=xxx R2_SECRET_ACCESS_KEY=yyy node scripts/scrape-product-images.mjs`);
+    console.error(`  (or R2_ACCESS_KEY_ID, R2_SECRET_KEY; R2_TOKEN only if it is the S3 secret — not cfat_… API tokens)\n`);
+    console.error(`  DRY_RUN=true node scripts/scrape-product-images.mjs  # only DATABASE_URL; no R2 upload/DB write\n`);
     console.error(`To create R2 API tokens:`);
     console.error(`  1. Go to https://dash.cloudflare.com → R2 Object Storage → Manage R2 API tokens`);
     console.error(`  2. Create a token with "Object Read & Write" for bucket "${R2_BUCKET}"`);
@@ -211,28 +231,113 @@ async function updateProductImages(pool, productId, imageUrlsJson) {
   ]);
 }
 
+function describeDatabaseUrl(url) {
+  try {
+    const u = new URL(url);
+    const db = u.pathname.replace(/^\//, "") || "(no database)";
+    return `host=${u.hostname} port=${u.port || 5432} user=${u.username} database=${db}`;
+  } catch {
+    return "invalid DATABASE_URL";
+  }
+}
+
 // ─── Rate Limiter ────────────────────────────────────────────────────
 
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-// ─── Main ────────────────────────────────────────────────────────────
+async function buildCrmSkuIndex(baseUrl, token) {
+  const res = await fetch(`${baseUrl}/products`, {
+    headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`GET /products ${res.status} ${text.slice(0, 160)}`);
+  }
+  const items = await res.json();
+  const m = new Map();
+  if (!Array.isArray(items)) return m;
+  for (const p of items) {
+    if (p && typeof p.sku === "string" && p.sku && typeof p.id === "string") {
+      m.set(p.sku, p.id);
+    }
+  }
+  return m;
+}
+
+async function syncCrmProductImages(baseUrl, token, skuMap, sku, imageUrlsJson) {
+  const id = skuMap.get(sku);
+  if (!id) {
+    console.log(`  ℹ CRM: no product with sku "${sku}"`);
+    return;
+  }
+  const res = await fetch(`${baseUrl}/products/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ imageUrls: imageUrlsJson }),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    console.warn(`  ⚠ CRM PATCH ${res.status}: ${text.slice(0, 120)}`);
+    return;
+  }
+  console.log(`  📎 CRM: synced images for sku ${sku}`);
+}
 
 async function main() {
   validateConfig();
 
   if (DRY_RUN) console.log("🏜  DRY RUN — no uploads or DB updates\n");
 
-  const pool = new pg.Pool({ connectionString: DATABASE_URL });
-  const s3 = createR2Client();
+  let crmSkuToId = null;
+  if (SCRAPE_SYNC_CRM && !DRY_RUN) {
+    if (!CRM_SYNC_TOKEN) {
+      console.error("SCRAPE_SYNC_CRM requires SCRAPE_CRM_TOKEN, SEED_ACCESS_TOKEN, or GAQNO_JWT.");
+      process.exit(2);
+    }
+    if (!CRM_SYNC_BASE) {
+      console.error("SCRAPE_SYNC_CRM requires SCRAPE_CRM_BASE_URL or SEED_CRM_BASE_URL.");
+      process.exit(2);
+    }
+    try {
+      crmSkuToId = await buildCrmSkuIndex(CRM_SYNC_BASE, CRM_SYNC_TOKEN);
+      console.log(`📎 CRM: ${crmSkuToId.size} products with sku\n`);
+    } catch (e) {
+      console.error("CRM:", e instanceof Error ? e.message : e);
+      process.exit(1);
+    }
+  }
 
-  if (!DRY_RUN) {
+  const pool = new pg.Pool({ connectionString: DATABASE_URL });
+  const s3 = DRY_RUN ? null : createR2Client();
+
+  if (!DRY_RUN && s3) {
     const bucketOk = await verifyBucket(s3);
     if (!bucketOk) process.exit(1);
   }
 
-  const products = await fetchProducts(pool);
+  let products;
+  try {
+    products = await fetchProducts(pool);
+  } catch (err) {
+    await pool.end().catch(() => {});
+    if (err && typeof err === "object" && "code" in err && err.code === "28P01") {
+      console.error("\n❌ PostgreSQL password authentication failed (28P01).");
+      console.error(`   ${describeDatabaseUrl(DATABASE_URL)}`);
+      console.error(
+        "   Fix gaqno-erp-service/.env DATABASE_URL, or set DATABASE_URL in the shell to override both .env files.",
+      );
+      console.error(
+        "   Local: use DATABASE_URL that matches a running Postgres with database gaqno_erp_db (see init-databases.sh in production compose).\n",
+      );
+      process.exit(1);
+    }
+    throw err;
+  }
   console.log(`📦 Found ${products.length} products\n`);
 
   let uploaded = 0;
@@ -305,6 +410,9 @@ async function main() {
       const json = JSON.stringify(uploadedUrls);
       if (!DRY_RUN) {
         await updateProductImages(pool, product.id, json);
+        if (crmSkuToId && product.sku) {
+          await syncCrmProductImages(CRM_SYNC_BASE, CRM_SYNC_TOKEN, crmSkuToId, product.sku, json);
+        }
       }
       console.log(`  📝 ${product.name} → ${uploadedUrls.length} image(s) saved\n`);
       uploaded++;

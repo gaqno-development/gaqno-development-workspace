@@ -82,7 +82,15 @@
     "test": "turbo run test",
     "test:coverage": "turbo run test:coverage",
     "codemap": "node scripts/generate-codemap.js",
-    "verify:local": "npm run verify:production -w gaqno-shell-ui"
+    "verify:local": "npm run verify:production -w gaqno-shell-ui",
+    "seed:erp-crm-products": "node scripts/seed-erp-crm-products.mjs",
+    "scrape:product-images": "node scripts/scrape-product-images.mjs",
+    "dokploy:pull-env": "node --env-file=.env scripts/dokploy-pull-env.mjs",
+    "dokploy:list-apps": "node --env-file=.env scripts/dokploy-pull-env.mjs --list-apps",
+    "dokploy:apply": "node --env-file=.env scripts/dokploy-pull-env.mjs --apply",
+    "dokploy:inspect-latency": "node --env-file=.env scripts/dokploy-inspect-latency-hints.mjs",
+    "measure:api-ttfb": "node scripts/measure-api-ttfb.mjs",
+    "explain:erp-queries": "sh -c 'test -n \"$DATABASE_URL\" && test -n \"$TENANT_UUID\" && psql \"$DATABASE_URL\" -v tenant=\"$TENANT_UUID\" -f scripts/explain-erp-tenant-queries.sql'"
   },
   "devDependencies": {
     "husky": "^9.1.7",
