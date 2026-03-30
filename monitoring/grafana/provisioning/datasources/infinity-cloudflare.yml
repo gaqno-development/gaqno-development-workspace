@@ -1,5 +1,5 @@
 # Infinity datasource for Cloudflare DNS Analytics (used by Gaqno — DNS droppage dashboard).
-# Bearer token is read from env: set CLOUDFLARE_API_TOKEN in Coolify (gaqno-grafana service env).
+# Bearer token is read from env: set CLOUDFLARE_API_TOKEN in Dokploy (Grafana service environment).
 # Then in the DNS droppage dashboard, set variable zone_id to your Cloudflare Zone ID.
 apiVersion: 1
 

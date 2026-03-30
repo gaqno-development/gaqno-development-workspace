@@ -60,6 +60,8 @@ services:
     image: cloudflare/cloudflared:latest
     container_name: gaqno-cloudflared
     restart: *restart
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     command:
       - tunnel
       - --no-autoupdate
@@ -72,7 +74,7 @@ services:
         limits:
           memory: 128m
           cpus: "0.25"
-    networks: [gaqno]
+    networks: [gaqno, dokploy-edge]
 
   # ════════════════════════════════════════════════════════════
   #  BACKEND SERVICES
@@ -833,8 +835,8 @@ services:
             name=$$(echo "$$info" | jq -r '.[0].Name' | sed 's|^/||')
             image=$$(echo "$$info" | jq -r '.[0].Config.Image')
             short=$$(echo "$$cid" | head -c 12)
-            svc=$$(echo "$$info" | jq -r '.[0].Config.Labels["coolify.resourceName"] // empty')
-            comp=$$(echo "$$info" | jq -r '.[0].Config.Labels["coolify.serviceName"] // empty')
+            svc=$$(echo "$$info" | jq -r '.[0].Config.Labels["com.docker.compose.service"] // empty')
+            comp=$$(echo "$$info" | jq -r '.[0].Config.Labels["com.docker.compose.project"] // empty')
             if [ -z "$$svc" ]; then svc="$$name"; fi
             if [ -z "$$comp" ]; then comp="$$name"; fi
             size=$$(echo "$$info" | jq -r '.[0].SizeRw // 0')
@@ -887,3 +889,6 @@ volumes:
 networks:
   gaqno:
     driver: bridge
+  dokploy-edge:
+    external: true
+    name: ${CLOUDFLARED_EDGE_NETWORK:-dokploy-network}

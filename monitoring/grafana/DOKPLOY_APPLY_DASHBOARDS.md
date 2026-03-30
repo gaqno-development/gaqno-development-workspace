@@ -1,17 +1,17 @@
-# Apply Grafana dashboards in Coolify (gaqno-grafana service)
+# Apply Grafana dashboards in Dokploy (gaqno-grafana)
 
-The **gaqno-grafana** Coolify service currently has dashboard **provisioning** enabled but **no dashboard JSONs** mounted, so the Front, Backend, DevOps, and DNS droppage dashboards show "Dashboard not found".
+The **gaqno-grafana** service may have dashboard **provisioning** enabled but **no dashboard JSONs** mounted, so the Front, Backend, DevOps, and DNS droppage dashboards show "Dashboard not found".
 
-## One-time fix (paste compose and redeploy)
+## One-time fix (compose + redeploy)
 
-1. In **Coolify**, open the **gaqno-grafana** service (Services → gaqno-grafana).
-2. Open the **Docker Compose** (or Compose / Edit) view.
-3. Replace the current compose with the content of one of these files from this repo:
+1. In **Dokploy**, open the **gaqno-grafana** project/application.
+2. Edit the **Docker Compose** used for the stack.
+3. Replace the compose with the content of one of these files from this repo:
    - **Four main dashboards only (~80 KB):** `monitoring/grafana/compose-four-dashboards.yaml`
    - **All six dashboards (~104 KB):** `monitoring/grafana/compose-with-dashboards.yaml`
-4. **Save** and **Redeploy** the service (or Restart if your Coolify has that for compose-only changes).
+4. **Save** and **Redeploy** the stack.
 
-After the redeploy, Grafana will have the dashboards under the **Gaqno** folder and these URLs will work:
+After redeploy, Grafana should list dashboards under the **Gaqno** folder, for example:
 
 - https://grafana.gaqno.com.br/d/gaqno-dashboard-front
 - https://grafana.gaqno.com.br/d/gaqno-dashboard-backend

@@ -290,7 +290,7 @@ npm run dev:sso-service
 | `publish:frontcore`                 | Publish `@gaqno-development/frontcore` (uses `.env` for token)                                                                                     |
 | `publish:agent`                     | Publish `@gaqno-development/gaqno-agent`                                                                                                           |
 
-### Cloudflare DNS checklist (Coolify)
+### Cloudflare DNS checklist (Dokploy)
 
 Zone **gaqno.com.br**. Para listar registros (ex.: Grafana, Lenin) via API:
 
@@ -301,8 +301,8 @@ npm run list-cloudflare-dns -- grafana lenin
 
 | Hostname                 | O que verificar                                                                        |
 | ------------------------ | -------------------------------------------------------------------------------------- |
-| **lenin.gaqno.com.br**   | Registro A ou CNAME apontando para o destino (Coolify/túnel); proxy conforme desejado. |
-| **grafana.gaqno.com.br** | Registro existe e aponta para o serviço Grafana (Coolify/túnel).                       |
+| **lenin.gaqno.com.br**   | Registro A ou CNAME apontando para o destino (Dokploy/túnel); proxy conforme desejado. |
+| **grafana.gaqno.com.br** | Registro existe e aponta para o serviço Grafana (Dokploy/túnel).                       |
 
 Dashboard: [Cloudflare](https://dash.cloudflare.com) → gaqno.com.br → DNS → Records.
 

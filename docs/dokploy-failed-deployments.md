@@ -1,12 +1,12 @@
-# Coolify failed deployments – root causes and fixes
+# Dokploy failed deployments – root causes and fixes
 
-**Script to list failed/retrying apps:** `node scripts/coolify-status-retries.mjs`
+Use the **Dokploy** UI (project → application → **Deployments** / **Logs**) to list failing or retrying deploys.
 
 ## Current failed applications (12)
 
 | App | Root cause | Fix |
 |-----|------------|-----|
-| **gaqno-admin-service** | Runtime: `Cannot find module '/app/dist/main.js'` | **Fixed:** Dockerfile supports build context = repo root via `ARG BUILD_SUBDIR=gaqno-admin-service` and `COPY ${BUILD_SUBDIR}/...`. In Coolify use context = `.` and Dockerfile = `gaqno-admin-service/Dockerfile`. Redeploy triggered. |
+| **gaqno-admin-service** | Runtime: `Cannot find module '/app/dist/main.js'` | **Fixed:** Dockerfile supports build context = repo root via `ARG BUILD_SUBDIR=gaqno-admin-service` and `COPY ${BUILD_SUBDIR}/...`. In Dokploy set build context to the repo root and Dockerfile `gaqno-admin-service/Dockerfile`. Redeploy. |
 | **gaqno-consumer-service** | Likely same as admin (build path) | **Fixed:** Same pattern in `gaqno-consumer-service/Dockerfile`. Redeploy triggered. |
 | **gaqno-crm-service** | Migration: `CREATE TYPE "crm_deal_stage" AS ENUM(...)` — type already exists | **Fixed:** `0000_ambiguous_quasimodo.sql` — CREATE TYPE wrapped in `DO $$ ... IF NOT EXISTS (pg_type) ... END $$`. Redeploy. |
 | **gaqno-customer-service** | Same Drizzle CREATE TYPE (if any) | No CREATE TYPE in initial migration; if failure persists, check logs. |
@@ -38,11 +38,11 @@ Apply the same pattern to each CREATE TYPE in the failing migration files (or ge
 
 ## Frontend: gaqno-erp-ui and useErpOrders
 
-- **Cause:** The version of `@gaqno-development/frontcore` used in Coolify’s build doesn’t export `useErpOrders` (or the bundler doesn’t resolve the re-export).
+- **Cause:** The version of `@gaqno-development/frontcore` used in Dokploy’s build doesn’t export `useErpOrders` (or the bundler doesn’t resolve the re-export).
 - **Done:** Explicit `export { useErpOrders } from "./useErpOrders"` added in `@gaqno-frontcore/src/hooks/erp/index.ts`.
-- **Done:** Frontcore bumped to 1.6.27. Run `npm run release:packages` from workspace root to publish; then redeploy gaqno-erp-ui (redeploy already triggered via `coolify-redeploy-apps.mjs`).
+- **Done:** Frontcore bumped to 1.6.27. Run `npm run release:packages` from workspace root to publish; then redeploy gaqno-erp-ui from Dokploy.
 
 ## Backend: dist/main.js not found
 
 - **Cause:** Image is built from a context where `nest build` runs in the wrong directory, so `dist/main.js` is not at `/app/dist/main.js` in the container.
-- **Fix:** Dockerfiles for gaqno-admin-service and gaqno-consumer-service now support build context = repo root via `ARG BUILD_SUBDIR` and `COPY ${BUILD_SUBDIR}/...`. In Coolify use Build context = `.` and Dockerfile = `gaqno-admin-service/Dockerfile` (or consumer). If building from the service directory, set build arg `BUILD_SUBDIR=.`. Redeploys were triggered.
+- **Fix:** Dockerfiles for gaqno-admin-service and gaqno-consumer-service now support build context = repo root via `ARG BUILD_SUBDIR` and `COPY ${BUILD_SUBDIR}/...`. In Dokploy set build context to `.` and Dockerfile to `gaqno-admin-service/Dockerfile` (or consumer). If building from the service directory, set build arg `BUILD_SUBDIR=.`.

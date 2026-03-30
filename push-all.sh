@@ -284,7 +284,7 @@ if [ "$PUSHED_PACKAGE" = "1" ]; then
     fi
   done
   echo ""
-  echo "📦 Publishing packages (Coolify/deploy gets the new version on npm)..."
+  echo "📦 Publishing packages (Dokploy/deploy gets the new version on npm)..."
   if [ -f "$BASE_DIR/publish-packages.sh" ]; then
     "$BASE_DIR/publish-packages.sh" || echo "   ⚠️  Publish failed (check npm auth and versions)"
   else

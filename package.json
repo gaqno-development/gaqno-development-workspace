@@ -85,6 +85,7 @@
     "verify:local": "npm run verify:production -w gaqno-shell-ui",
     "seed:erp-crm-products": "node scripts/seed-erp-crm-products.mjs",
     "scrape:product-images": "node scripts/scrape-product-images.mjs",
+    "import:dummyjson-products": "node scripts/import-dummyjson-products.mjs",
     "dokploy:pull-env": "node --env-file=.env scripts/dokploy-pull-env.mjs",
     "dokploy:list-apps": "node --env-file=.env scripts/dokploy-pull-env.mjs --list-apps",
     "dokploy:apply": "node --env-file=.env scripts/dokploy-pull-env.mjs --apply",

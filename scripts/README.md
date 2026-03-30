@@ -149,65 +149,18 @@ npm run list-cloudflare-dns -- grafana lenin
 
 ---
 
-## Coolify scripts
+## Dokploy
 
-### coolify-failed-deployments.mjs
+Deployments, logs e restarts são feitos na **UI do Dokploy** ou via **API** / MCP (`dokploy-mcp` no workspace). O workflow **CD** (`.github/workflows/cd.yml`) dispara deploy com o secret **`DOKPLOY_WEBHOOK_URL`** (webhook de deploy da aplicação no Dokploy).
 
-Lista deployments que falharam ou tiveram muitos retries e **exibe os logs**. Considera a janela de N horas **e** pelo menos os **últimos 3 deployments** (por data). Para cada falha, indica quando existe um deploy mais recente com sucesso no mesmo app: **→ [PASSADO] Existe deploy mais recente com sucesso em ...**.
+### DNS checklist (Dokploy)
 
-```bash
-# Última 1h (padrão) + últimos 3 da lista, com fetch de logs
-node scripts/coolify-failed-deployments.mjs
-
-# Últimas 6 horas
-node scripts/coolify-failed-deployments.mjs 6
-
-# Sem buscar logs completos (só o que vier na listagem)
-node scripts/coolify-failed-deployments.mjs 2 --no-fetch-logs
-
-# Limitar a 100 linhas de log por deployment
-node scripts/coolify-failed-deployments.mjs 1 --lines=100
-```
-
-Variáveis em `.env`: **COOLIFY_BASE_URL**, **COOLIFY_ACCESS_TOKEN** (ou **COOLIFY_TOKEN**).
-
-Opções: `--no-fetch-logs` (não chama GET /deployments/{uuid}); `--lines=N` (máx. linhas de log por deployment, padrão 250).
-
-### coolify-cancel-deployments.mjs
-
-Cancela todos os deployments em execução ou enfileirados no Coolify.
-
-```bash
-node scripts/coolify-cancel-deployments.mjs --dry-run   # listar
-node scripts/coolify-cancel-deployments.mjs --apply    # cancelar
-```
-
-### coolify-restart-apps.mjs
-
-Reinicia aplicações no Coolify por UUID ou por nome (substring).
-
-```bash
-# Listar todas as aplicações (nomes e UUIDs)
-node scripts/coolify-restart-apps.mjs --list
-
-# Reiniciar por nome (substring)
-node scripts/coolify-restart-apps.mjs rpg-service
-node scripts/coolify-restart-apps.mjs gaqno-rpg-service gaqno-erp-service
-
-# Reiniciar por UUID
-node scripts/coolify-restart-apps.mjs <uuid>
-```
-
-Variáveis em `.env`: **COOLIFY_BASE_URL**, **COOLIFY_ACCESS_TOKEN** (ou **COOLIFY_TOKEN**). O Coolify enfileira o restart e retorna um `deployment_uuid`; o container é reiniciado em seguida.
-
-### DNS checklist (Coolify)
-
-Ao verificar DNS no Cloudflare para serviços expostos via Coolify:
+Ao verificar DNS no Cloudflare para serviços expostos via Dokploy ou Cloudflare Tunnel:
 
 | Hostname                 | Verificar                                                                                                     |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------- |
-| **lenin.gaqno.com.br**   | Registro A ou CNAME apontando para o destino correto (Coolify/túnel); proxy (orange cloud) conforme desejado. |
-| **grafana.gaqno.com.br** | Registro existe e aponta para o serviço Grafana (Coolify/túnel).                                              |
+| **lenin.gaqno.com.br**   | Registro A ou CNAME apontando para o destino correto (Dokploy/túnel); proxy (orange cloud) conforme desejado. |
+| **grafana.gaqno.com.br** | Registro existe e aponta para o serviço Grafana (Dokploy/túnel).                                              |
 | **docs.gaqno.com.br**    | CNAME para gaqno.com.br (ou mesmo destino do portal). Use `npm run add-cloudflare-dns-docs` com token setado. |
 
 ---

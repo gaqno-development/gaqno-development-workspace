@@ -31,12 +31,12 @@ As migrations **não** rodam em loop nem fazem polling. Elas executam **uma vez*
 
 ### 1. Rodar migrations fora do startup (recomendado)
 
-- Executar migrations em um **job/step de deploy** (Coolify pre-deploy, init container, ou script no CI) e **não** no `onModuleInit` do app.
+- Executar migrations em um **job/step de deploy** (Dokploy pre-deploy, init container, ou script no CI) e **não** no `onModuleInit` do app.
 - O app só sobe com o schema já atualizado, reduzindo tempo até `listen()` e evitando que várias réplicas disputem a mesma migration no PostgreSQL.
 
 ### 2. Aumentar o start period do healthcheck
 
-- Se continuar rodando migrations no startup, configurar no Coolify/Docker/K8s um **health check start period** (e.g. 90–120s) maior que:
+- Se continuar rodando migrations no startup, configurar no Dokploy/Docker/K8s um **health check start period** (e.g. 90–120s) maior que:
   - tempo típico das migrations (ex.: 45s de timeout no omnichannel), e
   - tempo de subida do Nest até `listen()`.
 - Assim o orchestrator não mata o container enquanto as migrations ainda estão rodando.

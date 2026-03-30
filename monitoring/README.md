@@ -30,7 +30,7 @@ The compose runs one **postgres-exporter** instance. Set these env vars so it ca
 - `POSTGRES_EXPORTER_USER` — Postgres user (default `postgres`).
 - `POSTGRES_EXPORTER_PASS` — Postgres password.
 
-**Usando o Coolify MCP**: você pode obter `DATABASE_URL` no Coolify (MCP `env_vars`, aplicação `gaqno-sso-service`) e gerar `.env.monitoring` com:
+No **Dokploy**, copie `DATABASE_URL` da aplicação `gaqno-sso-service` (Environment) e gere `.env.monitoring` com:
 
 ```bash
 DATABASE_URL='postgresql://...' node scripts/configure-postgres-exporter-env.mjs
@@ -41,17 +41,19 @@ Depois: `docker compose -f docker-compose.monitoring.yml --env-file .env.monitor
 
 For multiple Postgres instances (e.g. one per service), run one exporter per instance and add a scrape job per target in `monitoring/prometheus.yml`.
 
-## Using with Coolify
+## Using with Dokploy
 
-O serviço **gaqno-grafana** no Coolify já está configurado com:
+O serviço **gaqno-grafana** no Dokploy já está configurado com:
 
 - **node-exporter**, **prometheus**, **postgres-exporter** e **grafana**
-- Variáveis de ambiente no recurso: `POSTGRES_EXPORTER_URI`, `POSTGRES_EXPORTER_USER`, `POSTGRES_EXPORTER_PASS` (para o Postgres do SSO; obtidas via Coolify MCP a partir da aplicação gaqno-sso-service)
+- Variáveis de ambiente no recurso: `POSTGRES_EXPORTER_URI`, `POSTGRES_EXPORTER_USER`, `POSTGRES_EXPORTER_PASS` (Postgres do SSO; definidas a partir da `DATABASE_URL` / credenciais da aplicação `gaqno-sso-service` no Dokploy)
 - Prometheus faz scrape de: prometheus, node-exporter e postgres-exporter
 
-O compose usado no Coolify está em `monitoring/docker-compose.coolify.yml`. Inclui **cloudflared** (Cloudflare Tunnel): o container sobe com `--metrics 0.0.0.0:60123` e o Prometheus faz scrape em `cloudflared:60123`. Configure no Coolify a variável **`CLOUDFLARE_TUNNEL_TOKEN`** (token do connector em Cloudflare Zero Trust → Tunnels → Run connector).
+O compose usado no Dokploy está em `monitoring/docker-compose.dokploy.yml`. Inclui **cloudflared** (Cloudflare Tunnel): o container sobe com `--metrics 0.0.0.0:60123` e o Prometheus faz scrape em `cloudflared:60123`. Configure no Dokploy a variável **`CLOUDFLARE_TUNNEL_TOKEN`** (token do connector em Cloudflare Zero Trust → Tunnels → Run connector).
 
-**Grafana** está em **http://grafana.gaqno.com.br** (porta 5678). O compose do Coolify usa a **imagem Grafana custom** (`monitoring/grafana/Dockerfile`), que já inclui **provisioning** e **dashboards** dentro da imagem — não depende de volumes do host. O datasource Prometheus é configurado por variáveis de ambiente. Após o **build e deploy**, os dashboards aparecem na pasta **Gaqno**; os links diretos funcionam:
+Para **só** o túnel, com o connector na rede **`dokploy-network`** (necessário para origem `http://dokploy-traefik:80` no Zero Trust), use `monitoring/docker-compose.cloudflared-tunnel.yml`. Detalhes em `docs/CLOUDFLARE_TUNNEL_SERVERS.md` (secção 3).
+
+**Grafana** está em **http://grafana.gaqno.com.br** (porta 5678). O compose do Dokploy usa a **imagem Grafana custom** (`monitoring/grafana/Dockerfile`), que já inclui **provisioning** e **dashboards** dentro da imagem — não depende de volumes do host. O datasource Prometheus é configurado por variáveis de ambiente. Após o **build e deploy**, os dashboards aparecem na pasta **Gaqno**; os links diretos funcionam:
 
 - **Services overview**: `/d/services-overview`
 - **Front**: `/d/gaqno-dashboard-front`
@@ -60,7 +62,7 @@ O compose usado no Coolify está em `monitoring/docker-compose.coolify.yml`. Inc
 - **DNS droppage**: `/d/gaqno-dns-droppage`
 - **Errors by frontend**: `/d/gaqno-errors-by-frontend`
 
-No Coolify, use o **Docker Compose** com o arquivo `monitoring/docker-compose.coolify.yml` e **raiz do repositório** como contexto (ou raiz = `monitoring`); o build do serviço `grafana` usa `context: ./grafana` em relação ao diretório do compose. Para **atualizar** os dashboards após mudanças no repositório: **Redeploy** do aplicativo (rebuild da imagem Grafana e novo deploy).
+No Dokploy, use o **Docker Compose** com o arquivo `monitoring/docker-compose.dokploy.yml` e **raiz do repositório** como contexto (ou raiz = `monitoring`); o build do serviço `grafana` usa `context: ./grafana` em relação ao diretório do compose. Para **atualizar** os dashboards após mudanças no repositório: **Redeploy** do aplicativo (rebuild da imagem Grafana e novo deploy).
 
 ### Grafana setup checklist (incl. Grafana MCP)
 
@@ -69,7 +71,7 @@ Você pode usar o **Grafana MCP** (Cursor) para inspecionar o estado: `list_data
 | Passo | O quê |
 |-------|--------|
 | 1 | **Prometheus** — Deve existir como datasource padrão com URL `http://prometheus:9090`. Save & test em verde. |
-| 2 | **Infinity (Cloudflare)** — Provisionado em `infinity-cloudflare.yml`; o Bearer token vem da variável **`CLOUDFLARE_API_TOKEN`** no serviço gaqno-grafana (Coolify). Defina em Coolify → gaqno-grafana → Environment: `CLOUDFLARE_API_TOKEN` = seu Cloudflare API token (Zone → Analytics → Read). Redeploy para aplicar. |
+| 2 | **Infinity (Cloudflare)** — Provisionado em `infinity-cloudflare.yml`; o Bearer token vem da variável **`CLOUDFLARE_API_TOKEN`** no serviço gaqno-grafana (Dokploy). Defina em Dokploy → gaqno-grafana → Environment: `CLOUDFLARE_API_TOKEN` = seu Cloudflare API token (Zone → Analytics → Read). Redeploy para aplicar. |
 | 3 | **DNS droppage** — Abra o dashboard **Gaqno — DNS droppage**. No topo, na variável **Infinity (Cloudflare)**, selecione **Infinity (Cloudflare)**. Preencha a variável **zone_id** com o Zone ID do Cloudflare (Dashboard → sua zona → Overview, coluna direita). |
 | 4 | **Alerting (opcional)** — Nenhuma contact point nem alert rule está configurado por padrão. Use **Alerting** no Grafana para criar contact points e regras conforme necessário. |
 
@@ -78,19 +80,19 @@ Você pode usar o **Grafana MCP** (Cursor) para inspecionar o estado: `list_data
 Se **todos** os painéis mostram "No data":
 
 1. **Datasource Prometheus**  
-   Em Grafana: **Connections** → **Data sources**. Deve existir um **Prometheus** com URL **`http://prometheus:9090`** e **Save & test** em verde. Se não existir ou estiver com URL errada (ex.: localhost), adicione ou edite para `http://prometheus:9090` (nome do serviço na rede Docker). Se o Grafana e o Prometheus estiverem em **stacks/composes diferentes** no Coolify, a URL precisa apontar para o host:porta onde o Prometheus está acessível (ex.: `http://<coolify-host>:9090` ou o nome do serviço na rede compartilhada).
+   Em Grafana: **Connections** → **Data sources**. Deve existir um **Prometheus** com URL **`http://prometheus:9090`** e **Save & test** em verde. Se não existir ou estiver com URL errada (ex.: localhost), adicione ou edite para `http://prometheus:9090` (nome do serviço na rede Docker). Se o Grafana e o Prometheus estiverem em **stacks/composes diferentes** no Dokploy, a URL precisa apontar para o host:porta onde o Prometheus está acessível (ex.: `http://<dokploy-host>:9090` ou o nome do serviço na rede compartilhada).
 
 2. **Prometheus está coletando**  
-   Abra **http://&lt;seu-prometheus&gt;:9090/targets** (ou o URL do Prometheus que o Coolify expõe). Verifique se os targets **node-exporter**, **cadvisor**, **prometheus**, **postgres-exporter**, **pushgateway** estão **UP**. Se estiverem Down, o Grafana não terá métricas (rede, container parado ou scrape config incorreta). Em **Graph**, teste: `up` ou `node_cpu_seconds_total{mode="idle"}` — se retornar série, o Prometheus está coletando e o problema pode ser só o datasource no Grafana.
+   Abra **http://&lt;seu-prometheus&gt;:9090/targets** (ou o URL do Prometheus que o Dokploy expõe). Verifique se os targets **node-exporter**, **cadvisor**, **prometheus**, **postgres-exporter**, **pushgateway** estão **UP**. Se estiverem Down, o Grafana não terá métricas (rede, container parado ou scrape config incorreta). Em **Graph**, teste: `up` ou `node_cpu_seconds_total{mode="idle"}` — se retornar série, o Prometheus está coletando e o problema pode ser só o datasource no Grafana.
 
-3. **Coolify: mesmo compose**  
-   Para os painéis de **host** (CPU, RAM, Disk, Uptime) e **containers** (CPU/Mem por serviço) funcionarem, o `docker-compose.coolify.yml` precisa rodar **no mesmo host** com **node-exporter**, **cAdvisor**, **container-name-mapper**, **pushgateway** e **prometheus**. O compose deste repositório já inclui **cAdvisor** e **container-name-mapper**; faça **Redeploy** do stack no Coolify para subir esses serviços e recarregar o Prometheus.
+3. **Dokploy: mesmo compose**  
+   Para os painéis de **host** (CPU, RAM, Disk, Uptime) e **containers** (CPU/Mem por serviço) funcionarem, o `docker-compose.dokploy.yml` precisa rodar **no mesmo host** com **node-exporter**, **cAdvisor**, **container-name-mapper**, **pushgateway** e **prometheus**. O compose deste repositório já inclui **cAdvisor** e **container-name-mapper**; faça **Redeploy** do stack no Dokploy para subir esses serviços e recarregar o Prometheus.
 
 4. **Intervalo de tempo**  
    No canto superior direito do Grafana, use **Last 15 minutes** ou **Last 1 hour**; "No data" pode ser intervalo no passado sem métricas.
 
-5. **Coolify: datasource automático**  
-   O `docker-compose.coolify.yml` define variáveis `GF_DATASOURCES_DEFAULT_*` para criar o Prometheus ao subir o Grafana. Após alterar o compose, faça **Redeploy** do serviço gaqno-grafana para o Grafana recarregar e criar o datasource.
+5. **Dokploy: datasource automático**  
+   O `docker-compose.dokploy.yml` define variáveis `GF_DATASOURCES_DEFAULT_*` para criar o Prometheus ao subir o Grafana. Após alterar o compose, faça **Redeploy** do serviço gaqno-grafana para o Grafana recarregar e criar o datasource.
 
 **Resumo:** Se só os painéis de **host** (node_*) têm dados e os de **containers** não, confira se **cAdvisor** e **container-name-mapper** estão no mesmo compose e com targets UP no Prometheus. Se **nada** tem dados, confira o datasource (URL do Prometheus) e os targets em `/targets`. Em hosts com **cgroups v2**, o cAdvisor pode expor `id` com path diferente de `/system.slice/docker.*`; nesse caso os painéis que usam esse filtro podem continuar vazios até ajuste das queries.
 
@@ -112,16 +114,16 @@ If panels show data but values appear stale or do not change:
 2. **Immediate relief** — Free disk (remove old logs, clear caches, trim Docker: `docker system prune -a` with care), scale or restart heavy services, increase Cloudflare **Origin Response Timeout** (only if the app legitimately needs longer; default 100 s).
 3. **Medium term** — Add or resize the host, optimize heavy endpoints, add caching, move static assets to CDN. Fix 524 (Cloudflare timeout) by reducing origin load or increasing timeout as above.
 
-### 504 even with “resources on Cloudflare” — check Coolify for failing / retry
+### 504 even with “resources on Cloudflare” — check Dokploy for failing / retry
 
-If you still get **504** despite having capacity on Cloudflare (e.g. no plan limits), the bottleneck is the **origin** (Coolify host or a specific app).
+If you still get **504** despite having capacity on Cloudflare (e.g. no plan limits), the bottleneck is the **origin** (Dokploy host or a specific app).
 
-1. **Coolify: failing or unhealthy resources**  
-   Use the Coolify MCP **find_issues** (or Coolify UI) to list unhealthy apps and services. **Unhealthy or exited** apps can cause timeouts if traffic is routed to them (e.g. via a shared proxy). Fix or stop unhealthy apps so the proxy and healthy apps are not blocked.
-2. **Coolify: no automatic retry for 504**  
+1. **Dokploy: failing or unhealthy resources**  
+   Use the **Dokploy** UI (Applications → logs / health) to list unhealthy apps and services. **Unhealthy or exited** apps can cause timeouts if traffic is routed to them (e.g. via a shared proxy). Fix or stop unhealthy apps so the proxy and healthy apps are not blocked.
+2. **Dokploy: no automatic retry for 504**  
    Cloudflare does not retry a request when the origin returns 504; the client sees 504. Retries are on the **client** or **application** side. On the origin, ensure the app responds within Cloudflare’s origin timeout (often **100 s** on non-Enterprise plans; Enterprise can raise it).
 3. **What to do**  
-   - **Restart** unhealthy Coolify apps/services or **stop** ones you don’t need (e.g. consumer, customer, intelligence if unused) so they don’t consume resources or confuse routing.  
+   - **Restart** unhealthy Dokploy apps/services or **stop** ones you don’t need (e.g. consumer, customer, intelligence if unused) so they don’t consume resources or confuse routing.  
    - **Identify slow routes**: use Grafana (Services Overview, Cloudflare panels with Zone ID set) or Cloudflare Analytics to see which hostnames or status codes get 504.  
    - **Reduce origin load**: optimize slow endpoints, add caching, or move long-running work to async jobs so the HTTP response returns quickly.
 
@@ -136,7 +138,7 @@ If you see real 504s when opening your domain but the dashboard shows 0 for 503/
    Cloudflare Analytics can lag by a few minutes. If you just got a 504, try widening the time range to **Last 6 hours** or **Last 24 hours** and refresh.
 
 3. **Bearer token in the datasource**  
-   The datasource you use (e.g. the one with UID `efewzwo46j0n4c`) must have a valid **Bearer token**. In Grafana: **Connections → Data sources** → open that Infinity datasource → under **Secure JSON Data** set **Bearer Token** to a Cloudflare API token with **Zone → Analytics → Read** (create at [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens)). Save & test. If you use the **provisioned** datasource (UID `infinity-cloudflare`), the token comes from the **`CLOUDFLARE_API_TOKEN`** env var in Coolify (gaqno-grafana service); ensure it is set and redeploy.
+   The datasource you use (e.g. the one with UID `efewzwo46j0n4c`) must have a valid **Bearer token**. In Grafana: **Connections → Data sources** → open that Infinity datasource → under **Secure JSON Data** set **Bearer Token** to a Cloudflare API token with **Zone → Analytics → Read** (create at [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens)). Save & test. If you use the **provisioned** datasource (UID `infinity-cloudflare`), the token comes from the **`CLOUDFLARE_API_TOKEN`** env var in Dokploy (gaqno-grafana service); ensure it is set and redeploy.
 
 4. **"Datasource is missing allowed hosts/URLs"**  
    When using **Bearer token** (or any auth), the Infinity datasource **must** have **Allowed hosts/URLs** set. In Grafana: **Connections → Data sources** → your Infinity datasource → open **URL, Headers & Params** (or **Security** / **Authentication**) and add to **Allowed hosts** at least: `https://api.cloudflare.com`. You can also add `https://api.cloudflare.com/client/v4/graphql`. Save & test. The provisioned datasource **Infinity (Cloudflare)** (UID `infinity-cloudflare`) already has these in `provisioning/datasources/infinity-cloudflare.yml`; if you use a different Infinity datasource (e.g. created manually), add the allowed hosts there.
@@ -168,7 +170,7 @@ O dashboard **Gaqno — DNS droppage** mostra “droppage” de DNS no Cloudflar
 1. **Plugin Infinity** — Incluído na imagem via `monitoring/grafana/Dockerfile` (`grafana-cli plugins install yesoreyeram-infinity-datasource`). Se estiver usando a imagem custom do repositório, não é preciso instalar manualmente.
 2. **Datasource Infinity (Cloudflare)** — Provisionado em `monitoring/grafana/provisioning/datasources/infinity-cloudflare.yml` com Allowed hosts e Auth type Bearer. Após o deploy, em **Connections → Data sources → Infinity (Cloudflare)** basta definir o **Bearer Token** (Cloudflare API token com **Zone** → **Analytics** → **Read** — [criar token](https://dash.cloudflare.com/profile/api-tokens)) e salvar.
 3. **Dashboard** — Já provisionado na pasta **Gaqno** (ou importado via compose). Se não aparecer, importe `monitoring/grafana/dashboards/gaqno-dashboard-dns-droppage.json` e selecione o datasource **Infinity (Cloudflare)**.
-4. **Variável Zone ID (env)** — O dashboard **Gaqno — DNS droppage** usa a variável **zone_id** preenchida a partir do env **`CLOUDFLARE_ZONE_ID`**. No Coolify, em gaqno-grafana → Environment, defina **`CLOUDFLARE_ZONE_ID`** com o Zone ID do Cloudflare (Dashboard → sua zona → **Overview** → coluna direita). Se não estiver definido, o padrão é `d628a8ac60069acccbc154d173b88717` (gaqno.com.br). O container substitui o placeholder no JSON ao iniciar; o volume de dashboards precisa ser gravável (sem `:ro`).
+4. **Variável Zone ID (env)** — O dashboard **Gaqno — DNS droppage** usa a variável **zone_id** preenchida a partir do env **`CLOUDFLARE_ZONE_ID`**. No Dokploy, em gaqno-grafana → Environment, defina **`CLOUDFLARE_ZONE_ID`** com o Zone ID do Cloudflare (Dashboard → sua zona → **Overview** → coluna direita). Se não estiver definido, o padrão é `d628a8ac60069acccbc154d173b88717` (gaqno.com.br). O container substitui o placeholder no JSON ao iniciar; o volume de dashboards precisa ser gravável (sem `:ro`).
 
 5. **Cursor: Cloudflare DNS Analytics MCP** — O workspace tem o MCP **cloudflare-dns-analytics** (server `project-0-gaqno-development-workspace-cloudflare-dns-analytics`). Use **zones_list** para listar zonas, **zone_details** com `zoneId` para detalhes, e **dns_report** para relatório DNS (no plano Free o período máximo é 6 horas). Útil para conferir Zone ID e nomes de zona ao configurar o dashboard DNS droppage.
 
@@ -253,14 +255,14 @@ O **Gaqno — DevOps** segue o layout: **Linha 1 — DORA** (Deployment frequenc
 Para ver os painéis **Tunnel requests/s**, **Tunnel errors/s** e **Tunnel active streams** no dashboard DevOps:
 
 1. No host onde o `cloudflared` roda, inicie o tunnel com métricas: `cloudflared tunnel --metrics <host>:60123 run <tunnel-name>`. Use `0.0.0.0:60123` se o Prometheus estiver em outra máquina/rede. Ver [Monitor Cloudflare Tunnel with Grafana](https://developers.cloudflare.com/cloudflare-one/tutorials/grafana/) e [Tunnel metrics](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/monitor-tunnels/metrics/).
-2. No `monitoring/prometheus.yml` (e no compose do Coolify, se usar), descomente o job `cloudflared` e defina `targets` com o host e porta do endpoint de métricas (ex.: `host.docker.internal:60123` ou o IP do servidor cloudflared).
+2. No `monitoring/prometheus.yml` (e no compose do Dokploy, se usar), descomente o job `cloudflared` e defina `targets` com o host e porta do endpoint de métricas (ex.: `host.docker.internal:60123` ou o IP do servidor cloudflared).
 3. Reinicie o Prometheus e reimporte o dashboard DevOps para ver a seção **Cloudflare Tunnel**.
 
 Para preencher os placeholders:
 
 | Métrica | Fonte sugerida |
 |--------|-----------------|
-| **DORA (deploy freq, lead time, CFR, MTTR)** | API do pipeline (GitHub Actions, Coolify, Argo CD), Sleuth/LinearB, ou métricas custom → Prometheus |
+| **DORA (deploy freq, lead time, CFR, MTTR)** | API do pipeline (GitHub Actions, Dokploy, Argo CD), Sleuth/LinearB, ou métricas custom → Prometheus |
 | **CI/CD (sucesso, tempo build/deploy)** | prometheus-github-actions-exporter, GitLab CI API, Jenkins metrics |
 | **Pods restart / Nodes** | Kubernetes + kube-state-metrics |
 | **Vulnerabilidades** | Trivy, Snyk, Dependabot → relatórios ou Prometheus |
@@ -284,7 +286,7 @@ Para as métricas serem enviadas a partir do GitHub Actions:
 
 Demais placeholders DORA/CI/CD:
 
-1. **Criar token** com escopo de leitura para workflows/deployments (GitHub) ou equivalente no Coolify/Argo CD.
+1. **Criar token** com escopo de leitura para workflows/deployments (GitHub) ou equivalente no Dokploy/Argo CD.
 2. **Escolher fonte**: exporter que preenche Prometheus (ex.: prometheus-github-actions-exporter) ou data source do Grafana (ex.: GitHub).
 3. **Configurar** o Prometheus para scrape o exporter ou adicionar o data source no Grafana e apontar os painéis da Linha 1 (DORA) e Linha 2 (CI/CD) para as métricas corretas.
 

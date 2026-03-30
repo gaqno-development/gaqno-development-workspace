@@ -28,14 +28,14 @@ Mensagem: **uma única plataforma** (Shell + Module Federation) que entrega CRM,
 - **Multi-tenant + SSO**: gaqno-sso-service; tenants, domínios, filiais no admin/saas.
 - **IA integrada**: AI Marketing no CRM (vídeo), AI Content no ERP, módulo IA dedicado (books, audio, images, video, studio, discovery, retail).
 - **Lead enrichment**: Serviço assíncrono (BullMQ + Pipedrive) para enriquecimento de leads — integração B2B.
-- **Observabilidade**: Prometheus + Grafana (Front, Backend, DevOps, DNS droppage, bundle size, DORA/CI-CD); Coolify para deploy.
+- **Observabilidade**: Prometheus + Grafana (Front, Backend, DevOps, DNS droppage, bundle size, DORA/CI-CD); Dokploy para deploy.
 - **Design system**: frontcore (UI unificada, i18n, auth, tenant); regras de design (dark-first, hierarquia, SMB).
 
 ### 1.3 Prova de execução
 
 - Monorepo com **dezenas de workspaces** (UIs + services + packages).
 - **Dockerfiles** por app/serviço; regra de build antes de push.
-- **Coolify** para deploy; **Grafana** em grafana.gaqno.com.br; **Cloudflare Tunnel**.
+- **Dokploy** para deploy; **Grafana** em grafana.gaqno.com.br; **Cloudflare Tunnel**.
 - Pacotes compartilhados: `@gaqno-frontcore`, `@gaqno-backcore`, `@gaqno-types`, `@gaqno-agent`.
 
 ---
@@ -139,4 +139,4 @@ Mensagem: **uma única plataforma** (Shell + Module Federation) que entrega CRM,
 
 ## 4. Resumo executivo (1 minuto)
 
-**Gaqno** é uma plataforma multi-tenant que integra **CRM, ERP, PDV, Finance, Omnichannel (WhatsApp) e IA** em um único portal. O investidor vê **um login, vários produtos**, arquitetura moderna (MFE, microserviços), **IA no core** (marketing, conteúdo, atendimento) e **observabilidade** (Grafana, Coolify). O fluxo ideal de apresentação é: **contexto → landing → login → dashboard → CRM (com AI Marketing) → Omnichannel → ERP/IA** → tech/observabilidade → fechamento. Melhorar a **primeira impressão** (home/landing antes do login), **dados de demo** e um **roteiro fixo de telas** aumenta a clareza e o impacto da apresentação.
+**Gaqno** é uma plataforma multi-tenant que integra **CRM, ERP, PDV, Finance, Omnichannel (WhatsApp) e IA** em um único portal. O investidor vê **um login, vários produtos**, arquitetura moderna (MFE, microserviços), **IA no core** (marketing, conteúdo, atendimento) e **observabilidade** (Grafana, Dokploy). O fluxo ideal de apresentação é: **contexto → landing → login → dashboard → CRM (com AI Marketing) → Omnichannel → ERP/IA** → tech/observabilidade → fechamento. Melhorar a **primeira impressão** (home/landing antes do login), **dados de demo** e um **roteiro fixo de telas** aumenta a clareza e o impacto da apresentação.

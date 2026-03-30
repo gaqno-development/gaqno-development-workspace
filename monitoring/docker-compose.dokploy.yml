@@ -92,8 +92,8 @@ services:
             name=$$(echo "$$info" | jq -r '.[0].Name' | sed 's|^/||')
             image=$$(echo "$$info" | jq -r '.[0].Config.Image')
             short=$$(echo "$$cid" | head -c 12)
-            svc=$$(echo "$$info" | jq -r '.[0].Config.Labels["coolify.resourceName"] // empty')
-            comp=$$(echo "$$info" | jq -r '.[0].Config.Labels["coolify.serviceName"] // empty')
+            svc=$$(echo "$$info" | jq -r '.[0].Config.Labels["com.docker.compose.service"] // empty')
+            comp=$$(echo "$$info" | jq -r '.[0].Config.Labels["com.docker.compose.project"] // empty')
             if [ -z "$$svc" ]; then svc="$$name"; fi
             if [ -z "$$comp" ]; then comp="$$name"; fi
             size=$$(echo "$$info" | jq -r '.[0].SizeRw // 0')
@@ -111,6 +111,8 @@ services:
   cloudflared:
     image: cloudflare/cloudflared:latest
     restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     deploy:
       resources:
         limits:
@@ -124,6 +126,9 @@ services:
       - run
       - --token
       - ${CLOUDFLARE_TUNNEL_TOKEN}
+    networks:
+      - default
+      - dokploy-edge
   loki:
     image: grafana/loki:3.4.2
     command: -config.file=/etc/loki/local-config.yaml
@@ -273,3 +278,8 @@ volumes:
   prometheus-data: {}
   grafana-data: {}
   loki-data: {}
+
+networks:
+  dokploy-edge:
+    external: true
+    name: ${CLOUDFLARED_EDGE_NETWORK:-dokploy-network}

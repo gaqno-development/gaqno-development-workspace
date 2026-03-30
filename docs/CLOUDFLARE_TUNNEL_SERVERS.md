@@ -1,51 +1,46 @@
-# Cloudflare Tunnel nos servidores Coolify
+# Cloudflare Tunnel nos servidores Dokploy
 
 Dois servidores:
-- **72.60.251.62** — Coolify produção (todas as aplicações)
-- **72.61.221.19** — Coolify OpenClaw
+- **72.60.251.62** — Dokploy produção (aplicações principais)
+- **72.61.221.19** — Dokploy OpenClaw
 
-O **Cloudflare Tunnel** (cloudflared) expõe o Coolify através da rede Cloudflare sem abrir portas 80/443 no servidor.
+O **Cloudflare Tunnel** (cloudflared) expõe o Traefik/Dokploy através da rede Cloudflare sem abrir portas 80/443 públicas no servidor da forma tradicional.
 
 ---
 
 ## Visão geral
 
 1. Criar **dois túneis** no Cloudflare Zero Trust (um por servidor).
-2. Instalar **cloudflared** em cada servidor.
+2. Instalar **cloudflared** em cada servidor (ou serviço Docker no stack de monitorização).
 3. Rodar cloudflared com o **token** do túnel correspondente.
-4. Configurar **Public Hostnames** no dashboard (ex.: `coolify.gaqno.com.br` → prod, `coolify-openclaw.gaqno.com.br` → OpenClaw).
+4. Configurar **Public Hostnames** para **`http://dokploy-traefik:80`** — só funciona se o `cloudflared` estiver na **mesma rede Docker** que o Traefik (`dokploy-network`). Ver secção 3.
 
 ---
 
 ## 1. Criar os túneis no Cloudflare
 
-1. Acesse [Cloudflare Zero Trust](https://one.dash.cloudflare.com) (ou Dashboard → Zero Trust).
+1. Acesse [Cloudflare Zero Trust](https://one.dash.cloudflare.com).
 2. Vá em **Networks** → **Tunnels** → **Create a tunnel**.
 3. Tipo: **Cloudflared**.
-4. Crie dois túneis:
+4. Crie dois túneis (nomes sugeridos):
 
-   | Túnel           | Servidor         | Uso      |
-   |-----------------|------------------|----------|
-   | `gaqno-coolify-prod` | 72.60.251.62 | Produção |
-   | `gaqno-coolify-openclaw` | 72.61.221.19 | OpenClaw |
+   | Túnel | Servidor | Uso |
+   |-------|----------|-----|
+   | `gaqno-dokploy-prod` | 72.60.251.62 | Produção |
+   | `gaqno-dokploy-openclaw` | 72.61.221.19 | OpenClaw |
 
-5. Para cada túnel:
-   - Copie o **Installation command** ou o **token** (formato `eyJ...`).
-   - Ou vá em **Configure** e anote o **Tunnel token** em _Configure Connector_.
+5. Para cada túnel: copie o **token** do connector (_Run a connector_).
 
 ---
 
 ## 2. Instalar cloudflared em cada servidor
 
-**Debian/Ubuntu** (em ambos os servidores):
+**Debian/Ubuntu**:
 
 ```bash
-# Adicionar repositório Cloudflare
 sudo mkdir -p --mode=0755 /usr/share/keyrings
 curl -fsSL https://pkg.cloudflare.com/cloudflare-public-v2.gpg | sudo tee /usr/share/keyrings/cloudflare-public-v2.gpg >/dev/null
 echo "deb [signed-by=/usr/share/keyrings/cloudflare-public-v2.gpg] https://pkg.cloudflare.com/cloudflared any main" | sudo tee /etc/apt/sources.list.d/cloudflared.list
-
-# Instalar
 sudo apt-get update && sudo apt-get install -y cloudflared
 ```
 
@@ -58,123 +53,88 @@ sudo yum install -y cloudflared
 
 ---
 
-## 3. Configurar e rodar o túnel
+## 3. Rodar o connector (Docker na `dokploy-network`) — obrigatório para `http://dokploy-traefik:80`
 
-### Opção A: Token (recomendado)
+Se nos logs aparecer `lookup dokploy-traefik on …:53: no such host`, o `cloudflared` **não** está na rede Docker do Dokploy — está a resolver o nome na Internet.
 
-Use o token gerado no passo 1.
-
-**No 72.60.251.62 (produção):**
+### 3.1 Confirmar rede e Traefik no servidor
 
 ```bash
-# Rodar com o token do túnel gaqno-coolify-prod
-sudo cloudflared tunnel --no-autoupdate run --token <TOKEN_PROD>
+docker network ls | grep -i dokploy
+docker ps --format '{{.Names}}' | grep -i traefik
 ```
 
-**No 72.61.221.19 (OpenClaw):**
+O nome da rede costuma ser **`dokploy-network`**. Se for outro, usa a variável **`CLOUDFLARED_EDGE_NETWORK`** no compose.
+
+### 3.2 Parar o connector antigo
+
+- Container órfão (ex. `docker run` sem rede): `docker stop <id> && docker rm <id>`
+- **systemd:** `sudo systemctl stop cloudflared && sudo systemctl disable cloudflared` (não uses systemd se a origem for `dokploy-traefik`)
+
+### 3.3 Deploy no Dokploy (compose mínimo)
+
+1. No Dokploy, cria um projeto **Docker Compose** (ou adiciona ao stack que já gere o repo).
+2. Ficheiro: **`monitoring/docker-compose.cloudflared-tunnel.yml`** na raiz do repositório (ou cola o conteúdo no editor do Dokploy).
+3. **Environment:** `CLOUDFLARE_TUNNEL_TOKEN` = token do túnel (Zero Trust → Tunnels → o teu túnel).
+4. Opcional: `CLOUDFLARED_EDGE_NETWORK` = nome exato da rede se não for `dokploy-network`.
+5. **Deploy.** O serviço `cloudflared` fica **só** na rede externa `dokploy-edge` (mapeada para `dokploy-network`), onde o DNS interno resolve **`dokploy-traefik`**.
+
+### 3.4 Verificação
 
 ```bash
-# Rodar com o token do túnel gaqno-coolify-openclaw
-sudo cloudflared tunnel --no-autoupdate run --token <TOKEN_OPENCLAW>
+docker ps --format '{{.Names}}' | grep -i cloudflared
+docker exec <nome_do_container_cloudflared> wget -qSO- --timeout=5 http://dokploy-traefik:80 2>&1 | head -20
 ```
 
-### Opção B: Arquivo de credenciais (alternativa)
+Deves ver resposta HTTP do Traefik (ex. 404 sem `Host`, ou 301/302).
 
-Se preferir usar credenciais em arquivo:
+### 3.5 Stack completo de monitoring
+
+O ficheiro **`monitoring/docker-compose.dokploy.yml`** já inclui `cloudflared` em **`default` + `dokploy-edge`**. Podes usar esse stack em vez do mínimo, desde que o deploy no Dokploy injete a rede externa correta.
+
+### 3.6 Systemd no host (apenas se não usares `dokploy-traefik` como URL)
 
 ```bash
-# Em cada servidor, após cloudflared tunnel login
-cloudflared tunnel create gaqno-coolify-prod   # no 72.60.251.62
-cloudflared tunnel create gaqno-coolify-openclaw  # no 72.61.221.19
+sudo cloudflared service install <TOKEN>
+sudo systemctl enable --now cloudflared
 ```
 
-Depois crie `~/.cloudflared/config.yml` em cada servidor, por exemplo (produção):
-
-```yaml
-tunnel: <UUID-DO-TUNEL>
-credentials-file: /root/.cloudflared/<UUID>.json
-
-ingress:
-  - hostname: coolify.gaqno.com.br
-    service: http://localhost:8000
-  - service: http_status:404
-```
+Aqui o hostname **`dokploy-traefik` não resolve**. A origem no Zero Trust tem de ser algo que o **host** alcança (ex. `http://127.0.0.1:80` se o Traefik publicar 80 no host).
 
 ---
 
-## 4. Instalar como serviço systemd
+## 4. Public Hostnames (Zero Trust)
 
-Para o túnel subir automaticamente e sobreviver a reinícios:
+Para cada hostname público, o **serviço de origem** deve ser o **Traefik** que o Dokploy usa, por exemplo **`http://dokploy-traefik:80`**, quando o `cloudflared` partilha a rede Docker `dokploy-network`. Mantenha regra final `http_status:404`.
 
-**No 72.60.251.62 (produção):**
-
-```bash
-sudo cloudflared service install <TOKEN_PROD>
-# ou, se já tiver config em ~/.cloudflared/config.yml:
-# sudo cloudflared --config /root/.cloudflared/config.yml service install
-
-sudo systemctl enable cloudflared
-sudo systemctl start cloudflared
-sudo systemctl status cloudflared
-```
-
-**No 72.61.221.19 (OpenClaw):** mesmo processo com `<TOKEN_OPENCLAW>`.
-
-Se usar token, o comando `cloudflared service install <TOKEN>` cria o service e salva o token.
+A UI do Dokploy costuma estar em **porta 3000** no host; um hostname dedicado pode apontar para `http://host.docker.internal:3000` (com `extra_hosts` no compose do túnel) se aplicável.
 
 ---
 
-## 5. Public Hostnames no Zero Trust
+## 5. DNS
 
-No dashboard **Zero Trust** → **Networks** → **Tunnels** → selecione cada túnel → **Public Hostname**:
-
-**Túnel gaqno-coolify-prod (72.60.251.62):**
-- Hostname: `coolify.gaqno.com.br` (ou o subdomínio desejado)
-- Service type: **HTTP**
-- URL: `localhost:8000` (porta padrão do Coolify)
-
-**Túnel gaqno-coolify-openclaw (72.61.221.19):**
-- Hostname: `coolify-openclaw.gaqno.com.br` (ou `lenin.gaqno.com.br` se preferir)
-- Service type: **HTTP**
-- URL: `localhost:8000`
+Os registos para os hostnames do túnel são geridos pelo Zero Trust (CNAME para `.cfargotunnel.com`). Se a zona `gaqno.com.br` estiver no Cloudflare, confirme em **DNS** que os CNAMEs pretendidos existem.
 
 ---
 
-## 6. DNS
-
-Os hostnames (`coolify.gaqno.com.br`, `coolify-openclaw.gaqno.com.br`) são criados automaticamente quando você adiciona o Public Hostname ao túnel — Cloudflare usa um CNAME interno (`.cfargotunnel.com`). Não é necessário criar registros DNS manualmente na zona gaqno.com.br; o Zero Trust faz isso.
-
-Se a zona gaqno.com.br já estiver no Cloudflare, verifique que o CNAME foi criado em **Websites** → **gaqno.com.br** → **DNS**.
-
----
-
-## 7. Métricas (opcional)
-
-Para expor métricas do cloudflared (ex.: para Prometheus/Grafana):
+## 6. Métricas (opcional)
 
 ```bash
 cloudflared tunnel --metrics 0.0.0.0:60123 run --token <TOKEN>
 ```
 
-Ou no `config.yml`:
-
-```yaml
-metrics: 0.0.0.0:60123
-```
-
 ---
 
-## Resumo de comandos (por servidor)
+## Resumo
 
-| Servidor | Túnel | Comando (teste) |
-|----------|-------|----------------|
-| 72.60.251.62 | gaqno-coolify-prod | `sudo cloudflared tunnel run --token <TOKEN_PROD>` |
-| 72.61.221.19 | gaqno-coolify-openclaw | `sudo cloudflared tunnel run --token <TOKEN_OPENCLAW>` |
+| Servidor | Connector |
+|----------|-----------|
+| 72.60.251.62 | Compose **`monitoring/docker-compose.cloudflared-tunnel.yml`** + `CLOUDFLARE_TUNNEL_TOKEN` (rede `dokploy-network`) |
+| 72.61.221.19 | Igual com o token do túnel desse host |
 
 ---
 
 ## Referências
 
-- [Cloudflare Tunnel - Create locally](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/do-more-with-tunnels/local-management/create-local-tunnel)
-- [Cloudflared downloads](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/configure-tunnels/cloudflared-install/)
-- [Run as a service (Linux)](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/local-management/as-a-service/linux/)
+- [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/)
+- [cloudflared Linux service](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/local-management/as-a-service/linux/)

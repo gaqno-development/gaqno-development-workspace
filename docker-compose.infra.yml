@@ -39,6 +39,8 @@ services:
     image: cloudflare/cloudflared:latest
     container_name: gaqno-cloudflared
     restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     command:
       - tunnel
       - --no-autoupdate
@@ -46,7 +48,7 @@ services:
       - run
       - --token
       - ${CLOUDFLARE_TUNNEL_TOKEN}
-    networks: [gaqno]
+    networks: [gaqno, dokploy-edge]
 
   node-exporter:
     image: prom/node-exporter:v1.6.1
@@ -172,3 +174,6 @@ volumes:
 networks:
   gaqno:
     driver: bridge
+  dokploy-edge:
+    external: true
+    name: ${CLOUDFLARED_EDGE_NETWORK:-dokploy-network}

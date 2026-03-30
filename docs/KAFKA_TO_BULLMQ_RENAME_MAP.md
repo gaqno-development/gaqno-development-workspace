@@ -142,7 +142,7 @@ All services that import `from '@gaqno-development/backcore'` and use `KafkaProd
 | `docs/coverage-gaps-plan.md` | "kafka module" → "messaging module" |
 | `docs/event-driven-review.md` | Multiple references to Kafka paths, KafkaProducer, Kafka consumer, Kafka healthcheck, Kafka indisponível → update to BullMQ/message broker terminology |
 | `docs/event-driven-comercial-finance.md` | "KafkaProducer", "fila comercial.events__finance", "KafkaProducer.publishIntegrationEvent" → MessageProducer, message queue, MessageProducer.publishIntegrationEvent |
-| `scripts/README.md` | Documents `coolify-remove-kafka.mjs` — update to reflect script purpose (Kafka → BullMQ migration); or rename script to `coolify-migrate-messaging-env.mjs` |
+| `scripts/README.md` | If a messaging-env migration script exists, document Kafka → BullMQ env cleanup there (generic script name). |
 | `docs/TIKTOK-CONTENT-POSTING-ANALYSIS.md` | "Kafka", "Kafka topics", "payload Kafka" → "BullMQ" or "message broker", "message topics", "message payload" |
 | `.github/README.md` | "@gaqno-backcore ... Kafka" → "messaging" or "BullMQ" |
 | `docs/external-repos.md` | "event/Kafka consumer" → "event/message consumer" |
@@ -154,7 +154,7 @@ All services that import `from '@gaqno-development/backcore'` and use `KafkaProd
 
 | File | Context / Suggested Update |
 |------|---------------------------|
-| `scripts/coolify-remove-kafka.mjs` | Script removes KAFKA_* env vars. **Rename to:** `coolify-migrate-messaging-env.mjs` or keep name if it describes the migration. Update internal references: `KAFKA_KEYS` → `LEGACY_MESSAGING_KEYS` (optional). Update usage/help text from "Kafka" to "legacy Kafka env vars" for clarity. |
+| Messaging env migration script (if present) | Removes legacy `KAFKA_*` env vars from deploy targets. Name generically (e.g. `dokploy-migrate-messaging-env.mjs`) if reintroduced. |
 
 **No `.sh` files** in the workspace contain "kafka".
 
@@ -202,7 +202,7 @@ These are **constructor parameters** and **local variables** that use "kafka" in
 3. **Injection tokens**: `WEBHOOKS_KAFKA_CONSUMER` → `WEBHOOKS_MESSAGE_CONSUMER`, `FLOW_KAFKA_CONSUMER_TOKEN` → `FLOW_MESSAGE_CONSUMER_TOKEN`.
 4. **gaqno-lead-enrichment-service**: `KafkaMessagePayload` → `MessagePayload`.
 5. **Config**: `gaqno-ai-service/package.json` coverage ignore pattern.
-6. **Script**: Rename `coolify-remove-kafka.mjs` if desired.
+6. **Script**: Use a generic deploy-env migration script name if reintroduced (Dokploy).
 7. **Documentation**: Update all .md files per section 6.
 8. **Test mocks and variable names**: Optional cleanup in specs.
 

@@ -1,6 +1,6 @@
-# Coolify 504 Gateway Timeout — Fix Checklist
+# Dokploy 504 Gateway Timeout — Fix Checklist
 
-When users see **504** (or Cloudflare **524**) and the message says "the server", the origin is your **Coolify server** (Traefik + containers). Use this checklist in order.
+When users see **504** (or Cloudflare **524**) and the message says "the server", the origin is your **Dokploy server** (Traefik + containers). Use this checklist in order.
 
 ---
 
@@ -8,7 +8,7 @@ When users see **504** (or Cloudflare **524**) and the message says "the server"
 
 Traefik default **read timeout is 60s**. Cloudflare Free plan allows **120s**. If the origin does not respond within 60s, Traefik returns 504 before Cloudflare.
 
-**In Coolify:**
+**In Dokploy:**
 
 1. Go to **Servers** → select your server (e.g. localhost) → **Proxy**.
 2. Open **Configuration** (or the section where Traefik command/args are set).
@@ -34,7 +34,7 @@ traefik.http.services.<service-name>.loadbalancer.timeout.write=120s
 traefik.http.services.<service-name>.loadbalancer.timeout.idle=120s
 ```
 
-Replace `<service-name>` with the Traefik service name Coolify assigns (e.g. from the generated labels).
+Replace `<service-name>` with the Traefik service name Dokploy assigns (e.g. from the generated labels).
 
 ---
 
@@ -42,7 +42,7 @@ Replace `<service-name>` with the Traefik service name Coolify assigns (e.g. fro
 
 The shell is the entry for `portal.gaqno.com.br`. If its health is **unknown**, the proxy may still send traffic to a slow container and you get 504.
 
-**In Coolify:**
+**In Dokploy:**
 
 1. Open **gaqno-shell-ui** (portal shell).
 2. **General / Domain**: Ensure **FQDN** is set (e.g. `portal.gaqno.com.br`). If it’s empty, set it and save.
@@ -59,10 +59,10 @@ The shell is the entry for `portal.gaqno.com.br`. If its health is **unknown**, 
 
 ## 3. Avoid custom Docker networks (proxy can’t reach app)
 
-If the shell (or any MFE) uses **custom Docker networks** that the Coolify proxy is not attached to, the proxy may get 504 after some time.
+If the shell (or any MFE) uses **custom Docker networks** that the Dokploy proxy is not attached to, the proxy may get 504 after some time.
 
-- Prefer **Coolify-managed networks** (no custom `networks:` in the app’s compose that isolate it from the proxy).
-- If you must keep custom networks, see [Coolify Gateway Timeout docs](https://docs.coolify.codeon.cn/en/troubleshoot/applications/gateway-timeout): connect the proxy to the app network temporarily with `docker network connect <network-name> coolify-proxy`, or move the app to a Coolify destination.
+- Prefer **Dokploy-managed networks** (no custom `networks:` in the app’s compose that isolate it from the proxy).
+- If you must keep custom networks, connect **Traefik** (`dokploy-traefik`) to the app network temporarily with `docker network connect <network-name> dokploy-traefik`, or attach the app to **`dokploy-network`** so the proxy can reach it. See [Dokploy networking](https://docs.dokploy.com/docs/core/docker-compose).
 
 ---
 
@@ -78,7 +78,7 @@ If the shell (or any MFE) uses **custom Docker networks** that the Coolify proxy
 
 If the shell is "running:unknown" and you’ve already increased timeouts and fixed health check:
 
-1. In Coolify, open **gaqno-shell-ui**.
+1. In Dokploy, open **gaqno-shell-ui**.
 2. **Restart** the application.
 3. Wait for health to turn **healthy** and test the portal again.
 
@@ -90,7 +90,7 @@ If the shell is "running:unknown" and you’ve already increased timeouts and fi
 |------|--------|
 | 1 | Traefik: set read/write/idle timeouts to **120s** (entrypoints or per-service labels). |
 | 2 | Shell: set FQDN, health check path `/`, timeout 15–20s, then restart. |
-| 3 | Ensure no custom Docker network isolates the app from `coolify-proxy`. |
+| 3 | Ensure no custom Docker network isolates the app from Traefik (`dokploy-traefik` / `dokploy-network`). |
 | 4 | Cloudflare: no cache for 5xx; optionally disable HTTP/2 to Origin to test. |
 | 5 | Restart gaqno-shell-ui and confirm healthy. |
 
