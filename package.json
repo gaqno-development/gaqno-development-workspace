@@ -45,6 +45,7 @@
     "cloudflare-tunnel-add-n8n": "node scripts/cloudflare-tunnel-add-n8n-route.mjs",
     "secret-scan": "gitleaks protect --config .gitleaks.toml --no-git --verbose",
     "prepare": "husky",
+    "postinstall": "bash scripts/patch-federation-plugin.sh",
     "install:all": "npm install --legacy-peer-deps",
     "clean": "rm -rf node_modules */node_modules @**/node_modules",
     "build:packages": "npm run build -w @gaqno-backcore",
