@@ -81,12 +81,15 @@ O nome da rede costuma ser **`dokploy-network`**. Se for outro, usa a variável 
 
 ### 3.4 Verificação
 
+A imagem `cloudflare/cloudflared` não inclui `wget` nem `curl`. Usa outro container **no mesmo namespace de rede** que o connector (`--network container:NOME`):
+
 ```bash
 docker ps --format '{{.Names}}' | grep -i cloudflared
-docker exec <nome_do_container_cloudflared> wget -qSO- --timeout=5 http://dokploy-traefik:80 2>&1 | head -20
+docker run --rm --network container:musing_jemison curlimages/curl:8.5.0 \
+  curl -sI --max-time 5 http://dokploy-traefik:80
 ```
 
-Deves ver resposta HTTP do Traefik (ex. 404 sem `Host`, ou 301/302).
+Substitui `musing_jemison` pelo **nome real** do container `cloudflared` (coluna NAMES do `docker ps`). Deves ver cabeçalhos HTTP do Traefik (ex. `404` sem `Host`, ou `301`/`302`).
 
 ### 3.5 Stack completo de monitoring
 
