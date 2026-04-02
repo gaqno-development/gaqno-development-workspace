@@ -1,7 +1,5 @@
 ---
-description: Single-concern functions and hooks — extract, compose, never mix
-globs: "**/*.ts,**/*.tsx"
-alwaysApply: false
+alwaysApply: true
 ---
 
 # Single-Concern Functions & Hooks
@@ -16,13 +14,13 @@ Every function, hook, and utility does **one thing**. If it has two responsibili
 
 ## Patterns to extract
 
-| Smell | Fix |
-|-------|-----|
-| Same 3+ lines in 2+ files | Extract to `utils/` or a shared hook |
-| Hook does fetch + transform + UI state | Split into `useXQuery` + `useXTransform` + compose in parent |
-| Inline component inside another component | Move to its own file, pass props |
-| Hardcoded string/number used in 2+ places | Move to `constants/` |
-| `as any` / `as unknown` to force a shape | Define an interface, use a type guard |
+| Smell                                     | Fix                                                          |
+| ----------------------------------------- | ------------------------------------------------------------ |
+| Same 3+ lines in 2+ files                 | Extract to `utils/` or a shared hook                         |
+| Hook does fetch + transform + UI state    | Split into `useXQuery` + `useXTransform` + compose in parent |
+| Inline component inside another component | Move to its own file, pass props                             |
+| Hardcoded string/number used in 2+ places | Move to `constants/`                                         |
+| `as any` / `as unknown` to force a shape  | Define an interface, use a type guard                        |
 
 ## How to compose hooks
 
@@ -50,12 +48,12 @@ export function useBookEditor(bookId: string) {
 const apiError = mutation.isError
   ? mutation.error instanceof Error
     ? mutation.error.message
-    : 'Fallback message'
+    : "Fallback message"
   : null;
 
 // ✅ Shared utility
-import { getMutationErrorMessage } from '@/utils/getMutationErrorMessage';
-const apiError = getMutationErrorMessage(mutation, 'Fallback message');
+import { getMutationErrorMessage } from "@/utils/getMutationErrorMessage";
+const apiError = getMutationErrorMessage(mutation, "Fallback message");
 ```
 
 ## How to replace magic values
@@ -66,8 +64,8 @@ setTimeout(() => setSuccess(false), 2000);
 useQuery({ page: 1, limit: 50 });
 
 // ✅ Named constants
-import { FEEDBACK_RESET_MS } from '@/constants/timing';
-import { DEFAULT_PAGE_PARAMS } from '@/constants/pagination';
+import { FEEDBACK_RESET_MS } from "@/constants/timing";
+import { DEFAULT_PAGE_PARAMS } from "@/constants/pagination";
 setTimeout(() => setSuccess(false), FEEDBACK_RESET_MS);
 useQuery(DEFAULT_PAGE_PARAMS);
 ```
@@ -79,9 +77,12 @@ useQuery(DEFAULT_PAGE_PARAMS);
 const obj = raw as Record<string, unknown>;
 
 // ✅ Define an interface + type guard
-interface BlueprintResponse { title?: string; genre?: string; }
+interface BlueprintResponse {
+  title?: string;
+  genre?: string;
+}
 function isBlueprintLike(v: unknown): v is BlueprintResponse {
-  return v !== null && typeof v === 'object';
+  return v !== null && typeof v === "object";
 }
 ```
 
