@@ -1,0 +1,185 @@
+---
+description: Consolidated coding standards — clean code, hooks, folder structure, build & push workflow
+alwaysApply: true
+---
+
+# Good Practices
+
+## 1. Clean Code
+
+- **No comments.** If the code needs explanation, refactor or rename.
+- **No `any`.** Full strict TypeScript. Define interfaces and type guards instead of casts.
+- **No magic values.** Extract to `constants/`.
+- **Immutability first.** Prefer `readonly`, `const`, spread operators, `.map()` / `.filter()` over mutation.
+- **Object mapping over if/else chains.** Use `Record<Key, Value>` lookup tables.
+
+### Size Limits
+
+| Unit | Max |
+|------|-----|
+| Function | 20 lines |
+| File | 200 lines |
+| Hook | 1 concern |
+
+If it exceeds the limit, decompose into named helpers or split into focused modules.
+
+### Smell → Fix
+
+| Smell | Fix |
+|-------|-----|
+| Same 3+ lines in 2+ files | Extract to `utils/` or a shared hook |
+| Hook does fetch + transform + UI state | Split into `useXQuery` + `useXTransform`, compose in parent |
+| Inline component inside another component | Move to its own file, pass props |
+| Hardcoded string/number in 2+ places | Move to `constants/` |
+| `as any` / `as unknown` | Define an interface + type guard |
+
+---
+
+## 2. Hooks — Separate View, Logic, and Mutations
+
+Every React component is **purely presentational**. All logic lives in hooks. Hooks follow single-concern:
+
+| Hook type | Naming | Responsibility |
+|-----------|--------|----------------|
+| Query | `use[Domain]Query` | Fetch + cache (React Query) |
+| Mutation | `use[Domain]Mutation` | Create / update / delete |
+| Transform | `use[Domain]Transform` | Derive/filter/sort data |
+| UI state | `use[Domain]State` | Local UI state (modals, tabs, filters) |
+| Composer | `use[Domain]` | Composes the above, returns a flat API |
+
+```typescript
+// ❌ God hook
+export function useOrders() {
+  const [filter, setFilter] = useState('');
+  const { data } = useQuery(...);
+  const mutation = useMutation(...);
+  const sorted = useMemo(() => ..., [data]);
+  // 200+ lines mixing everything
+}
+
+// ✅ Composed from focused hooks
+export function useOrders() {
+  const query = useOrdersQuery();
+  const mutation = useCreateOrderMutation();
+  const filter = useOrdersFilter(query.data);
+  return { ...query, ...mutation, ...filter };
+}
+```
+
+**Components receive data and callbacks via props — never call API or manage business state directly.**
+
+---
+
+## 3. Frontend Folder Structure
+
+```
+src/
+├── App.tsx
+├── main.tsx
+├── hooks/                    # ONLY truly shared hooks (used by 2+ pages)
+│   ├── useAuth.ts
+│   └── useTheme.ts
+├── constants/                # Shared constants
+├── types/                    # Shared TypeScript types
+├── utils/                    # Shared pure utilities
+├── contexts/                 # React contexts (auth, theme, etc.)
+├── layouts/                  # Layout wrappers
+├── styles/                   # Global styles
+└── pages/
+    └── <domain>/             # e.g. studio/, customers/, settings/
+        ├── <DomainPage>.tsx  # Page component (composition only)
+        ├── index.ts          # Re-export
+        ├── components/       # Components ONLY used by this page
+        │   ├── Header.tsx
+        │   └── ItemCard.tsx
+        ├── hooks/            # Hooks ONLY used by this page
+        │   ├── useDomainQuery.ts
+        │   ├── useDomainMutation.ts
+        │   └── useDomainState.ts
+        ├── constants.ts      # Page-specific constants
+        └── types.ts          # Page-specific types
+```
+
+### Rules
+
+- A hook/component lives at the **narrowest scope** where it is used.
+- If used by **only one page** → colocate under `pages/<domain>/hooks/` or `pages/<domain>/components/`.
+- If used by **2+ pages** → promote to `src/hooks/` or `src/components/shared/`.
+- **Never** import from one page into another. Shared code goes through `src/` root or `@gaqno-frontcore`.
+- UI primitives always come from `@gaqno-development/frontcore/components/ui`.
+
+---
+
+## 4. Backend (NestJS) Structure
+
+```
+src/
+├── <feature>/
+│   ├── <feature>.module.ts
+│   ├── <feature>.controller.ts   # Thin — HTTP mapping only
+│   ├── <feature>.service.ts      # All business logic
+│   ├── dto/
+│   │   ├── create-<feature>.dto.ts
+│   │   └── update-<feature>.dto.ts
+│   └── <feature>.service.spec.ts
+├── common/
+│   ├── filters/
+│   ├── guards/
+│   └── interceptors/
+└── database/
+    ├── schema.ts
+    └── migrations/
+```
+
+- **Controllers:** thin routing. No business logic.
+- **Services:** all logic, fully unit-testable, single responsibility.
+- **DTOs:** `class-validator` decorators. Separate create/update DTOs.
+
+---
+
+## 5. Build Before Push
+
+**Always** verify the Docker build succeeds before pushing changes to a service or frontend.
+
+```bash
+# ✅ Build first, then push
+./build-all.sh gaqno-ai-service
+./push-all.sh "feat(ai): add new handler"
+
+# ❌ FORBIDDEN — push without building
+./push-all.sh "feat(ai): add new handler"
+```
+
+If the build fails, fix the error before pushing. A broken build blocks the entire deploy pipeline.
+
+---
+
+## 6. Push via `push-all.sh`
+
+**Never** push repos individually or in parallel. Each push triggers CI, and simultaneous pipelines compete for shared resources.
+
+```bash
+# ✅ CORRECT
+./push-all.sh
+./push-all.sh "fix(cors): update origin list"
+
+# ❌ FORBIDDEN
+cd gaqno-sso-service && git push
+cd gaqno-crm-service && git push
+```
+
+`push-all.sh` iterates submodules sequentially, runs tests, commits, pushes, bumps shared packages if changed, and updates parent repo references.
+
+---
+
+## 7. Decision Checklist
+
+Before writing any function, hook, or component:
+
+1. Can I describe it in **one clause** (no "and")?
+2. Does it fit in **20 lines**?
+3. Does identical logic already exist? → reuse it.
+4. Does it use a hardcoded value? → `constants/`.
+5. Does it need a cast? → define an interface first.
+6. Is it used by only this page? → colocate under `pages/<domain>/`.
+7. Is it used by 2+ pages? → promote to `src/` root.
