@@ -97,3 +97,9 @@
 [submodule "gaqno-consumer-service"]
 	path = gaqno-consumer-service
 	url = git@github.com:gaqno-development/gaqno-consumer-service.git
+[submodule "gaqno-sherlock-service"]
+	path = gaqno-sherlock-service
+	url = git@github.com:gaqno-development/gaqno-sherlock-service.git
+[submodule "gaqno-sherlock-ui"]
+	path = gaqno-sherlock-ui
+	url = git@github.com:gaqno-development/gaqno-sherlock-ui.git
