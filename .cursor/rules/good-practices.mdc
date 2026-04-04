@@ -15,23 +15,23 @@ alwaysApply: true
 
 ### Size Limits
 
-| Unit | Max |
-|------|-----|
-| Function | 20 lines |
-| File | 200 lines |
-| Hook | 1 concern |
+| Unit     | Max       |
+| -------- | --------- |
+| Function | 20 lines  |
+| File     | 200 lines |
+| Hook     | 1 concern |
 
 If it exceeds the limit, decompose into named helpers or split into focused modules.
 
 ### Smell → Fix
 
-| Smell | Fix |
-|-------|-----|
-| Same 3+ lines in 2+ files | Extract to `utils/` or a shared hook |
-| Hook does fetch + transform + UI state | Split into `useXQuery` + `useXTransform`, compose in parent |
-| Inline component inside another component | Move to its own file, pass props |
-| Hardcoded string/number in 2+ places | Move to `constants/` |
-| `as any` / `as unknown` | Define an interface + type guard |
+| Smell                                     | Fix                                                         |
+| ----------------------------------------- | ----------------------------------------------------------- |
+| Same 3+ lines in 2+ files                 | Extract to `utils/` or a shared hook                        |
+| Hook does fetch + transform + UI state    | Split into `useXQuery` + `useXTransform`, compose in parent |
+| Inline component inside another component | Move to its own file, pass props                            |
+| Hardcoded string/number in 2+ places      | Move to `constants/`                                        |
+| `as any` / `as unknown`                   | Define an interface + type guard                            |
 
 ---
 
@@ -39,13 +39,13 @@ If it exceeds the limit, decompose into named helpers or split into focused modu
 
 Every React component is **purely presentational**. All logic lives in hooks. Hooks follow single-concern:
 
-| Hook type | Naming | Responsibility |
-|-----------|--------|----------------|
-| Query | `use[Domain]Query` | Fetch + cache (React Query) |
-| Mutation | `use[Domain]Mutation` | Create / update / delete |
-| Transform | `use[Domain]Transform` | Derive/filter/sort data |
-| UI state | `use[Domain]State` | Local UI state (modals, tabs, filters) |
-| Composer | `use[Domain]` | Composes the above, returns a flat API |
+| Hook type | Naming                 | Responsibility                         |
+| --------- | ---------------------- | -------------------------------------- |
+| Query     | `use[Domain]Query`     | Fetch + cache (React Query)            |
+| Mutation  | `use[Domain]Mutation`  | Create / update / delete               |
+| Transform | `use[Domain]Transform` | Derive/filter/sort data                |
+| UI state  | `use[Domain]State`     | Local UI state (modals, tabs, filters) |
+| Composer  | `use[Domain]`          | Composes the above, returns a flat API |
 
 ```typescript
 // ❌ God hook
