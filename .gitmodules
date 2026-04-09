@@ -103,3 +103,6 @@
 [submodule "gaqno-sherlock-ui"]
 	path = gaqno-sherlock-ui
 	url = git@github.com:gaqno-development/gaqno-sherlock-ui.git
+[submodule "gaqno-dropshipping-admin-ui"]
+	path = gaqno-dropshipping-admin-ui
+	url = git@github.com:gaqno-development/gaqno-dropshipping-admin-ui.git
