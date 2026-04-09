@@ -13,12 +13,14 @@ BACKENDS = [
     "finance-service", "pdv-service", "rpg-service", "omnichannel-service",
     "wellness-service", "admin-service", "lead-enrichment-service",
     "customer-service", "intelligence-service", "consumer-service",
+    "dropshipping-service",
 ]
 
 FRONTENDS = [
     "shell-ui", "sso-ui", "ai-ui", "crm-ui", "erp-ui", "finance-ui",
     "pdv-ui", "rpg-ui", "omnichannel-ui", "admin-ui", "wellness-ui",
     "intelligence-ui", "landing-ui", "docs-ui", "consumer-ui",
+    "dropshipping-ui",
 ]
 
 APP_IDS = {
@@ -51,6 +53,8 @@ APP_IDS = {
     "landing-ui": "raXpCM1xkx5k09iduN0xU",
     "docs-ui": "6cJsuf-K-fRf-EnAGgGt7",
     "consumer-ui": "amDUUyJrY3Zy91ho2qZHn",
+    "dropshipping-service": "b297O2GbhkQfE94iIGdai",
+    "dropshipping-ui": "pWCPRH4MiDSCY1j8OjkXt",
 }
 
 

@@ -49,11 +49,13 @@ API calls → SSO service (4001) proxies to domain services:
             ├── lead-enrichment     (4012)
             ├── customer-service    (4013)
             ├── intelligence        (4014)
-            └── consumer-service    (4015)
+            ├── consumer-service    (4015)
+            └── dropshipping       (4016)
 
 Other frontends (standalone):
-            ├── landing-ui  (Next.js, 3009)
-            └── lenin-ui    (Nuxt 3, 3000)
+            ├── landing-ui      (Next.js, 3009)
+            ├── dropshipping-ui (Next.js, 3014)
+            └── lenin-ui        (Nuxt 3, 3000)
 ```
 
 ## Shared Packages
