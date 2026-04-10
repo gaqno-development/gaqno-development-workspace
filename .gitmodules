@@ -106,3 +106,12 @@
 [submodule "gaqno-dropshipping-admin-ui"]
 	path = gaqno-dropshipping-admin-ui
 	url = git@github.com:gaqno-development/gaqno-dropshipping-admin-ui.git
+[submodule "gaqno-dropshipping"]
+	path = gaqno-dropshipping
+	url = git@github.com:gaqno-development/gaqno-dropshipping.git
+[submodule "gaqno-dropshipping-service"]
+	path = gaqno-dropshipping-service
+	url = git@github.com:gaqno-development/gaqno-dropshipping-service.git
+[submodule "bull-board-app"]
+	path = bull-board-app
+	url = git@github.com:gaqno-development/bull-board-app.git
