@@ -498,7 +498,7 @@ services:
         MFE_WELLNESS_URL: http://wellness-ui:3011
         MFE_INTELLIGENCE_URL: http://intelligence-ui:3013
         MFE_CONSUMER_URL: http://consumer-ui:3015
-        MFE_DROPSHIPPING_ADMIN_URL: http://dropshipping-admin-ui:3017
+        MFE_DROPSHIPPING_ADMIN_URL: http://dropshipping-admin-ui:3017/dropshipping-admin
         VITE_SERVICE_SSO_URL: ${VITE_APP_ORIGIN:-https://portal.gaqno.com.br}/sso
         VITE_SERVICE_AI_URL: ${VITE_APP_ORIGIN:-https://portal.gaqno.com.br}/ai
         VITE_SERVICE_CRM_URL: ${VITE_APP_ORIGIN:-https://portal.gaqno.com.br}/crm
