@@ -241,7 +241,13 @@ for repo in "${REPOS[@]}"; do
   fi
 
   echo "   🚀 Pushing to remote..."
-  if ! git push -u origin HEAD; then
+  branch=$(git branch --show-current)
+  if [ -z "$branch" ]; then
+    echo "   ⚠️  Detached HEAD — não dá push. Ex.: git checkout main && git merge <commit> ou git cherry-pick <commit>"
+    echo ""
+    continue
+  fi
+  if ! git push -u origin "$branch"; then
     echo "   ⚠️  Push failed (check if remote is configured)"
   else
     case "$repo" in
