@@ -4,6 +4,7 @@
 # Para cada repo com alterações: roda testes, depois add/commit/push.
 # Repos sem alterações são ignorados (não roda testes).
 # Cada repo tem seus próprios workflows em .github/workflows/ — CI dispara no repo individual.
+# Sem npm no PATH: tenta NVM em ~/.nvm; senão pula testes (ou export SKIP_REPO_TESTS=1).
 #
 set -e
 
@@ -74,6 +75,17 @@ $diff"
   fi
 }
 
+ensure_npm_in_path() {
+  if command -v npm &>/dev/null; then
+    return 0
+  fi
+  if [ -s "${NVM_DIR:=$HOME/.nvm}/nvm.sh" ]; then
+    # shellcheck source=/dev/null
+    . "$NVM_DIR/nvm.sh"
+  fi
+  command -v npm &>/dev/null
+}
+
 run_repo_tests() {
   local repo_path="$1"
   local repo_name="$2"
@@ -85,6 +97,15 @@ run_repo_tests() {
     return 0
   fi
   if ! grep -qE '"test"\s*:' "$repo_path/package.json" 2>/dev/null; then
+    return 0
+  fi
+
+  if [[ -n "${SKIP_REPO_TESTS:-}" ]]; then
+    echo "   ⏭️  SKIP_REPO_TESTS set — skipping tests for $repo_name"
+    return 0
+  fi
+  if ! ensure_npm_in_path; then
+    echo "   ⚠️  npm not found (install Node.js, or set SKIP_REPO_TESTS=1) — skipping tests"
     return 0
   fi
 
@@ -196,7 +217,7 @@ for repo in "${REPOS[@]}"; do
     echo ""
     continue
   fi
-  echo "   ✓ Tests passed"
+  echo "   ✓ Tests OK (see messages above if skipped)"
 
   echo "   ➕ Adding all changes..."
   git add .
