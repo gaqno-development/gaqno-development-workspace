@@ -323,8 +323,9 @@ Dashboard: [Cloudflare](https://dash.cloudflare.com) → gaqno.com.br → DNS �
 
 ## CI / CD
 
-- **Workspace root**: [.github/workflows/ci.yml](.github/workflows/ci.yml) — on push/PR to `main`/`develop`: checkout (with submodules), install, then Turbo **lint**, **build**, **test**. Paths ignore `**/*.md` and `.cursor/**`.
+- **Workspace root**: [.github/workflows/ci.yml](.github/workflows/ci.yml) — on push/PR to `main`/`develop`: checkout (with submodules), run [scripts/verify-submodules-non-empty.sh](../scripts/verify-submodules-non-empty.sh) (fails if any submodule `HEAD` has an empty tree — avoids Dokploy/Swarm builds with no files), install, then Turbo **lint**, **build**, **test**. Paths ignore `**/*.md` and `.cursor/**`.
 - **Per-repo**: When packages are submodules, each repo has its own workflows; CI runs in the repo where the push/PR happens.
+- **After fixing empty submodule commits**: push submodules with [scripts/push-restored-submodules.sh](../scripts/push-restored-submodules.sh), then commit and push the superproject so submodule SHAs point at restored trees.
 
 ```mermaid
 sequenceDiagram
@@ -334,6 +335,7 @@ sequenceDiagram
 
   Dev->>GitHub: push / PR
   GitHub->>GitHub: checkout (submodules recursive)
+  GitHub->>GitHub: verify-submodules-non-empty.sh
   GitHub->>GitHub: npm install --legacy-peer-deps
   GitHub->>Turbo: turbo run lint
   GitHub->>Turbo: turbo run build
