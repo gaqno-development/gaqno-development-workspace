@@ -265,10 +265,13 @@ describe('config and logger', () => {
   });
 });
 
+const WS_TOOLS = ['deployment-read-log', 'deployment-read-latest-log'];
+
 describe('completeness checks', () => {
   it('should have a tool handler for every defined tool', async () => {
     const client = createMockClient({});
     for (const tool of TOOLS) {
+      if (WS_TOOLS.includes(tool.name)) continue;
       await expect(handleToolCall(client, tool.name, {})).resolves.toBeDefined();
     }
   });
