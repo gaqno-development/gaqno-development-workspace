@@ -1,0 +1,106 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"]
+    },
+    "grafana": {
+      "command": "uvx",
+      "args": ["mcp-grafana"],
+      "env": {
+        "GRAFANA_URL": "https://grafana.gaqno.com.br",
+        "GRAFANA_SERVICE_ACCOUNT_TOKEN": "PLACEHOLDER_GRAFANA_TOKEN"
+      }
+    },
+    "shadcn": {
+      "command": "npx",
+      "args": ["shadcn@latest", "mcp"]
+    },
+    "cloudflare-api": {
+      "command": "/bin/bash",
+      "args": [
+        "/home/gaqno/coding/gaqno-development-workspace/.cursor/run-cloudflare-mcp.sh"
+      ]
+    },
+    "atlassian": {
+      "command": "/bin/bash",
+      "args": [
+        "/home/gaqno/coding/gaqno-development-workspace/.cursor/run-atlassian-mcp.sh"
+      ],
+      "env": {
+        "JIRA_URL": "https://gaqno.atlassian.net",
+        "JIRA_USERNAME": "gabriel.aquino@outlook.com",
+        "JIRA_API_TOKEN": "PLACEHOLDER_JIRA_TOKEN",
+        "CONFLUENCE_URL": "https://gaqno.atlassian.net/wiki",
+        "CONFLUENCE_USERNAME": "gabriel.aquino@outlook.com",
+        "CONFLUENCE_API_TOKEN": "PLACEHOLDER_CONFLUENCE_TOKEN"
+      }
+    },
+    "n8n-mcp": {
+      "type": "http",
+      "url": "https://n8n.gaqno.com.br/mcp-server/http",
+      "headers": {
+        "Authorization": "Bearer PLACEHOLDER_N8N_TOKEN"
+      }
+    },
+    "postgres-sso": {
+      "command": "uvx",
+      "args": ["postgres-mcp", "--access-mode=unrestricted"],
+      "env": {
+        "DATABASE_URI": "postgresql://postgres:PLACEHOLDER_PASSWORD@72.61.221.19:15432/gaqno_sso_db"
+      }
+    },
+    "postgres-finance": {
+      "command": "uvx",
+      "args": ["postgres-mcp", "--access-mode=unrestricted"],
+      "env": {
+        "DATABASE_URI": "postgresql://postgres:PLACEHOLDER_PASSWORD@72.61.221.19:15432/gaqno_finance_db"
+      }
+    },
+    "postgres-pdv": {
+      "command": "uvx",
+      "args": ["postgres-mcp", "--access-mode=unrestricted"],
+      "env": {
+        "DATABASE_URI": "postgresql://postgres:PLACEHOLDER_PASSWORD@72.61.221.19:15432/gaqno_pdv_db"
+      }
+    },
+    "postgres-rpg": {
+      "command": "uvx",
+      "args": ["postgres-mcp", "--access-mode=unrestricted"],
+      "env": {
+        "DATABASE_URI": "postgresql://postgres:PLACEHOLDER_PASSWORD@72.61.221.19:15432/gaqno_rpg_db"
+      }
+    },
+    "postgres-ai": {
+      "command": "uvx",
+      "args": ["postgres-mcp", "--access-mode=unrestricted"],
+      "env": {
+        "DATABASE_URI": "postgresql://postgres:PLACEHOLDER_PASSWORD@72.61.221.19:15432/gaqno_ai_db"
+      }
+    },
+    "postgres-omnichannel": {
+      "command": "uvx",
+      "args": ["postgres-mcp", "--access-mode=unrestricted"],
+      "env": {
+        "DATABASE_URI": "postgresql://postgres:PLACEHOLDER_PASSWORD@72.61.221.19:15432/gaqno_omnichannel_db"
+      }
+    },
+    "dokploy-mcp": {
+      "command": "/bin/bash",
+      "args": [
+        "/home/gaqno/coding/gaqno-development-workspace/.cursor/run-dokploy-mcp.sh"
+      ],
+      "env": {
+        "DOKPLOY_BASE_URL": "http://72.61.221.19:3000/api",
+        "DOKPLOY_API_KEY": "PLACEHOLDER_DOKPLOY_KEY"
+      }
+    },
+    "newrelic": {
+      "type": "http",
+      "url": "https://mcp.eu.newrelic.com/mcp/",
+      "headers": {
+        "api-key": "PLACEHOLDER_NEWRELIC_KEY"
+      }
+    }
+  }
+}
