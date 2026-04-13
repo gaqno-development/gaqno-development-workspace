@@ -28,6 +28,10 @@ deploy-dokploy.py
 
 # IDE / tools
 .cursor/mcp.json
+opencode.json
+!.cursor/mcp.json
+!.cursor/run-*.sh
+!.cursor/mcp-path.sh
 .npmrc
 .grepai/
 
