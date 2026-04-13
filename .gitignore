@@ -27,11 +27,8 @@ deploy-dokku.sh
 deploy-dokploy.py
 
 # IDE / tools
-.cursor/mcp.json
+.cursor/
 opencode.json
-!.cursor/mcp.json
-!.cursor/run-*.sh
-!.cursor/mcp-path.sh
 .npmrc
 .grepai/
 
