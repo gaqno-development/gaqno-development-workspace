@@ -103,15 +103,15 @@
 [submodule "gaqno-sherlock-ui"]
 	path = gaqno-sherlock-ui
 	url = git@github.com:gaqno-development/gaqno-sherlock-ui.git
-[submodule "gaqno-dropshipping-admin-ui"]
-	path = gaqno-dropshipping-admin-ui
-	url = git@github.com:gaqno-development/gaqno-dropshipping-admin-ui.git
-[submodule "gaqno-dropshipping"]
-	path = gaqno-dropshipping
-	url = git@github.com:gaqno-development/gaqno-dropshipping.git
-[submodule "gaqno-dropshipping-service"]
-	path = gaqno-dropshipping-service
-	url = git@github.com:gaqno-development/gaqno-dropshipping-service.git
+[submodule "gaqno-shop"]
+	path = gaqno-shop
+	url = git@github.com:gaqno-development/gaqno-shop.git
+[submodule "gaqno-shop-admin"]
+	path = gaqno-shop-admin
+	url = git@github.com:gaqno-development/gaqno-shop-admin.git
+[submodule "gaqno-shop-service"]
+	path = gaqno-shop-service
+	url = git@github.com:gaqno-development/gaqno-shop-service.git
 [submodule "bull-board-app"]
 	path = bull-board-app
 	url = git@github.com:gaqno-development/bull-board-app.git

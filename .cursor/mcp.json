@@ -16,17 +16,10 @@
       "command": "npx",
       "args": ["shadcn@latest", "mcp"]
     },
-    "cloudflare-api": {
-      "command": "/bin/bash",
-      "args": [
-        "/home/gaqno/coding/gaqno-development-workspace/.cursor/run-cloudflare-mcp.sh"
-      ]
-    },
+
     "atlassian": {
-      "command": "/bin/bash",
-      "args": [
-        "/home/gaqno/coding/gaqno-development-workspace/.cursor/run-atlassian-mcp.sh"
-      ],
+      "command": "uvx",
+      "args": ["mcp-atlassian"],
       "env": {
         "JIRA_URL": "https://gaqno.atlassian.net",
         "JIRA_USERNAME": "gabriel.aquino@outlook.com",
@@ -86,10 +79,8 @@
       }
     },
     "dokploy-mcp": {
-      "command": "/bin/bash",
-      "args": [
-        "/home/gaqno/coding/gaqno-development-workspace/.cursor/run-dokploy-mcp.sh"
-      ],
+      "command": "node",
+      "args": ["/home/gaqno/coding/gaqno-development-workspace/dokploy-mcp/dist/index.js"],
       "env": {
         "DOKPLOY_BASE_URL": "http://72.61.221.19:3000/api",
         "DOKPLOY_API_KEY": "PLACEHOLDER_DOKPLOY_KEY"

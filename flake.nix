@@ -20,6 +20,7 @@
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
             nodejs_22
+            corepack_22
             uv
             python312
             docker

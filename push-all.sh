@@ -181,6 +181,9 @@ else
     gaqno-saas-service
     gaqno-saas-ui
     gaqno-shell-ui
+    gaqno-shop
+    gaqno-shop-admin
+    gaqno-shop-service
     gaqno-sso-service
     gaqno-sso-ui
     gaqno-wellness-service

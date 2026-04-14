@@ -1,0 +1,19 @@
+---
+description: MCPs require uvx/npx - ensure PATH is set in ~/.zshenv
+alwaysApply: true
+---
+
+# MCP Prerequisites
+
+MCPs require `uvx` and `npx` which are in the nix store.
+
+**PATH is configured in `~/.zshenv`** - restart OpenCode if MCPs fail to load.
+
+If MCPs show errors like "Executable not found", restart OpenCode terminal.
+
+Verify:
+```bash
+which uvx && which npx
+```
+
+See `flake.nix` for the full dev environment (nodejs_22, uv, python312).

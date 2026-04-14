@@ -32,6 +32,9 @@ opencode.json
 .npmrc
 .grepai/
 
+# Worktrees
+.worktrees/
+
 # Coverage
 coverage/
 *.lcov
