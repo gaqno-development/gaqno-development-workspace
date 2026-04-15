@@ -1,0 +1,67 @@
+===============================================
+DNS STATUS CHECK - Multi-Tenant Shop Platform
+===============================================
+
+DOKPLOY SERVER IP: 72.61.221.19
+
+CURRENT DNS RECORDS:
+--------------------
+
+shop.gaqno.com.br
+  Current:  172.67.139.91, 104.21.57.3 (Cloudflare proxy IPs) ❌
+  Required: 72.61.221.19 (Dokploy server) ⚠️
+  Status:   WRONG - Points to Cloudflare instead of Dokploy
+
+api.gaqno.com.br
+  Current:  104.21.57.3, 172.67.139.91 (Cloudflare proxy IPs) ❌
+  Required: 72.61.221.19 (Dokploy server) ⚠️
+  Status:   WRONG - Points to Cloudflare instead of Dokploy
+
+shop-admin.gaqno.com.br
+  Current:  NXDOMAIN (does not exist) ❌
+  Required: 72.61.221.19 (Dokploy server) ⚠️
+  Status:   MISSING - Needs to be created
+
+portal.gaqno.com.br
+  Current:  172.67.139.91, 104.21.57.3 (Cloudflare proxy IPs) ℹ️
+  Note:     This is the existing gaqno portal, should remain as-is
+
+CLOUDFLARE ZONE INFO:
+---------------------
+Zone ID:      d628a8ac60069acccbc154d173b88717
+Zone:         gaqno.com.br
+Status:       Active
+Nameservers:  lennox.ns.cloudflare.com, magali.ns.cloudflare.com
+Plan:         Free
+
+REQUIRED ACTIONS:
+-----------------
+
+1. Update shop.gaqno.com.br
+   - Change IP from Cloudflare IPs to 72.61.221.19
+   - Set Proxy status to "DNS only" (gray cloud)
+
+2. Update api.gaqno.com.br
+   - Change IP from Cloudflare IPs to 72.61.221.19
+   - Set Proxy status to "DNS only" (gray cloud)
+
+3. Create shop-admin.gaqno.com.br
+   - Type: A
+   - Value: 72.61.221.19
+   - Proxy: DNS only (gray cloud)
+
+MANUAL CONFIGURATION:
+--------------------
+
+1. Log in to: https://dash.cloudflare.com
+2. Select zone: gaqno.com.br
+3. Go to: DNS → Records
+4. Update/create the 3 records above
+5. Wait 2-5 minutes for propagation
+6. Verify with: dig shop.gaqno.com.br
+
+DOCUMENTATION:
+--------------
+- Full guide: docs/DNS_CONFIGURATION.md
+- Helper script: scripts/configure-dns.sh
+

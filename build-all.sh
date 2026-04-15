@@ -27,6 +27,8 @@ PROJECTS=(
   "gaqno-rpg-ui"
   "gaqno-shell-ui"
   "gaqno-sherlock-ui"
+  "gaqno-shop"
+  "gaqno-shop-admin"
   "gaqno-sso-ui"
   "gaqno-wellness-ui"
 )
@@ -46,6 +48,7 @@ SERVICES=(
   "gaqno-pdv-service"
   "gaqno-rpg-service"
   "gaqno-sherlock-service"
+  "gaqno-shop-service"
   "gaqno-sso-service"
   "gaqno-wellness-service"
 )
