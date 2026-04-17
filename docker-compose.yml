@@ -459,65 +459,7 @@ services:
       wellness-service:
         condition: service_started
 
-  dropshipping-service:
-    build:
-      context: ./gaqno-dropshipping-service
-      dockerfile: Dockerfile
-    container_name: gaqno-dropshipping-service
-    ports:
-      - "4016:4016"
-    environment:
-      - NODE_ENV=production
-      - PORT=4016
-      - DATABASE_URL=${DATABASE_URL}
-      - REDIS_URL=redis://redis:6379
-      - CORS_ORIGIN=${CORS_ORIGIN:-*}
-    env_file:
-      - .env
-    restart: unless-stopped
-    networks:
-      - gaqno-network
-
-  dropshipping:
-    build:
-      context: ./gaqno-dropshipping
-      dockerfile: Dockerfile
-    container_name: gaqno-dropshipping
-    ports:
-      - "3014:3014"
-    environment:
-      - NODE_ENV=production
-      - PORT=3014
-      - DROPSHIPPING_SERVICE_URL=http://dropshipping-service:4016
-      - NEXT_PUBLIC_TENANT_NAME=${DROPSHIPPING_TENANT_NAME:-Gaqno Shop}
-      - TENANT_PRIMARY_COLOR=${DROPSHIPPING_PRIMARY_COLOR:-#3b82f6}
-      - FEATURE_PIX=true
-      - FEATURE_CHECKOUT_PRO=true
-    env_file:
-      - .env
-    restart: unless-stopped
-    networks:
-      - gaqno-network
-    depends_on:
-      dropshipping-service:
-        condition: service_started
-
-  dropshipping-admin-ui:
-    build:
-      context: ./gaqno-dropshipping-admin-ui
-      dockerfile: Dockerfile
-    container_name: gaqno-dropshipping-admin-ui
-    ports:
-      - "3017:3017"
-    environment:
-      - NODE_ENV=production
-      - PORT=3017
-    env_file:
-      - .env
-    restart: unless-stopped
-    networks:
-      - gaqno-network
-
+ 
 networks:
   gaqno-network:
     driver: bridge

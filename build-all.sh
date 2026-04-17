@@ -94,15 +94,27 @@ if [ ! -d "${BUILD_LOG_DIR}" ]; then
   echo "📁 Created build logs directory: ${BUILD_LOG_DIR}"
 fi
 
-NPM_TOKEN=""
-if [ -f "${BASE_DIR}/.npmrc" ]; then
-  NPM_TOKEN=$(grep "_authToken" "${BASE_DIR}/.npmrc" 2>/dev/null | cut -d'=' -f2)
+NPM_TOKEN="${NPM_TOKEN:-}"
+if [ -z "${NPM_TOKEN}" ] && [ -f "${BASE_DIR}/.npmrc" ]; then
+  NPM_TOKEN=$(grep "//npm.pkg.github.com/:_authToken" "${BASE_DIR}/.npmrc" 2>/dev/null | head -1 | cut -d'=' -f2-)
 fi
 if [ -z "${NPM_TOKEN}" ] && [ -f "${HOME}/.npmrc.personal" ]; then
-  NPM_TOKEN=$(grep "_authToken" "${HOME}/.npmrc.personal" 2>/dev/null | cut -d'=' -f2)
+  NPM_TOKEN=$(grep "//npm.pkg.github.com/:_authToken" "${HOME}/.npmrc.personal" 2>/dev/null | head -1 | cut -d'=' -f2-)
 fi
 if [ -z "${NPM_TOKEN}" ]; then
-  echo -e "${YELLOW}⚠️  NPM_TOKEN not found in .npmrc or ~/.npmrc.personal; Docker builds may fail for private packages.${NC}"
+  for rc in \
+    "${BASE_DIR}/gaqno-sso-service/.npmrc" \
+    "${BASE_DIR}/gaqno-shell-ui/.npmrc" \
+    "${BASE_DIR}/gaqno-shop-admin/.npmrc" \
+    "${BASE_DIR}/gaqno-shop-service/.npmrc"; do
+    if [ -f "${rc}" ]; then
+      NPM_TOKEN=$(grep "//npm.pkg.github.com/:_authToken" "${rc}" 2>/dev/null | head -1 | cut -d'=' -f2-)
+      [ -n "${NPM_TOKEN}" ] && break
+    fi
+  done
+fi
+if [ -z "${NPM_TOKEN}" ]; then
+  echo -e "${YELLOW}⚠️  NPM_TOKEN not found (export NPM_TOKEN, workspace .npmrc, ~/.npmrc.personal, or gaqno-*/.npmrc); Docker builds may fail for private packages.${NC}"
 fi
 
 echo ""
