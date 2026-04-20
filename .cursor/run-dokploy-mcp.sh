@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/mcp-path.sh"
-ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-exec node "$ROOT/dokploy-mcp/dist/index.js"
