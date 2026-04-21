@@ -1,10 +1,15 @@
 #!/bin/sh
-# Secret scanning before commit. Install gitleaks (e.g. brew install gitleaks) to enable.
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+if [ -x "$REPO_ROOT/scripts/guard-destructive-commit.sh" ]; then
+  "$REPO_ROOT/scripts/guard-destructive-commit.sh" "$REPO_ROOT" || exit 1
+fi
 
 if ! command -v gitleaks >/dev/null 2>&1; then
   echo "⚠️  gitleaks not installed — skipping secret scan. Install: brew install gitleaks"
   exit 0
 fi
 
-cd "$(git rev-parse --show-toplevel)" && gitleaks protect --config .gitleaks.toml --staged --verbose
+cd "$REPO_ROOT" && gitleaks protect --config .gitleaks.toml --staged --verbose
 exit $?

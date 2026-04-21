@@ -240,22 +240,14 @@ for repo in "${REPOS[@]}"; do
   echo "   ➕ Adding all changes..."
   git add .
 
-  STAGED_TREE=$(git write-tree 2>/dev/null || echo "")
-  EMPTY_TREE=$(git hash-object -t tree /dev/null 2>/dev/null || echo "4b825dc642cb6eb9a060e54bf8d69288fbee4904")
-  HEAD_TREE=$(git rev-parse HEAD^{tree} 2>/dev/null || echo "")
-  STAGED_DELETIONS=$(git diff --cached --name-only --diff-filter=D | wc -l)
-  STAGED_NON_DELETIONS=$(git diff --cached --name-only --diff-filter=d | wc -l)
-  if [ "$STAGED_TREE" = "$EMPTY_TREE" ] && [ -n "$HEAD_TREE" ] && [ "$HEAD_TREE" != "$EMPTY_TREE" ]; then
-    echo "   🚫 Aborting $repo — staged tree is empty but HEAD has content."
-    echo "      This would wipe the remote. Reset and reinitialize the submodule."
-    git reset HEAD -- . >/dev/null 2>&1 || true
-    continue
-  fi
-  if [ "$STAGED_DELETIONS" -gt 50 ] && [ "$STAGED_NON_DELETIONS" -eq 0 ]; then
-    echo "   🚫 Aborting $repo — staged changes are $STAGED_DELETIONS pure deletions with no additions."
-    echo "      Refusing to create a mass-deletion commit. Inspect with: git -C $REPO_PATH status"
-    git reset HEAD -- . >/dev/null 2>&1 || true
-    continue
+  GUARD_SCRIPT="$BASE_DIR/scripts/guard-destructive-commit.sh"
+  if [ -x "$GUARD_SCRIPT" ]; then
+    if ! "$GUARD_SCRIPT" "$REPO_PATH"; then
+      echo "   🚫 Aborting $repo — destructive-commit guard refused to commit."
+      echo "      Inspect with: git -C $REPO_PATH status"
+      git reset HEAD -- . >/dev/null 2>&1 || true
+      continue
+    fi
   fi
 
   if [ -n "$CUSTOM_MESSAGE" ]; then
