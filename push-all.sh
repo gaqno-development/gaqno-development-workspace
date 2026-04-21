@@ -208,7 +208,22 @@ for repo in "${REPOS[@]}"; do
   
   echo "📦 Processing $repo..."
   cd "$REPO_PATH"
-  
+
+  TRACKED_COUNT=$(git ls-files 2>/dev/null | head -1 | wc -l)
+  if [ "$TRACKED_COUNT" -eq 0 ]; then
+    echo "   ⚠️  Skipping $repo — no tracked files in worktree (uninitialized submodule?). Run: git submodule update --init $repo"
+    continue
+  fi
+
+  DELETED_COUNT=$(git status --porcelain 2>/dev/null | grep -c '^.D\|^D ' || true)
+  PRESENT_COUNT=$(find . -mindepth 1 -maxdepth 1 ! -name '.git' | head -1 | wc -l)
+  if [ "$DELETED_COUNT" -gt 0 ] && [ "$PRESENT_COUNT" -eq 0 ]; then
+    echo "   🚫 Aborting $repo — all tracked files are missing from worktree."
+    echo "      This would push an empty-tree commit and wipe the remote."
+    echo "      Run: git submodule update --init --force $repo  (then retry)"
+    continue
+  fi
+
   if [ -z "$(git status --porcelain)" ]; then
     echo "   ✓ No changes to commit"
     continue
