@@ -32,6 +32,7 @@ If it exceeds the limit, decompose into named helpers or split into focused modu
 | Inline component inside another component | Move to its own file, pass props                            |
 | Hardcoded string/number in 2+ places      | Move to `constants/`                                        |
 | `as any` / `as unknown`                   | Define an interface + type guard                            |
+| `<Child {...hookReturn} />`               | Pass explicit named props (see §2.1)                        |
 
 ---
 
@@ -67,6 +68,97 @@ export function useOrders() {
 ```
 
 **Components receive data and callbacks via props — never call API or manage business state directly.**
+
+---
+
+## 2.1 Prop Passing — Explicit Named Props, Never Spread a Hook Return
+
+**Rule:** NEVER pass `{...hookReturn}` or `{...compositeObject}` to a child component. Always pass explicit, named props that match the child's declared interface.
+
+### Why
+
+1. **Contract visibility.** The JSX should tell you exactly what the child depends on. `<UserCreateForm {...form} />` hides the contract; `<UserCreateForm formData={form.formData} saving={form.saving} ... />` makes it grep-able and reviewable.
+2. **No over-passing.** A composer hook like `useUserForm` returns 20+ properties (state, queries, mutations, UI flags). Spreading leaks all of them into the child, which:
+   - Forces the child's interface to widen or accept an index signature (weakens typing).
+   - Causes unrelated re-renders when unrelated fields change.
+   - Couples the child to the shape of the parent's hook.
+3. **Presentational contract.** Components must be pure functions of their props. Spreading a hook return binds the component to business-state shape — violating §2.
+4. **Testability.** Explicit props let tests construct minimal fixtures. Spread forces tests to mock the full hook-return shape.
+5. **Refactor safety.** When the composer hook changes (adds/removes/renames a field), TypeScript only catches breakage at the explicit call sites. With spread, breakage is silent or misleading.
+
+### Examples
+
+❌ **Bad — spreads hook return:**
+
+```tsx
+export function UserFormPage() {
+  const form = useUserForm();
+  return <UserCreateForm {...form} />;
+}
+```
+
+❌ **Bad — spreads a grouped object just to save typing:**
+
+```tsx
+const handlers = { onSubmit, onCancel, onDelete };
+return <Toolbar {...handlers} />;
+```
+
+✅ **Good — explicit named props:**
+
+```tsx
+export function UserFormPage() {
+  const form = useUserForm();
+  return (
+    <UserCreateForm
+      formData={form.formData}
+      setFormData={form.setFormData}
+      tenants={form.tenantsList}
+      tenantsLoading={form.tenantsLoading}
+      availableRoles={form.availableRoles}
+      rolesLoading={form.rolesLoading}
+      selectedRoleId={form.selectedRoleId}
+      setSelectedRoleId={form.setSelectedRoleId}
+      saving={form.saving}
+      onSubmit={form.handleSubmit}
+    />
+  );
+}
+```
+
+### The only exceptions (narrow)
+
+Spread (`{...rest}`) is allowed in exactly two cases:
+
+1. **DOM-attribute forwarding** on a primitive wrapper:
+
+   ```tsx
+   function Button({ variant, ...rest }: ButtonProps) {
+     return <button {...rest} className={variants[variant]} />;
+   }
+   ```
+
+2. **True proxy/HOC components** that exist solely to forward an unknown attribute surface (e.g. a `Slot`, polymorphic `asChild`). These should use `React.ComponentPropsWithoutRef<T>` — never a hook return.
+
+If you're tempted to spread anything else, either:
+
+- The child needs fewer props (refactor its interface), or
+- The parent needs to pick only the relevant keys explicitly (that's the fix, not spread).
+
+### If the parent is passing 10+ props
+
+That's a signal, not a justification for spread. Either:
+
+- Split the child component (too many concerns), OR
+- Group related props into a single well-named sub-object with its **own named interface** (e.g. `associateControls={{ searchTerm, setSearchTerm, unassignedUsers, ... }}`) — and then still pass that as one explicit named prop, never via spread.
+
+### Enforcement checklist
+
+Before opening a PR:
+
+- [ ] No JSX expression contains `{...hookName}` or `{...compositeObject}` onto a component.
+- [ ] Every child component's rendered call lists its props explicitly.
+- [ ] `{...rest}` only appears on DOM elements or documented proxy components.
 
 ---
 
