@@ -1,13 +1,13 @@
 # DNS Configuration for Multi-Tenant Shop
 
-## Current Status
+## Current Status (Tunnel Model)
 
 ### DNS Records Found
 ```
-shop.gaqno.com.br        → 172.67.139.91, 104.21.57.3 (Cloudflare)
-api.gaqno.com.br         → 104.21.57.3, 172.67.139.91 (Cloudflare)
-portal.gaqno.com.br      → 172.67.139.91, 104.21.57.3 (Cloudflare)
-shop-admin.gaqno.com.br  → ❌ NXDOMAIN (Not configured)
+shop.gaqno.com.br         → CNAME a710b2ee-7e6b-4985-aebe-1433fd2d24bd.cfargotunnel.com
+api.gaqno.com.br          → CNAME a710b2ee-7e6b-4985-aebe-1433fd2d24bd.cfargotunnel.com
+portal.gaqno.com.br       → CNAME a710b2ee-7e6b-4985-aebe-1433fd2d24bd.cfargotunnel.com
+fifiadoces.gaqno.com.br   → CNAME a710b2ee-7e6b-4985-aebe-1433fd2d24bd.cfargotunnel.com
 ```
 
 ### Cloudflare Zone
@@ -16,38 +16,31 @@ shop-admin.gaqno.com.br  → ❌ NXDOMAIN (Not configured)
 - **Status**: Active
 - **Plan**: Free
 
-### Dokploy Server
-- **IP Address**: `72.61.221.19`
+### Active Tunnel
+- **Tunnel name**: `GAQNO_PROD_01`
+- **Tunnel ID**: `a710b2ee-7e6b-4985-aebe-1433fd2d24bd`
+- **Status**: `healthy`
+- **Origin service**: `http://dokploy-traefik:80`
 
-## ⚠️ Issue: DNS Records Pointing to Cloudflare IPs
+## Canonical DNS Strategy
 
-The existing records for `shop.gaqno.com.br` and `api.gaqno.com.br` are pointing to Cloudflare's proxy IPs (172.67.139.91, 104.21.57.3) instead of the Dokploy server.
+Use Cloudflare Tunnel as the canonical strategy for shop hostnames.
 
-### Problem
-- Cloudflare IPs: 172.67.139.91, 104.21.57.3
-- Dokploy Server: 72.61.221.19
+Do not point tenant shop domains directly to server IP when the tunnel is active.
 
-The domains need to point to the Dokploy server IP to work correctly.
+Required pattern for each new company host:
 
-## ✅ Required DNS Configuration
+- Host format: `<company-label>.gaqno.com.br`
+- Tunnel ingress hostname: `<company-label>.gaqno.com.br` -> `http://dokploy-traefik:80`
+- DNS record: `CNAME <company-label>.gaqno.com.br -> a710b2ee-7e6b-4985-aebe-1433fd2d24bd.cfargotunnel.com`
+- Proxy status: `Proxied`
 
-### Option 1: Direct A Records (Recommended for Dokploy)
+## Required onboarding for new shop host
 
-Create/update A records pointing directly to Dokploy server:
-
-| Type | Name | Value | Proxy Status | TTL |
-|------|------|-------|--------------|-----|
-| A | shop | 72.61.221.19 | DNS only (gray) | Auto |
-| A | api | 72.61.221.19 | DNS only (gray) | Auto |
-| A | shop-admin | 72.61.221.19 | DNS only (gray) | Auto |
-
-### Option 2: Using Cloudflare Tunnels
-
-If you want to keep Cloudflare proxy enabled, you can use Cloudflare Tunnels:
-
-1. Install cloudflared on Dokploy server
-2. Create a tunnel
-3. Configure ingress rules for each subdomain
+1. Add ingress hostname in tunnel `GAQNO_PROD_01`.
+2. Add proxied CNAME to `<tunnel-id>.cfargotunnel.com`.
+3. Add Dokploy domain mapping on `gaqno-shop` (`host`, `path=/`, `port=3015`).
+4. Link domain to tenant in SSO domains (`POST /domains` + verify).
 
 ## 🔧 Manual Configuration Steps
 
@@ -56,14 +49,14 @@ If you want to keep Cloudflare proxy enabled, you can use Cloudflare Tunnels:
 2. Select zone: **gaqno.com.br**
 3. Navigate to: **DNS** → **Records**
 
-### Step 2: Update Existing Records
+### Step 2: Create or Update DNS record
 
-#### shop.gaqno.com.br
-1. Find record: `shop` (Type: A)
-2. Click **Edit**
-3. Change IPv4 address to: `72.61.221.19`
-4. Set Proxy status to: **DNS only** (gray cloud icon)
-5. Click **Save**
+1. Type: **CNAME**
+2. Name: `<company-label>`
+3. Target: `a710b2ee-7e6b-4985-aebe-1433fd2d24bd.cfargotunnel.com`
+4. Proxy status: **Proxied** (orange cloud icon)
+5. TTL: **Auto**
+6. Click **Save**
 
 #### api.gaqno.com.br
 1. Find record: `api` (Type: A)
@@ -72,16 +65,13 @@ If you want to keep Cloudflare proxy enabled, you can use Cloudflare Tunnels:
 4. Set Proxy status to: **DNS only** (gray cloud icon)
 5. Click **Save**
 
-### Step 3: Create New Record
+### Step 3: Add ingress rule in Zero Trust tunnel
 
-#### shop-admin.gaqno.com.br
-1. Click **Add record**
-2. Type: **A**
-3. Name: `shop-admin`
-4. IPv4 address: `72.61.221.19`
-5. Proxy status: **DNS only** (gray cloud)
-6. TTL: **Auto**
-7. Click **Save**
+1. Go to **Zero Trust** → **Networks** → **Tunnels**
+2. Open `GAQNO_PROD_01`
+3. Add public hostname `<company-label>.gaqno.com.br`
+4. Set service to `http://dokploy-traefik:80`
+5. Save and keep `http_status:404` as the last catch-all rule.
 
 ### Step 4: Verify Configuration
 
@@ -92,19 +82,10 @@ Wait 1-2 minutes for DNS propagation, then verify:
 dig shop.gaqno.com.br
 
 # Expected output:
-# shop.gaqno.com.br.    300    IN    A    72.61.221.19
+# <company-label>.gaqno.com.br. 300 IN CNAME a710b2ee-7e6b-4985-aebe-1433fd2d24bd.cfargotunnel.com.
 
-# Check api domain
-dig api.gaqno.com.br
-
-# Expected output:
-# api.gaqno.com.br.    300    IN    A    72.61.221.19
-
-# Check admin domain
-dig shop-admin.gaqno.com.br
-
-# Expected output:
-# shop-admin.gaqno.com.br.    300    IN    A    72.61.221.19
+# Check example tenant domain
+dig fifiadoces.gaqno.com.br
 ```
 
 ## 🚀 Alternative: Using Cloudflare API
@@ -156,18 +137,9 @@ curl -X POST "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records" \
 
 ## 📋 Configuration Summary
 
-### Before (Current)
+### Required
 ```
-shop.gaqno.com.br    → 172.67.139.91 (Cloudflare proxy) ❌
-api.gaqno.com.br     → 104.21.57.3 (Cloudflare proxy) ❌
-shop-admin.gaqno.com.br → NXDOMAIN ❌
-```
-
-### After (Required)
-```
-shop.gaqno.com.br    → 72.61.221.19 (Dokploy) ✅
-api.gaqno.com.br     → 72.61.221.19 (Dokploy) ✅
-shop-admin.gaqno.com.br → 72.61.221.19 (Dokploy) ✅
+<company-label>.gaqno.com.br → a710b2ee-7e6b-4985-aebe-1433fd2d24bd.cfargotunnel.com (CNAME, proxied) ✅
 ```
 
 ## 🔍 Troubleshooting
@@ -177,10 +149,9 @@ shop-admin.gaqno.com.br → 72.61.221.19 (Dokploy) ✅
 - Clear local DNS cache: `sudo systemd-resolve --flush-caches` (Linux) or `ipconfig /flushdns` (Windows)
 - Check with different DNS resolver: `dig @8.8.8.8 shop.gaqno.com.br`
 
-### Cloudflare Proxy Still Active
-- Ensure the cloud icon is **gray** (DNS only), not orange (Proxied)
-- Orange cloud means traffic goes through Cloudflare's network
-- For Dokploy deployments, DNS only mode is required
+### Cloudflare Proxy Off by mistake
+- Ensure the cloud icon is **orange** (Proxied), not gray
+- Gray cloud bypasses tunnel protections and breaks the expected routing model
 
 ### SSL/TLS Settings
 After updating DNS, configure SSL/TLS in Cloudflare:
