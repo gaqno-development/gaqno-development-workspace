@@ -97,7 +97,12 @@ R2_SECRET_KEY=41bf97cf0eebb2b10b9aee74866164f1fdfdaa2b34bb9bc985617493d704ac2b
 R2_ENDPOINT=https://17c0f489f699231dff3588ca19a9cb9a.r2.cloudflarestorage.com
 R2_BUCKET=gaqno-media
 R2_PUBLIC_URL=https://media.gaqno.com.br
+SHOP_SERVICE_PUBLIC_BASE_URL=https://api.gaqno.com.br/shop
+SHOP_STOREFRONT_PUBLIC_URL=https://shop.gaqno.com.br
+MERCADO_PAGO_PIX_EXPIRY_MINUTES=30
 ```
+
+`SHOP_SERVICE_PUBLIC_BASE_URL` is the public origin of the shop API (no trailing slash). It is used to build the Mercado Pago **webhook** URL and, if needed, the API fallback for payment return redirects. `SHOP_STOREFRONT_PUBLIC_URL` is the customer-facing Next storefront origin; Mercado Pago sends buyers to `{storefront}/pagamento/retorno` (or to `GET /v1/payments/return` on the API, which redirects to that URL when this variable is set). Optional global `MERCADO_PAGO_ACCESS_TOKEN` / `MERCADO_PAGO_WEBHOOK_SECRET` may still exist for tooling, but production checkout uses **per-tenant** gateway credentials when configured.
 
 ### gaqno-shop (.env.production)
 ```bash
