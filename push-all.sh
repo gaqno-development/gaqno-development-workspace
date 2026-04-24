@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 # Push all submodules from the workspace.
+# After clone or sparse submodules: bash scripts/submodule-ensure-on-default-branch.sh && git submodule sync --recursive
 # Para cada repo com alterações: roda testes, depois add/commit/push.
 # Repos sem alterações são ignorados (não roda testes).
 # Cada repo tem seus próprios workflows em .github/workflows/ — CI dispara no repo individual.

@@ -39,7 +39,7 @@
 	url = git@github.com:gaqno/gaqno_landing.git
 [submodule "gaqno-lenin-ui"]
 	path = gaqno-lenin-ui
-	url = git@github.com:gaqno/llm_lenin.git
+	url = git@github.com:gaqno-development/gaqno-lenin-ui.git
 [submodule "gaqno-omnichannel-ui"]
 	path = gaqno-omnichannel-ui
 	url = git@github.com:gaqno-development/gaqno-omnichannel.git
@@ -48,7 +48,7 @@
 	url = git@github.com:gaqno-development/gaqno-pdv.git
 [submodule "gaqno-rpg-ui"]
 	path = gaqno-rpg-ui
-	url = git@github.com:gaqno-development/gaqno-rpg.git
+	url = git@github.com:gaqno-development/gaqno-rpg-ui.git
 [submodule "gaqno-shell-ui"]
 	path = gaqno-shell-ui
 	url = git@github.com:gaqno-development/gaqno-shell.git
