@@ -59,3 +59,5 @@ for path in "${paths[@]}"; do
 done
 
 echo "Done. If you changed submodule URLs: git submodule sync --recursive"
+echo "Dokploy/CI without SSH to submodules: git config url.https://github.com/.insteadOf git@github.com:"
+echo "Strict local check (fails if any submodule detached): VERIFY_SUBMODULE_ON_BRANCH=1 bash scripts/verify-submodules-non-empty.sh"

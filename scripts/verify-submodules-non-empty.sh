@@ -30,5 +30,11 @@ for path in "${paths[@]}"; do
     echo "verify-submodules-non-empty: empty tree at HEAD: $path (would break Dokploy/Swarm builds)" >&2
     failed=1
   fi
+  if [[ "${VERIFY_SUBMODULE_ON_BRANCH:-}" == "1" ]]; then
+    if ! git -C "$path" symbolic-ref -q HEAD &>/dev/null; then
+      echo "verify-submodules-non-empty: detached HEAD at $path (local: bash scripts/submodule-ensure-on-default-branch.sh)" >&2
+      failed=1
+    fi
+  fi
 done
 exit "$failed"

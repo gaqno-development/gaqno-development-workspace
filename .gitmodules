@@ -1,117 +1,156 @@
 [submodule "gaqno-ai-service"]
 	path = gaqno-ai-service
 	url = git@github.com:gaqno-development/gaqno-ai-service.git
+	branch = master
 [submodule "gaqno-pdv-service"]
 	path = gaqno-pdv-service
 	url = git@github.com:gaqno-development/gaqno-pdv-service.git
+	branch = main
 [submodule "gaqno-sso-service"]
 	path = gaqno-sso-service
 	url = git@github.com:gaqno-development/gaqno-sso-service.git
+	branch = main
 [submodule "gaqno-finance-service"]
 	path = gaqno-finance-service
 	url = git@github.com:gaqno-development/gaqno-finance-service.git
+	branch = main
 [submodule "gaqno-rpg-service"]
 	path = gaqno-rpg-service
 	url = git@github.com:gaqno-development/gaqno-rpg-service.git
+	branch = main
 [submodule "gaqno-omnichannel-service"]
 	path = gaqno-omnichannel-service
 	url = git@github.com:gaqno-development/gaqno-omnichannel-service.git
+	branch = main
 [submodule "gaqno-admin-service"]
 	path = gaqno-admin-service
 	url = git@github.com:gaqno-development/gaqno-admin-service.git
+	branch = main
 [submodule "gaqno-admin-ui"]
 	path = gaqno-admin-ui
 	url = git@github.com:gaqno-development/gaqno-admin-ui.git
+	branch = main
 [submodule "gaqno-ai-ui"]
 	path = gaqno-ai-ui
 	url = git@github.com:gaqno-development/gaqno-ai.git
+	branch = main
 [submodule "gaqno-crm-ui"]
 	path = gaqno-crm-ui
 	url = git@github.com:gaqno-development/gaqno-crm.git
+	branch = main
 [submodule "gaqno-erp-ui"]
 	path = gaqno-erp-ui
 	url = git@github.com:gaqno-development/gaqno-erp.git
+	branch = main
 [submodule "gaqno-finance-ui"]
 	path = gaqno-finance-ui
 	url = git@github.com:gaqno-development/gaqno-finance.git
+	branch = main
 [submodule "gaqno-landing-ui"]
 	path = gaqno-landing-ui
 	url = git@github.com:gaqno/gaqno_landing.git
+	branch = master
 [submodule "gaqno-lenin-ui"]
 	path = gaqno-lenin-ui
 	url = git@github.com:gaqno-development/gaqno-lenin-ui.git
+	branch = master
 [submodule "gaqno-omnichannel-ui"]
 	path = gaqno-omnichannel-ui
 	url = git@github.com:gaqno-development/gaqno-omnichannel.git
+	branch = main
 [submodule "gaqno-pdv-ui"]
 	path = gaqno-pdv-ui
 	url = git@github.com:gaqno-development/gaqno-pdv.git
+	branch = main
 [submodule "gaqno-rpg-ui"]
 	path = gaqno-rpg-ui
 	url = git@github.com:gaqno-development/gaqno-rpg-ui.git
+	branch = main
 [submodule "gaqno-shell-ui"]
 	path = gaqno-shell-ui
 	url = git@github.com:gaqno-development/gaqno-shell.git
+	branch = main
 [submodule "gaqno-sso-ui"]
 	path = gaqno-sso-ui
 	url = git@github.com:gaqno-development/gaqno-sso.git
+	branch = main
 [submodule "gaqno-wellness-service"]
 	path = gaqno-wellness-service
 	url = git@github.com:gaqno-development/gaqno-wellness-service.git
+	branch = main
 [submodule "gaqno-wellness-ui"]
 	path = gaqno-wellness-ui
 	url = git@github.com:gaqno-development/gaqno-wellness.git
+	branch = main
 [submodule "@gaqno-agent"]
 	path = @gaqno-agent
 	url = git@github.com:gaqno-development/gaqno-agent.git
+	branch = main
 [submodule "@gaqno-backcore"]
 	path = @gaqno-backcore
 	url = git@github.com:gaqno-development/backcore.git
+	branch = main
 [submodule "@gaqno-frontcore"]
 	path = @gaqno-frontcore
 	url = git@github.com:gaqno-development/frontcore.git
+	branch = main
 [submodule "@gaqno-types"]
 	path = @gaqno-types
 	url = git@github.com:gaqno-development/gaqno-types.git
+	branch = main
 [submodule "gaqno-lead-enrichment-service"]
 	path = gaqno-lead-enrichment-service
 	url = git@github.com:gaqno-development/gaqno-lead-enrichment-service.git
+	branch = main
 [submodule "gaqno-crm-service"]
 	path = gaqno-crm-service
 	url = git@github.com:gaqno-development/gaqno-crm-service.git
+	branch = main
 [submodule "gaqno-erp-service"]
 	path = gaqno-erp-service
 	url = git@github.com:gaqno-development/gaqno-erp-service.git
+	branch = main
 [submodule "gaqno-customer-service"]
 	path = gaqno-customer-service
 	url = git@github.com:gaqno-development/gaqno-customer-service.git
+	branch = main
 [submodule "gaqno-intelligence-service"]
 	path = gaqno-intelligence-service
 	url = git@github.com:gaqno-development/gaqno-intelligence-service.git
+	branch = main
 [submodule "gaqno-intelligence-ui"]
 	path = gaqno-intelligence-ui
 	url = git@github.com:gaqno-development/gaqno-intelligence-ui.git
+	branch = main
 [submodule "gaqno-docs-ui"]
 	path = gaqno-docs-ui
 	url = git@github.com:gaqno-development/gaqno-docs-ui.git
+	branch = main
 [submodule "gaqno-consumer-service"]
 	path = gaqno-consumer-service
 	url = git@github.com:gaqno-development/gaqno-consumer-service.git
+	branch = main
 [submodule "gaqno-sherlock-service"]
 	path = gaqno-sherlock-service
 	url = git@github.com:gaqno-development/gaqno-sherlock-service.git
+	branch = main
 [submodule "gaqno-sherlock-ui"]
 	path = gaqno-sherlock-ui
 	url = git@github.com:gaqno-development/gaqno-sherlock-ui.git
+	branch = main
 [submodule "gaqno-shop"]
 	path = gaqno-shop
 	url = git@github.com:gaqno-development/gaqno-shop.git
+	branch = main
 [submodule "gaqno-shop-admin"]
 	path = gaqno-shop-admin
 	url = git@github.com:gaqno-development/gaqno-shop-admin.git
+	branch = main
 [submodule "gaqno-shop-service"]
 	path = gaqno-shop-service
 	url = git@github.com:gaqno-development/gaqno-shop-service.git
+	branch = main
 [submodule "bull-board-app"]
 	path = bull-board-app
 	url = git@github.com:gaqno-development/bull-board-app.git
+	branch = master
