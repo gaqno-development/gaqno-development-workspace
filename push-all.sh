@@ -86,6 +86,22 @@ ensure_npm_in_path() {
   command -v npm &>/dev/null
 }
 
+resolve_origin_default_branch() {
+  local b
+  b=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')
+  if [ -n "$b" ]; then
+    echo "$b"
+    return 0
+  fi
+  for cand in main master trunk; do
+    if git rev-parse --verify "origin/$cand" &>/dev/null; then
+      echo "$cand"
+      return 0
+    fi
+  done
+  echo "main"
+}
+
 run_repo_tests() {
   local repo_path="$1"
   local repo_name="$2"
@@ -270,14 +286,23 @@ for repo in "${REPOS[@]}"; do
 
   echo "   🚀 Pushing to remote..."
   branch=$(git branch --show-current)
-  if [ -z "$branch" ]; then
-    echo "   ⚠️  Detached HEAD — não dá push. Ex.: git checkout main && git merge <commit> ou git cherry-pick <commit>"
-    echo ""
-    continue
-  fi
-  if ! git push -u origin "$branch"; then
-    echo "   ⚠️  Push failed (check if remote is configured)"
+  push_ok=0
+  if [ -n "$branch" ]; then
+    if git push -u origin "$branch"; then
+      push_ok=1
+    else
+      echo "   ⚠️  Push failed (check if remote is configured)"
+    fi
   else
+    def_branch=$(resolve_origin_default_branch)
+    echo "   ⚠️  Detached HEAD — pushing commit to origin/$def_branch (typical for submodules)"
+    if git push -u origin "HEAD:${def_branch}"; then
+      push_ok=1
+    else
+      echo "   ⚠️  Push failed. Ex.: cd $REPO_PATH && git checkout $def_branch && git cherry-pick HEAD@{1} && git push"
+    fi
+  fi
+  if [ "$push_ok" = "1" ]; then
     case "$repo" in
       @gaqno-types|@gaqno-backcore|@gaqno-frontcore|@gaqno-agent)
         PUSHED_PACKAGE=1
