@@ -111,6 +111,10 @@ To add the admin panel domain, you would need to:
 
 Or simply configure it in Dokploy - Traefik will route based on the Host header.
 
+## SSO Socket.IO (menu / feature flags)
+
+Traefik (or any ingress in front of `api.gaqno.com.br`) must allow **WebSocket upgrade** for path **`/sso-socket.io`** on the SSO service so the shell can receive `feature-flags:updated` and refresh the sidebar without polling.
+
 ## Tunnel Token
 
 The tunnel is already authenticated and running on your Dokploy server. The tunnel token is securely stored and managed by cloudflared.
