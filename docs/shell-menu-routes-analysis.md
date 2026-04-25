@@ -137,4 +137,43 @@ O shell **já define** rotas para tenants, usage e branches: `/saas/tenants`, `/
 6. **Finance MFE**
    - Ensure `?view=` and related query params drive the active tab/view so menu deep links work.
 
+## 10) Hierarchical feature toggles — SSO modules vs domain submodules
+
+### Layer 1 — Product modules (portal entitlements)
+
+- **Source:** `gaqno-sso-service` — table `sso_feature_flags`, Postgres enum `module` (`moduleEnum` in schema), and the static map `MENU_ID_TO_MODULE` in `src/menu/menu.service.ts`.
+- **Behaviour:** `GET /v1/menu` runs `MenuService.filterMenuByFeatureFlags` on **root** menu items. If a root `id` has an entry in `MENU_ID_TO_MODULE`, the corresponding `module` value (e.g. `SHOP`, `CRM`) must be **enabled** for the tenant in `sso_feature_flags` or the whole block is removed.
+- **Shopping:** root `id: shop` maps to **`SHOP`** (not a separate top-level “dropshipping” module). Do **not** add `dropshipping: "DROPSHIPPING"` to `MENU_ID_TO_MODULE` — dropshipping is a **submodule** of Shop, not a first-level menu module.
+- **Roots without a map entry** (e.g. `overview`, `platform-tenants`) are **not** cut by this filter; they still use permissions, `filterMenuByScope`, etc.
+- **Typing:** `MENU_ID_TO_MODULE` is typed against the Postgres `module` enum (`SsoModule` / `SSO_MODULE_VALUES` in `gaqno-sso-service/src/database/schema.ts`) so map values stay aligned with `sso_feature_flags.module`.
+- **When tenant flags cannot be loaded:** `MenuController.getMenuItems` applies `filterMenuByFeatureFlags` with an **empty** enabled set (strict gate: every mapped root is hidden until flags load successfully again). Unmapped roots (e.g. `overview`) can still appear if permissions and scope allow. This favours commercial gating over fail-open during SSO DB errors.
+
+### Layer 2 — Submodules (service / domain toggles)
+
+- **Shop (gaqno-shop-service):** `tenant_feature_flags` (e.g. `feature_bakery`, `feature_shipping`, `feature_dropshipping`, payment method flags) and `tenant_payment_gateways`. Logical keys follow `MODULE_SUBMODULE_NAME` (e.g. `SHOP_DROPSHIPPING` ↔ `feature_dropshipping`).
+- **Other products (Omnichannel, AI, …):** submodule flags are **TBD** per service (e.g. future `OMNICHANNEL_TEAMS`, `OMNICHANNEL_FLOWS` once a tenant flags table exists in that domain).
+- **Rule:** submodule capabilities are **not** promoted to SSO `module` rows for menu gating; the enum value `DROPSHIPPING` in Postgres, if still present, is legacy/billing — product gating for dropshipping is `SHOP` + `feature_dropshipping`.
+
+### Three layers (summary)
+
+| Layer | Role | Where |
+|-------|------|--------|
+| Module gate (SSO) | Entitled **product** for the tenant | `sso_feature_flags`, `MENU_ID_TO_MODULE` |
+| Submodule toggle (service) | **Capability** inside the product | Domain DB (e.g. `tenant_feature_flags` in shop) |
+| Permissions | **Who** may use a route or action | Roles, `routePermissions` from SSO, menu `requiredPermissions` |
+
+### UX: module on, no submodule enabled
+
+If the **module** is on in SSO but **no** relevant submodule flags are on, the target experience is **minimal** (e.g. product dashboard only); screens that depend on a submodule need that submodule’s feature flag (and permissions). Today, **where** you configure module vs submodule is **split** (SSO vs each service’s admin UIs).
+
+### Where operators manage this (by product)
+
+- **Shop (stores / e-com):** primarily **shop-admin** (tenant/store management and shop-specific flags in that MFE’s flows).
+- **Other modules** (Omnichannel, AI, CRM, etc. at platform/tenant level): use the **platform tenants** area (e.g. `/platform/tenants` or the repo’s current equivalent such as `/admin/organization/tenants` / `/saas/tenants`) — not the shop-admin product UI.
+
+### Default SSO seeds and `SHOP` vs legacy `DROPSHIPPING`
+
+- **Plans:** `seedDefaultFeatures` enables different `module` rows per plan (e.g. the `all` plan may still list legacy `DROPSHIPPING` alongside `SHOP` for backwards compatibility). Plans such as `basic` / `pro` / `enterprise` may **omit** `SHOP` until product defaults change — tenants on those plans will not see the `shop` menu root until an enabled `SHOP` row exists in `sso_feature_flags`.
+- **Data migration:** tenants that historically had only `DROPSHIPPING` enabled and not `SHOP` will **not** pass the `shop` root gate; align data to enable **`SHOP`** for the product and use **`SHOP_DROPSHIPPING`** (shop-service `feature_dropshipping`) for the dropshipping capability.
+
 This analysis is based on the current shell and MFE code and the provided menu JSON.
