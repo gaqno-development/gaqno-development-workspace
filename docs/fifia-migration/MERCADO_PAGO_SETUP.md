@@ -30,3 +30,13 @@ Return path on the storefront: **`/pagamento/retorno?order=…&tenant=…`**. Th
 1. Set `SHOP_SERVICE_PUBLIC_BASE_URL` and `SHOP_STOREFRONT_PUBLIC_URL` in production.
 2. Configure Mercado Pago application webhooks to the service URL above.
 3. Ensure `publicShopUrl` on each production tenant is correct if you rely on tenant-specific return domains.
+
+## Product alignment: admin toggles vs Mercado Pago
+
+**Decisão de produto (Gaqno Shop):**
+
+1. **O que a app controla** — `GET /v1/payments/methods` (via `PaymentGatewaysService.getEnabledPaymentMethods`) devolve quais meios a **vitrine** pode mostrar (ex.: `credit_card`, `pix`, `boleto`) com base no gateway Mercado Pago do tenant **ativo** na tabela `tenant_payment_gateways`. Não há toggles em “Módulos” do admin de loja para ativar PIX/cartão/boleto; esses meios são tratados como **núcleo** enquanto o gateway estiver credenciado.
+2. **O que o Mercado Pago controla** — métodos realmente liquidáveis (PIX habilitado na conta, meios de cartão, boleto, antifraude) conforme o **painel e a conta** MP. A app não chama a API do MP para ligar/desligar meios na conta por switch interno.
+3. **Se no futuro** quiseres interruptores no admin que apenas **escondam** um meio no checkout (sem alterar a conta MP), isso exigiria flags ou colunas por meio e filtragem em `getEnabledPaymentMethods` — eixo distinto de **(2)**.
+
+Cobertura de teste automática: `gaqno-shop-service` — `payment-gateways.service.spec.ts` (gateway inativo / ativo) e `payment.service.spec.ts` (delegação para `getEnabledPaymentMethods`).
