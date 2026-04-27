@@ -404,3 +404,5 @@ echo ""
 echo "🎉 All repositories processed!"
 echo "   (Workflows em cada repo — CI/PR validation disparam no repositório individual)"
 
+exit 0
+
