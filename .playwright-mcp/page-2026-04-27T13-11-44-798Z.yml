@@ -1,0 +1,201 @@
+- generic [ref=e4]:
+  - navigation "Loja" [ref=e5]:
+    - generic [ref=e7]:
+      - img [ref=e9]
+      - generic [ref=e14]:
+        - generic [ref=e15]: Loja
+        - generic [ref=e16]: Administração
+    - navigation [ref=e17]:
+      - region "Vendas" [ref=e18]:
+        - generic [ref=e19]: Vendas
+        - list [ref=e20]:
+          - listitem [ref=e21]:
+            - link "Pedidos" [ref=e22] [cursor=pointer]:
+              - /url: /shop-admin/pedidos
+              - img [ref=e24]
+              - generic [ref=e28]: Pedidos
+          - listitem [ref=e29]:
+            - link "Pagamentos" [ref=e30] [cursor=pointer]:
+              - /url: /shop-admin/pagamentos
+              - img [ref=e32]
+              - generic [ref=e35]: Pagamentos
+          - listitem [ref=e36]:
+            - link "Cupons" [ref=e37] [cursor=pointer]:
+              - /url: /shop-admin/cupons
+              - img [ref=e39]
+              - generic [ref=e41]: Cupons
+          - listitem [ref=e42]:
+            - link "Fidelidade" [ref=e43] [cursor=pointer]:
+              - /url: /shop-admin/fidelidade
+              - img [ref=e45]
+              - generic [ref=e47]: Fidelidade
+      - region "Catálogo" [ref=e48]:
+        - generic [ref=e49]: Catálogo
+        - list [ref=e50]:
+          - listitem [ref=e51]:
+            - link "Produtos" [ref=e52] [cursor=pointer]:
+              - /url: /shop-admin/produtos
+              - img [ref=e55]
+              - generic [ref=e59]: Produtos
+          - listitem [ref=e60]:
+            - link "Categorias" [ref=e61] [cursor=pointer]:
+              - /url: /shop-admin/categorias
+              - img [ref=e63]
+              - generic [ref=e67]: Categorias
+          - listitem [ref=e68]:
+            - link "Ingredientes" [ref=e69] [cursor=pointer]:
+              - /url: /shop-admin/ingredientes
+              - img [ref=e71]
+              - generic [ref=e73]: Ingredientes
+          - listitem [ref=e74]:
+            - link "Receitas" [ref=e75] [cursor=pointer]:
+              - /url: /shop-admin/receitas
+              - img [ref=e77]
+              - generic [ref=e79]: Receitas
+          - listitem [ref=e80]:
+            - link "Decorações" [ref=e81] [cursor=pointer]:
+              - /url: /shop-admin/decoracoes
+              - img [ref=e83]
+              - generic [ref=e85]: Decorações
+      - region "Operação" [ref=e86]:
+        - generic [ref=e87]: Operação
+        - list [ref=e88]:
+          - listitem [ref=e89]:
+            - link "Estoque" [ref=e90] [cursor=pointer]:
+              - /url: /shop-admin/estoque
+              - img [ref=e92]
+              - generic [ref=e102]: Estoque
+          - listitem [ref=e103]:
+            - link "Frete" [ref=e104] [cursor=pointer]:
+              - /url: /shop-admin/frete
+              - img [ref=e106]
+              - generic [ref=e111]: Frete
+          - listitem [ref=e112]:
+            - link "Agenda" [ref=e113] [cursor=pointer]:
+              - /url: /shop-admin/agenda
+              - img [ref=e115]
+              - generic [ref=e117]: Agenda
+          - listitem [ref=e118]:
+            - link "Dropshipping" [ref=e119] [cursor=pointer]:
+              - /url: /shop-admin/dropshipping
+              - img [ref=e121]
+              - generic [ref=e125]: Dropshipping
+      - region "Insights" [ref=e126]:
+        - generic [ref=e127]: Insights
+        - list [ref=e128]:
+          - listitem [ref=e129]:
+            - link "Relatórios" [ref=e130] [cursor=pointer]:
+              - /url: /shop-admin/relatorios
+              - img [ref=e132]
+              - generic [ref=e134]: Relatórios
+          - listitem [ref=e135]:
+            - link "Clientes" [ref=e136] [cursor=pointer]:
+              - /url: /shop-admin/clientes
+              - img [ref=e138]
+              - generic [ref=e143]: Clientes
+      - region "Administração" [ref=e144]:
+        - generic [ref=e145]: Administração
+        - list [ref=e146]:
+          - listitem [ref=e147]:
+            - link "Usuários" [ref=e148] [cursor=pointer]:
+              - /url: /shop-admin/usuarios
+              - img [ref=e150]
+              - generic [ref=e153]: Usuários
+          - listitem [ref=e154]:
+            - link "Configurações" [ref=e155] [cursor=pointer]:
+              - /url: /shop-admin/configuracoes
+              - img [ref=e157]
+              - generic [ref=e160]: Configurações
+    - button "Recolher menu" [ref=e162]:
+      - img [ref=e163]
+      - generic [ref=e165]: Recolher
+  - generic [ref=e166]:
+    - banner [ref=e167]:
+      - generic [ref=e168]:
+        - generic [ref=e169]:
+          - generic [ref=e170]: Administração
+          - status "offline" [ref=e171]: offline
+        - heading "Produtos" [level=1] [ref=e173]
+    - main [ref=e174]:
+      - generic [ref=e175]:
+        - generic [ref=e176]:
+          - generic [ref=e177]:
+            - heading "Produtos" [level=1] [ref=e178]
+            - paragraph [ref=e179]: 0 produtos no total
+          - generic [ref=e180]:
+            - button "Atualizar" [ref=e181]:
+              - img
+              - text: Atualizar
+            - button "Novo Produto" [ref=e182]:
+              - img
+              - text: Novo Produto
+        - generic [ref=e183]:
+          - generic [ref=e184]:
+            - img [ref=e185]
+            - textbox "Buscar produtos..." [ref=e190]
+          - combobox [ref=e191]:
+            - img [ref=e192]
+            - generic: Todas categorias
+            - img [ref=e194]
+          - combobox [ref=e196]:
+            - generic: Todos
+            - img [ref=e197]
+        - table [ref=e200]:
+          - rowgroup [ref=e201]:
+            - row "Produto Categoria Preço ↕ Estoque Status Ações" [ref=e202]:
+              - columnheader [ref=e203]:
+                - checkbox [ref=e204]
+              - columnheader [ref=e205]
+              - columnheader "Produto" [ref=e206]
+              - columnheader "Categoria" [ref=e207]
+              - columnheader "Preço ↕" [ref=e208]:
+                - button "Preço ↕" [ref=e209]
+              - columnheader "Estoque" [ref=e210]
+              - columnheader "Status" [ref=e211]
+              - columnheader "Ações" [ref=e212]
+          - rowgroup [ref=e213]:
+            - row [ref=e214]:
+              - cell [ref=e215]
+              - cell [ref=e217]
+              - cell [ref=e219]
+              - cell [ref=e221]
+              - cell [ref=e223]
+              - cell [ref=e225]
+              - cell [ref=e227]
+              - cell [ref=e229]
+            - row [ref=e231]:
+              - cell [ref=e232]
+              - cell [ref=e234]
+              - cell [ref=e236]
+              - cell [ref=e238]
+              - cell [ref=e240]
+              - cell [ref=e242]
+              - cell [ref=e244]
+              - cell [ref=e246]
+            - row [ref=e248]:
+              - cell [ref=e249]
+              - cell [ref=e251]
+              - cell [ref=e253]
+              - cell [ref=e255]
+              - cell [ref=e257]
+              - cell [ref=e259]
+              - cell [ref=e261]
+              - cell [ref=e263]
+            - row [ref=e265]:
+              - cell [ref=e266]
+              - cell [ref=e268]
+              - cell [ref=e270]
+              - cell [ref=e272]
+              - cell [ref=e274]
+              - cell [ref=e276]
+              - cell [ref=e278]
+              - cell [ref=e280]
+            - row [ref=e282]:
+              - cell [ref=e283]
+              - cell [ref=e285]
+              - cell [ref=e287]
+              - cell [ref=e289]
+              - cell [ref=e291]
+              - cell [ref=e293]
+              - cell [ref=e295]
+              - cell [ref=e297]
