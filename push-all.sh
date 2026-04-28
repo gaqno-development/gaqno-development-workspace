@@ -246,6 +246,32 @@ for repo in "${REPOS[@]}"; do
     continue
   fi
 
+  if [ -f "$REPO_PATH/Dockerfile" ] || [ -f "$REPO_PATH/Dockerfile.monorepo" ]; then
+    echo "   🐳 Building Docker image (cached)..."
+    BUILD_LOG="$BASE_DIR/build-logs/${repo}-push-build.log"
+    mkdir -p "$BASE_DIR/build-logs"
+    DOCKER_FILE="$REPO_PATH/Dockerfile"
+    DOCKER_CTX="$REPO_PATH"
+    if [ -f "$REPO_PATH/Dockerfile.monorepo" ]; then
+      DOCKER_FILE="$REPO_PATH/Dockerfile.monorepo"
+      DOCKER_CTX="$BASE_DIR"
+    fi
+    NPM_TOKEN_ARG=""
+    if [ -n "${NPM_TOKEN:-}" ]; then
+      NPM_TOKEN_ARG="--build-arg NPM_TOKEN=${NPM_TOKEN}"
+    elif [ -f "$BASE_DIR/.npmrc" ]; then
+      _tk=$(grep "//npm.pkg.github.com/:_authToken" "$BASE_DIR/.npmrc" 2>/dev/null | head -1 | cut -d'=' -f2-)
+      [ -n "$_tk" ] && NPM_TOKEN_ARG="--build-arg NPM_TOKEN=${_tk}"
+    fi
+    if ! docker build -f "$DOCKER_FILE" $NPM_TOKEN_ARG -t "${repo}:test" "$DOCKER_CTX" > "$BUILD_LOG" 2>&1; then
+      echo "   ❌ Docker build failed — skipping commit/push for $repo"
+      echo "      Log: $BUILD_LOG"
+      echo ""
+      continue
+    fi
+    echo "   ✓ Docker build OK (cached)"
+  fi
+
   echo "   🧪 Running tests (há alterações; testes obrigatórios antes de commit/push)..."
   if ! run_repo_tests "$REPO_PATH" "$repo"; then
     echo "   ❌ Tests failed — skipping commit/push for $repo"
