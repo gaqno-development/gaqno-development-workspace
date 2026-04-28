@@ -54,10 +54,13 @@ SERVICES=(
 )
 
 DOCKER_EXTRA_ARGS=""
+BUST_CACHE=0
+MAX_PARALLEL="${MAX_PARALLEL:-4}"
 FILTERS=()
 for arg in "$@"; do
   case "${arg}" in
-    --no-cache) DOCKER_EXTRA_ARGS="${DOCKER_EXTRA_ARGS} --no-cache" ;;
+    --no-cache) DOCKER_EXTRA_ARGS="${DOCKER_EXTRA_ARGS} --no-cache"; BUST_CACHE=1 ;;
+    --parallel=*) MAX_PARALLEL="${arg#--parallel=}" ;;
     *) FILTERS+=("${arg}") ;;
   esac
 done
@@ -128,8 +131,33 @@ echo ""
 
 cd "${BASE_DIR}"
 
-SUCCESSFUL=()
-FAILED=()
+SUCCESSFUL_FILE="$(mktemp)"
+FAILED_FILE="$(mktemp)"
+RUNNING_FILE="$(mktemp)"
+trap 'rm -f "${SUCCESSFUL_FILE}" "${FAILED_FILE}" "${RUNNING_FILE}"' EXIT
+
+record_success() { echo "$1" >> "${SUCCESSFUL_FILE}"; }
+record_failure() { echo "$1" >> "${FAILED_FILE}"; }
+record_start()   { echo "$1" >> "${RUNNING_FILE}"; }
+record_done()    { sed -i'' -e "/^${1}$/d" "${RUNNING_FILE}" 2>/dev/null; }
+
+format_duration() {
+  local secs="$1"
+  if [ "${secs}" -ge 60 ]; then
+    printf "%dm%02ds" $((secs / 60)) $((secs % 60))
+  else
+    printf "%ds" "${secs}"
+  fi
+}
+
+CACHE_BUST_ARGS=""
+if [ "${BUST_CACHE}" -eq 1 ]; then
+  CACHE_BUST_ARGS="--build-arg GAQNO_CACHE_BUST=$(date +%s)"
+fi
+
+short_name() {
+  echo "$1" | sed 's/^gaqno-//'
+}
 
 docker_build_one() {
   local name="$1"
@@ -137,6 +165,8 @@ docker_build_one() {
   local context="${3:-${dir}}"
   local dockerfile="${4:-${dir}/Dockerfile}"
   local log_file="${BUILD_LOG_DIR}/${name}-docker-build.log"
+  local tag
+  tag=$(short_name "${name}")
 
   if [ ! -d "${dir}" ]; then
     echo -e "${YELLOW}⚠️  Skipping ${name} (directory not found)${NC}"
@@ -147,19 +177,54 @@ docker_build_one() {
     return 1
   fi
 
-  echo -e "${BLUE}🐳 Building ${name}...${NC}"
-  if docker build -f "${dockerfile}" \
+  local start_ts
+  start_ts=$(date +%s)
+  echo -e "${BLUE}🐳 [${tag}] Building...${NC}"
+  docker build -f "${dockerfile}" \
     --build-arg NPM_TOKEN="${NPM_TOKEN}" \
-    --build-arg GAQNO_CACHE_BUST="$(date +%s)" \
+    ${CACHE_BUST_ARGS} \
     ${DOCKER_EXTRA_ARGS} \
     -t "${name}:test" \
-    "${context}" > "${log_file}" 2>&1; then
-    echo -e "${GREEN}✅ ${name} built successfully${NC}"
+    "${context}" 2>&1 | tee "${log_file}" | sed -u "s/^/  ${BLUE}[${tag}]${NC} /"
+  local exit_code=${PIPESTATUS[0]}
+
+  local elapsed
+  elapsed=$(( $(date +%s) - start_ts ))
+  if [ "${exit_code}" -eq 0 ]; then
+    echo -e "${GREEN}✅ [${tag}] Built successfully ($(format_duration ${elapsed}))${NC}"
     return 0
   else
-    echo -e "${RED}❌ ${name} Docker build failed${NC}"
+    echo -e "${RED}❌ [${tag}] Build failed ($(format_duration ${elapsed}))${NC}"
     echo -e "${YELLOW}   Log: ${log_file}${NC}"
     return 1
+  fi
+}
+
+wait_for_slots() {
+  while [ "$(jobs -rp | wc -l)" -ge "${MAX_PARALLEL}" ]; do
+    wait -n 2>/dev/null || true
+  done
+}
+
+build_item() {
+  local name="$1"
+  local dir="$2"
+  local context="$3"
+  local dockerfile="$4"
+  record_start "${name}"
+  if docker_build_one "${name}" "${dir}" "${context}" "${dockerfile}"; then
+    record_success "${name}"
+  else
+    record_failure "${name}"
+  fi
+  record_done "${name}"
+}
+
+show_remaining() {
+  local remaining
+  remaining=$(cat "${RUNNING_FILE}" 2>/dev/null | grep -c .)
+  if [ "${remaining}" -gt 0 ]; then
+    echo -e "${BLUE}⏳ Waiting for ${remaining} build(s): $(paste -sd', ' "${RUNNING_FILE}")${NC}"
   fi
 }
 
@@ -168,12 +233,8 @@ build_services() {
   echo ""
   for service in "${SERVICES[@]}"; do
     matches_filter "${service}" || continue
-    if docker_build_one "${service}" "${service}"; then
-      SUCCESSFUL+=("${service}")
-    else
-      FAILED+=("${service}")
-    fi
-    echo ""
+    wait_for_slots
+    build_item "${service}" "${service}" "" "" &
   done
 }
 
@@ -182,20 +243,12 @@ build_frontends() {
   echo ""
   for project in "${PROJECTS[@]}"; do
     matches_filter "${project}" || continue
+    wait_for_slots
     if [ -f "${BASE_DIR}/${project}/Dockerfile.monorepo" ]; then
-      if docker_build_one "${project}" "${project}" "${BASE_DIR}" "${project}/Dockerfile.monorepo"; then
-        SUCCESSFUL+=("${project}")
-      else
-        FAILED+=("${project}")
-      fi
+      build_item "${project}" "${project}" "${BASE_DIR}" "${project}/Dockerfile.monorepo" &
     else
-      if docker_build_one "${project}" "${project}"; then
-        SUCCESSFUL+=("${project}")
-      else
-        FAILED+=("${project}")
-      fi
+      build_item "${project}" "${project}" "" "" &
     fi
-    echo ""
   done
 }
 
@@ -210,10 +263,15 @@ echo ""
 
 build_services
 build_frontends
+show_remaining
+wait
+
+mapfile -t SUCCESSFUL < "${SUCCESSFUL_FILE}" 2>/dev/null || true
+mapfile -t FAILED < "${FAILED_FILE}" 2>/dev/null || true
 
 echo ""
 echo "=========================================="
-echo "📊 Build Summary"
+echo "📊 Build Summary (parallel=${MAX_PARALLEL})"
 echo "=========================================="
 echo ""
 

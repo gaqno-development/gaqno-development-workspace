@@ -1,0 +1,77 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e5]:
+        - link "Gaqno Shop — voltar para a página inicial" [ref=e6] [cursor=pointer]:
+          - /url: /
+          - emphasis [ref=e8]: Gaqno Shop
+        - generic [ref=e10]:
+          - img
+          - searchbox [ref=e11]
+        - navigation [ref=e12]:
+          - link "Início" [ref=e13] [cursor=pointer]:
+            - /url: /
+          - link "Produtos" [ref=e14] [cursor=pointer]:
+            - /url: /produtos
+        - button "Abrir carrinho" [ref=e16]:
+          - img [ref=e17]
+    - main [ref=e20]:
+      - generic [ref=e23]: Carregando
+    - contentinfo [ref=e28]:
+      - generic [ref=e29]:
+        - generic [ref=e30]:
+          - generic [ref=e31]:
+            - generic [ref=e32]: Boutique desde 2026
+            - heading "Gaqno Shop." [level=3] [ref=e33]:
+              - emphasis [ref=e34]: Gaqno Shop.
+            - paragraph [ref=e35]: Curadoria cuidadosa, atendimento por quem acredita no detalhe.
+          - generic [ref=e36]:
+            - text: Catálogo
+            - list [ref=e37]:
+              - listitem [ref=e38]:
+                - link "Início" [ref=e39] [cursor=pointer]:
+                  - /url: /
+                  - text: Início
+                  - img [ref=e40]
+              - listitem [ref=e43]:
+                - link "Todos os produtos" [ref=e44] [cursor=pointer]:
+                  - /url: /produtos
+                  - text: Todos os produtos
+                  - img [ref=e45]
+              - listitem [ref=e48]:
+                - link "Novidades" [ref=e49] [cursor=pointer]:
+                  - /url: /produtos?ordering=new
+                  - text: Novidades
+                  - img [ref=e50]
+          - generic [ref=e53]:
+            - text: Ajuda
+            - list [ref=e54]:
+              - listitem [ref=e55]:
+                - link "Minha conta" [ref=e56] [cursor=pointer]:
+                  - /url: /conta
+                  - text: Minha conta
+                  - img [ref=e57]
+              - listitem [ref=e60]:
+                - link "Pedidos" [ref=e61] [cursor=pointer]:
+                  - /url: /conta/pedidos
+                  - text: Pedidos
+                  - img [ref=e62]
+              - listitem [ref=e65]:
+                - link "Política de trocas" [ref=e66] [cursor=pointer]:
+                  - /url: /produtos
+                  - text: Política de trocas
+                  - img [ref=e67]
+          - generic [ref=e70]:
+            - text: Redes
+            - generic [ref=e71]:
+              - link "Instagram" [ref=e72] [cursor=pointer]:
+                - /url: "#"
+                - img [ref=e73]
+              - link "Facebook" [ref=e76] [cursor=pointer]:
+                - /url: "#"
+                - img [ref=e77]
+            - paragraph [ref=e79]: contato@gaqno-shop.com.br
+        - generic [ref=e80]:
+          - generic [ref=e81]: © 2026 Gaqno Shop
+          - generic [ref=e82]: Feito com cuidado · São Paulo
+  - alert [ref=e83]

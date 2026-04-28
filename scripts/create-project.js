@@ -73,6 +73,14 @@ function toPascalCase(str) {
     .join("");
 }
 
+function toSnakeCase(str) {
+  return str.replace(/-/g, "_");
+}
+
+function toConstantCase(str) {
+  return str.replace(/-/g, "_").toUpperCase();
+}
+
 function ensureDir(dir) {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 }
@@ -90,6 +98,7 @@ function createService({ name, servicePort }) {
   }
 
   const pascal = toPascalCase(name);
+  const snake = toSnakeCase(name);
   const desc = `Gaqno ${pascal} - ${name} management service`;
 
   const files = {
@@ -107,27 +116,42 @@ function createService({ name, servicePort }) {
           "start:dev": "nest start --watch",
           "start:prod": "node dist/main.js",
           lint: 'eslint "{src,test}/**/*.ts" --fix',
-          test: `echo "No tests in gaqno-${name}-service"`,
+          test: "jest --forceExit",
+          "test:watch": "jest --watch",
+          "test:coverage": "jest --coverage",
+          migrate: "drizzle-kit generate",
+          "migrate:run": "node run-migrations.js",
         },
         dependencies: {
+          "@gaqno-development/backcore": "^1.5.17",
+          "@gaqno-development/types": "^1.0.0",
           "@nestjs/common": "^11.0.1",
           "@nestjs/config": "^3.2.2",
           "@nestjs/core": "^11.0.1",
           "@nestjs/platform-express": "^11.0.1",
+          "@nestjs/throttler": "^6.3.0",
           "class-transformer": "^0.5.1",
-          "class-validator": "^0.14.1",
+          "class-validator": "^0.14.3",
+          "drizzle-orm": "^0.45.1",
+          pg: "^8.11.3",
           "reflect-metadata": "^0.2.2",
           rxjs: "^7.8.1",
         },
         devDependencies: {
-          "@nestjs/cli": "^11.0.0",
-          "@types/express": "^5.0.0",
-          "@types/node": "^22.10.7",
-          eslint: "^9.18.0",
-          typescript: "^5.7.3",
-          husky: "^9.1.7",
           "@commitlint/cli": "^19.6.1",
           "@commitlint/config-conventional": "^19.6.0",
+          "@nestjs/cli": "^11.0.0",
+          "@nestjs/testing": "^11.0.1",
+          "@types/express": "^5.0.0",
+          "@types/jest": "^30.0.0",
+          "@types/node": "^22.10.7",
+          "@types/pg": "^8.18.0",
+          "drizzle-kit": "^0.31.9",
+          eslint: "^9.18.0",
+          husky: "^9.1.7",
+          jest: "^30.0.0",
+          "ts-jest": "^29.2.5",
+          typescript: "^5.7.3",
         },
       },
       null,
@@ -176,7 +200,26 @@ function createService({ name, servicePort }) {
       null,
       2,
     ),
-    ".gitignore": "/dist\n/node_modules\n.env\n*.log\n",
+    "drizzle.config.ts": `import { defineConfig } from 'drizzle-kit';
+import * as path from 'path';
+
+export default defineConfig({
+  schema: path.join(__dirname, 'src/database/schema.ts'),
+  out: path.join(__dirname, 'src/database/migrations'),
+  dialect: 'postgresql',
+  dbCredentials: {
+    url: process.env.DATABASE_URL || '',
+  },
+});
+`,
+    ".env.example": `NODE_ENV=development
+PORT=${servicePort}
+DATABASE_URL=postgresql://postgres:password@localhost:5432/gaqno_${snake}_db
+JWT_SECRET=your-jwt-secret-here
+CORS_ORIGIN=*
+REDIS_URL=redis://localhost:6379
+`,
+    ".gitignore": "/dist\n/node_modules\n.env\n*.log\ncoverage/\n.jest-cache/\n",
     "commitlint.config.js": `/** @type {import('@commitlint/types').UserConfig} */
 module.exports = {
   extends: ['@commitlint/config-conventional'],
@@ -203,110 +246,245 @@ module.exports = {
   },
 };
 `,
-    ".npmrc": "@gaqno-development:registry=https://npm.pkg.github.com\n",
-    "src/common/http-exception.filter.ts": `import {
-  ExceptionFilter,
-  Catch,
-  ArgumentsHost,
-  HttpException,
-} from "@nestjs/common";
-import { Request, Response } from "express";
+    "jest.config.js": `const base = require('@gaqno-development/backcore/jest-preset');
 
-@Catch(HttpException)
-export class HttpExceptionFilter implements ExceptionFilter {
-  catch(exception: HttpException, host: ArgumentsHost): void {
-    const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
-    const status = exception.getStatus();
-    const exceptionResponse = exception.getResponse();
-    const message =
-      typeof exceptionResponse === "string"
-        ? exceptionResponse
-        : (exceptionResponse as Record<string, unknown>).message ||
-          exception.message;
-
-    response.status(status).json({
-      statusCode: status,
-      message,
-      timestamp: new Date().toISOString(),
-      path: request.url,
-    });
-  }
-}
+/** @type {import('ts-jest').JestConfigWithTsJest} */
+module.exports = {
+  ...base,
+  testRegex: undefined,
+  collectCoverage: false,
+  coverageDirectory: 'coverage',
+  coverageReporters: ['text', 'lcov', 'html'],
+  roots: ['<rootDir>/src'],
+  testMatch: ['**/__tests__/**/*.ts', '**/?(*.)+(spec|test).ts'],
+  testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/dist/'],
+  verbose: true,
+};
 `,
+    ".npmrc": "@gaqno-development:registry=https://npm.pkg.github.com\n",
     "src/main.ts": `import { NestFactory } from "@nestjs/core";
 import { ConfigService } from "@nestjs/config";
 import { ValidationPipe } from "@nestjs/common";
-import { Request, Response, NextFunction } from "express";
-import { HttpExceptionFilter } from "./common/http-exception.filter";
+import { getCorsOptions } from "@gaqno-development/backcore/config/cors";
+import { createStripApiPrefixMiddleware } from "@gaqno-development/backcore/bootstrap/strip-api-prefix.middleware";
 import { AppModule } from "./app.module";
-
-function stripPrefix(req: Request, _res: Response, next: NextFunction): void {
-  if (req.path.startsWith("/${name}/")) {
-    req.url = req.url.replace(/^\\/${name}/, "") || "/";
-  }
-  next();
-}
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
   const config = app.get(ConfigService);
-
-  app.use(stripPrefix);
-
-  const corsOrigin =
-    config.get<string>("CORS_ORIGIN") ??
-    process.env.CORS_ORIGIN ??
-    process.env.ALLOWED_ORIGINS ??
-    "*";
-  app.enableCors({
-    origin:
-      corsOrigin === "*"
-        ? true
-        : corsOrigin.split(",").map((item) => item.trim()),
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-      "X-Requested-With",
-      "Referer",
-      "User-Agent",
-      "sec-ch-ua",
-      "sec-ch-ua-mobile",
-      "sec-ch-ua-platform",
-    ],
-    exposedHeaders: ["Content-Length", "Content-Type"],
-    optionsSuccessStatus: 204,
-  });
-
-  app.setGlobalPrefix("v1");
-  app.useGlobalFilters(new HttpExceptionFilter());
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
-
   const port = config.get<number>("PORT") ?? ${servicePort};
-  await app.listen(port);
+
+  app.use(createStripApiPrefixMiddleware("/${name}"));
+  app.enableCors(getCorsOptions(config));
+  app.setGlobalPrefix("v1");
+  app.useGlobalPipes(
+    new ValidationPipe({ whitelist: true, transform: true }),
+  );
+
+  await app.listen(port, "0.0.0.0");
   console.log(\`${pascal} Service is running on: http://localhost:\${port}\`);
 }
 
 bootstrap();
 `,
     "src/app.module.ts": `import { Module } from "@nestjs/common";
+import { APP_GUARD } from "@nestjs/core";
 import { ConfigModule } from "@nestjs/config";
+import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
+import { HealthModule } from "./health/health.module";
+import { DatabaseModule } from "./database/db.module";
+import { MessagingModule } from "./messaging/messaging.module";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ".env",
-    }),
+    }) as never,
+    ThrottlerModule.forRoot([{ ttl: 60, limit: 120 }]),
+    DatabaseModule,
+    MessagingModule,
+    HealthModule,
   ],
-  controllers: [],
-  providers: [],
+  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
 export class AppModule {}
 `,
+    "src/database/db.module.ts": `import { Module, Global } from "@nestjs/common";
+import { DatabaseService } from "./db.service";
+
+@Global()
+@Module({
+  providers: [DatabaseService],
+  exports: [DatabaseService],
+})
+export class DatabaseModule {}
+`,
+    "src/database/db.service.ts": `import { Injectable, Logger, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { drizzle, NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { migrate } from 'drizzle-orm/node-postgres/migrator';
+import { Pool } from 'pg';
+import * as path from 'path';
+import * as schema from './schema';
+
+@Injectable()
+export class DatabaseService implements OnModuleInit, OnModuleDestroy {
+  private readonly logger = new Logger(DatabaseService.name);
+  private pool!: Pool;
+  public db!: NodePgDatabase<typeof schema>;
+
+  constructor(private readonly config: ConfigService) {}
+
+  async onModuleInit() {
+    const connectionString = this.config.get<string>('DATABASE_URL');
+    if (!connectionString) {
+      throw new Error('DATABASE_URL is not defined');
+    }
+
+    this.pool = new Pool({
+      connectionString,
+      max: 10,
+      idleTimeoutMillis: 20000,
+      connectionTimeoutMillis: 10000,
+    });
+
+    this.db = drizzle(this.pool, { schema });
+
+    const migrationsFolder = path.join(__dirname, 'migrations');
+    this.logger.log(\`Running migrations from \${migrationsFolder}\`);
+    await migrate(this.db, { migrationsFolder });
+    this.logger.log('Migrations finished.');
+  }
+
+  async onModuleDestroy() {
+    await this.pool.end();
+  }
+
+  getDb(): NodePgDatabase<typeof schema> {
+    return this.db;
+  }
+}
+`,
+    "src/database/schema.ts": `import {
+  pgTable,
+  uuid,
+  varchar,
+  text,
+  boolean,
+  timestamp,
+  index,
+  uniqueIndex,
+} from "drizzle-orm/pg-core";
+
+export const ${snake}_items = pgTable(
+  "${snake}_items",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    tenantId: uuid("tenant_id").notNull(),
+    name: varchar("name", { length: 255 }).notNull(),
+    description: text("description"),
+    isActive: boolean("is_active").notNull().default(true),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => ({
+    tenantIdx: index("${snake}_items_tenant_idx").on(table.tenantId),
+    nameUnique: uniqueIndex("${snake}_items_name_unique").on(table.name, table.tenantId),
+    activeIdx: index("${snake}_items_active_idx").on(table.isActive),
+  }),
+);
+`,
+    "src/database/migrations/.gitkeep": "",
+    "src/health/health.module.ts": `import { Module } from "@nestjs/common";
+import { HealthController } from "./health.controller";
+
+@Module({
+  controllers: [HealthController],
+})
+export class HealthModule {}
+`,
+    "src/health/health.controller.ts": `import { Controller, Get } from "@nestjs/common";
+
+@Controller("health")
+export class HealthController {
+  @Get()
+  check(): { status: string } {
+    return { status: "ok" };
+  }
+}
+`,
+    "src/messaging/messaging.module.ts": `import { Module, Global } from "@nestjs/common";
+import {
+  MessageProducer,
+  OutboxRepository,
+  OutboxProcessorService,
+  BullMqCoreModule,
+} from "@gaqno-development/backcore";
+import { DatabaseModule } from "../database/db.module";
+import { DatabaseService } from "../database/db.service";
+import { ${pascal}EventPublisherService } from "./${name}-event-publisher.service";
+
+@Global()
+@Module({
+  imports: [BullMqCoreModule.forRoot(), DatabaseModule],
+  providers: [
+    {
+      provide: OutboxRepository,
+      useFactory: (db: DatabaseService) =>
+        new OutboxRepository(db.getDb() as never),
+      inject: [DatabaseService],
+    },
+    {
+      provide: OutboxProcessorService,
+      useFactory: (outbox: OutboxRepository, producer: MessageProducer) =>
+        new OutboxProcessorService(outbox, producer),
+      inject: [OutboxRepository, MessageProducer],
+    },
+    ${pascal}EventPublisherService,
+  ],
+  exports: [OutboxRepository, ${pascal}EventPublisherService],
+})
+export class MessagingModule {}
+`,
+    [`src/messaging/${name}-event-publisher.service.ts`]: `import { Injectable, Logger } from "@nestjs/common";
+import { MessageProducer, TopicRegistry } from "@gaqno-development/backcore";
+
+@Injectable()
+export class ${pascal}EventPublisherService {
+  private readonly logger = new Logger(${pascal}EventPublisherService.name);
+
+  constructor(
+    private readonly producer: MessageProducer,
+    private readonly topics: TopicRegistry,
+  ) {}
+
+  async publishItemCreated(
+    tenantId: string,
+    itemId: string,
+  ): Promise<void> {
+    const event = {
+      eventType: "${name}.item_created",
+      tenantId,
+      aggregateId: itemId,
+      aggregateType: "${pascal}Item",
+      source: "gaqno-${name}-service",
+      data: { itemId, tenantId, occurredAt: new Date().toISOString() },
+      metadata: { correlationId: itemId },
+    };
+    await this.producer.publishIntegrationEvent(
+      this.topics.${snake}Events,
+      event as never,
+    );
+    this.logger.log(\`Published ${name}.item_created for \${itemId}\`);
+  }
+}
+`,
+    "src/features/.gitkeep": "",
     Dockerfile: `FROM node:20-alpine AS builder
 WORKDIR /app
 
@@ -315,6 +493,7 @@ COPY package*.json ./
 COPY .npmrc* ./
 COPY tsconfig*.json ./
 COPY nest-cli.json ./
+COPY drizzle.config.ts ./
 
 RUN if [ -n "$NPM_TOKEN" ]; then echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" >> .npmrc 2>/dev/null || true; fi
 RUN --mount=type=cache,target=/root/.npm \\
@@ -345,7 +524,7 @@ ENV NODE_ENV=production
 ENV PORT=${servicePort}
 EXPOSE ${servicePort}
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \\
-  CMD wget -q -O /dev/null "http://127.0.0.1:${servicePort}/v1" || exit 1
+  CMD wget -q -O /dev/null "http://127.0.0.1:${servicePort}/v1/health" || exit 1
 CMD ["node", "dist/main.js"]
 `,
   };
@@ -364,12 +543,13 @@ function createUI({ name, uiPort, servicePort }) {
   }
 
   const pascal = toPascalCase(name);
+  const constant = toConstantCase(name);
   const basePath = `/${name}/`;
 
   const files = {
     "package.json": JSON.stringify(
       {
-        name: name,
+        name: `gaqno-${name}-ui`,
         version: "0.0.0",
         private: true,
         scripts: {
@@ -382,7 +562,8 @@ function createUI({ name, uiPort, servicePort }) {
           test: `echo "No tests in gaqno-${name}-ui"`,
         },
         dependencies: {
-          "@gaqno-development/frontcore": "^1.0.35",
+          "@gaqno-development/frontcore": "^1.14.0",
+          "@gaqno-development/types": "^1.0.0",
           "@tanstack/react-query": "^5.90.12",
           "lucide-react": "^0.468.0",
           react: "^18",
@@ -394,10 +575,11 @@ function createUI({ name, uiPort, servicePort }) {
           "@module-federation/vite": "^1.0.0",
           "@originjs/vite-plugin-federation": "^1.4.1",
           "@tailwindcss/vite": "^4.1.18",
+          "@types/node": "^22.10.7",
           "@types/react": "^18.3.27",
           "@types/react-dom": "^18.3.7",
           "@vitejs/plugin-react": "^4.3.1",
-          eslint: "^8.57.0",
+          eslint: "^9.18.0",
           nodemon: "^3.1.11",
           tailwindcss: "^4.1.18",
           "tailwindcss-animate": "^1.0.7",
@@ -408,7 +590,7 @@ function createUI({ name, uiPort, servicePort }) {
           "@commitlint/config-conventional": "^19.6.0",
         },
         overrides: {
-          "@gaqno-development/core": "npm:@gaqno-development/frontcore@^1.0.35",
+          "@gaqno-development/core": "npm:@gaqno-development/frontcore@^1.14.0",
         },
       },
       null,
@@ -519,6 +701,10 @@ export default defineConfig(async () => {
   </body>
 </html>
 `,
+    ".env.example": `VITE_SERVICE_${constant}_URL=http://localhost:${servicePort}
+VITE_SSO_URL=http://localhost:4001
+VITE_APP_NAME=${pascal}
+`,
     "nodemon.json": JSON.stringify(
       {
         watch: ["src"],
@@ -558,24 +744,43 @@ module.exports = {
     "src/main.tsx": `import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import App from "./App";
-import "@gaqno-development/frontcore/styles/globals.css";
-
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </React.StrictMode>
-);
-`,
-    "src/App.tsx": `import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
 import {
   QueryProvider,
   AuthProvider,
   TenantProvider,
 } from "@gaqno-development/frontcore";
+import App from "./App";
+import "./styles/index.css";
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <QueryProvider>
+        <AuthProvider>
+          <TenantProvider>
+            <App />
+          </TenantProvider>
+        </AuthProvider>
+      </QueryProvider>
+    </BrowserRouter>
+  </React.StrictMode>,
+);
+`,
+    "src/styles/index.css": `@import "@gaqno-development/frontcore/styles/globals.css";
+@source "../**/*.{js,ts,jsx,tsx}";
+@source "../../index.html";
+
+/* Tenant-specific CSS overrides go here */
+/* Example: */
+/* :root { */
+/*   --primary: hsl(220 90% 56%); */
+/* } */
+`,
+    "src/App.tsx": `import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { initI18n, I18nProvider } from "@gaqno-development/frontcore/i18n";
+
+initI18n();
 
 function ${pascal}Page() {
   return (
@@ -590,16 +795,12 @@ function ${pascal}Page() {
 
 export default function App() {
   return (
-    <QueryProvider>
-      <AuthProvider>
-        <TenantProvider>
-          <Routes>
-            <Route path="/${name}" element={<${pascal}Page />} />
-            <Route path="*" element={<Navigate to="/${name}" replace />} />
-          </Routes>
-        </TenantProvider>
-      </AuthProvider>
-    </QueryProvider>
+    <I18nProvider>
+      <Routes>
+        <Route path="/${name}" element={<${pascal}Page />} />
+        <Route path="*" element={<Navigate to="/${name}" replace />} />
+      </Routes>
+    </I18nProvider>
   );
 }
 `,
@@ -610,7 +811,8 @@ declare module "*.svg" {
   export default content;
 }
 `,
-    "src/config/environment.ts": `export default {};
+    "src/config/environment.ts": `export const SERVICE_${constant}_URL =
+  import.meta.env.VITE_SERVICE_${constant}_URL ?? "http://localhost:${servicePort}";
 `,
     "src/components/.gitkeep": "",
     "src/hooks/index.ts": `export {};
@@ -629,8 +831,8 @@ WORKDIR /app
 COPY package.json ./
 COPY .npmrc* ./
 ARG NPM_TOKEN
-ARG VITE_SERVICE_${name.toUpperCase().replace(/-/g, "_")}_URL=http://localhost:${servicePort}
-ENV VITE_SERVICE_${name.toUpperCase().replace(/-/g, "_")}_URL=\$VITE_SERVICE_${name.toUpperCase().replace(/-/g, "_")}_URL
+ARG VITE_SERVICE_${constant}_URL=http://localhost:${servicePort}
+ENV VITE_SERVICE_${constant}_URL=\\$VITE_SERVICE_${constant}_URL
 RUN if [ -z "$NPM_TOKEN" ] || [ "$NPM_TOKEN" = "REPLACE_WITH_GITHUB_PAT_IN_COOLIFY_UI" ]; then \\
     echo "ERROR: NPM_TOKEN must be set in Coolify Build Arguments (GitHub PAT with read:packages)."; exit 1; \\
     fi && \\
@@ -655,7 +857,7 @@ COPY --from=builder /app/public /usr/share/nginx/html/public
 RUN echo 'server { listen ${uiPort}; server_name _; root /usr/share/nginx/html; index index.html; absolute_redirect off; \\
     location ${basePath}assets/ { alias /usr/share/nginx/html/assets/; add_header Cache-Control "public, immutable"; add_header Access-Control-Allow-Origin "*"; } \\
     location /assets/ { alias /usr/share/nginx/html/assets/; add_header Cache-Control "public, immutable"; add_header Access-Control-Allow-Origin "*"; } \\
-    location / { try_files \$uri \$uri/ /index.html; } }' > /etc/nginx/conf.d/default.conf
+    location / { try_files \\$uri \\$uri/ /index.html; } }' > /etc/nginx/conf.d/default.conf
 
 EXPOSE ${uiPort}
 CMD ["nginx", "-g", "daemon off;"]
@@ -773,6 +975,20 @@ function run(options) {
     step++;
     console.log(
       `  ${COLORS.dim}${step}.${COLORS.reset} Add VITE_SERVICE_${name.toUpperCase()}_URL to frontend env`,
+    );
+    step++;
+  }
+  if (creatingSvc) {
+    console.log(
+      `  ${COLORS.dim}${step}.${COLORS.reset} Add DATABASE_URL to service .env`,
+    );
+    step++;
+    console.log(
+      `  ${COLORS.dim}${step}.${COLORS.reset} Run npm run migrate to generate initial migration`,
+    );
+    step++;
+    console.log(
+      `  ${COLORS.dim}${step}.${COLORS.reset} Add ${name}-service domain to Dokploy (api.gaqno.com.br/${name})`,
     );
     step++;
   }
