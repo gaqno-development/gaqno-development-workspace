@@ -33,6 +33,23 @@ normalize_commit_message() {
   fi
 }
 
+strip_llm_commit_wrappers() {
+  local msg="$1"
+  msg=$(echo "$msg" | xargs)
+  if [[ "$msg" =~ ^\`(.+)\`$ ]]; then
+    msg="${BASH_REMATCH[1]}"
+    msg=$(echo "$msg" | xargs)
+  fi
+  echo "$msg"
+}
+
+is_valid_conventional_commit_header() {
+  local msg="$1"
+  [[ -z "$msg" || "$msg" == "null" ]] && return 1
+  local pattern='^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([^)]+\))?(!)?:[[:space:]]*[^[:space:]].*$'
+  [[ "$msg" =~ $pattern ]]
+}
+
 generate_semantic_commit() {
   local repo_path="$1"
   local repo_name="$2"
@@ -68,10 +85,14 @@ $diff"
 
   local msg
   msg=$(echo "$response" | jq -r '.choices[0].message.content // empty' 2>/dev/null | head -1 | xargs)
+  msg=$(strip_llm_commit_wrappers "$msg")
 
-  if [ -n "$msg" ] && [ "$msg" != "null" ]; then
+  if is_valid_conventional_commit_header "$msg"; then
     echo "$msg"
   else
+    if [ -n "$msg" ] && [ "$msg" != "null" ]; then
+      echo "   ⚠️  LM Studio returned an invalid conventional header ('${msg}'); using fallback." >&2
+    fi
     fallback_commit_message "$repo_name"
   fi
 }
