@@ -344,6 +344,13 @@ for repo in "${REPOS[@]}"; do
       printf '\n'
       continue
     fi
+    if ! docker info &>/dev/null; then
+      push_err "Docker daemon unreachable (permission denied or engine stopped) — skipping commit/push for $repo"
+      push_warn_line "If you added user to group docker: close this terminal, open a new WSL session, or run: newgrp docker"
+      push_warn_line "Then verify: docker ps   (Docker Desktop on Windows must be running.)"
+      printf '\n'
+      continue
+    fi
     if ! docker build -f "$DOCKER_FILE" $NPM_TOKEN_ARG -t "${repo}:test" "$DOCKER_CTX" > "$BUILD_LOG" 2>&1; then
       push_err "Docker build failed — skipping commit/push for $repo"
       push_file_hint "Log file:"
