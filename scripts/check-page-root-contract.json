@@ -1,0 +1,28 @@
+{
+  "enforcedAppBasenames": [
+    "gaqno-admin-ui",
+    "gaqno-ai-ui",
+    "gaqno-consumer-ui",
+    "gaqno-crm-ui",
+    "gaqno-docs-ui",
+    "gaqno-erp-ui",
+    "gaqno-finance-ui",
+    "gaqno-intelligence-ui",
+    "gaqno-omnichannel-ui",
+    "gaqno-pdv-ui",
+    "gaqno-rpg-ui",
+    "gaqno-shell-ui",
+    "gaqno-sherlock-ui",
+    "gaqno-shop-admin",
+    "gaqno-sso-ui",
+    "gaqno-wellness-ui"
+  ],
+  "pascalCaseNameAllowlist": {
+    "gaqno-consumer-ui": ["dashboard"],
+    "gaqno-docs-ui": ["api"],
+    "gaqno-rpg-ui": ["rpg"],
+    "gaqno-shell-ui": ["demo"],
+    "gaqno-sherlock-ui": ["search"]
+  },
+  "skipLooseFilesAtPagesRootForApps": []
+}

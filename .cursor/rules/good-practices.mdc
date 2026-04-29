@@ -164,40 +164,35 @@ Before opening a PR:
 
 ## 3. Frontend Folder Structure
 
+App-level (same MFE): **`src/hooks/`** and **`src/components/`** are for the **widest** consumer span — **two or more** routes or unrelated major sections. See scope ladder in [.cursor/skills/frontend-page-structure/SKILL.md](../skills/frontend-page-structure/SKILL.md).
+
+**Page folder** `src/pages/<domain>/` (route root: one folder per screen, e.g. `AudioSection/AudioSection.tsx` + `index.ts` — no loose `*.tsx` next to `src/pages/<Name>/` as a file-only route). Prefer the explicit contract:
+
+```text
+pages/<domain>/
+├── <Domain>.tsx          # composition-only entry
+├── index.ts
+├── shared/               # hooks + components reused by multiple first-class features of this page
+│   ├── hooks/
+│   └── components/       # PascalCase folder per widget (see gates)
+├── features/             # one PascalCase folder per first-class feature; fractal inner features + component-level features allowed (see skill)
+│   └── <FeatureName>/
+│       ├── hooks/ | shared/ | components/ | features/   # as needed
+│       └── ...
+├── constants.ts | types.ts | utils/   # page-scoped
+└── (legacy) hooks/ | components/     # treat as page-level shared; new work should use shared/ + features/
 ```
-src/
-├── App.tsx
-├── main.tsx
-├── hooks/                    # ONLY truly shared hooks (used by 2+ pages)
-│   ├── useAuth.ts
-│   └── useTheme.ts
-├── constants/                # Shared constants
-├── types/                    # Shared TypeScript types
-├── utils/                    # Shared pure utilities
-├── contexts/                 # React contexts (auth, theme, etc.)
-├── layouts/                  # Layout wrappers
-├── styles/                   # Global styles
-└── pages/
-    └── <domain>/             # e.g. studio/, customers/, settings/
-        ├── <DomainPage>.tsx  # Page component (composition only)
-        ├── index.ts          # Re-export
-        ├── components/       # Components ONLY used by this page
-        │   ├── Header.tsx
-        │   └── ItemCard.tsx
-        ├── hooks/            # Hooks ONLY used by this page
-        │   ├── useDomainQuery.ts
-        │   ├── useDomainMutation.ts
-        │   └── useDomainState.ts
-        ├── constants.ts      # Page-specific constants
-        └── types.ts          # Page-specific types
-```
+
+**CI (workspace root):** `npm run check:page-structure` — prints which packages include `src/pages`, then runs gates: no loose `*.tsx` as direct child of any `**/pages/**/components/`, PascalCase widget folders, valid `features/` segment names, feature `shared/components/` multi-file import span, and **per-app** [scripts/check-page-root-contract.mjs](scripts/check-page-root-contract.mjs) (Pascal `src/pages/<Domain>/` roots, no loose route files in `src/pages/`, and each domain has `features/`, `shared/hooks/`, `shared/components/`; scope is `enforcedAppBasenames` in [scripts/check-page-root-contract.json](scripts/check-page-root-contract.json), currently e.g. `gaqno-ai-ui`). App-level hooks, prop spread, and cross-page imports are not automated in these scripts.
+
+The **full** tree, **fractal** `features/`, page vs feature `shared/`, and **scope ladder** live only in the skill — do not duplicate here.
 
 ### Rules
 
-- A hook/component lives at the **narrowest scope** where it is used.
-- If used by **only one page** → colocate under `pages/<domain>/hooks/` or `pages/<domain>/components/`.
-- If used by **2+ pages** → promote to `src/hooks/` or `src/components/shared/`.
-- **Never** import from one page into another. Shared code goes through `src/` root or `@gaqno-frontcore`.
+- A hook or component file lives at the **narrowest scope** that matches its **widest** consumer (sub-widget `hooks/` → feature `shared/hooks/` → page `shared/hooks/` → `src/hooks/` / `src/components/` — see skill **Scope ladder**).
+- **One page only** (single feature subtree): colocate under `pages/<domain>/features/<Feature>/…`, `…/shared/…` when several sub-areas of that page share it, or legacy `pages/<domain>/hooks/` / `components/`.
+- **Two or more pages** (same app): promote to **`src/hooks/`** or **`src/components/`** (composite UI shared across routes).
+- **Never** import from `pages/<A>/` into `pages/<B>/`. Lift shared code to `src/`, **`@gaqno-development/frontcore`**, or **`@gaqno-types`** as appropriate.
 - UI primitives always come from `@gaqno-development/frontcore/components/ui`.
 
 ---
