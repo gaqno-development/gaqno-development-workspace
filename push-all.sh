@@ -6,8 +6,61 @@
 # Repos sem alterações são ignorados (não roda testes).
 # Cada repo tem seus próprios workflows em .github/workflows/ — CI dispara no repo individual.
 # Sem npm no PATH: tenta NVM em ~/.nvm; senão pula testes (ou export SKIP_REPO_TESTS=1).
+# Cores: export NO_COLOR=1 ou stdout não-TTY desativa ANSI.
 #
 set -e
+
+if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then
+  _P_DIM=$'\033[2m'
+  _P_BOLD=$'\033[1m'
+  _P_RESET=$'\033[0m'
+  _P_CYAN=$'\033[36m'
+  _P_GREEN=$'\033[32m'
+  _P_YELLOW=$'\033[33m'
+  _P_RED=$'\033[31m'
+  _P_BLUE=$'\033[34m'
+  _P_MAG=$'\033[35m'
+else
+  _P_DIM="" _P_BOLD="" _P_RESET=""
+  _P_CYAN="" _P_GREEN="" _P_YELLOW="" _P_RED="" _P_BLUE="" _P_MAG=""
+fi
+
+push_rule() {
+  printf '%s\n' "${_P_CYAN}${_P_BOLD}────────────────────────────────────────────────────────────${_P_RESET}"
+}
+
+push_repo_title() {
+  printf '\n%s▶%s %s%s%s\n' "${_P_CYAN}${_P_BOLD}" "${_P_RESET}" "${_P_BOLD}" "$1" "${_P_RESET}"
+  push_rule
+}
+
+push_file_hint() {
+  printf '      %s%s%s\n' "${_P_DIM}" "$1" "${_P_RESET}"
+}
+
+push_skip() {
+  printf '   %s %s\n' "${_P_YELLOW}⊙${_P_RESET}" "$1"
+}
+
+push_ok() {
+  printf '   %s %s\n' "${_P_GREEN}✓${_P_RESET}" "$1"
+}
+
+push_warn_line() {
+  printf '   %s %s\n' "${_P_YELLOW}!${_P_RESET}" "$1"
+}
+
+push_err() {
+  printf '   %s %s\n' "${_P_RED}✗${_P_RESET}" "$1"
+}
+
+push_info() {
+  printf '   %s %s\n' "${_P_BLUE}·${_P_RESET}" "$1"
+}
+
+push_parent_section() {
+  printf '\n%s\n' "${_P_MAG}${_P_BOLD}━━ Parent workspace ━━${_P_RESET}"
+}
 
 LM_STUDIO_HOST="${LM_STUDIO_HOST:-http://localhost:1234/v1}"
 LM_STUDIO_MODEL="${LM_STUDIO_MODEL:-google/gemma-3-1b}"
@@ -139,11 +192,11 @@ run_repo_tests() {
   fi
 
   if [[ -n "${SKIP_REPO_TESTS:-}" ]]; then
-    echo "   ⏭️  SKIP_REPO_TESTS set — skipping tests for $repo_name"
+    push_info "SKIP_REPO_TESTS — skipping tests for $repo_name"
     return 0
   fi
   if ! ensure_npm_in_path; then
-    echo "   ⚠️  npm not found (install Node.js, or set SKIP_REPO_TESTS=1) — skipping tests"
+    push_warn_line "npm not found — skipping tests (install Node or SKIP_REPO_TESTS=1)"
     return 0
   fi
 
@@ -173,7 +226,7 @@ run_repo_tests() {
     kill "$killer" 2>/dev/null
     wait "$killer" 2>/dev/null
     if [ $test_exit_code -eq 124 ] || [ $test_exit_code -eq 137 ] || [ $test_exit_code -eq 143 ]; then
-      echo "   ⏱️  Tests timed out after ${TEST_TIMEOUT_SEC}s" >&2
+      printf '%s\n' "   ${_P_YELLOW}!${_P_RESET} Tests timed out after ${TEST_TIMEOUT_SEC}s" >&2
     fi
   fi
 
@@ -182,8 +235,8 @@ run_repo_tests() {
     return 1
   fi
 
-  echo "   📊 Coverage ($repo_name):"
-  tail -n 35 "$coverage_log" | sed 's/^/      /'
+  printf '\n   %sCoverage — last lines%s (%s)\n' "${_P_CYAN}${_P_BOLD}" "${_P_RESET}" "$repo_name"
+  tail -n 35 "$coverage_log" | sed 's/^/      ┊ /'
   return 0
 }
 
@@ -235,40 +288,40 @@ for repo in "${REPOS[@]}"; do
   REPO_PATH="$BASE_DIR/$repo"
   
   if [ ! -d "$REPO_PATH" ]; then
-    echo "⚠️  Skipping $repo (directory does not exist)"
+    push_skip "Skipping $repo (directory does not exist)"
     continue
   fi
   
   if [ ! -f "$REPO_PATH/.git" ] && [ ! -d "$REPO_PATH/.git" ]; then
-    echo "⚠️  Skipping $repo (not a git repository)"
+    push_skip "Skipping $repo (not a git repository)"
     continue
   fi
   
-  echo "📦 Processing $repo..."
+  push_repo_title "$repo"
   cd "$REPO_PATH"
 
   TRACKED_COUNT=$(git ls-files 2>/dev/null | head -1 | wc -l)
   if [ "$TRACKED_COUNT" -eq 0 ]; then
-    echo "   ⚠️  Skipping $repo — no tracked files in worktree (uninitialized submodule?). Run: git submodule update --init $repo"
+    push_warn_line "Skipping $repo — no tracked files (uninitialized submodule?). Run: git submodule update --init $repo"
     continue
   fi
 
   DELETED_COUNT=$(git status --porcelain 2>/dev/null | grep -c '^.D\|^D ' || true)
   PRESENT_COUNT=$(find . -mindepth 1 -maxdepth 1 ! -name '.git' | head -1 | wc -l)
   if [ "$DELETED_COUNT" -gt 0 ] && [ "$PRESENT_COUNT" -eq 0 ]; then
-    echo "   🚫 Aborting $repo — all tracked files are missing from worktree."
-    echo "      This would push an empty-tree commit and wipe the remote."
-    echo "      Run: git submodule update --init --force $repo  (then retry)"
+    push_err "Aborting $repo — all tracked files are missing from worktree."
+    push_info "This would push an empty-tree commit and wipe the remote."
+    push_info "Run: git submodule update --init --force $repo  (then retry)"
     continue
   fi
 
   if [ -z "$(git status --porcelain)" ]; then
-    echo "   ✓ No changes to commit"
+    push_ok "No changes to commit"
     continue
   fi
 
   if [ -f "$REPO_PATH/Dockerfile" ] || [ -f "$REPO_PATH/Dockerfile.monorepo" ]; then
-    echo "   🐳 Building Docker image (cached)..."
+    push_info "Docker build (cache)…"
     BUILD_LOG="$BASE_DIR/build-logs/${repo}-push-build.log"
     mkdir -p "$BASE_DIR/build-logs"
     DOCKER_FILE="$REPO_PATH/Dockerfile"
@@ -285,30 +338,32 @@ for repo in "${REPOS[@]}"; do
       [ -n "$_tk" ] && NPM_TOKEN_ARG="--build-arg NPM_TOKEN=${_tk}"
     fi
     if ! docker build -f "$DOCKER_FILE" $NPM_TOKEN_ARG -t "${repo}:test" "$DOCKER_CTX" > "$BUILD_LOG" 2>&1; then
-      echo "   ❌ Docker build failed — skipping commit/push for $repo"
-      echo "      Log: $BUILD_LOG"
-      echo ""
+      push_err "Docker build failed — skipping commit/push for $repo"
+      push_file_hint "Log file:"
+      push_file_hint "$BUILD_LOG"
+      push_file_hint "Tip: tail -80 \"$BUILD_LOG\""
+      printf '\n'
       continue
     fi
-    echo "   ✓ Docker build OK (cached)"
+    push_ok "Docker build OK"
   fi
 
-  echo "   🧪 Running tests (há alterações; testes obrigatórios antes de commit/push)..."
+  push_info "Running tests (required before commit/push)…"
   if ! run_repo_tests "$REPO_PATH" "$repo"; then
-    echo "   ❌ Tests failed — skipping commit/push for $repo"
-    echo ""
+    push_err "Tests failed — skipping commit/push for $repo"
+    printf '\n'
     continue
   fi
-  echo "   ✓ Tests OK (see messages above if skipped)"
+  push_ok "Tests OK (see messages above if skipped)"
 
-  echo "   ➕ Adding all changes..."
+  push_info "Staging changes…"
   git add .
 
   GUARD_SCRIPT="$BASE_DIR/scripts/guard-destructive-commit.sh"
   if [ -x "$GUARD_SCRIPT" ]; then
     if ! "$GUARD_SCRIPT" "$REPO_PATH"; then
-      echo "   🚫 Aborting $repo — destructive-commit guard refused to commit."
-      echo "      Inspect with: git -C $REPO_PATH status"
+      push_err "Destructive-commit guard refused — aborting $repo"
+      push_file_hint "Inspect: git -C $REPO_PATH status"
       git reset HEAD -- . >/dev/null 2>&1 || true
       continue
     fi
@@ -317,40 +372,40 @@ for repo in "${REPOS[@]}"; do
   if [ -n "$CUSTOM_MESSAGE" ]; then
     COMMIT_MESSAGE="$CUSTOM_MESSAGE"
   else
-    echo "   🤖 Generating semantic commit message..."
+    push_info "Generating semantic commit message…"
     COMMIT_MESSAGE=$(generate_semantic_commit "$REPO_PATH" "$repo")
-    echo "   💬 Generated: $COMMIT_MESSAGE"
+    printf '   %s→ %s%s\n' "${_P_DIM}" "${COMMIT_MESSAGE}" "${_P_RESET}"
   fi
   COMMIT_MESSAGE="${COMMIT_MESSAGE%.}"
   COMMIT_MESSAGE=$(normalize_commit_message "$COMMIT_MESSAGE")
 
-  echo "   💾 Committing with message: '$COMMIT_MESSAGE'"
+  push_info "Commit: '${COMMIT_MESSAGE}'"
   export GAQNO_TESTS_ALREADY_RAN=1
   if ! git commit -m "$COMMIT_MESSAGE"; then
-    echo '   ⚠️  Commit failed (husky/commitlint may have rejected; fix and retry)'
-    echo ""
+    push_warn_line "Commit failed (husky/commitlint may have rejected; fix and retry)"
+    printf '\n'
     continue
   fi
 
-  echo "   🚀 Pushing to remote..."
+  push_info "Pushing to remote…"
   branch=$(git branch --show-current)
-  push_ok=0
+  push_ok_flag=0
   if [ -n "$branch" ]; then
     if git push -u origin "$branch"; then
-      push_ok=1
+      push_ok_flag=1
     else
-      echo "   ⚠️  Push failed (check if remote is configured)"
+      push_warn_line "Push failed (check if remote is configured)"
     fi
   else
     def_branch=$(resolve_origin_default_branch)
-    echo "   ⚠️  Detached HEAD — pushing commit to origin/$def_branch (typical for submodules)"
+    push_warn_line "Detached HEAD — pushing to origin/$def_branch (typical for submodules)"
     if git push -u origin "HEAD:${def_branch}"; then
-      push_ok=1
+      push_ok_flag=1
     else
-      echo "   ⚠️  Push failed. Ex.: cd $REPO_PATH && git checkout $def_branch && git cherry-pick HEAD@{1} && git push"
+      push_warn_line "Push failed. Try: cd $REPO_PATH && git checkout $def_branch && git cherry-pick HEAD@{1} && git push"
     fi
   fi
-  if [ "$push_ok" = "1" ]; then
+  if [ "$push_ok_flag" = "1" ]; then
     case "$repo" in
       @gaqno-types|@gaqno-backcore|@gaqno-frontcore|@gaqno-agent)
         PUSHED_PACKAGE=1
@@ -359,8 +414,8 @@ for repo in "${REPOS[@]}"; do
     esac
   fi
 
-  echo "   ✅ Done with $repo"
-  echo ""
+  push_ok "Done — $repo"
+  printf '\n'
 done
 
 cd "$BASE_DIR"
@@ -379,7 +434,9 @@ for pkg in "${PACKAGE_DIRS[@]}"; do
 done
 
 if [ "$PUSHED_PACKAGE" = "1" ]; then
-  echo "📦 Pacotes com alterações detectados; garantindo versão publicável..."
+  printf '\n%s\n' "${_P_MAG}${_P_BOLD}Packages — version bump & publish${_P_RESET}"
+  push_rule
+  push_info "Checking publishable versions…"
   for pkg in "${PACKAGE_DIRS[@]}"; do
     PKG_PATH="$BASE_DIR/$pkg"
     if [ ! -d "$PKG_PATH" ] || [ ! -f "$PKG_PATH/package.json" ]; then
@@ -405,26 +462,27 @@ if [ "$PUSHED_PACKAGE" = "1" ]; then
     esac
     PUBLISHED_VER=$(npm view "$NPM_NAME" version 2>/dev/null || true)
     if [ -n "$LOCAL_VER" ] && [ "$LOCAL_VER" = "$PUBLISHED_VER" ]; then
-      echo "   📌 Bump patch em $pkg ($LOCAL_VER → patch) para permitir publicação"
+      push_info "Bump patch em $pkg ($LOCAL_VER) para publicação"
       (cd "$PKG_PATH" && npm version patch --no-git-tag-version) || true
       # Commit and push the bump immediately so it doesn't linger as dirty state
       (cd "$PKG_PATH" && git add package.json && git commit -m "chore: bump version for publish" && git push) || true
     fi
   done
-  echo ""
-  echo "📦 Publishing packages (Dokploy/deploy gets the new version on npm)..."
+  printf '\n'
+  push_info "Publishing packages (npm — Dokploy/deploy picks up versions)…"
   if [ -f "$BASE_DIR/publish-packages.sh" ]; then
-    "$BASE_DIR/publish-packages.sh" || echo "   ⚠️  Publish failed (check npm auth and versions)"
+    "$BASE_DIR/publish-packages.sh" || push_warn_line "Publish failed (npm auth / versions)"
   else
-    (cd "$BASE_DIR" && npm run release:packages) || echo "   ⚠️  Publish failed (check npm auth and versions)"
+    (cd "$BASE_DIR" && npm run release:packages) || push_warn_line "Publish failed (npm auth / versions)"
   fi
-  echo ""
+  printf '\n'
 fi
 
-echo "📦 Updating parent repo with submodule references..."
+push_parent_section
+push_info "Submodule references in parent repo…"
 cd "$BASE_DIR"
 if [ -n "$(git status --porcelain)" ]; then
-  echo "   ➕ Staging submodule updates..."
+  push_info "Staging submodule updates…"
   git add .
 
   if [ -n "$CUSTOM_MESSAGE" ]; then
@@ -433,23 +491,23 @@ if [ -n "$(git status --porcelain)" ]; then
     PARENT_MESSAGE="chore: update submodule references"
   fi
 
-  echo "   💾 Committing with message: '$PARENT_MESSAGE'"
+  push_info "Commit: '${PARENT_MESSAGE}'"
+  push_file_hint "(pre-commit hooks may print workspace checks below)"
   git commit -m "$PARENT_MESSAGE" || true
-  echo "   🚀 Pushing parent to remote..."
-  git push || echo "   ⚠️  Parent push failed"
-  echo "   ✅ Parent repo updated"
+  push_info "Pushing parent to remote…"
+  git push || push_warn_line "Parent push failed"
+  push_ok "Parent repo updated"
 else
-  echo "   ✓ No submodule reference changes"
+  push_ok "No submodule reference changes"
 fi
 
 if [ "$PUSHED_PACKAGE" = "1" ]; then
-  echo ""
-  echo "   ℹ️  Packages were already published above (before parent push)."
+  printf '\n'
+  push_file_hint "Packages were published above before the parent push."
 fi
 
-echo ""
-echo "🎉 All repositories processed!"
-echo "   (Workflows em cada repo — CI/PR validation disparam no repositório individual)"
+push_rule
+printf '%s\n\n' "${_P_GREEN}${_P_BOLD}All repositories processed.${_P_RESET}"
+push_file_hint "Each submodule triggers its own GitHub Actions workflow."
 
 exit 0
-

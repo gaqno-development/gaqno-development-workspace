@@ -60,4 +60,6 @@ for (const root of roots) {
 }
 
 if (!ok) process.exit(1);
-console.log("OK: no loose *.tsx under src/pages/**/components/ (direct children).");
+if (!process.env.PAGE_CHECK_SUITE) {
+  console.log("OK: no loose *.tsx under src/pages/**/components/ (direct children).");
+}

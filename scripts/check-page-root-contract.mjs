@@ -58,9 +58,13 @@ if (roots.length === 0 && !fromArgv) {
 
 if (roots.length === 0) {
   if (fromArgv) {
-    console.log(`${LOG} OK — skipped (cwd path not in enforcedAppBasenames).`);
+    if (!process.env.PAGE_CHECK_SUITE) {
+      console.log(`${LOG} OK — skipped (cwd path not in enforcedAppBasenames).`);
+    }
   } else if (enforcedBasenames.size > 0) {
-    console.log(`${LOG} OK — no matching app directories on disk for enforcedAppBasenames.`);
+    if (!process.env.PAGE_CHECK_SUITE) {
+      console.log(`${LOG} OK — no matching app directories on disk for enforcedAppBasenames.`);
+    }
   } else {
     console.error(`${LOG} No projects with src/pages found.`);
     process.exit(1);
@@ -157,13 +161,15 @@ if (skipLooseFor.size > 0) {
   );
 }
 
-if (enforcedBasenames.size === 0) {
-  console.log(
-    `${LOG} OK — full scan: Pascal domains, no loose routes at pages/, each domain has features/ + shared/hooks/ + shared/components/.`,
-  );
-} else {
-  const names = [...enforcedBasenames].sort().join(", ");
-  console.log(
-    `${LOG} OK — ${[...enforcedBasenames].length} app(s): ${names}. Rules: Pascal domains (+ allowlist), domain tree includes features/ + shared/hooks/ + shared/components/. Config: scripts/check-page-root-contract.json.`,
-  );
+if (!process.env.PAGE_CHECK_SUITE) {
+  if (enforcedBasenames.size === 0) {
+    console.log(
+      `${LOG} OK — full scan: Pascal domains, no loose routes at pages/, each domain has features/ + shared/hooks/ + shared/components/.`,
+    );
+  } else {
+    const names = [...enforcedBasenames].sort().join(", ");
+    console.log(
+      `${LOG} OK — ${[...enforcedBasenames].length} app(s): ${names}. Rules: Pascal domains (+ allowlist), domain tree includes features/ + shared/hooks/ + shared/components/. Config: scripts/check-page-root-contract.json.`,
+    );
+  }
 }

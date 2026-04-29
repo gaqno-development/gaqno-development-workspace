@@ -117,6 +117,8 @@ for (const root of roots) {
 }
 
 if (!ok) process.exit(1);
-console.log(
-  "OK: feature folders under src/pages/**/features/ (both levels) use PascalCase or allowed structural names.",
-);
+if (!process.env.PAGE_CHECK_SUITE) {
+  console.log(
+    "OK: feature folders under src/pages/**/features/ (both levels) use PascalCase or allowed structural names.",
+  );
+}

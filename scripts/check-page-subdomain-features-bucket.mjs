@@ -57,6 +57,8 @@ for (const appRoot of roots) {
 }
 
 if (!ok) process.exit(1);
-console.log(
-  "OK: no nested `features` bucket under pages/**/features/<SubDomain>/ (use components/).",
-);
+if (!process.env.PAGE_CHECK_SUITE) {
+  console.log(
+    "OK: no nested `features` bucket under pages/**/features/<SubDomain>/ (use components/).",
+  );
+}

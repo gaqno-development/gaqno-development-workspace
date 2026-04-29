@@ -2,6 +2,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  bold,
+  cyan,
+  dim,
+  green,
+} from "./lib/page-check-log.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const workspaceRoot = path.resolve(__dirname, "..");
@@ -43,6 +49,20 @@ function loadSkipLooseApps() {
   }
 }
 
+function printLabelBlock(title, items, bullet = false) {
+  const joined = items.join(", ");
+  const threshold = 76;
+  console.log(`${cyan("  •")} ${bold(title)} ${dim(`(${items.length})`)}`);
+  if (!bullet && joined.length <= threshold) {
+    console.log(dim(`    ${joined}`));
+    return;
+  }
+  for (const x of items) {
+    console.log(dim(`    · ${x}`));
+  }
+}
+
+const suite = Boolean(process.env.PAGE_CHECK_SUITE);
 const singleArg = process.argv[2];
 const roots = discoverAppRoots();
 const enforced = loadEnforcedContractApps();
@@ -51,35 +71,41 @@ const skipLoose = loadSkipLooseApps();
 if (singleArg) {
   const resolved = path.resolve(process.cwd(), singleArg);
   const bn = path.basename(resolved);
-  console.log(`[check:page-structure] cwd scope: ${bn} (${resolved})`);
-  console.log(
-    `[check:page-structure] page-root-contract enforcedApps (${enforced.length}): ${enforced.join(", ")}`,
-  );
+  console.log(`${cyan("  •")} ${bold("cwd scope")} ${dim(bn)}`);
+  console.log(dim(`    ${resolved}`));
+  printLabelBlock("page-root-contract enforcedApps", enforced);
   if (skipLoose.length > 0) {
-    console.log(
-      `[check:page-structure] page-root-contract WAIVES loose *.ts(x) at src/pages/ for: ${skipLoose.join(", ")}`,
-    );
+    printLabelBlock("WAIVES loose *.ts(x) at src/pages/", skipLoose);
   }
 } else {
-  console.log(
-    `[check:page-structure] packages with package.json + src/pages (${roots.length}): ${roots.join(", ")}`,
-  );
+  printLabelBlock("packages with package.json + src/pages", roots);
   const enforcedSet = new Set(enforced);
   const skippedByContract = roots.filter((n) => !enforcedSet.has(n));
-  console.log(
-    `[check:page-structure] page-root-contract enforcedApps (${enforced.length}): ${enforced.join(", ")}`,
-  );
+  printLabelBlock("page-root-contract enforcedApps", enforced);
   if (skippedByContract.length > 0) {
-    console.log(
-      `[check:page-structure] page-root-contract not applied to: ${skippedByContract.join(", ")} (add to enforcedAppBasenames in scripts/check-page-root-contract.json to enforce)`,
+    printLabelBlock(
+      "not enforced (add to enforcedAppBasenames to enforce)",
+      skippedByContract,
+      true,
     );
   }
   if (skipLoose.length > 0) {
-    console.log(
-      `[check:page-structure] page-root-contract WAIVES loose *.ts(x) at src/pages/ for: ${skipLoose.join(", ")} (see skipLooseFilesAtPagesRootForApps in scripts/check-page-root-contract.json)`,
+    printLabelBlock(
+      "WAIVES loose *.ts(x) at src/pages/ (skipLooseFilesAtPagesRootForApps)",
+      skipLoose,
     );
   }
-  console.log(
-    "[check:page-structure] Gate chain: check:page-components → check:page-component-names → check:page-feature-names → check:page-feature-shared-span → check:page-subdomain-features-bucket → check:page-root-contract. Other good-practices rules are manual or different tooling.",
-  );
+  if (!suite) {
+    console.log(
+      dim(
+        "  Gate chain: page-components → component-names → feature-names → feature-shared-span → subdomain-features-bucket → page-root-contract",
+      ),
+    );
+  }
 }
+
+if (!suite) {
+  console.log(`${green("  ✓")} ${bold("Scope summary")}`);
+}
+
+console.log("");

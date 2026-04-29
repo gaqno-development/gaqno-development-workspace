@@ -139,7 +139,9 @@ if (exitCode !== 0) {
   process.exit(exitCode);
 }
 
-console.log(
-  `OK: feature shared/components import span (${roots.length} app(s) in scope, ${widgetsChecked} features/**/shared/components/<Widget> folder(s) checked).`,
-);
+if (!process.env.PAGE_CHECK_SUITE) {
+  console.log(
+    `OK: feature shared/components import span (${roots.length} app(s) in scope, ${widgetsChecked} features/**/shared/components/<Widget> folder(s) checked).`,
+  );
+}
 process.exit(0);

@@ -107,7 +107,7 @@
     "check:page-feature-shared-span": "node scripts/check-feature-shared-widget-import-span.mjs",
     "check:page-root-contract": "node scripts/check-page-root-contract.mjs",
     "check:page-subdomain-features-bucket": "node scripts/check-page-subdomain-features-bucket.mjs",
-    "check:page-structure": "node scripts/print-page-structure-scope.mjs && npm run check:page-components && npm run check:page-component-names && npm run check:page-feature-names && npm run check:page-feature-shared-span && npm run check:page-subdomain-features-bucket && npm run check:page-root-contract",
+    "check:page-structure": "node scripts/run-page-structure-checks.mjs",
     "explain:erp-queries": "sh -c 'test -n \"$DATABASE_URL\" && test -n \"$TENANT_UUID\" && psql \"$DATABASE_URL\" -v tenant=\"$TENANT_UUID\" -f scripts/explain-erp-tenant-queries.sql'"
   },
   "devDependencies": {

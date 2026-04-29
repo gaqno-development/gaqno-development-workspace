@@ -97,6 +97,8 @@ for (const root of roots) {
 }
 
 if (!ok) process.exit(1);
-console.log(
-  "OK: every folder under src/pages/**/components/** uses PascalCase or a structural name.",
-);
+if (!process.env.PAGE_CHECK_SUITE) {
+  console.log(
+    "OK: every folder under src/pages/**/components/** uses PascalCase or a structural name.",
+  );
+}
