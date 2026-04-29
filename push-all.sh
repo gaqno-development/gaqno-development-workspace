@@ -6,6 +6,7 @@
 # Repos sem alterações são ignorados (não roda testes).
 # Cada repo tem seus próprios workflows em .github/workflows/ — CI dispara no repo individual.
 # Sem npm no PATH: tenta NVM em ~/.nvm; senão pula testes (ou export SKIP_REPO_TESTS=1).
+# Repositórios com Dockerfile: exige docker no PATH antes do build (mensagem explícita se faltar).
 # Cores: export NO_COLOR=1 ou stdout não-TTY desativa ANSI.
 #
 set -e
@@ -336,6 +337,12 @@ for repo in "${REPOS[@]}"; do
     elif [ -f "$BASE_DIR/.npmrc" ]; then
       _tk=$(grep "//npm.pkg.github.com/:_authToken" "$BASE_DIR/.npmrc" 2>/dev/null | head -1 | cut -d'=' -f2-)
       [ -n "$_tk" ] && NPM_TOKEN_ARG="--build-arg NPM_TOKEN=${_tk}"
+    fi
+    if ! command -v docker &>/dev/null; then
+      push_err "docker not found in PATH — skipping commit/push for $repo"
+      push_warn_line "Install Docker (or enable WSL integration) so ./build-all.sh / push-all can run docker build."
+      printf '\n'
+      continue
     fi
     if ! docker build -f "$DOCKER_FILE" $NPM_TOKEN_ARG -t "${repo}:test" "$DOCKER_CTX" > "$BUILD_LOG" 2>&1; then
       push_err "Docker build failed — skipping commit/push for $repo"
