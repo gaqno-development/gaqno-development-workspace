@@ -855,8 +855,8 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 COPY --from=builder /app/public /usr/share/nginx/html/public
 
 RUN echo 'server { listen ${uiPort}; server_name _; root /usr/share/nginx/html; index index.html; absolute_redirect off; \\
-    location ${basePath}assets/ { alias /usr/share/nginx/html/assets/; add_header Cache-Control "public, immutable"; add_header Access-Control-Allow-Origin \\$http_origin always; add_header Vary Origin always; } \\
-    location /assets/ { alias /usr/share/nginx/html/assets/; add_header Cache-Control "public, immutable"; add_header Access-Control-Allow-Origin \\$http_origin always; add_header Vary Origin always; } \\
+    location ${basePath}assets/ { alias /usr/share/nginx/html/assets/; add_header Cache-Control "public, immutable"; add_header Access-Control-Allow-Origin $http_origin always; add_header Vary Origin always; } \\
+    location /assets/ { alias /usr/share/nginx/html/assets/; add_header Cache-Control "public, immutable"; add_header Access-Control-Allow-Origin $http_origin always; add_header Vary Origin always; } \\
     location / { try_files \\$uri \\$uri/ /index.html; } }' > /etc/nginx/conf.d/default.conf
 
 EXPOSE ${uiPort}
