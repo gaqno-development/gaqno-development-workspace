@@ -164,7 +164,7 @@ Before opening a PR:
 
 ## 3. Frontend Folder Structure
 
-App-level (same MFE): **`src/hooks/`** and **`src/components/`** are for the **widest** consumer span — **two or more** routes or unrelated major sections. See scope ladder in [.cursor/skills/frontend-page-structure/SKILL.md](../skills/frontend-page-structure/SKILL.md).
+App-level (same MFE): **`src/hooks/`** and **`src/components/`** are only for the **widest** consumer span. **`src/hooks/`** is for hooks used from **more than one** page **domain** — i.e. **two or more** distinct `src/pages/<Domain>/` trees (or the same hook shared across routes that are not one colocated page). It is **not** a default place for new logic: single-domain behavior belongs under that domain’s `features/…/hooks/`, `shared/hooks/`, or legacy `pages/<domain>/hooks/`. See scope ladder in [.cursor/skills/frontend-page-structure/SKILL.md](../skills/frontend-page-structure/SKILL.md).
 
 **Page folder** `src/pages/<domain>/` (route root: one folder per screen, e.g. `AudioSection/AudioSection.tsx` + `index.ts` — no loose `*.tsx` next to `src/pages/<Name>/` as a file-only route). Prefer the explicit contract:
 
@@ -190,8 +190,8 @@ The **full** tree, **fractal** `features/`, page vs feature `shared/`, and **sco
 ### Rules
 
 - A hook or component file lives at the **narrowest scope** that matches its **widest** consumer (sub-widget `hooks/` → feature `shared/hooks/` → page `shared/hooks/` → `src/hooks/` / `src/components/` — see skill **Scope ladder**).
-- **One page only** (single feature subtree): colocate under `pages/<domain>/features/<Feature>/…`, `…/shared/…` when several sub-areas of that page share it, or legacy `pages/<domain>/hooks/` / `components/`.
-- **Two or more pages** (same app): promote to **`src/hooks/`** or **`src/components/`** (composite UI shared across routes).
+- **One page domain only** (a single `pages/<Domain>/` tree): colocate under `pages/<domain>/features/<Feature>/…`, `…/shared/…` when several first-class features of that domain share it, or legacy `pages/<domain>/hooks/` / `components/`.
+- **More than one page domain** (same MFE): promote to **`src/hooks/`** or **`src/components/`** (true app-wide reuse across domains).
 - **Never** import from `pages/<A>/` into `pages/<B>/`. Lift shared code to `src/`, **`@gaqno-development/frontcore`**, or **`@gaqno-types`** as appropriate.
 - UI primitives always come from `@gaqno-development/frontcore/components/ui`.
 
@@ -268,5 +268,5 @@ Before writing any function, hook, or component:
 3. Does identical logic already exist? → reuse it.
 4. Does it use a hardcoded value? → `constants/`.
 5. Does it need a cast? → define an interface first.
-6. Is it used by only this page? → colocate under `pages/<domain>/`.
-7. Is it used by 2+ pages? → promote to `src/` root.
+6. Is it used by only this page **domain**? → colocate under `pages/<domain>/` (feature / page `shared/`, not `src/hooks/`).
+7. Is it used by **more than one** page **domain** (or clearly app-wide)? → `src/hooks/` or `src/components/`.
