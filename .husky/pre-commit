@@ -2,6 +2,10 @@
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 
+if [ -d "$REPO_ROOT/node_modules" ] && [ -f "$REPO_ROOT/package.json" ]; then
+  (cd "$REPO_ROOT" && npm run check:page-structure) || exit 1
+fi
+
 if [ -x "$REPO_ROOT/scripts/guard-destructive-commit.sh" ]; then
   "$REPO_ROOT/scripts/guard-destructive-commit.sh" "$REPO_ROOT" || exit 1
 fi

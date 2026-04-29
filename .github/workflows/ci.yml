@@ -70,6 +70,9 @@ jobs:
 
       - run: npm install --legacy-peer-deps
 
+      - name: Page structure (src/pages)
+        run: npm run check:page-structure
+
       - name: Lint
         run: npx turbo run lint
 
