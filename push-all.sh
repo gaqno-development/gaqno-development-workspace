@@ -243,6 +243,11 @@ run_repo_tests() {
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+NPM_TOKEN="${NPM_TOKEN:-}"
+if [ -z "${NPM_TOKEN}" ]; then
+  NPM_TOKEN=$("${BASE_DIR}/scripts/gaqno-resolve-npm-token.sh" "${BASE_DIR}" 2>/dev/null) || true
+fi
+
 REPOS_FROM_GIT=($(git -C "$BASE_DIR" config --file .gitmodules --get-regexp path 2>/dev/null | awk '{ print $2 }' || true))
 if [ ${#REPOS_FROM_GIT[@]} -gt 0 ]; then
   REPOS=("${REPOS_FROM_GIT[@]}")
@@ -334,9 +339,9 @@ for repo in "${REPOS[@]}"; do
     NPM_TOKEN_ARG=""
     if [ -n "${NPM_TOKEN:-}" ]; then
       NPM_TOKEN_ARG="--build-arg NPM_TOKEN=${NPM_TOKEN}"
-    elif [ -f "$BASE_DIR/.npmrc" ]; then
-      _tk=$(grep "//npm.pkg.github.com/:_authToken" "$BASE_DIR/.npmrc" 2>/dev/null | head -1 | cut -d'=' -f2-)
-      [ -n "$_tk" ] && NPM_TOKEN_ARG="--build-arg NPM_TOKEN=${_tk}"
+    fi
+    if [ -z "${NPM_TOKEN_ARG}" ]; then
+      push_warn_line "NPM_TOKEN not resolved — export NPM_TOKEN, use scripts/gaqno-resolve-npm-token.sh sources (.npmrc, .cursor/mcp.json dokploy-mcp.env.NPM_TOKEN, Dokploy project.all env), or submodule .npmrc"
     fi
     if ! command -v docker &>/dev/null; then
       push_err "docker not found in PATH — skipping commit/push for $repo"
