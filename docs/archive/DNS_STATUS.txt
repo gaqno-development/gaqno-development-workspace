@@ -63,5 +63,5 @@ MANUAL CONFIGURATION:
 DOCUMENTATION:
 --------------
 - Full guide: docs/DNS_CONFIGURATION.md
-- Helper script: scripts/configure-dns.sh
+- Helper: use Cloudflare dashboard DNS + Tunnel UI (historical note: `scripts/configure-dns.sh` was removed from the repo).
 

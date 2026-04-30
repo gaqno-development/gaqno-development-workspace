@@ -22,4 +22,8 @@ jobs:
           JIRA_USERNAME: ${{ secrets.JIRA_USERNAME }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
         run: |
+          if [ ! -f scripts/jira-stale-in-progress-reminder.mjs ]; then
+            echo "scripts/jira-stale-in-progress-reminder.mjs absent; skipping."
+            exit 0
+          fi
           node scripts/jira-stale-in-progress-reminder.mjs --days=5

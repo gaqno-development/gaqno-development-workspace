@@ -226,7 +226,7 @@ Para preencher os placeholders:
 | **Sessões com erro %** | RUM contando sessões com ≥1 erro / total de sessões |
 | **Top erros JS / por navegador** | Sentry (data source Grafana) ou Loki com logs de erro |
 | **Conversão, checkout, funil** | Analytics ou eventos no backend exportados para Grafana |
-| **Bundle size** | **Implementado:** todos os *-ui usam Vite; no CI, após `turbo run build`, o script `scripts/push-bundle-size-metrics.mjs` envia `frontend_bundle_size_bytes{app}` para o Pushgateway (requer `PROMETHEUS_PUSHGATEWAY_URL`). Painel **Bundle size (Vite total)** no dashboard Front. Tempo de download: RUM (resource timing) → Prometheus/Loki. |
+| **Bundle size** | **Implementado:** todos os *-ui usam Vite; no CI da workspace root, após `turbo run build`, se existir `scripts/push-bundle-size-metrics.mjs`, ele envia `frontend_bundle_size_bytes{app}` para o Pushgateway (requer `PROMETHEUS_PUSHGATEWAY_URL`). Painel **Bundle size (Vite total)** no dashboard Front. Tempo de download: RUM (resource timing) → Prometheus/Loki. |
 
 Métricas mais importantes para começar: **Error rate %**, **LCP P75**, **API latência P95**, **Sessões com erro %**, **Conversão principal**.
 

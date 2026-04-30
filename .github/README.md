@@ -284,40 +284,20 @@ npm run dev:sso-service
 | `dev:backends`                      | Turbo dev for main NestJS services                                                                                                                 |
 | `dev:shell`, `dev:sso`, `dev:ai`, … | Single app or service dev                                                                                                                          |
 | `create-project`                    | Interactive script to add new UI and/or service (see [Adding a New Project](#adding-a-new-project))                                                |
-| `codemap`                           | Generate interactive codemap with dependency analysis and architecture visualizations                                                              |
-| `list-cloudflare-dns`               | List Cloudflare DNS records for gaqno.com.br (see [scripts/README.md](scripts/README.md#list-cloudflare-dnsmjs)); requires `CLOUDFLARE_API_TOKEN`. |
 | `release:packages`                  | Run `publish-packages.sh`                                                                                                                          |
 | `publish:frontcore`                 | Publish `@gaqno-development/frontcore` (uses `.env` for token)                                                                                     |
 | `publish:agent`                     | Publish `@gaqno-development/gaqno-agent`                                                                                                           |
 
 ### Cloudflare DNS checklist (Dokploy)
 
-Zone **gaqno.com.br**. Para listar registros (ex.: Grafana, Lenin) via API:
-
-```bash
-export CLOUDFLARE_API_TOKEN=your_token
-npm run list-cloudflare-dns -- grafana lenin
-```
+Zone **gaqno.com.br**. Use the [Cloudflare dashboard](https://dash.cloudflare.com) → DNS → Records to list or edit hostnames (Grafana, Lenin, docs, etc.).
 
 | Hostname                 | O que verificar                                                                        |
 | ------------------------ | -------------------------------------------------------------------------------------- |
 | **lenin.gaqno.com.br**   | Registro A ou CNAME apontando para o destino (Dokploy/túnel); proxy conforme desejado. |
 | **grafana.gaqno.com.br** | Registro existe e aponta para o serviço Grafana (Dokploy/túnel).                       |
 
-Dashboard: [Cloudflare](https://dash.cloudflare.com) → gaqno.com.br → DNS → Records.
-
-**502 Bad Gateway em grafana.gaqno.com.br** — DNS está ok (wildcard Tunnel `*` → GAQNO_PROD_01). O erro é entre Cloudflare e o origin. Duas opções:
-
-1. **Via API (recomendado):** adicionar a rota no túnel com o script (requer token com permissão Cloudflare Tunnel Write):
-
-   ```bash
-   export CLOUDFLARE_API_TOKEN=seu_token
-   npm run cloudflare-tunnel-add-grafana
-   ```
-
-   O script usa `CLOUDFLARE_ACCOUNT_ID` (default: conta do zone gaqno.com.br) e opcionalmente `CLOUDFLARE_TUNNEL_ID` ou `GRAFANA_ORIGIN` (default: `http://localhost:5678`).
-
-2. **Manual:** no [Cloudflare Dashboard](https://dash.cloudflare.com) → Zero Trust ou Tunnels → túnel GAQNO_PROD_01 → Public Hostname → add `grafana.gaqno.com.br` → HTTP → `localhost:5678`.
+**502 Bad Gateway em grafana.gaqno.com.br** — DNS está ok (wildcard Tunnel `*` → GAQNO_PROD_01). O erro é entre Cloudflare e o origin. Use the Cloudflare Tunnel UI (Zero Trust → Tunnels → GAQNO_PROD_01 → Public Hostname) to add `grafana.gaqno.com.br` → HTTP → the correct origin (e.g. `localhost:5678` behind the tunnel), or fix the origin service on Dokploy.
 
 ---
 
@@ -368,36 +348,18 @@ Then:
 
 ---
 
-## Codemap & Architecture Visualization
+## Codemap
 
-Generate an interactive codemap to visualize the workspace architecture, dependencies, and relationships:
-
-```bash
-npm run codemap
-```
-
-This generates:
-
-- **codemap.json**: Complete workspace analysis with dependencies, ports, and MFE mappings
-- **codemap-viewer.html**: Interactive viewer with Mermaid diagrams
-
-### Visualizations include:
-
-- **Architecture overview**: System structure with shared packages, services, and UIs
-- **Dependency graph**: Package relationships and build order
-- **Data flow**: Build pipeline and runtime architecture
-- **Package details**: Interactive cards with port mappings and dependency counts
-
-Perfect for understanding the monorepo structure, onboarding new developers, and architectural documentation.
+Root `codemap.json` / `codemap-viewer.html` may be present from a previous generation. The `npm run codemap` script is not checked into this tree; `build-all.sh` skips generation when `npm run codemap` fails.
 
 ---
 
 ## Documentation
 
-- **Scripts**: [scripts/README.md](scripts/README.md) — create-project, copy-workflows, list-cloudflare-dns, etc.
+- **Scripts**: [scripts/README.md](scripts/README.md) — create-project, page-structure checks, Dokploy helpers, etc.
 - **Agent**: [@gaqno-agent/README.md](@gaqno-agent/README.md) — OpenClaw setup and skills
 - **GitHub / CI**: [.github/README.md](.github/README.md) — per-repo workflows
-- **Confluence**: [DDS space](https://gaqno-development.atlassian.net/wiki/spaces/DDS) — product/architecture docs (`npm run publish:confluence` prints the link)
+- **Confluence**: [DDS space](https://gaqno-development.atlassian.net/wiki/spaces/DDS) — product/architecture docs
 
 ---
 
@@ -411,7 +373,6 @@ Perfect for understanding the monorepo structure, onboarding new developers, and
 | Run all backends      | `npm run dev:backends`                                            |
 | Run everything        | `npm run dev`                                                     |
 | Build shared packages | `npm run build:types` then `npm run build:packages`               |
-| Generate codemap      | `npm run codemap`                                                 |
 | Add new app/service   | `npm run create-project`                                          |
 | Push all submodules   | `./push-all.sh` (optional message: `./push-all.sh "feat: add X"`) |
 

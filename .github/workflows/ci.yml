@@ -104,7 +104,12 @@ jobs:
       - name: Push bundle size metrics
         env:
           PROMETHEUS_PUSHGATEWAY_URL: ${{ secrets.PROMETHEUS_PUSHGATEWAY_URL }}
-        run: node scripts/push-bundle-size-metrics.mjs
+        run: |
+          if [ ! -f scripts/push-bundle-size-metrics.mjs ]; then
+            echo "scripts/push-bundle-size-metrics.mjs absent; skipping."
+            exit 0
+          fi
+          node scripts/push-bundle-size-metrics.mjs
 
   test:
     needs: [prepare, build]

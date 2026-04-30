@@ -59,6 +59,10 @@ jobs:
           JIRA_USERNAME: ${{ secrets.JIRA_USERNAME }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
         run: |
+          if [ ! -f scripts/jira-create-from-pr-suggestions.mjs ]; then
+            echo "scripts/jira-create-from-pr-suggestions.mjs absent; skipping."
+            exit 0
+          fi
           KEYS=$(node scripts/jira-create-from-pr-suggestions.mjs)
           delimiter=$(openssl rand -hex 8)
           echo "keys<<${delimiter}" >> $GITHUB_OUTPUT
