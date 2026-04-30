@@ -7,6 +7,7 @@
 # Cada repo tem seus próprios workflows em .github/workflows/ — CI dispara no repo individual.
 # Sem npm no PATH: tenta NVM em ~/.nvm; senão pula testes (ou export SKIP_REPO_TESTS=1).
 # Repositórios com Dockerfile: exige docker no PATH antes do build (mensagem explícita se faltar).
+# SKIP_DOCKER_VALIDATION=1 — pula o docker build antes do commit/push (use só quando necessário).
 # Cores: export NO_COLOR=1 ou stdout não-TTY desativa ANSI.
 #
 set -e
@@ -327,44 +328,50 @@ for repo in "${REPOS[@]}"; do
   fi
 
   if [ -f "$REPO_PATH/Dockerfile" ] || [ -f "$REPO_PATH/Dockerfile.monorepo" ]; then
-    push_info "Docker build (cache)…"
-    BUILD_LOG="$BASE_DIR/build-logs/${repo}-push-build.log"
-    mkdir -p "$BASE_DIR/build-logs"
-    DOCKER_FILE="$REPO_PATH/Dockerfile"
-    DOCKER_CTX="$REPO_PATH"
-    if [ -f "$REPO_PATH/Dockerfile.monorepo" ]; then
-      DOCKER_FILE="$REPO_PATH/Dockerfile.monorepo"
-      DOCKER_CTX="$BASE_DIR"
+    if [[ -n "${SKIP_DOCKER_VALIDATION:-}" ]]; then
+      push_warn_line "SKIP_DOCKER_VALIDATION — skipping Docker build for $repo"
+    else
+      push_info "Docker build (cache)…"
+      BUILD_LOG="$BASE_DIR/build-logs/${repo}-push-build.log"
+      mkdir -p "$BASE_DIR/build-logs"
+      DOCKER_FILE="$REPO_PATH/Dockerfile"
+      DOCKER_CTX="$REPO_PATH"
+      if [ -f "$REPO_PATH/Dockerfile.monorepo" ]; then
+        DOCKER_FILE="$REPO_PATH/Dockerfile.monorepo"
+        DOCKER_CTX="$BASE_DIR"
+      fi
+      NPM_TOKEN_ARG=""
+      if [ -n "${NPM_TOKEN:-}" ]; then
+        NPM_TOKEN_ARG="--build-arg NPM_TOKEN=${NPM_TOKEN}"
+      fi
+      if [ -z "${NPM_TOKEN_ARG}" ]; then
+        push_warn_line "NPM_TOKEN not resolved — export NPM_TOKEN, use ./gaqno-resolve-npm-token.sh sources (.npmrc, .cursor/mcp.json dokploy-mcp.env.NPM_TOKEN, Dokploy project.all env), or submodule .npmrc"
+      fi
+      if ! command -v docker &>/dev/null; then
+        push_err "docker not found in PATH — skipping commit/push for $repo"
+        push_warn_line "Install Docker (or enable WSL integration) so ./build-all.sh / push-all can run docker build."
+        push_warn_line "Or set SKIP_DOCKER_VALIDATION=1 to skip this check (not recommended for services you ship as images)."
+        printf '\n'
+        continue
+      fi
+      if ! docker info &>/dev/null; then
+        push_err "Docker daemon unreachable (permission denied or engine stopped) — skipping commit/push for $repo"
+        push_warn_line "If you added user to group docker: close this terminal, open a new WSL session, or run: newgrp docker"
+        push_warn_line "Then verify: docker ps   (Docker Desktop on Windows must be running.)"
+        push_warn_line "Or set SKIP_DOCKER_VALIDATION=1 to skip this check (not recommended for services you ship as images)."
+        printf '\n'
+        continue
+      fi
+      if ! docker build -f "$DOCKER_FILE" $NPM_TOKEN_ARG -t "${repo}:test" "$DOCKER_CTX" > "$BUILD_LOG" 2>&1; then
+        push_err "Docker build failed — skipping commit/push for $repo"
+        push_file_hint "Log file:"
+        push_file_hint "$BUILD_LOG"
+        push_file_hint "Tip: tail -80 \"$BUILD_LOG\""
+        printf '\n'
+        continue
+      fi
+      push_ok "Docker build OK"
     fi
-    NPM_TOKEN_ARG=""
-    if [ -n "${NPM_TOKEN:-}" ]; then
-      NPM_TOKEN_ARG="--build-arg NPM_TOKEN=${NPM_TOKEN}"
-    fi
-    if [ -z "${NPM_TOKEN_ARG}" ]; then
-      push_warn_line "NPM_TOKEN not resolved — export NPM_TOKEN, use ./gaqno-resolve-npm-token.sh sources (.npmrc, .cursor/mcp.json dokploy-mcp.env.NPM_TOKEN, Dokploy project.all env), or submodule .npmrc"
-    fi
-    if ! command -v docker &>/dev/null; then
-      push_err "docker not found in PATH — skipping commit/push for $repo"
-      push_warn_line "Install Docker (or enable WSL integration) so ./build-all.sh / push-all can run docker build."
-      printf '\n'
-      continue
-    fi
-    if ! docker info &>/dev/null; then
-      push_err "Docker daemon unreachable (permission denied or engine stopped) — skipping commit/push for $repo"
-      push_warn_line "If you added user to group docker: close this terminal, open a new WSL session, or run: newgrp docker"
-      push_warn_line "Then verify: docker ps   (Docker Desktop on Windows must be running.)"
-      printf '\n'
-      continue
-    fi
-    if ! docker build -f "$DOCKER_FILE" $NPM_TOKEN_ARG -t "${repo}:test" "$DOCKER_CTX" > "$BUILD_LOG" 2>&1; then
-      push_err "Docker build failed — skipping commit/push for $repo"
-      push_file_hint "Log file:"
-      push_file_hint "$BUILD_LOG"
-      push_file_hint "Tip: tail -80 \"$BUILD_LOG\""
-      printf '\n'
-      continue
-    fi
-    push_ok "Docker build OK"
   fi
 
   push_info "Running tests (required before commit/push)…"

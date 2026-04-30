@@ -10,5 +10,6 @@ WORKDIR /app
 COPY --from=builder /app/.mastra/output ./
 ENV NODE_ENV=production
 ENV PORT=4111
+ENV MASTRA_STUDIO_PATH=./studio
 EXPOSE 4111
 CMD ["node", "index.mjs"]

@@ -44,6 +44,7 @@ SERVICES=(
   "gaqno-finance-service"
   "gaqno-intelligence-service"
   "gaqno-lead-enrichment-service"
+  "gaqno-mastra"
   "gaqno-omnichannel-service"
   "gaqno-pdv-service"
   "gaqno-rpg-service"
@@ -165,13 +166,17 @@ docker_build_one() {
   local start_ts
   start_ts=$(date +%s)
   echo -e "${BLUE}🐳 [${tag}] Building...${NC}"
-  docker build -f "${dockerfile}" \
-    --build-arg NPM_TOKEN="${NPM_TOKEN}" \
-    ${CACHE_BUST_ARGS} \
-    ${DOCKER_EXTRA_ARGS} \
-    -t "${name}:test" \
-    "${context}" 2>&1 | tee "${log_file}" | sed -u "s/^/  ${BLUE}[${tag}]${NC} /"
-  local exit_code=${PIPESTATUS[0]}
+  local exit_code
+  (
+    set -o pipefail 2>/dev/null || true
+    docker build -f "${dockerfile}" \
+      --build-arg NPM_TOKEN="${NPM_TOKEN}" \
+      ${CACHE_BUST_ARGS} \
+      ${DOCKER_EXTRA_ARGS} \
+      -t "${name}:test" \
+      "${context}" 2>&1 | tee "${log_file}" | sed -u "s/^/  ${BLUE}[${tag}]${NC} /"
+  )
+  exit_code=$?
 
   local elapsed
   elapsed=$(( $(date +%s) - start_ts ))
@@ -192,6 +197,7 @@ wait_for_slots() {
 }
 
 build_item() {
+  trap - EXIT 2>/dev/null || true
   local name="$1"
   local dir="$2"
   local context="$3"
@@ -266,6 +272,11 @@ if [ ${#SUCCESSFUL[@]} -gt 0 ]; then
     echo -e "   ${GREEN}✓${NC} ${item}"
   done
   echo ""
+fi
+
+if [ "${HAS_FILTER}" -eq 1 ] && [ ${#SUCCESSFUL[@]} -eq 0 ] && [ ${#FAILED[@]} -eq 0 ]; then
+  echo -e "${RED}❌ No build result recorded for: ${FILTERS[*]} (internal error or jobs did not run).${NC}"
+  exit 1
 fi
 
 if [ ${#FAILED[@]} -gt 0 ]; then

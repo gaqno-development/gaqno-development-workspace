@@ -112,6 +112,22 @@ Para cada hostname público, o **serviço de origem** deve ser o **Traefik** que
 
 A UI do Dokploy costuma estar em **porta 3000** no host; um hostname dedicado pode apontar para `http://host.docker.internal:3000` (com `extra_hosts` no compose do túnel) se aplicável.
 
+### 4.1 Público na Internet vs apenas WARP (Private hostname)
+
+Na UI do túnel aparecem linhas do tipo **Published application** (`http://dokploy-traefik:80`) e, à parte, **Private hostname**.
+
+| Tipo | Comportamento típico |
+|------|----------------------|
+| **Published application** (public hostname no túnel) | Tráfego HTTPS público → edge Cloudflare → túnel → Traefik. **Não exige WARP** no cliente. |
+| **Private hostname** | Resolução / rota orientada a **WARP** ou rede privada Zero Trust. Útil para Grafana, n8n, Bull Board quando queres **sem exposição pública direta**. |
+
+Para **`docs.gaqno.com.br`**, **`portal.gaqno.com.br`** e **`fifiadoces.gaqno.com.br`** (e lojas semelhantes): o objetivo é **só** precisarem do caminho público.
+
+1. **Túnel:** mantém **apenas** a entrada **Published application** com serviço `http://dokploy-traefik:80` para esses hostnames. **Não** cries entrada **Private hostname** com o mesmo FQDN (ou remove se existir duplicado).
+2. **Cloudflare Access** (Zero Trust → Access → Applications): se alguma política tiver **Require WARP** / **Gateway** / dispositivo gerido para esses hostnames, ajusta ou cria exceção — isso é **independente** do túnel e pode bloquear visitantes sem WARP mesmo com DNS e túnel públicos corretos.
+
+Grafana / n8n / bullmq podem continuar com **Private hostname** + WARP se for essa a política de segurança desejada.
+
 ---
 
 ## 5. DNS

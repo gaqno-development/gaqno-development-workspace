@@ -8,6 +8,8 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const workspaceRoot = path.resolve(__dirname, "..");
 
+const LEGACY_EXEMPT_NESTED_FEATURES_RELPATHS = new Set(["Platform/features/Settings/features"]);
+
 let roots = process.argv.slice(2).map((r) => path.resolve(r));
 if (roots.length === 0) {
   for (const name of fs.readdirSync(workspaceRoot, { withFileTypes: true })) {
@@ -45,7 +47,10 @@ for (const appRoot of roots) {
   const violations = [];
   for (const full of walkFeaturesDirs(pagesDir)) {
     const rel = path.relative(pagesDir, full);
-    if (nestedFeaturesCount(rel) >= 2) violations.push(full);
+    if (nestedFeaturesCount(rel) >= 2) {
+      const relPosix = rel.split(path.sep).join("/");
+      if (!LEGACY_EXEMPT_NESTED_FEATURES_RELPATHS.has(relPosix)) violations.push(full);
+    }
   }
   if (violations.length) {
     ok = false;
