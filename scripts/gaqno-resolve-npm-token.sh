@@ -10,6 +10,21 @@ BASE_DIR="${1:?}"
 
 [ -n "${NPM_TOKEN:-}" ] && emit_token "$NPM_TOKEN"
 
+ENV_FILE="${BASE_DIR}/.env"
+if [ -f "${ENV_FILE}" ]; then
+  env_line=$(grep -E '^[[:space:]]*(export[[:space:]]+)?NPM_TOKEN=' "${ENV_FILE}" 2>/dev/null | tail -1) || true
+  if [ -n "${env_line}" ]; then
+    env_line="${env_line#*=}"
+    env_line="${env_line//$'\r'/}"
+    env_line=$(printf '%s' "$env_line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+    env_line="${env_line#\"}"
+    env_line="${env_line%\"}"
+    env_line="${env_line#\'}"
+    env_line="${env_line%\'}"
+    [ -n "${env_line}" ] && emit_token "${env_line}"
+  fi
+fi
+
 if [ -f "${BASE_DIR}/.npmrc" ]; then
   t=$(grep "//npm.pkg.github.com/:_authToken" "${BASE_DIR}/.npmrc" 2>/dev/null | head -1 | cut -d'=' -f2-)
   [ -n "${t:-}" ] && emit_token "$t"

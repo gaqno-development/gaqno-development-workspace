@@ -102,7 +102,7 @@ if [ -z "${NPM_TOKEN}" ]; then
   NPM_TOKEN=$("${BASE_DIR}/scripts/gaqno-resolve-npm-token.sh" "${BASE_DIR}" 2>/dev/null) || true
 fi
 if [ -z "${NPM_TOKEN}" ]; then
-  echo -e "${YELLOW}⚠️  NPM_TOKEN not found (export NPM_TOKEN, workspace .npmrc, ~/.npmrc.personal, gaqno-*/.npmrc, .cursor/mcp.json dokploy-mcp.env.NPM_TOKEN, or Dokploy API via same mcp); Docker builds may fail for private packages.${NC}"
+  echo -e "${YELLOW}⚠️  NPM_TOKEN not found (export NPM_TOKEN, workspace .env, workspace .npmrc, ~/.npmrc.personal, .cursor/mcp.json, Dokploy API, or gaqno-*/.npmrc); Docker builds may fail for private packages.${NC}"
 fi
 
 echo ""
