@@ -18,6 +18,7 @@ build/
 logs/
 *.log
 .pm2/
+build-logs/
 
 # External repos (not submodules; see docs/external-repos.md)
 gaqno-consumer-ui/
