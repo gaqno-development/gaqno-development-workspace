@@ -11,6 +11,7 @@ build/
 .env
 .env.local
 .env.monitoring
+monitoring/.env
 .env.*.local
 .env.jira
 
@@ -26,6 +27,12 @@ gaqno-consumer-ui/
 # Deployment scripts with secrets
 deploy-dokku.sh
 deploy-dokploy.py
+deploy-all.py
+
+# Generated / local artifacts
+codemap.json
+codemap-viewer.html
+.docker-validation/
 
 # IDE / tools
 .cursor/

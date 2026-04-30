@@ -17,10 +17,12 @@ Three **exclusive** dashboards (use the Overview to jump between them):
 From the workspace root:
 
 ```bash
-docker compose -f docker-compose.monitoring.yml up -d
+docker compose -f monitoring/docker-compose.dokploy.yml --env-file monitoring/.env up -d
 ```
 
-Grafana is at http://localhost:5678. Dashboards and the Prometheus datasource are provisioned automatically. The stack includes **node-exporter** (host CPU, memory, load), **cAdvisor** (per-container CPU and memory), and **postgres-exporter** (Postgres metrics). Ensure Prometheus can reach `node-exporter:9100`, `cadvisor:8080`, and `postgres-exporter:9187`.
+Em máquina local, a rede externa `dokploy-network` (ou o valor de `CLOUDFLARED_EDGE_NETWORK` no `.env`) tem de existir para o serviço `cloudflared` ligar à `dokploy-edge`; em Docker Desktop pode criá-la com `docker network create dokploy-network` ou comente/remova temporariamente o `cloudflared` se só precisar de métricas locais.
+
+Create `monitoring/.env` with at least `CLOUDFLARE_TUNNEL_TOKEN`, `CLOUDFLARE_API_TOKEN`, `POSTGRES_EXPORTER_URI`, `POSTGRES_EXPORTER_USER`, and `POSTGRES_EXPORTER_PASS` (and any other variables referenced by the compose file). Grafana is at http://localhost:5678. The stack includes **node-exporter**, **cAdvisor**, **postgres-exporter**, **pushgateway**, **Loki**, **Promtail**, and **cloudflared**. Ensure Prometheus can reach the scrape targets defined in the embedded `prometheus_config` inside `docker-compose.dokploy.yml`.
 
 ### postgres_exporter
 
@@ -30,30 +32,33 @@ The compose runs one **postgres-exporter** instance. Set these env vars so it ca
 - `POSTGRES_EXPORTER_USER` — Postgres user (default `postgres`).
 - `POSTGRES_EXPORTER_PASS` — Postgres password.
 
-No **Dokploy**, copie `DATABASE_URL` da aplicação `gaqno-sso-service` (Environment) e gere `.env.monitoring` com:
-
-```bash
-DATABASE_URL='postgresql://...' node scripts/configure-postgres-exporter-env.mjs
-# ou: node scripts/configure-postgres-exporter-env.mjs 'postgresql://...'
-```
-
-Depois: `docker compose -f docker-compose.monitoring.yml --env-file .env.monitoring up -d`. O arquivo `.env.monitoring` está no `.gitignore`.
+No **Dokploy**, copie `DATABASE_URL` da aplicação `gaqno-sso-service` (Environment), derive `host:port/database`, user e password, e preencha `POSTGRES_EXPORTER_URI`, `POSTGRES_EXPORTER_USER`, `POSTGRES_EXPORTER_PASS` no ficheiro `monitoring/.env` usado pelo comando acima. Não commite credenciais; mantenha `.env` no `.gitignore`.
 
 For multiple Postgres instances (e.g. one per service), run one exporter per instance and add a scrape job per target in `monitoring/prometheus.yml`.
 
 ## Using with Dokploy
 
-O serviço **gaqno-grafana** no Dokploy já está configurado com:
+### Estado verificado no Dokploy (projeto `gaqno-production`)
 
-- **node-exporter**, **prometheus**, **postgres-exporter** e **grafana**
-- Variáveis de ambiente no recurso: `POSTGRES_EXPORTER_URI`, `POSTGRES_EXPORTER_USER`, `POSTGRES_EXPORTER_PASS` (Postgres do SSO; definidas a partir da `DATABASE_URL` / credenciais da aplicação `gaqno-sso-service` no Dokploy)
-- Prometheus faz scrape de: prometheus, node-exporter e postgres-exporter
+O recurso **Compose** `monitoring-stack` está configurado com **`sourceType: raw`**: o YAML completo vive **no Dokploy**, não é obtido por clone do monorepo. Os campos de repositório Git para esse compose aparecem vazios; o `composePath` `./docker-compose.yml` é **interno ao Dokploy**, não um caminho neste workspace.
 
-O compose usado no Dokploy está em `monitoring/docker-compose.dokploy.yml`. Inclui **cloudflared** (Cloudflare Tunnel): o container sobe com `--metrics 0.0.0.0:60123` e o Prometheus faz scrape em `cloudflared:60123`. Configure no Dokploy a variável **`CLOUDFLARE_TUNNEL_TOKEN`** (token do connector em Cloudflare Zero Trust → Tunnels → Run connector).
+**Consequência:** o **repositório-superproject não é obrigatório** para este stack subir ou redeployar. Em produção, Prometheus e o provisioning de Grafana podem depender de **ficheiros no host do servidor** (por exemplo sob `/opt/gaqno-monitoring/`), o que pode **divergir** do template versionado `monitoring/docker-compose.dokploy.yml` (que usa `configs:` embutidos e **build** de `monitoring/grafana/Dockerfile`).
 
-Para **só** o túnel, com o connector na rede **`dokploy-network`** (necessário para origem `http://dokploy-traefik:80` no Zero Trust), use `monitoring/docker-compose.cloudflared-tunnel.yml`. Detalhes em `docs/CLOUDFLARE_TUNNEL_SERVERS.md` (secção 3).
+Existe ainda o compose **`cleanup-monitoring`** (remove containers com nomes legados); trate-o como recurso operacional no mesmo projeto.
 
-**Grafana** está em **http://grafana.gaqno.com.br** (porta 5678). O compose do Dokploy usa a **imagem Grafana custom** (`monitoring/grafana/Dockerfile`), que já inclui **provisioning** e **dashboards** dentro da imagem — não depende de volumes do host. O datasource Prometheus é configurado por variáveis de ambiente. Após o **build e deploy**, os dashboards aparecem na pasta **Gaqno**; os links diretos funcionam:
+### Alinhar Dokploy ao repo (opcional)
+
+Passo a passo na UI do Dokploy: [docs/dokploy-monitoring-git-source.md](../docs/dokploy-monitoring-git-source.md).
+
+Para voltar a um fluxo **Git → build**:
+
+1. No Dokploy, configure o compose com **fonte GitHub** apontando para um repositório que contenha `monitoring/docker-compose.dokploy.yml`.
+2. Defina o caminho do ficheiro de compose para `monitoring/docker-compose.dokploy.yml` e o diretório de build/context conforme a UI do Dokploy (normalmente raiz do repo ou pasta `monitoring`).
+3. Passe tokens e passwords por **variáveis de ambiente / secrets** do Dokploy, não literais no YAML.
+
+O ficheiro `monitoring/docker-compose.dokploy.yml` inclui **cloudflared** (`--metrics=0.0.0.0:60123` para scrape). Para **só** o túnel na `dokploy-network`, use `monitoring/docker-compose.cloudflared-tunnel.yml` e `docs/CLOUDFLARE_TUNNEL_SERVERS.md` (secção 3).
+
+**Grafana** em produção: **https://grafana.gaqno.com.br** (porta publicada conforme o compose ativo no Dokploy). Quando o Grafana corre a partir do template deste repo (imagem construída em `monitoring/grafana/`), os dashboards provisionados aparecem na pasta **Gaqno**; exemplos de URLs relativos:
 
 - **Services overview**: `/d/services-overview`
 - **Front**: `/d/gaqno-dashboard-front`
@@ -62,7 +67,7 @@ Para **só** o túnel, com o connector na rede **`dokploy-network`** (necessári
 - **DNS droppage**: `/d/gaqno-dns-droppage`
 - **Errors by frontend**: `/d/gaqno-errors-by-frontend`
 
-No Dokploy, use o **Docker Compose** com o arquivo `monitoring/docker-compose.dokploy.yml` e **raiz do repositório** como contexto (ou raiz = `monitoring`); o build do serviço `grafana` usa `context: ./grafana` em relação ao diretório do compose. Para **atualizar** os dashboards após mudanças no repositório: **Redeploy** do aplicativo (rebuild da imagem Grafana e novo deploy).
+Após alterações em `monitoring/grafana/` ou no compose versionado, faça **redeploy** do stack (ou rebuild da imagem Grafana) para aplicar.
 
 ### Grafana setup checklist (incl. Grafana MCP)
 

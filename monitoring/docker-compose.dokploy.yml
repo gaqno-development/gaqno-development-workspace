@@ -42,12 +42,10 @@ services:
       resources:
         limits:
           memory: 64m
-    env_file:
-      - .env
     environment:
-      - DATA_SOURCE_URI=${POSTGRES_EXPORTER_URI}
-      - DATA_SOURCE_USER=${POSTGRES_EXPORTER_USER}
-      - DATA_SOURCE_PASS=${POSTGRES_EXPORTER_PASS}
+      DATA_SOURCE_URI: ${POSTGRES_EXPORTER_URI:?POSTGRES_EXPORTER_URI is required}
+      DATA_SOURCE_USER: ${POSTGRES_EXPORTER_USER:?POSTGRES_EXPORTER_USER is required}
+      DATA_SOURCE_PASS: ${POSTGRES_EXPORTER_PASS:?POSTGRES_EXPORTER_PASS is required}
   pushgateway:
     image: prom/pushgateway:v1.6.2
     restart: unless-stopped
@@ -118,14 +116,12 @@ services:
         limits:
           memory: 128m
     environment:
-      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:?CLOUDFLARE_TUNNEL_TOKEN is required}
     command:
       - tunnel
       - --no-autoupdate
       - --metrics=0.0.0.0:60123
       - run
-      - --token
-      - ${CLOUDFLARE_TUNNEL_TOKEN}
     networks:
       - default
       - dokploy-edge
@@ -165,17 +161,18 @@ services:
       context: ./grafana
       dockerfile: Dockerfile
     environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-      - GF_USERS_ALLOW_SIGN_UP=false
-      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
-      - GF_DATASOURCES_DEFAULT_NAME=Prometheus
-      - GF_DATASOURCES_DEFAULT_TYPE=prometheus
-      - GF_DATASOURCES_DEFAULT_ACCESS=proxy
-      - GF_DATASOURCES_DEFAULT_URL=http://prometheus:9090
-      - GF_DATASOURCES_DEFAULT_IS_DEFAULT=true
-      - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN}
-      - CLOUDFLARE_ZONE_ID=${CLOUDFLARE_ZONE_ID:-d628a8ac60069acccbc154d173b88717}
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?GRAFANA_ADMIN_PASSWORD is required}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_SERVER_ROOT_URL: ${GRAFANA_ROOT_URL:-http://localhost:5678}
+      GF_PATHS_PROVISIONING: /etc/grafana/provisioning
+      GF_DATASOURCES_DEFAULT_NAME: Prometheus
+      GF_DATASOURCES_DEFAULT_TYPE: prometheus
+      GF_DATASOURCES_DEFAULT_ACCESS: proxy
+      GF_DATASOURCES_DEFAULT_URL: http://prometheus:9090
+      GF_DATASOURCES_DEFAULT_IS_DEFAULT: "true"
+      CLOUDFLARE_API_TOKEN: ${CLOUDFLARE_API_TOKEN:?CLOUDFLARE_API_TOKEN is required}
+      CLOUDFLARE_ZONE_ID: ${CLOUDFLARE_ZONE_ID:?CLOUDFLARE_ZONE_ID is required}
     volumes:
       - grafana-data:/var/lib/grafana
       - ./grafana/dashboards:/etc/grafana/dashboards

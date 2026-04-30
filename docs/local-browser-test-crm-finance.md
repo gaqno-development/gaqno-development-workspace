@@ -16,10 +16,10 @@ Este guia descreve a ordem correta para subir apenas o necessário e testar no b
 Na raiz do workspace:
 
 ```bash
-./scripts/run-local-crm-finance.sh
+docker compose up -d redis
 ```
 
-Isso sobe **Redis** via Docker Compose. O CRM e o Finance usam `REDIS_URL=redis://localhost:6379` por padrão quando rodam na máquina local.
+Isso sobe **Redis** via o `docker-compose.yml` na raiz do workspace. O CRM e o Finance usam `REDIS_URL=redis://localhost:6379` por padrão quando rodam na máquina local.
 
 ## 2. Ordem de execução dos serviços
 
@@ -74,7 +74,7 @@ Só abra `http://localhost:3000` e faça login quando o SSO responder (401 ou 20
 
 - **Login não redireciona / fica em `/login`**: o SSO não está rodando ou não está na porta 4001. Rode `npm run dev:sso-service` e aguarde "Nest application successfully started". Depois confira com `curl -s -o /dev/null -w "%{http_code}" http://localhost:4001/v1/me` (401 = OK).
 - **Nenhuma receita criada**: confira se `FINANCE_SYSTEM_USER_ID` está definido e é um UUID válido de usuário do tenant. Veja os logs do `gaqno-finance-service` (mensagem consumida e possível erro em `createTransaction`).
-- **Redis indisponível**: rode `./scripts/run-local-crm-finance.sh` de novo e espere o ping. Os serviços fazem retry de conexão.
+- **Redis indisponível**: rode `docker compose up -d redis` de novo e confirme com `docker compose ps redis`. Os serviços fazem retry de conexão.
 - **CORS ou 401**: confirme que está logado no Shell e que SSO, CRM e Finance usam o mesmo `JWT_SECRET`.
 - **MFE não carrega**: confira se CRM e Finance UIs estão rodando nas portas 3003 e 3005 antes de abrir o Shell.
 

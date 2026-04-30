@@ -200,8 +200,7 @@ npm run dev:ai-service       # Just AI backend
 | `push-all.sh` | Sequential commit/push across all submodules |
 | `publish-packages.sh` | Build and publish shared npm packages |
 | `turbo.json` | Turborepo task graph (dev, build, test) |
-| `docker-compose.yml` | Local development stack |
-| `docker-compose.production.yml` | Production stack |
+| `docker-compose.yml` | Local development stack (services built from submodule paths) |
 | `.github/workflows/` | Parent repo CI/CD (gitleaks, deploy, PR agent) |
 | `.cursor/rules/` | Cursor IDE rule files (10 rules) |
 | `.claude/agents/` | Claude Code agent definitions (backend-dev, frontend-dev, frontend-page-structure, devops, jira-specialist) |
