@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Push all submodules from the workspace.
-# After clone or sparse submodules: bash scripts/submodule-ensure-on-default-branch.sh && git submodule sync --recursive
+# After clone or sparse submodules: checkout each submodule default branch, then git submodule sync --recursive
 # Para cada repo com alterações: roda testes, depois add/commit/push.
 # Repos sem alterações são ignorados (não roda testes).
 # Cada repo tem seus próprios workflows em .github/workflows/ — CI dispara no repo individual.
@@ -245,7 +245,7 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 NPM_TOKEN="${NPM_TOKEN:-}"
 if [ -z "${NPM_TOKEN}" ]; then
-  NPM_TOKEN=$("${BASE_DIR}/scripts/gaqno-resolve-npm-token.sh" "${BASE_DIR}" 2>/dev/null) || true
+  NPM_TOKEN=$("${BASE_DIR}/gaqno-resolve-npm-token.sh" "${BASE_DIR}" 2>/dev/null) || true
 fi
 
 REPOS_FROM_GIT=($(git -C "$BASE_DIR" config --file .gitmodules --get-regexp path 2>/dev/null | awk '{ print $2 }' || true))
@@ -341,7 +341,7 @@ for repo in "${REPOS[@]}"; do
       NPM_TOKEN_ARG="--build-arg NPM_TOKEN=${NPM_TOKEN}"
     fi
     if [ -z "${NPM_TOKEN_ARG}" ]; then
-      push_warn_line "NPM_TOKEN not resolved — export NPM_TOKEN, use scripts/gaqno-resolve-npm-token.sh sources (.npmrc, .cursor/mcp.json dokploy-mcp.env.NPM_TOKEN, Dokploy project.all env), or submodule .npmrc"
+      push_warn_line "NPM_TOKEN not resolved — export NPM_TOKEN, use ./gaqno-resolve-npm-token.sh sources (.npmrc, .cursor/mcp.json dokploy-mcp.env.NPM_TOKEN, Dokploy project.all env), or submodule .npmrc"
     fi
     if ! command -v docker &>/dev/null; then
       push_err "docker not found in PATH — skipping commit/push for $repo"
@@ -378,7 +378,7 @@ for repo in "${REPOS[@]}"; do
   push_info "Staging changes…"
   git add .
 
-  GUARD_SCRIPT="$BASE_DIR/scripts/guard-destructive-commit.sh"
+  GUARD_SCRIPT="$BASE_DIR/guard-destructive-commit.sh"
   if [ -x "$GUARD_SCRIPT" ]; then
     if ! "$GUARD_SCRIPT" "$REPO_PATH"; then
       push_err "Destructive-commit guard refused — aborting $repo"

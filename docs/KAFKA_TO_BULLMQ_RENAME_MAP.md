@@ -138,7 +138,7 @@ All services that import `from '@gaqno-development/backcore'` and use `KafkaProd
 |------|---------------------------|
 | `docs/INVESTOR-PITCH-FLOW.md` | "Lead enrichment: Serviço assíncrono (Kafka + Pipedrive)" → "BullMQ/Redis + Pipedrive" or "message broker + Pipedrive"; "Integração Pipedrive + Kafka" → "Integração Pipedrive + message broker" |
 | `@gaqno-agent/openclaw-config/workspace/memory/2026-02-20.md` | "5 serviços (kafka, pgadmin...)" → "5 serviços (redis, pgadmin...)" or "message broker" |
-| `scripts/n8n-workflows/README.md` | "subscribes to Kafka domain events" → "subscribes to BullMQ/domain events" or "message broker domain events" |
+| n8n workflow exports (SSO OTP / notifications) | Version in n8n or Confluence; workspace `scripts/n8n-workflows/` was removed |
 | `docs/coverage-gaps-plan.md` | "kafka module" → "messaging module" |
 | `docs/event-driven-review.md` | Multiple references to Kafka paths, KafkaProducer, Kafka consumer, Kafka healthcheck, Kafka indisponível → update to BullMQ/message broker terminology |
 | `docs/event-driven-comercial-finance.md` | "KafkaProducer", "fila comercial.events__finance", "KafkaProducer.publishIntegrationEvent" → MessageProducer, message queue, MessageProducer.publishIntegrationEvent |

@@ -283,7 +283,7 @@ npm run dev:sso-service
 | `dev:frontends`                     | Turbo dev for shell + main MFEs                                                                                                                    |
 | `dev:backends`                      | Turbo dev for main NestJS services                                                                                                                 |
 | `dev:shell`, `dev:sso`, `dev:ai`, … | Single app or service dev                                                                                                                          |
-| `create-project`                    | Interactive script to add new UI and/or service (see [Adding a New Project](#adding-a-new-project))                                                |
+| `check:page-structure`              | Page folder layout gates (CI + Husky); see [scripts/README.md](../scripts/README.md)                                                                |
 | `release:packages`                  | Run `publish-packages.sh`                                                                                                                          |
 | `publish:frontcore`                 | Publish `@gaqno-development/frontcore` (uses `.env` for token)                                                                                     |
 | `publish:agent`                     | Publish `@gaqno-development/gaqno-agent`                                                                                                           |
@@ -305,7 +305,7 @@ Zone **gaqno.com.br**. Use the [Cloudflare dashboard](https://dash.cloudflare.co
 
 - **Workspace root**: [.github/workflows/ci.yml](.github/workflows/ci.yml) — on push/PR to `main`/`develop`: checkout (with submodules), run [scripts/verify-submodules-non-empty.sh](../scripts/verify-submodules-non-empty.sh) (fails if any submodule `HEAD` has an empty tree — avoids Dokploy/Swarm builds with no files), install, then Turbo **lint**, **build**, **test**. Paths ignore `**/*.md` and `.cursor/**`.
 - **Per-repo**: When packages are submodules, each repo has its own workflows; CI runs in the repo where the push/PR happens.
-- **After fixing empty submodule commits**: push submodules with [scripts/push-restored-submodules.sh](../scripts/push-restored-submodules.sh), then commit and push the superproject so submodule SHAs point at restored trees.
+- **After fixing empty submodule commits**: push each affected submodule repository so `HEAD` has a non-empty tree, then commit and push the superproject so submodule SHAs point at those commits.
 
 ```mermaid
 sequenceDiagram
@@ -327,19 +327,7 @@ sequenceDiagram
 
 ## Adding a New Project
 
-Use the interactive scaffolder:
-
-```bash
-npm run create-project
-```
-
-Options (see [scripts/README.md](scripts/README.md)):
-
-- **Type**: frontend only, backend only, or both
-- **Ports**: UI dev server (e.g. 3011), NestJS (e.g. 4011)
-- **Install**: run `npm install` in new packages
-
-Then:
+Copy an existing MFE or Nest service as a template, rename packages, then:
 
 1. Add `MFE_{NAME}_URL` in `gaqno-shell-ui/vite.config.ts`
 2. Add routes in `gaqno-shell-ui/src/App.tsx`
@@ -356,7 +344,7 @@ Root `codemap.json` / `codemap-viewer.html` may be present from a previous gener
 
 ## Documentation
 
-- **Scripts**: [scripts/README.md](scripts/README.md) — create-project, page-structure checks, Dokploy helpers, etc.
+- **Scripts**: [scripts/README.md](../scripts/README.md) — submodule verify, page-structure checks, federation postinstall
 - **Agent**: [@gaqno-agent/README.md](@gaqno-agent/README.md) — OpenClaw setup and skills
 - **GitHub / CI**: [.github/README.md](.github/README.md) — per-repo workflows
 - **Confluence**: [DDS space](https://gaqno-development.atlassian.net/wiki/spaces/DDS) — product/architecture docs
@@ -373,7 +361,7 @@ Root `codemap.json` / `codemap-viewer.html` may be present from a previous gener
 | Run all backends      | `npm run dev:backends`                                            |
 | Run everything        | `npm run dev`                                                     |
 | Build shared packages | `npm run build:types` then `npm run build:packages`               |
-| Add new app/service   | `npm run create-project`                                          |
+| Add new app/service   | Copy an existing workspace package and wire shell + root `package.json` |
 | Push all submodules   | `./push-all.sh` (optional message: `./push-all.sh "feat: add X"`) |
 
 ---

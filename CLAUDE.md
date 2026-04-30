@@ -205,7 +205,7 @@ npm run dev:ai-service       # Just AI backend
 | `.github/workflows/` | Parent repo CI/CD (gitleaks, deploy, PR agent) |
 | `.cursor/rules/` | Cursor IDE rule files (10 rules) |
 | `.claude/agents/` | Claude Code agent definitions (backend-dev, frontend-dev, frontend-page-structure, devops, jira-specialist) |
-| `scripts/` | Automation (create-project, Cloudflare DNS, codemap generation) |
+| `scripts/` | CI-critical checks (submodules, page structure, federation postinstall) |
 | `monitoring/` | Grafana/Prometheus stack helpers |
 
 ## Environment Variables

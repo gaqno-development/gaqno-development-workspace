@@ -6,7 +6,7 @@ readonly repo="$(cd "$script_dir/.." && pwd)"
 readonly root="$(cd "$script_dir/../.." && pwd)"
 readonly entry="$repo/dist/index.js"
 
-. "$root/scripts/cursor-mcp-login-path.sh"
+. "$script_dir/cursor-mcp-login-path.sh"
 
 if [ ! -f "$entry" ]; then
   cursor_mcp_ensure_npm || {

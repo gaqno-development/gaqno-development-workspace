@@ -1,20 +1,4 @@
 #!/usr/bin/env bash
-#
-# Guard against destructive commits that would wipe a repository.
-#
-# Aborts the commit if the staged changes match any of the following patterns:
-#   1. Staged tree is empty while HEAD has content (entire repo cleared).
-#   2. 10+ files staged for deletion with 0 additions or modifications.
-#   3. A critical root file (Dockerfile, package.json, src/, etc.) is staged
-#      for deletion without any counterpart file being added.
-#
-# Can be invoked:
-#   - Directly as a git pre-commit hook (no args — reads the staged tree of cwd).
-#   - Programmatically with the repo path as arg 1 (used by push-all.sh).
-#
-# Override (DANGEROUS — only for intentional resets):
-#   GAQNO_ALLOW_DESTRUCTIVE=1 git commit ...
-#
 set -u
 
 REPO_PATH="${1:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"

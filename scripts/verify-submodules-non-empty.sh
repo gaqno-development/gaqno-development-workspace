@@ -32,7 +32,7 @@ for path in "${paths[@]}"; do
   fi
   if [[ "${VERIFY_SUBMODULE_ON_BRANCH:-}" == "1" ]]; then
     if ! git -C "$path" symbolic-ref -q HEAD &>/dev/null; then
-      echo "verify-submodules-non-empty: detached HEAD at $path (local: bash scripts/submodule-ensure-on-default-branch.sh)" >&2
+      echo "verify-submodules-non-empty: detached HEAD at $path (checkout the submodule default branch locally)" >&2
       failed=1
     fi
   fi

@@ -43,7 +43,6 @@
     "gaqno-wellness-ui"
   ],
   "scripts": {
-    "create-project": "node scripts/create-project.js",
     "secret-scan": "gitleaks protect --config .gitleaks.toml --no-git --verbose",
     "prepare": "husky",
     "postinstall": "bash scripts/patch-federation-plugin.sh",
@@ -87,25 +86,10 @@
     "test": "turbo run test",
     "test:coverage": "turbo run test:coverage",
     "verify:local": "npm run verify:production -w gaqno-shell-ui",
-    "scrape:product-images": "node scripts/scrape-product-images.mjs",
-    "import:dummyjson-products": "node scripts/import-dummyjson-products.mjs",
-    "dokploy:pull-env": "node --env-file=.env scripts/dokploy-pull-env.mjs",
-    "dokploy:list-apps": "node --env-file=.env scripts/dokploy-pull-env.mjs --list-apps",
-    "dokploy:apply": "node --env-file=.env scripts/dokploy-pull-env.mjs --apply",
-    "dokploy:inspect-latency": "node --env-file=.env scripts/dokploy-inspect-latency-hints.mjs",
-    "measure:api-ttfb": "node scripts/measure-api-ttfb.mjs",
-    "check:page-components": "node scripts/check-flat-page-components.mjs",
-    "check:page-component-names": "node scripts/check-page-component-folder-names.mjs",
-    "check:page-feature-names": "node scripts/check-page-feature-folder-names.mjs",
-    "check:page-feature-shared-span": "node scripts/check-feature-shared-widget-import-span.mjs",
-    "check:page-root-contract": "node scripts/check-page-root-contract.mjs",
-    "check:page-subdomain-features-bucket": "node scripts/check-page-subdomain-features-bucket.mjs",
-    "check:page-structure": "node scripts/run-page-structure-checks.mjs",
-    "explain:erp-queries": "sh -c 'test -n \"$DATABASE_URL\" && test -n \"$TENANT_UUID\" && psql \"$DATABASE_URL\" -v tenant=\"$TENANT_UUID\" -f scripts/explain-erp-tenant-queries.sql'"
+    "check:page-structure": "node scripts/run-page-structure-checks.mjs"
   },
   "devDependencies": {
     "husky": "^9.1.7",
-    "inquirer": "^9.3.8",
     "jest-util": "^29.7.0",
     "reflect-metadata": "^0.1.14",
     "turbo": "^2.3.0"
