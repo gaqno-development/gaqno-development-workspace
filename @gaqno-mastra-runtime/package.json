@@ -1,6 +1,6 @@
 {
   "name": "@gaqno-development/mastra-runtime",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "private": false,
   "description": "Shared Mastra runtime (agents, tools, lib, constants, middleware) consumed by gaqno-mastra (operator Studio) and embedded NestJS hosts (gaqno-ai-service first).",
   "repository": {

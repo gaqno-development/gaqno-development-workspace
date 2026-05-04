@@ -50,14 +50,36 @@ See [dokploy-runtime-and-ai-service.md](../../../.cursor/skills/mastra/reference
 
 | Field | Value |
 | --- | --- |
-| Date (UTC) | 2026-05-03 |
-| Session | Runtime extracted to `@gaqno-mastra-runtime/`; NestJS host wired in `gaqno-ai-service/src/mastra/` |
-| Runtime build | `tsup` 91ms, 6 ESM entries |
-| Runtime tests | 4 files, 21 tests pass |
-| ai-service mastra tests | 5/5 pass (jest) |
-| `gaqno-mastra` runtime resolution | OK (workspace symlink → tsup dist) |
-| Dockerfile (`gaqno-mastra/`) | Updated for `NPM_TOKEN` + `@gaqno-development:registry` |
-| Dokploy MCP | Steps documented; not executed (DOKPLOY_BASE_URL unreachable in this session) |
+| Date (UTC) | 2026-05-04 |
+| Session | Portal-agent navigation flow + login/shell branding splash |
+| Runtime build (A1) | `tsup` 76ms, 6 ESM entries (`dist/{index,agents,config,constants,lib,tools}/index.js`) |
+| Runtime tests (A2) | 6 files, 29 tests pass (vitest) — adds `list-portal-features-tool.test.ts` (3) and `navigate-to-tool.test.ts` (5) |
+| Runtime version | `@gaqno-development/mastra-runtime@0.2.0` (workspace symlink) |
+| ai-service jest (agents + mastra) | 9 suites, 79 tests pass — includes `mastra-portal-bridge.service.spec.ts` (4) |
+| ai-service `nest build` (C4) | OK, no TS errors. Bridge `await import('@gaqno-development/mastra-runtime')` compiles. |
+| ai-service runtime dep (C-bridge) | `@gaqno-development/mastra-runtime ^0.2.0` resolved via workspace |
+| Shell-ui chat + branding tests | `global-unified-llm-sheet.test.tsx` 4/4, `shell-layout-wrapper.test.tsx` 1/1, `public-layout.test.tsx` 3/3 (new `BrandLoader fullscreen while auth loading` cert added) |
+| End-to-end AI navigation flow | shell sheet → `/v1/agents/unified-assistant/chat` → `AgentsService.chat` short-circuit → `MastraPortalBridgeService` → `portalAgent.generate` → `navigate-to` toolCalls in `AgentChatResponse` → `useUnifiedLlmChat.toolCalls` → `NavigateToolCard` "Abrir <Page>" buttons + suggested actions → `useNavigate(route) + setOpen(false)` |
+| Skipped (require live infra) | B3 (Qdrant ingest), C5–C7 (live `/v1/mastra/api/agents` curl + tool tracing), D (Dokploy) |
+| Dokploy MCP | Not executed this session; see `dokploy-runtime-and-ai-service.md` for the playbook |
+
+## Branding loader — fixes applied this session
+
+The aqn mark was previously invisible on `/login`, `/`, and during the pre-React paint because:
+
+1. `index.html` only had `<div id="root"></div>` — blank flash before React mounts.
+2. The placeholder `public/icon.svg` was a generic blue rectangle, not the gaqno mark.
+3. `<PublicLayout>` rendered `<Outlet />` immediately, so `/login` showed the form before `useAuth().loading` resolved (no BrandLoader).
+
+Applied:
+
+| File | Change |
+| --- | --- |
+| `gaqno-shell-ui/public/aqn-mark.svg` | New standalone aqn-only SVG (cropped via `viewBox="300 670 1540 560"`, gradients preserved) |
+| `gaqno-shell-ui/public/icon.svg` | Replaced placeholder favicon with the same gaqno aqn mark (smaller — only 5 gradients used) |
+| `gaqno-shell-ui/index.html` | Pre-React HTML splash inside `#root` (auto-removed when React mounts), `gaqnoHtmlSplashPulse` keyframes, respects `prefers-reduced-motion`, dark `#0f0f14` background to match `theme-color` |
+| `gaqno-shell-ui/src/components/public-layout.tsx` | Extracted `PublicLayoutContent` that gates on `useAuth().loading` and renders `<BrandLoader fullscreen />` until auth resolves; otherwise renders the existing `motion.div` + `<Outlet />` |
+| `gaqno-shell-ui/src/components/public-layout.test.tsx` | Adds the loading-state assertion |
 
 ## Follow-ups
 
