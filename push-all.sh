@@ -270,6 +270,7 @@ else
     gaqno-intelligence-ui
     gaqno-landing-ui
     gaqno-lenin-ui
+    gaqno-mastra
     gaqno-omnichannel-service
     gaqno-omnichannel-ui
     gaqno-pdv-service
