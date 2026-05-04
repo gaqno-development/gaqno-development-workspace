@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { resolveStudioPrefixRedirect } from './studio-prefix-redirect';
+import { resolveStudioPrefixRedirect } from './studio-prefix-redirect.js';
 
 describe('resolveStudioPrefixRedirect', () => {
   it('should map /studio to root', () => {

@@ -1,6 +1,6 @@
 import type { MiddlewareHandler } from 'hono';
 import type { RequestContext } from '@mastra/core/request-context';
-import { collectionNameForTenant } from '../lib/collection-name-for-tenant';
+import { collectionNameForTenant } from '../lib/collection-name-for-tenant.js';
 
 const TENANT_HEADER = 'x-tenant-id';
 

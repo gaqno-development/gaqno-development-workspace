@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   assertPathMatchesServiceAllowlist,
   assertValidPortalResourcePath,
-} from './portal-service-url';
+} from './portal-service-url.js';
 
 describe('assertValidPortalResourcePath', () => {
   it('should accept a simple API path', () => {

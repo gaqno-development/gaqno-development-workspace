@@ -3,10 +3,10 @@ import { MastraCompositeStore } from '@mastra/core/storage';
 import { LibSQLStore } from '@mastra/libsql';
 import { PinoLogger } from '@mastra/loggers';
 import type { ApiRoute } from '@mastra/core/server';
-import { engineeringAgent } from './agents/engineering-agent';
-import { wppClientAgent } from './agents/wpp-client-agent';
-import { portalAgent } from './agents/portal-agent';
-import { buildMastraServerOptions } from './config/server-options';
+import { engineeringAgent } from './agents/engineering-agent.js';
+import { wppClientAgent } from './agents/wpp-client-agent.js';
+import { portalAgent } from './agents/portal-agent.js';
+import { buildMastraServerOptions } from './config/server-options.js';
 
 export interface CreateMastraInstanceOptions {
   readonly studio?: boolean;

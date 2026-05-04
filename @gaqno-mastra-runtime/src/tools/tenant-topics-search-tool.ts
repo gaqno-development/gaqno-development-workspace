@@ -1,10 +1,10 @@
 import { createTool } from '@mastra/core/tools';
 import { z } from 'zod';
-import { RAG_DEFAULT_TOP_K, RAG_EMBEDDING_DIMENSION } from '../constants/rag';
-import { embedTexts } from '../lib/embed-texts';
-import { collectionNameForTenant } from '../lib/collection-name-for-tenant';
-import { createQdrantVectorStore } from '../lib/qdrant-from-env';
-import { formatRetrievalContext } from '../lib/retrieval-context';
+import { RAG_DEFAULT_TOP_K, RAG_EMBEDDING_DIMENSION } from '../constants/rag.js';
+import { embedTexts } from '../lib/embed-texts.js';
+import { collectionNameForTenant } from '../lib/collection-name-for-tenant.js';
+import { createQdrantVectorStore } from '../lib/qdrant-from-env.js';
+import { formatRetrievalContext } from '../lib/retrieval-context.js';
 
 function readOpenAiKey(): string {
   const key = process.env.OPENAI_API_KEY?.trim();

@@ -2,7 +2,7 @@ import {
   MAX_QDRANT_COLLECTION_NAME_LENGTH,
   MAX_TENANT_ID_LENGTH,
   TENANT_TOPICS_PREFIX,
-} from '../constants/vector-collections';
+} from '../constants/vector-collections.js';
 
 const TENANT_ID_PATTERN = /^[a-zA-Z0-9](?:[a-zA-Z0-9_-]*[a-zA-Z0-9])?$/;
 

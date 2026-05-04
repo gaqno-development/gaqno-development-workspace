@@ -1,5 +1,5 @@
-import type { PortalServiceKey } from '../constants/portal-services';
-import { PORTAL_SERVICE_PATH_PREFIXES } from '../constants/portal-services';
+import type { PortalServiceKey } from '../constants/portal-services.js';
+import { PORTAL_SERVICE_PATH_PREFIXES } from '../constants/portal-services.js';
 
 const SAFE_PATH = /^\/[a-zA-Z0-9/_-]*$/;
 

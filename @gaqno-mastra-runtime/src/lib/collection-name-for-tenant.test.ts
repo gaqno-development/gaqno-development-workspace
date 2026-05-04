@@ -3,8 +3,8 @@ import {
   MAX_QDRANT_COLLECTION_NAME_LENGTH,
   MAX_TENANT_ID_LENGTH,
   TENANT_TOPICS_PREFIX,
-} from '../constants/vector-collections';
-import { collectionNameForTenant } from './collection-name-for-tenant';
+} from '../constants/vector-collections.js';
+import { collectionNameForTenant } from './collection-name-for-tenant.js';
 
 describe('collectionNameForTenant', () => {
   it('should map a valid tenant id to a Qdrant collection name', () => {

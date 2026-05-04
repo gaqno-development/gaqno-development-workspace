@@ -4,10 +4,10 @@ import {
   RAG_DEFAULT_TOP_K,
   RAG_EMBEDDING_DIMENSION,
   RAG_QDRANT_INDEX,
-} from '../constants/rag';
-import { embedTexts } from '../lib/embed-texts';
-import { createQdrantVectorStore } from '../lib/qdrant-from-env';
-import { formatRetrievalContext } from '../lib/retrieval-context';
+} from '../constants/rag.js';
+import { embedTexts } from '../lib/embed-texts.js';
+import { createQdrantVectorStore } from '../lib/qdrant-from-env.js';
+import { formatRetrievalContext } from '../lib/retrieval-context.js';
 
 function readOpenAiKey(): string {
   const key = process.env.OPENAI_API_KEY?.trim();

@@ -1,7 +1,7 @@
 import type { ApiRoute } from '@mastra/core/server';
-import { injectPortalAuthToken } from './portal-request-context';
-import { injectTenantIdFromHeader } from './tenant-request-context';
-import { redirectMisplacedStudioPath } from './studio-prefix-redirect';
+import { injectPortalAuthToken } from './portal-request-context.js';
+import { injectTenantIdFromHeader } from './tenant-request-context.js';
+import { redirectMisplacedStudioPath } from './studio-prefix-redirect.js';
 
 export interface BuildServerOptionsInput {
   readonly studioChatRoute?: ApiRoute;

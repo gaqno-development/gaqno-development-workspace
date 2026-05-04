@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatRetrievalContext } from './retrieval-context';
+import { formatRetrievalContext } from './retrieval-context.js';
 
 describe('formatRetrievalContext', () => {
   it('should join text fields from metadata', () => {

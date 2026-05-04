@@ -1,8 +1,8 @@
 import { MASTRA_AUTH_TOKEN_KEY } from '@mastra/core/request-context';
 import { createTool } from '@mastra/core/tools';
 import { z } from 'zod';
-import { PORTAL_SERVICE_KEYS, readPortalServiceBaseUrl, type PortalServiceKey } from '../constants/portal-services';
-import { assertPathMatchesServiceAllowlist, assertValidPortalResourcePath } from '../lib/portal-service-url';
+import { PORTAL_SERVICE_KEYS, readPortalServiceBaseUrl, type PortalServiceKey } from '../constants/portal-services.js';
+import { assertPathMatchesServiceAllowlist, assertValidPortalResourcePath } from '../lib/portal-service-url.js';
 
 function readToken(context: { requestContext?: { get: (k: string) => unknown } }): string {
   const raw = context.requestContext?.get(MASTRA_AUTH_TOKEN_KEY);

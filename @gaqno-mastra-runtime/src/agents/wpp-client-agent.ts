@@ -1,6 +1,6 @@
 import { Agent } from '@mastra/core/agent';
 import { Memory } from '@mastra/memory';
-import { tenantTopicsSearchTool } from '../tools/tenant-topics-search-tool';
+import { tenantTopicsSearchTool } from '../tools/tenant-topics-search-tool.js';
 
 export const wppClientAgent = new Agent({
   id: 'wpp-client-agent',

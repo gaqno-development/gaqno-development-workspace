@@ -1,7 +1,7 @@
 import { Agent } from '@mastra/core/agent';
 import { Memory } from '@mastra/memory';
-import { codebaseSearchTool } from '../tools/codebase-search-tool';
-import { knowledgeSearchTool } from '../tools/knowledge-search-tool';
+import { codebaseSearchTool } from '../tools/codebase-search-tool.js';
+import { knowledgeSearchTool } from '../tools/knowledge-search-tool.js';
 
 export const engineeringAgent = new Agent({
   id: 'engineering-agent',

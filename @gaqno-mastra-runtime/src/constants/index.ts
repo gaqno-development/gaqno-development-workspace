@@ -1,3 +1,3 @@
-export * from './rag';
-export * from './vector-collections';
-export * from './portal-services';
+export * from './rag.js';
+export * from './vector-collections.js';
+export * from './portal-services.js';

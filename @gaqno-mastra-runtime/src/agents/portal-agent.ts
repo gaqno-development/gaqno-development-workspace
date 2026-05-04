@@ -1,6 +1,6 @@
 import { Agent } from '@mastra/core/agent';
 import { Memory } from '@mastra/memory';
-import { portalServiceFetchTool } from '../tools/portal-service-fetch-tool';
+import { portalServiceFetchTool } from '../tools/portal-service-fetch-tool.js';
 
 export const portalAgent = new Agent({
   id: 'portal-agent',

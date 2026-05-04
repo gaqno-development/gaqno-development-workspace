@@ -1,7 +1,7 @@
-export { createMastraInstance } from './create-mastra-instance';
-export type { CreateMastraInstanceOptions } from './create-mastra-instance';
-export * from './agents';
-export * from './tools';
-export * from './lib';
-export * from './constants';
-export * from './config';
+export { createMastraInstance } from './create-mastra-instance.js';
+export type { CreateMastraInstanceOptions } from './create-mastra-instance.js';
+export * from './agents/index.js';
+export * from './tools/index.js';
+export * from './lib/index.js';
+export * from './constants/index.js';
+export * from './config/index.js';
