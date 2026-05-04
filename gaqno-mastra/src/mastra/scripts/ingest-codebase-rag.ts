@@ -1,7 +1,7 @@
 import { basename } from 'node:path';
 import {
+  CODEBASE_QDRANT_INDEX,
   RAG_EMBEDDING_DIMENSION,
-  RAG_QDRANT_INDEX,
   createQdrantVectorStore,
   ensureQdrantIndex,
   readChunkTextsFromPath,
@@ -22,9 +22,9 @@ function readDocId(filePath: string, explicit?: string): string {
 }
 
 async function main(): Promise<void> {
-  const filePath = process.argv[2] ?? process.env.RAG_INGEST_FILE?.trim();
+  const filePath = process.argv[2] ?? process.env.CODEBASE_INGEST_FILE?.trim();
   if (!filePath) {
-    throw new Error('Usage: npm run ingest:rag -- <path-to-text-file> [docId]');
+    throw new Error('Usage: npm run ingest:codebase -- <path-to-text-file> [docId]');
   }
   const docId = readDocId(filePath, process.argv[3]);
   const texts = await readChunkTextsFromPath(filePath, docId);
@@ -32,12 +32,13 @@ async function main(): Promise<void> {
     throw new Error('No chunks produced from input file');
   }
   const store = createQdrantVectorStore();
-  await ensureQdrantIndex(store, RAG_QDRANT_INDEX, RAG_EMBEDDING_DIMENSION);
-  await upsertChunkVectors(store, RAG_QDRANT_INDEX, docId, texts, readOpenAiKey(), (text) => ({
+  await ensureQdrantIndex(store, CODEBASE_QDRANT_INDEX, RAG_EMBEDDING_DIMENSION);
+  await upsertChunkVectors(store, CODEBASE_QDRANT_INDEX, docId, texts, readOpenAiKey(), (text) => ({
     text,
     docId,
+    path: filePath,
   }));
-  console.log(`Ingested ${texts.length} vectors for docId=${docId} into ${RAG_QDRANT_INDEX}`);
+  console.log(`Ingested ${texts.length} vectors for docId=${docId} into ${CODEBASE_QDRANT_INDEX}`);
 }
 
 main().catch((error: unknown) => {

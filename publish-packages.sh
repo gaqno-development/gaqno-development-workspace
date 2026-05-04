@@ -6,6 +6,20 @@ cd "${BASE_DIR}"
 echo "📦 Building and publishing packages..."
 echo ""
 
+echo "Building @gaqno-development/mastra-runtime..."
+cd @gaqno-mastra-runtime
+MASTRA_RT_VERSION=$(node -p "require('./package.json').version")
+PUBLISHED_MASTRA_RT=$(npm view @gaqno-development/mastra-runtime version 2>/dev/null || echo "")
+if [ "${MASTRA_RT_VERSION}" = "${PUBLISHED_MASTRA_RT}" ]; then
+  echo "⏭️  @gaqno-development/mastra-runtime@${MASTRA_RT_VERSION} already published, skipping"
+else
+  npm run build
+  npm publish --access restricted
+  echo "✅ @gaqno-development/mastra-runtime@${MASTRA_RT_VERSION} published"
+fi
+cd ..
+echo ""
+
 echo "Building @gaqno-types..."
 cd @gaqno-types
 TYPES_VERSION=$(node -p "require('./package.json').version")

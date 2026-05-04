@@ -8,7 +8,9 @@
     "dev": "mastra dev",
     "build": "mastra build --studio",
     "start": "mastra start",
-    "ingest:rag": "tsx src/mastra/scripts/ingest-rag.ts"
+    "ingest:rag": "tsx src/mastra/scripts/ingest-rag.ts",
+    "ingest:codebase": "tsx src/mastra/scripts/ingest-codebase-rag.ts",
+    "ingest:tenant-topics": "tsx src/mastra/scripts/ingest-tenant-topics.ts"
   },
   "keywords": [],
   "author": "",
@@ -18,6 +20,7 @@
     "node": ">=22.13.0"
   },
   "dependencies": {
+    "@gaqno-development/mastra-runtime": "^0.1.0",
     "@mastra/ai-sdk": "^1.4.1",
     "@mastra/core": "^1.30.0",
     "@mastra/duckdb": "^1.2.0",
@@ -35,6 +38,6 @@
     "mastra": "^1.7.2",
     "tsx": "^4.21.0",
     "typescript": "^6.0.3",
-    "vitest": "^4.0.18"
+    "vitest": "^2.1.9"
   }
 }

@@ -98,6 +98,10 @@
 	path = @gaqno-types
 	url = git@github.com:gaqno-development/gaqno-types.git
 	branch = main
+[submodule "@gaqno-mastra-runtime"]
+	path = @gaqno-mastra-runtime
+	url = git@github.com:gaqno-development/gaqno-mastra-runtime.git
+	branch = main
 [submodule "gaqno-lead-enrichment-service"]
 	path = gaqno-lead-enrichment-service
 	url = git@github.com:gaqno-development/gaqno-lead-enrichment-service.git

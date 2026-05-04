@@ -433,7 +433,7 @@ for repo in "${REPOS[@]}"; do
   fi
   if [ "$push_ok_flag" = "1" ]; then
     case "$repo" in
-      @gaqno-types|@gaqno-backcore|@gaqno-frontcore|@gaqno-agent)
+      @gaqno-types|@gaqno-mastra-runtime|@gaqno-backcore|@gaqno-frontcore|@gaqno-agent)
         PUSHED_PACKAGE=1
         PUSHED_PACKAGES+=("$repo")
         ;;
@@ -445,7 +445,7 @@ for repo in "${REPOS[@]}"; do
 done
 
 cd "$BASE_DIR"
-PACKAGE_DIRS=("@gaqno-types" "@gaqno-backcore" "@gaqno-frontcore" "@gaqno-agent")
+PACKAGE_DIRS=("@gaqno-types" "@gaqno-mastra-runtime" "@gaqno-backcore" "@gaqno-frontcore" "@gaqno-agent")
 
 # Only consider a package "changed" if it was actually pushed in this run,
 # not merely because another package changed. This prevents phantom version
@@ -481,6 +481,7 @@ if [ "$PUSHED_PACKAGE" = "1" ]; then
     LOCAL_VER=$(node -p "require('$PKG_PATH/package.json').version" 2>/dev/null || true)
     case "$pkg" in
       @gaqno-types)     NPM_NAME="@gaqno-development/types" ;;
+      @gaqno-mastra-runtime) NPM_NAME="@gaqno-development/mastra-runtime" ;;
       @gaqno-backcore)  NPM_NAME="@gaqno-development/backcore" ;;
       @gaqno-frontcore) NPM_NAME="@gaqno-development/frontcore" ;;
       @gaqno-agent)     NPM_NAME="@gaqno-development/gaqno-agent" ;;
