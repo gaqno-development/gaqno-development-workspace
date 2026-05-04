@@ -1,6 +1,6 @@
 {
   "name": "@gaqno-development/mastra-runtime",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": false,
   "description": "Shared Mastra runtime (agents, tools, lib, constants, middleware) consumed by gaqno-mastra (operator Studio) and embedded NestJS hosts (gaqno-ai-service first).",
   "repository": {
@@ -9,44 +9,44 @@
   },
   "type": "module",
   "main": "./dist/index.js",
-  "types": "./src/index.ts",
+  "types": "./dist/index.d.ts",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com",
     "access": "restricted"
   },
   "files": [
     "dist",
-    "src"
+    "types"
   ],
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "types": "./src/index.ts",
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
     "./middleware": {
-      "types": "./src/config/index.ts",
+      "types": "./dist/index.d.ts",
       "import": "./dist/config/index.js"
     },
     "./agents": {
-      "types": "./src/agents/index.ts",
+      "types": "./dist/index.d.ts",
       "import": "./dist/agents/index.js"
     },
     "./tools": {
-      "types": "./src/tools/index.ts",
+      "types": "./dist/index.d.ts",
       "import": "./dist/tools/index.js"
     },
     "./lib": {
-      "types": "./src/lib/index.ts",
+      "types": "./dist/index.d.ts",
       "import": "./dist/lib/index.js"
     },
     "./constants": {
-      "types": "./src/constants/index.ts",
+      "types": "./dist/index.d.ts",
       "import": "./dist/constants/index.js"
     }
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && cp types/index.d.ts dist/index.d.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
     "test:watch": "vitest",
