@@ -1,11 +1,12 @@
 {
   "name": "@gaqno-development/mastra-runtime",
-  "version": "0.1.3",
+  "version": "0.1.5",
   "private": false,
   "description": "Shared Mastra runtime (agents, tools, lib, constants, middleware) consumed by gaqno-mastra (operator Studio) and embedded NestJS hosts (gaqno-ai-service first).",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/gaqno-development/gaqno-mastra-runtime.git"
+    "url": "git+https://github.com/gaqno-development/gaqno-development-workspace.git",
+    "directory": "@gaqno-mastra-runtime"
   },
   "type": "module",
   "main": "./dist/index.js",
